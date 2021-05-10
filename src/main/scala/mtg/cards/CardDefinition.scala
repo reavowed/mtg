@@ -15,3 +15,6 @@ class CardDefinition(
   abilitiesFromRulesText: Seq[Ability],
   powerAndToughness: Option[PowerAndToughness],
   loyalty: Option[Int])
+{
+  override def toString: String = getClass.getSimpleName
+}

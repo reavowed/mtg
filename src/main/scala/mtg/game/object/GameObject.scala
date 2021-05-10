@@ -1,5 +1,12 @@
 package mtg.game.`object`
 
-import mtg.game.zone.ZoneIdentifier
+import mtg.game.PlayerIdentifier
+import mtg.game.zone.Zone
 
-class GameObject(val objectId: ObjectId, val zoneIdentifier: ZoneIdentifier)
+abstract class GameObject {
+  def objectId: ObjectId
+  def owner: PlayerIdentifier
+  def zone: Zone
+
+  def forNewZone(newObjectId: ObjectId, newZone: Zone): GameObject
+}

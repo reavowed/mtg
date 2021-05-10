@@ -1,6 +1,9 @@
 package mtg.game.`object`
 
-import mtg.game.zone.{Zone, ZoneIdentifier}
+import mtg.game.PlayerIdentifier
+import mtg.game.zone.Zone
 
-class CardObject(val card: Card, objectId: ObjectId, zoneIdentifier: ZoneIdentifier)
-    extends GameObject(objectId, zoneIdentifier)
+case class CardObject(card: Card, objectId: ObjectId, zone: Zone) extends GameObject {
+  override def owner: PlayerIdentifier = card.owner
+  override def forNewZone(newObjectId: ObjectId, newZone: Zone): GameObject = copy(objectId = newObjectId, zone = newZone)
+}

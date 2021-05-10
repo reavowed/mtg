@@ -1,5 +1,7 @@
 plugins {
     id 'scala'
+    id 'org.springframework.boot' version '2.3.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 }
 
 group 'org.example'
@@ -11,6 +13,10 @@ repositories {
 
 dependencies {
     implementation 'org.scala-lang:scala-library:2.13.5'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.github.julien-truffaut:monocle-core_2.13:3.0.0-M5'
+    implementation 'com.github.julien-truffaut:monocle-macro_2.13:3.0.0-M5'
+    testImplementation 'org.specs2:specs2-core_2.13:4.11.0'
 }
 
 test {
