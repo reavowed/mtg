@@ -1,17 +1,17 @@
 package mtg.events
 
-import mtg.game.`object`.CardObject
-import mtg.game.zone.Hand
-import mtg.game.{GameState, PlayerIdentifier}
+import mtg.game.objects.{CardObject, GameObjectState}
+import mtg.game.{GameData, PlayerIdentifier}
+import mtg.game.zone.Zone
 
 case class DrawCardEvent(playerIdentifier: PlayerIdentifier) extends Event {
-  override def execute(currentGameState: GameState): Either[GameState, Seq[Event]] = {
-    val library = currentGameState.zoneStates.libraries(playerIdentifier)
+  def execute(currentGameObjectState: GameObjectState, gameData: GameData): EventResult = {
+    val library = currentGameObjectState.libraries(playerIdentifier)
     library.objects.dropWhile(o => !o.isInstanceOf[CardObject]).headOption match {
       case Some(topCard) =>
-        Right(Seq(MoveObjectEvent(topCard, Hand(playerIdentifier))))
+        Seq(MoveObjectEvent(topCard, Zone.Hand(playerIdentifier)))
       case None =>
-        Left(currentGameState)
+        ()
     }
   }
 }

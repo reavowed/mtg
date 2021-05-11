@@ -1,4 +1,4 @@
-package mtg.game.`object`
+package mtg.game.objects
 
 import mtg.cards.CardPrinting
 import mtg.game.PlayerIdentifier

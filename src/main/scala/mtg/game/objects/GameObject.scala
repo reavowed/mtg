@@ -1,4 +1,4 @@
-package mtg.game.`object`
+package mtg.game.objects
 
 import mtg.game.PlayerIdentifier
 import mtg.game.zone.Zone

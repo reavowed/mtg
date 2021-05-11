@@ -1,9 +1,10 @@
 package mtg.events
 
-import mtg.game.{GameState, PlayerIdentifier}
+import mtg.game.{GameData, PlayerIdentifier}
+import mtg.game.objects.GameObjectState
 
 case class DrawCardsEvent(playerIdentifier: PlayerIdentifier, numberOfCards: Int) extends Event {
-  override def execute(currentGameState: GameState): Either[GameState, Seq[Event]] = {
-    Right(Seq.fill(numberOfCards)(DrawCardEvent(playerIdentifier)))
+  def execute(currentGameObjectState: GameObjectState, gameData: GameData): EventResult = {
+    Seq.fill(numberOfCards)(DrawCardEvent(playerIdentifier))
   }
 }

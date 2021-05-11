@@ -1,15 +1,15 @@
 package mtg.events
 
-import mtg.game.GameState
-import mtg.game.`object`.GameObject
+import mtg.game.GameData
+import mtg.game.objects.{GameObject, GameObjectState}
+import mtg.game.state.GameState
 import mtg.game.zone.Zone
 
 case class MoveObjectEvent(gameObject: GameObject, destination: Zone) extends Event {
-  override def execute(currentGameState: GameState): Either[GameState, Seq[Event]] = {
-    val (newObject, intermediateState) = currentGameState.newObjectForZone(gameObject, destination)
-    val resultState = intermediateState
+  def execute(currentGameObjectState: GameObjectState, gameData: GameData): EventResult = {
+    val (newObject, intermediateState) = currentGameObjectState.createNewObjectForZone(gameObject, destination)
+    intermediateState
       .updateZone(gameObject.zone, zoneState => zoneState.copy(objects = zoneState.objects.filter(_ != gameObject)))
       .updateZone(destination, zoneState => zoneState.copy(objects = zoneState.objects :+ newObject))
-    Left(resultState)
   }
 }

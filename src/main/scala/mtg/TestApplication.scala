@@ -2,8 +2,7 @@ package mtg
 
 import mtg.data.cards.{Forest, Plains}
 import mtg.data.sets.Strixhaven
-import mtg.game.loop.GameLoop
-import mtg.game.start.StartGameAction
+import mtg.game.state.{GameState, GameStateManager}
 import mtg.game.{GameStartingData, PlayerIdentifier, PlayerStartingData}
 
 object TestApplication {
@@ -11,7 +10,8 @@ object TestApplication {
     val playerOne = PlayerStartingData(PlayerIdentifier("P1"), Seq.fill(60)(Strixhaven.getCard(Plains).get), Nil)
     val playerTwo = PlayerStartingData(PlayerIdentifier("P2"), Seq.fill(60)(Strixhaven.getCard(Forest).get), Nil)
     val gameStartingData = GameStartingData(Seq(playerOne, playerTwo))
-    val result = GameLoop.executeAction(StartGameAction(gameStartingData))
-    println(result)
+    val initialState = GameState.initial(gameStartingData)
+    val gameStateManager = new GameStateManager(initialState)
+    println(gameStateManager.gameState)
   }
 }
