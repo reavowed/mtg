@@ -1,11 +1,11 @@
 package mtg.game.start.mulligans
 
-import mtg.events.{DrawCardsEvent, Event, EventResult}
-import mtg.game.{GameData, PlayerIdentifier}
-import mtg.game.objects.GameObjectState
+import mtg.events.DrawCardsEvent
+import mtg.game.PlayerIdentifier
+import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
 
-case class DrawStartingHandsEvent(playersToDraw: Seq[PlayerIdentifier]) extends Event {
-  override def execute(currentGameObjectState: GameObjectState, gameData: GameData): EventResult = {
+case class DrawStartingHandsEvent(playersToDraw: Seq[PlayerIdentifier]) extends GameObjectEvent {
+  override def execute(currentGameState: GameState): GameObjectEventResult = {
     playersToDraw.map(DrawCardsEvent(_, 7))
   }
 }

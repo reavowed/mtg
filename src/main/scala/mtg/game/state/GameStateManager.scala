@@ -1,6 +1,7 @@
 package mtg.game.state
 
 import mtg.game.start.StartGameAction
+import mtg.game.state.GameEvent.ResolvedEvent
 import mtg.game.{GameStartingData, PlayerIdentifier}
 
 import scala.annotation.tailrec
@@ -19,7 +20,21 @@ class GameStateManager(private var currentGameState: GameState, private var pend
     case (automaticGameAction: AutomaticGameAction) +: remainingActions =>
       updateState(automaticGameAction.execute(currentGameState), remainingActions)
       executeAutomaticActions()
+    case (gameObjectEvent: GameObjectEvent) +: remainingActions =>
+      updateState(executeGameObjectEvent(gameObjectEvent), remainingActions)
+      executeAutomaticActions()
     case _ =>
+  }
+
+  private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent): (GameState, Seq[GameAction]) = {
+    (gameObjectEvent.execute(currentGameState) match {
+      case GameObjectEventResult.UpdatedGameObjectState(newGameObjectState) =>
+        (currentGameState.updateGameObjectState(newGameObjectState), Nil)
+      case GameObjectEventResult.SubEvents(newEvents) =>
+        (currentGameState, newEvents)
+      case GameObjectEventResult.Nothing =>
+        (currentGameState, Nil)
+    }).mapLeft(_.recordEvent(ResolvedEvent(gameObjectEvent)))
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = pendingActions match {

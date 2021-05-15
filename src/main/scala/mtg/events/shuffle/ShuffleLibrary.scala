@@ -1,17 +1,17 @@
 package mtg.events.shuffle
 
-import mtg.events.{Event, EventResult}
+import mtg.game.PlayerIdentifier
 import mtg.game.Zone.Library
-import mtg.game.objects.{GameObject, GameObjectState}
-import mtg.game.{GameData, PlayerIdentifier}
+import mtg.game.objects.GameObject
+import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
 
 import scala.util.Random
 
-case class ShuffleLibrary(playerIdentifier: PlayerIdentifier) extends Event {
-  override def execute(currentGameObjectState: GameObjectState, gameData: GameData): EventResult = {
+case class ShuffleLibrary(playerIdentifier: PlayerIdentifier) extends GameObjectEvent {
+  override def execute(currentGameState: GameState): GameObjectEventResult = {
     val library = Library(playerIdentifier)
-    val (intermediateState, newObjects) = currentGameObjectState.libraries(playerIdentifier)
-      .foldLeft((currentGameObjectState, Seq.empty[GameObject])) {
+    val (intermediateState, newObjects) = currentGameState.gameObjectState.libraries(playerIdentifier)
+      .foldLeft((currentGameState.gameObjectState, Seq.empty[GameObject])) {
         case ((state, newObjects), currentObject) =>
           val (newObject, newState) = state.createNewObjectForZone(currentObject, library)
           (newState, newObjects :+ newObject)

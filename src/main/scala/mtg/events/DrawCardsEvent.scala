@@ -1,10 +1,10 @@
 package mtg.events
 
-import mtg.game.objects.GameObjectState
-import mtg.game.{GameData, PlayerIdentifier}
+import mtg.game.PlayerIdentifier
+import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
 
-case class DrawCardsEvent(playerIdentifier: PlayerIdentifier, numberOfCards: Int) extends Event {
-  def execute(currentGameObjectState: GameObjectState, gameData: GameData): EventResult = {
+case class DrawCardsEvent(playerIdentifier: PlayerIdentifier, numberOfCards: Int) extends GameObjectEvent {
+  def execute(currentGameState: GameState): GameObjectEventResult = {
     Seq.fill(numberOfCards)(DrawCardEvent(playerIdentifier))
   }
 }

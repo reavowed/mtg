@@ -1,7 +1,6 @@
 package mtg
 
 import mtg.cards.CardPrinting
-import mtg.events.Event
 import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState, ObjectId}
 import mtg.game.state._
 import mtg.game.{GameData, PlayerIdentifier, Zone}

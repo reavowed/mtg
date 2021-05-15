@@ -4,6 +4,10 @@ import mtg.game.PlayerIdentifier
 
 sealed abstract class GameAction
 
+abstract class GameObjectEvent extends GameAction {
+  def execute(currentGameState: GameState): GameObjectEventResult
+}
+
 abstract class AutomaticGameAction extends GameAction {
   def execute(currentGameState: GameState): (GameState, Seq[GameAction])
 }

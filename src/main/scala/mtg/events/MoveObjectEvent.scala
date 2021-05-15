@@ -1,11 +1,12 @@
 package mtg.events
 
-import mtg.game.objects.{GameObject, GameObjectState}
-import mtg.game.{GameData, Zone}
+import mtg.game.Zone
+import mtg.game.objects.GameObject
+import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
 
-case class MoveObjectEvent(gameObject: GameObject, destination: Zone) extends Event {
-  def execute(currentGameObjectState: GameObjectState, gameData: GameData): EventResult = {
-    val (newObject, intermediateState) = currentGameObjectState.createNewObjectForZone(gameObject, destination)
+case class MoveObjectEvent(gameObject: GameObject, destination: Zone) extends GameObjectEvent {
+  def execute(currentGameState: GameState): GameObjectEventResult = {
+    val (newObject, intermediateState) = currentGameState.gameObjectState.createNewObjectForZone(gameObject, destination)
     intermediateState
       .updateZone(gameObject.zone, gameObjects => gameObjects.filter(_ != gameObject))
       .updateZone(destination, gameObjects => newObject +: gameObjects)
