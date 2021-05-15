@@ -31,23 +31,25 @@ class GameStateManager(private var currentGameState: GameState, private var pend
   }
 
   private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent): (GameState, Seq[GameAction]) = {
-    (gameObjectEvent.execute(currentGameState) match {
-      case GameObjectEventResult.UpdatedGameObjectState(newGameObjectState) =>
-        (currentGameState.updateGameObjectState(newGameObjectState), Nil)
-      case GameObjectEventResult.SubEvents(newEvents) =>
-        (currentGameState, newEvents)
-      case GameObjectEventResult.Nothing =>
-        (currentGameState, Nil)
-    }).mapLeft(_.recordEvent(ResolvedEvent(gameObjectEvent)))
+    gameObjectEvent.execute(currentGameState)
+      .updateGameState(gameState)
+      .mapLeft(_.recordEvent(ResolvedEvent(gameObjectEvent)))
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = pendingActions match {
-    case (choice: Choice) +: remainingActions =>
-      if (choice.playerToAct == actingPlayer) {
-        updateState(choice.handleDecision(serializedDecision, currentGameState), remainingActions)
-        executeAutomaticActions()
-      }
+    case (choice: Choice) +: remainingActions if choice.playerToAct == actingPlayer =>
+      updateState(executeChoice(choice, serializedDecision), remainingActions)
+      executeAutomaticActions()
     case _ =>
+  }
+
+  private def executeChoice(choice: Choice, serializedDecision: String): (GameState, Seq[GameAction]) = {
+    choice.handleDecision(serializedDecision, currentGameState) match {
+      case Some((decision, actions)) =>
+        (currentGameState.recordEvent(decision), actions)
+      case None =>
+        (currentGameState, Nil)
+    }
   }
 
   private def updateState(newState: (GameState, Seq[GameAction]), remainingActions: Seq[GameAction]) = {

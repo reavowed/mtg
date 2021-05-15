@@ -9,6 +9,6 @@ case class MoveObjectEvent(gameObject: GameObject, destination: Zone) extends Ga
     val (newObject, intermediateState) = currentGameState.gameObjectState.createNewObjectForZone(gameObject, destination)
     intermediateState
       .updateZone(gameObject.zone, gameObjects => gameObjects.filter(_ != gameObject))
-      .updateZone(destination, gameObjects => newObject +: gameObjects)
+      .updateZone(destination, gameObjects => gameObjects :+ newObject)
   }
 }

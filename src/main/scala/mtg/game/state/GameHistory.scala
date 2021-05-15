@@ -14,7 +14,7 @@ object GameHistory {
 
 sealed trait GameEvent
 object GameEvent {
-  case class Decision[TOption <: Option](chosenOption: TOption, playerIdentifier: PlayerIdentifier) extends GameEvent
+  case class Decision(chosenOption: GameOption, playerIdentifier: PlayerIdentifier) extends GameEvent
   case class ResolvedEvent(event: GameObjectEvent) extends GameEvent
 
   implicit class GameEventSeqOps(seq: Seq[GameEvent]) {
