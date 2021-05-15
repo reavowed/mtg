@@ -100,10 +100,9 @@ class MulliganSpec extends SpecWithGameObjectState {
       val manager = createGameStateManager(gameData, initialGameObjectState, DecideMulligansAction(gameData.playersInTurnOrder, 0))
       manager.handleDecision("K", p1)
       manager.handleDecision("K", p2)
-      val finalGameState = manager.gameState
 
-      finalGameState.gameObjectState mustEqual initialGameObjectState
-      finalGameState.nextAction mustEqual PriorityChoice(p1)
+      manager.gameState.gameObjectState mustEqual initialGameObjectState
+      manager.nextAction mustEqual PriorityChoice(p1)
     }
   }
 }

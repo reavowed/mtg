@@ -10,9 +10,7 @@ object TestApplication {
     val playerOne = PlayerStartingData(PlayerIdentifier("P1"), Seq.fill(60)(Strixhaven.getCard(Plains).get), Nil)
     val playerTwo = PlayerStartingData(PlayerIdentifier("P2"), Seq.fill(60)(Strixhaven.getCard(Forest).get), Nil)
     val gameStartingData = GameStartingData(Seq(playerOne, playerTwo))
-    val initialState = GameState.initial(gameStartingData)
-    val gameStateManager = new GameStateManager(initialState)
-    gameStateManager.initialize()
+    val gameStateManager = GameStateManager.initial(gameStartingData)
     println(gameStateManager.gameState)
   }
 }

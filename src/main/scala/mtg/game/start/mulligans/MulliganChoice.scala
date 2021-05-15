@@ -2,7 +2,7 @@ package mtg.game.start.mulligans
 
 import mtg.game.PlayerIdentifier
 import mtg.game.state.GameEvent.Decision
-import mtg.game.state.{GameState, TypedChoice}
+import mtg.game.state.{GameAction, GameState, TypedChoice}
 
 case class MulliganChoice(playerToAct: PlayerIdentifier, playersWaitingToAct: Seq[PlayerIdentifier], mulliganDecisions: Seq[Decision[MulliganOption]], mulligansSoFar: Int)
   extends TypedChoice[MulliganOption]
@@ -12,7 +12,7 @@ case class MulliganChoice(playerToAct: PlayerIdentifier, playersWaitingToAct: Se
     case "K" => MulliganOption.Keep
   }
 
-  override def handleDecision(chosenOption: MulliganOption, currentGameState: GameState): GameState = {
+  override def handleDecision(chosenOption: MulliganOption, currentGameState: GameState): (GameState, GameAction) = {
     val newMulliganDecisions = mulliganDecisions :+ Decision(chosenOption, playerToAct)
     val nextAction = playersWaitingToAct match {
       case playerToAct +: playersWaitingToAct =>
@@ -20,6 +20,6 @@ case class MulliganChoice(playerToAct: PlayerIdentifier, playersWaitingToAct: Se
       case Nil =>
         ExecuteMulligansAction(newMulliganDecisions, mulligansSoFar)
     }
-    currentGameState.updateAction(nextAction)
+    (currentGameState, nextAction)
   }
 }
