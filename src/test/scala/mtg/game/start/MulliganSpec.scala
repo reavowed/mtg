@@ -3,11 +3,11 @@ package mtg.game.start
 import mtg.SpecWithGameObjectState
 import mtg.data.cards.{Forest, Plains}
 import mtg.data.sets.Strixhaven
-import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState}
-import mtg.game.start.mulligans.DecideMulligansAction
+import mtg.game.objects.{CardObject, GameObject, GameObjectState}
+import mtg.game.start.mulligans.DrawAndMulliganAction
 import mtg.game.turns.PriorityChoice
 import mtg.game.{GameData, PlayerIdentifier}
-import org.specs2.matcher.{ContainWithResultSeq, MatchResult, Matcher}
+import org.specs2.matcher.MatchResult
 
 class MulliganSpec extends SpecWithGameObjectState {
   val p1 = PlayerIdentifier("P1")
@@ -30,7 +30,7 @@ class MulliganSpec extends SpecWithGameObjectState {
       val p2Cards = Strixhaven.cardPrintings.reverse
       val initialGameObjectState = emptyGameObjectState(Seq(p1, p2)).setLibrary(p1, p1Cards).setLibrary(p2, p2Cards)
 
-      val finalGameState = runAction(StartMulliganProcessAction, gameData, initialGameObjectState)
+      val finalGameState = runAction(StartGameAction, gameData, initialGameObjectState)
 
       finalGameState.gameObjectState.hands(p1).map(_.card) must contain(exactly(initialGameObjectState.libraries(p1).take(7).map(_.card): _*))
       finalGameState.gameObjectState.hands(p2).map(_.card) must contain(exactly(initialGameObjectState.libraries(p2).take(7).map(_.card): _*))
@@ -42,7 +42,7 @@ class MulliganSpec extends SpecWithGameObjectState {
       val p2Cards = Strixhaven.cardPrintings.reverse
       val initialGameObjectState = emptyGameObjectState(Seq(p1, p2)).setLibrary(p1, p1Cards).setLibrary(p2, p2Cards)
 
-      val manager = createGameStateManager(gameData, initialGameObjectState, StartMulliganProcessAction)
+      val manager = createGameStateManager(gameData, initialGameObjectState, StartGameAction)
         .updateGameObjectState(s =>
           s.setLibrary(p1, p1Cards.drop(7))
             .setHand(p1, p1Cards.take(7))
@@ -70,7 +70,7 @@ class MulliganSpec extends SpecWithGameObjectState {
       val p2Cards = Strixhaven.cardPrintings.reverse
       val initialGameObjectState = emptyGameObjectState(Seq(p1, p2)).setLibrary(p1, p1Cards).setLibrary(p2, p2Cards)
 
-      val manager = createGameStateManager(gameData, initialGameObjectState, StartMulliganProcessAction)
+      val manager = createGameStateManager(gameData, initialGameObjectState, StartGameAction)
         .updateGameObjectState(s => s.setLibrary(p1, p1Cards.drop(7)).setHand(p1, p1Cards.take(7)).setLibrary(p2, p2Cards.drop(7)).setHand(p2, p2Cards.take(7)))
       val beforeMulliganGameObjectState = manager.gameState.gameObjectState
       manager.handleDecision("K", p1)
@@ -94,14 +94,16 @@ class MulliganSpec extends SpecWithGameObjectState {
       val p1Cards = Strixhaven.cardPrintings
       val p2Cards = Strixhaven.cardPrintings.reverse
       val initialGameObjectState = emptyGameObjectState(Seq(p1, p2))
-        .setLibrary(p1, p1Cards.drop(7)).setHand(p1, p1Cards.take(7))
-        .setLibrary(p2, p2Cards.drop(7)).setHand(p2, p2Cards.take(7))
+        .setLibrary(p1, p1Cards)
+        .setLibrary(p2, p2Cards)
 
-      val manager = createGameStateManager(gameData, initialGameObjectState, DecideMulligansAction(gameData.playersInTurnOrder, 0))
+      val manager = createGameStateManager(gameData, initialGameObjectState, StartGameAction)
+        .updateGameObjectState(s => s.setLibrary(p1, p1Cards.drop(7)).setHand(p1, p1Cards.take(7)).setLibrary(p2, p2Cards.drop(7)).setHand(p2, p2Cards.take(7)))
+      val beforeMulliganGameObjectState = manager.gameState.gameObjectState
       manager.handleDecision("K", p1)
       manager.handleDecision("K", p2)
 
-      manager.gameState.gameObjectState mustEqual initialGameObjectState
+      manager.gameState.gameObjectState mustEqual beforeMulliganGameObjectState
       manager.nextAction mustEqual PriorityChoice(p1)
     }
   }

@@ -1,13 +1,18 @@
 package mtg.game.start.mulligans
 
 import mtg.events.shuffle.ShuffleHandIntoLibrary
-import mtg.game.start.DrawStartingHandsAction
-import mtg.game.state.GameEvent.Decision
-import mtg.game.state.{AutomaticGameAction, GameAction, GameState, HandleEventsAction}
+import mtg.game.state.{AutomaticGameAction, GameAction, GameEvent, GameState}
 
-case class ExecuteMulligansAction(mulliganDecisions: Seq[Decision[MulliganOption]], mulligansSoFar: Int) extends AutomaticGameAction {
-  override def execute(currentGameState: GameState): (GameState, GameAction) = {
-    val playersMulliganing = mulliganDecisions.filter(_.chosenOption == MulliganOption.Mulligan).map(_.playerIdentifier)
-    (currentGameState, HandleEventsAction(playersMulliganing.map(ShuffleHandIntoLibrary), DrawStartingHandsAction(playersMulliganing, mulligansSoFar + 1)))
+case class ExecuteMulligansAction(mulligansSoFar: Int) extends AutomaticGameAction {
+  override def execute(currentGameState: GameState): (GameState, Seq[GameAction]) = {
+    val playersMulliganing = currentGameState.gameHistory.preGameEvents.sinceEvent[DrawStartingHandsEvent].collect {
+      case GameEvent.Decision(MulliganOption.Mulligan, player) => player
+    }
+    val remainingMulliganActions = if (playersMulliganing.nonEmpty) {
+      playersMulliganing.map(ShuffleHandIntoLibrary) :+ DrawAndMulliganAction(playersMulliganing, mulligansSoFar + 1)
+    } else {
+      Nil
+    }
+    (currentGameState, remainingMulliganActions)
   }
 }

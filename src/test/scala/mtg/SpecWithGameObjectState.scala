@@ -35,7 +35,7 @@ abstract class SpecWithGameObjectState extends Specification {
   }
   implicit class GameStateManagerOps(gameStateManager: GameStateManager) {
     def updateGameState(f: GameState => GameState): GameStateManager = {
-      new GameStateManager(f(gameStateManager.gameState), gameStateManager.nextAction)
+      new GameStateManager(f(gameStateManager.gameState), gameStateManager.nextActions)
     }
     def updateGameObjectState(f: GameObjectState => GameObjectState): GameStateManager = {
       updateGameState(_.updateGameObjectState(f(gameStateManager.gameState.gameObjectState)))
@@ -43,16 +43,12 @@ abstract class SpecWithGameObjectState extends Specification {
   }
 
   def createGameStateManager(gameData: GameData, gameObjectState: GameObjectState, action: GameAction): GameStateManager = {
-    val gameStateManager = new GameStateManager(GameState(gameData, gameObjectState, GameHistory.empty), action)
+    val gameStateManager = new GameStateManager(GameState(gameData, gameObjectState, GameHistory.empty), Seq(action))
     gameStateManager.initialize()
     gameStateManager
   }
 
-  def runAction(action: AutomaticGameAction, gameData: GameData, gameObjectState: GameObjectState): GameState = {
+  def runAction(action: GameAction, gameData: GameData, gameObjectState: GameObjectState): GameState = {
     createGameStateManager(gameData, gameObjectState, action).gameState
-  }
-
-  def runEvent(event: Event, gameData: GameData, gameObjectState: GameObjectState): GameState = {
-    runAction(HandleEventsAction(Seq(event), GameResult.Tie), gameData, gameObjectState)
   }
 }

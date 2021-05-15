@@ -25,7 +25,7 @@ class DrawCardEventSpec extends SpecWithGameObjectState {
         Map(p1 -> Nil))
       val event = DrawCardEvent(p1)
 
-      runEvent(event, gameData, initialGameObjectState).gameObjectState shouldEqual GameObjectState(
+      runAction(event, gameData, initialGameObjectState).gameObjectState shouldEqual GameObjectState(
         4,
         Map(p1 -> Seq(
           CardObject(Card(p1, forest), ObjectId(2), Zone.Library(p1)))),
@@ -44,7 +44,7 @@ class DrawCardEventSpec extends SpecWithGameObjectState {
 
       val event = DrawCardEvent(p1)
 
-      runEvent(event, gameData, initialGameObjectState).gameObjectState shouldEqual initialGameObjectState
+      runAction(event, gameData, initialGameObjectState).gameObjectState shouldEqual initialGameObjectState
     }
   }
 }

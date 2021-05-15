@@ -11,7 +11,7 @@ case class GameState(
   gameHistory: GameHistory)
 {
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
-  def recordEvents(events: Seq[GameEvent]): GameState = copy(gameHistory = gameHistory.addEvents(events))
+  def recordEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addEvent(event))
 }
 
 object GameState {
