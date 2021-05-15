@@ -1,8 +1,8 @@
 package mtg.cards
 
 import mtg.abilities.Ability
-import mtg.parts.costs.ManaCost
 import mtg.characteristics.types.{Subtype, Supertype, Type}
+import mtg.parts.costs.ManaCost
 
 class CardDefinition(
   name: String,

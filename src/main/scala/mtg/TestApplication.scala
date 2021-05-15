@@ -2,7 +2,7 @@ package mtg
 
 import mtg.data.cards.{Forest, Plains}
 import mtg.data.sets.Strixhaven
-import mtg.game.state.{GameState, GameStateManager}
+import mtg.game.state.GameStateManager
 import mtg.game.{GameStartingData, PlayerIdentifier, PlayerStartingData}
 
 object TestApplication {

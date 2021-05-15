@@ -2,8 +2,8 @@ package mtg.events.shuffle
 
 import mtg.events.{Event, EventResult}
 import mtg.game.Zone.Library
-import mtg.game.{GameData, PlayerIdentifier}
 import mtg.game.objects.{GameObject, GameObjectState}
+import mtg.game.{GameData, PlayerIdentifier}
 
 import scala.util.Random
 

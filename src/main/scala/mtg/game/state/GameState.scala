@@ -1,7 +1,6 @@
 package mtg.game.state
 
 import mtg.game.objects.GameObjectState
-import mtg.game.start.DrawStartingHandsAction
 import mtg.game.{GameData, GameStartingData}
 
 import scala.util.Random
