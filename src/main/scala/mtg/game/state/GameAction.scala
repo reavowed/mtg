@@ -8,8 +8,8 @@ abstract class GameObjectEvent extends GameAction {
   def execute(currentGameState: GameState): GameObjectEventResult
 }
 
-abstract class AutomaticGameAction extends GameAction {
-  def execute(currentGameState: GameState): (GameState, Seq[GameAction])
+abstract class GameActionManager extends GameAction {
+  def execute(currentGameState: GameState): Seq[GameAction]
 }
 
 abstract class OptionParser[T] {

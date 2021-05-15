@@ -17,13 +17,17 @@ class GameStateManager(private var currentGameState: GameState, private var pend
 
   @tailrec
   private def executeAutomaticActions(): Unit = pendingActions match {
-    case (automaticGameAction: AutomaticGameAction) +: remainingActions =>
-      updateState(automaticGameAction.execute(currentGameState), remainingActions)
+    case (gameActionManager: GameActionManager) +: remainingActions =>
+      updateState(executeGameActionManager(gameActionManager), remainingActions)
       executeAutomaticActions()
     case (gameObjectEvent: GameObjectEvent) +: remainingActions =>
       updateState(executeGameObjectEvent(gameObjectEvent), remainingActions)
       executeAutomaticActions()
     case _ =>
+  }
+
+  private def executeGameActionManager(gameActionManager: GameActionManager): (GameState, Seq[GameAction]) = {
+    (currentGameState, gameActionManager.execute(currentGameState))
   }
 
   private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent): (GameState, Seq[GameAction]) = {
