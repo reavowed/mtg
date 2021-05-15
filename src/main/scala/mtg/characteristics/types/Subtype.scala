@@ -6,12 +6,12 @@ sealed class Subtype
 
 sealed class LandType extends Subtype
 
-sealed class BasicLandType(val color: Color) extends LandType
+sealed class BasicLandType(val name: String, val color: Color) extends LandType
 
 object BasicLandType {
-  val Plains = new BasicLandType(Color.White)
-  val Island = new BasicLandType(Color.Blue)
-  val Swamp = new BasicLandType(Color.Black)
-  val Mountain = new BasicLandType(Color.Red)
-  val Forest = new BasicLandType(Color.Green)
+  val Plains = new BasicLandType("Plains", Color.White)
+  val Island = new BasicLandType("Island", Color.Blue)
+  val Swamp = new BasicLandType("Swamp", Color.Black)
+  val Mountain = new BasicLandType("Mountain", Color.Red)
+  val Forest = new BasicLandType("Forest", Color.Green)
 }

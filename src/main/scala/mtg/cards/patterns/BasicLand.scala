@@ -4,7 +4,7 @@ import mtg.cards.CardDefinition
 import mtg.characteristics.types.{BasicLandType, Supertype, Types}
 
 class BasicLand(val basicLandType: BasicLandType) extends CardDefinition(
-  basicLandType.toString,
+  basicLandType.name,
   None,
   None,
   Seq(Supertype.Basic),

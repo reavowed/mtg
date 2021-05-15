@@ -1,0 +1,25 @@
+{
+  "name": "mtg",
+  "version": "0.1.0",
+  "description": "Free MTG",
+  "scripts": {
+    "build": "concurrently \"npm:build-*\"",
+    "build-js": "parcel build -d src/main/resources/static/js --public-url /js/ \"src/main/js/main.js\"",
+    "build-css": "parcel build -d src/main/resources/static/css --public-url /css/ \"src/main/css/main.scss\"",
+    "dev": "concurrently \"npm:dev-*\"",
+    "dev-js": "parcel watch -d src/main/resources/static/js --public-url /js/ \"src/main/js/main.js\"",
+    "dev-css": "parcel watch -d src/main/resources/static/css --public-url /css/ \"src/main/css/main.scss\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^6.0.2",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.32.13"
+  },
+  "dependencies": {
+    "bootstrap": "^4.5.3",
+    "lodash": "^4.17.21",
+    "preact": "^10.5.7"
+  }
+}

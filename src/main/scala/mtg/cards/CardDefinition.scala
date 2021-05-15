@@ -5,7 +5,7 @@ import mtg.characteristics.types.{Subtype, Supertype, Type}
 import mtg.parts.costs.ManaCost
 
 class CardDefinition(
-  name: String,
+  val name: String,
   manaCost: Option[ManaCost],
   colorIndicator: Option[ColorIndicator],
   superTypes: Seq[Supertype],
