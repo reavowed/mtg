@@ -6,12 +6,12 @@ import mtg.game.objects.GameObjectState
 
 import scala.annotation.tailrec
 
-case class HandleEventsAction(events: Seq[Event], nextTransition: Transition) extends AutomaticGameAction {
+case class HandleEventsAction(events: Seq[Event], nextAction: GameAction) extends AutomaticGameAction {
   def execute(currentGameState: GameState): GameState = {
     val (newGameObjectState, resolvedEvents) = resolveEvents(events, Nil, currentGameState.gameObjectState, currentGameState.gameData)
     currentGameState
       .updateGameObjectState(newGameObjectState)
-      .updateTransition(nextTransition)
+      .updateAction(nextAction)
       .recordEvents(resolvedEvents.map(GameEvent.ResolvedEvent))
   }
 

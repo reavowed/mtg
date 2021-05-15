@@ -14,12 +14,12 @@ case class MulliganChoice(playerToAct: PlayerIdentifier, playersWaitingToAct: Se
 
   override def handleDecision(chosenOption: MulliganOption, currentGameState: GameState): GameState = {
     val newMulliganDecisions = mulliganDecisions :+ Decision(chosenOption, playerToAct)
-    val nextTransition = playersWaitingToAct match {
+    val nextAction = playersWaitingToAct match {
       case playerToAct +: playersWaitingToAct =>
         MulliganChoice(playerToAct, playersWaitingToAct, newMulliganDecisions, mulligansSoFar)
       case Nil =>
         ExecuteMulligansAction(newMulliganDecisions, mulligansSoFar)
     }
-    currentGameState.updateTransition(nextTransition)
+    currentGameState.updateAction(nextAction)
   }
 }

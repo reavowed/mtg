@@ -4,6 +4,6 @@ import mtg.game.state.{AutomaticGameAction, GameState}
 
 object StartMulliganProcessAction extends AutomaticGameAction {
   def execute(currentGameState: GameState): GameState = {
-    currentGameState.updateTransition(DrawStartingHandsAction(currentGameState.gameData.playersInTurnOrder, 0))
+    currentGameState.updateAction(DrawStartingHandsAction(currentGameState.gameData.playersInTurnOrder, 0))
   }
 }

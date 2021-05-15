@@ -11,11 +11,11 @@ case class GameState(
   gameData: GameData,
   gameObjectState: GameObjectState,
   gameHistory: GameHistory,
-  nextTransition: Transition)
+  nextAction: GameAction)
 {
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
-  def updateTransition(newTransition: Transition): GameState = copy(nextTransition = newTransition)
-  def runEvents(events: Seq[Event], nextTransition: Transition): GameState = updateTransition(HandleEventsAction(events, nextTransition))
+  def updateAction(newAction: GameAction): GameState = copy(nextAction = newAction)
+  def runEvents(events: Seq[Event], nextAction: GameAction): GameState = updateAction(HandleEventsAction(events, nextAction))
   def recordEvents(events: Seq[GameEvent]): GameState = copy(gameHistory = gameHistory.addEvents(events))
 }
 

@@ -2,9 +2,9 @@ package mtg.game.state
 
 import mtg.game.PlayerIdentifier
 
-sealed abstract class Transition
+sealed abstract class GameAction
 
-abstract class AutomaticGameAction extends Transition {
+abstract class AutomaticGameAction extends GameAction {
   def execute(currentGameState: GameState): GameState
 }
 
@@ -14,7 +14,7 @@ abstract class OptionParser[T] {
 
 abstract class Option
 
-abstract class Choice extends Transition {
+abstract class Choice extends GameAction {
   def playerToAct: PlayerIdentifier
   def handleDecision(serializedDecision: String, currentGameState: GameState): GameState
 }
@@ -28,7 +28,7 @@ abstract class TypedChoice[TOption <: Option] extends Choice {
   }
 }
 
-sealed abstract class GameResult extends Transition
+sealed abstract class GameResult extends GameAction
 object GameResult {
   object Tie extends GameResult
 }

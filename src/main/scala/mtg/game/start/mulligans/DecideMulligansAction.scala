@@ -6,12 +6,12 @@ import mtg.game.state.{AutomaticGameAction, GameState}
 
 case class DecideMulligansAction(playersToMulligan: Seq[PlayerIdentifier], mulligansSoFar: Int) extends AutomaticGameAction {
   override def execute(currentGameState: GameState): GameState = {
-    val transition = playersToMulligan match {
+    val nextAction = playersToMulligan match {
       case playerToAct +: playersWaitingToAct =>
         MulliganChoice(playerToAct, playersWaitingToAct, Nil, mulligansSoFar)
       case Nil =>
         StartFirstTurnAction
     }
-    currentGameState.updateTransition(transition)
+    currentGameState.updateAction(nextAction)
   }
 }

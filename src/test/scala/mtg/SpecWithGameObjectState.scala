@@ -42,8 +42,8 @@ abstract class SpecWithGameObjectState extends Specification {
     }
   }
 
-  def createGameStateManager(gameData: GameData, gameObjectState: GameObjectState, transition: Transition): GameStateManager = {
-    val gameStateManager = new GameStateManager(GameState(gameData, gameObjectState, GameHistory.empty, transition))
+  def createGameStateManager(gameData: GameData, gameObjectState: GameObjectState, action: GameAction): GameStateManager = {
+    val gameStateManager = new GameStateManager(GameState(gameData, gameObjectState, GameHistory.empty, action))
     gameStateManager.initialize()
     gameStateManager
   }

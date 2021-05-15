@@ -103,7 +103,7 @@ class MulliganSpec extends SpecWithGameObjectState {
       val finalGameState = manager.gameState
 
       finalGameState.gameObjectState mustEqual initialGameObjectState
-      finalGameState.nextTransition mustEqual PriorityChoice(p1)
+      finalGameState.nextAction mustEqual PriorityChoice(p1)
     }
   }
 }
