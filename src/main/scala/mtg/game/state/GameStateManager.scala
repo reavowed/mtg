@@ -8,14 +8,14 @@ class GameStateManager(private var currentGameState: GameState) {
   def gameState: GameState = currentGameState
 
   def initialize(): Unit = {
-    executeWhileAction()
+    executeAutomaticActions()
   }
 
   @tailrec
-  private def executeWhileAction(): Unit = currentGameState.nextTransition match {
-    case action: Action =>
-      currentGameState = action.runAction(currentGameState)
-      executeWhileAction()
+  private def executeAutomaticActions(): Unit = currentGameState.nextTransition match {
+    case automaticGameAction: AutomaticGameAction =>
+      currentGameState = automaticGameAction.execute(currentGameState)
+      executeAutomaticActions()
     case _ =>
   }
 
@@ -23,7 +23,7 @@ class GameStateManager(private var currentGameState: GameState) {
     case choice: Choice =>
       if (choice.playerToAct == actingPlayer) {
         currentGameState = choice.handleDecision(serializedDecision, currentGameState)
-        executeWhileAction()
+        executeAutomaticActions()
       }
     case _ =>
   }

@@ -4,8 +4,8 @@ import mtg.game.PlayerIdentifier
 
 sealed abstract class Transition
 
-abstract class Action extends Transition {
-  def runAction(currentGameState: GameState): GameState
+abstract class AutomaticGameAction extends Transition {
+  def execute(currentGameState: GameState): GameState
 }
 
 abstract class OptionParser[T] {

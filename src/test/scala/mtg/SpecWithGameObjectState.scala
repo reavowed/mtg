@@ -48,7 +48,7 @@ abstract class SpecWithGameObjectState extends Specification {
     gameStateManager
   }
 
-  def runAction(action: Action, gameData: GameData, gameObjectState: GameObjectState): GameState = {
+  def runAction(action: AutomaticGameAction, gameData: GameData, gameObjectState: GameObjectState): GameState = {
     createGameStateManager(gameData, gameObjectState, action).gameState
   }
 
