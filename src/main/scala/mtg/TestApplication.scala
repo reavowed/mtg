@@ -11,6 +11,6 @@ object TestApplication {
     val playerTwo = PlayerStartingData(PlayerIdentifier("P2"), Seq.fill(60)(Strixhaven.getCard(Forest).get), Nil)
     val gameStartingData = GameStartingData(Seq(playerOne, playerTwo))
     val gameStateManager = GameStateManager.initial(gameStartingData)
-    println(gameStateManager.gameState)
+    println(gameStateManager.currentGameState)
   }
 }

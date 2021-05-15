@@ -33,6 +33,6 @@ class GameController @Autowired() (gameService: GameService) {
   @GetMapping(Array("/{playerIdentifier}/state"))
   @ResponseBody
   def getState(@PathVariable("playerIdentifier") playerIdentifier: String) = {
-    VisibleState.forPlayer(PlayerIdentifier(playerIdentifier), gameService.gameStateManager)
+    VisibleState.forPlayer(PlayerIdentifier(playerIdentifier), gameService.gameStateManager.currentGameState)
   }
 }

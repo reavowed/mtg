@@ -20,6 +20,7 @@ package object mtg {
   }
   implicit class TupleExtensionMethods[A, B](tuple: (A, B)) {
     def mapLeft[C](f: A => C): (C, B) = (f(tuple._1), tuple._2)
+    def mapRight[C](f: B => C): (A, C) = (tuple._1, f(tuple._2))
   }
 
   implicit object optionMonad extends Monad[Option] {

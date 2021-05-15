@@ -3,17 +3,17 @@ package mtg.game.state
 import mtg.game.objects.GameObjectState
 
 sealed abstract class GameObjectEventResult {
-  def updateGameState(gameState: GameState): (GameState, Seq[GameAction])
+  def updateGameState(gameState: GameState): GameState
 }
 object GameObjectEventResult {
   case class UpdatedGameObjectState(gameObjectState: GameObjectState) extends GameObjectEventResult {
-    override def updateGameState(gameState: GameState): (GameState, Seq[GameAction]) = (gameState.updateGameObjectState(gameObjectState), Nil)
+    override def updateGameState(gameState: GameState): GameState = gameState.updateGameObjectState(gameObjectState)
   }
   case class SubEvents(events: Seq[GameObjectEvent]) extends GameObjectEventResult {
-    override def updateGameState(gameState: GameState): (GameState, Seq[GameAction]) = (gameState, events)
+    override def updateGameState(gameState: GameState): GameState = gameState.addActions(events)
   }
   case object Nothing extends GameObjectEventResult {
-    override def updateGameState(gameState: GameState): (GameState, Seq[GameAction]) = (gameState, Nil)
+    override def updateGameState(gameState: GameState): GameState = gameState
   }
 
   implicit def updatedGameObjectState(gameObjectState: GameObjectState): GameObjectEventResult = UpdatedGameObjectState(gameObjectState)

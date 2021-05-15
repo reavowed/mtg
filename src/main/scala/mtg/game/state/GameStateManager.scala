@@ -6,63 +6,52 @@ import mtg.game.{GameStartingData, PlayerIdentifier}
 
 import scala.annotation.tailrec
 
-class GameStateManager(private var currentGameState: GameState, private var pendingActions: Seq[GameAction]) {
-  def gameState: GameState = currentGameState
-  def nextActions: Seq[GameAction] = pendingActions
-  def nextAction: GameAction = pendingActions.head
+class GameStateManager(private var _currentGameState: GameState) {
+  def currentGameState: GameState = this.synchronized { _currentGameState }
 
-  def initialize(): Unit = {
-    executeAutomaticActions()
+  executeAutomaticActions()
+
+  private def executeAutomaticActions(): Unit = {
+    executeAutomaticActions(currentGameState)
   }
 
   @tailrec
-  private def executeAutomaticActions(): Unit = pendingActions match {
-    case (gameActionManager: GameActionManager) +: remainingActions =>
-      updateState(executeGameActionManager(gameActionManager), remainingActions)
-      executeAutomaticActions()
-    case (gameObjectEvent: GameObjectEvent) +: remainingActions =>
-      updateState(executeGameObjectEvent(gameObjectEvent), remainingActions)
-      executeAutomaticActions()
-    case _ =>
-  }
-
-  private def executeGameActionManager(gameActionManager: GameActionManager): (GameState, Seq[GameAction]) = {
-    (currentGameState, gameActionManager.execute(currentGameState))
-  }
-
-  private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent): (GameState, Seq[GameAction]) = {
-    gameObjectEvent.execute(currentGameState)
-      .updateGameState(gameState)
-      .mapLeft(_.recordEvent(ResolvedEvent(gameObjectEvent)))
-  }
-
-  def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = pendingActions match {
-    case (choice: Choice) +: remainingActions if choice.playerToAct == actingPlayer =>
-      updateState(executeChoice(choice, serializedDecision), remainingActions)
-      executeAutomaticActions()
-    case _ =>
-  }
-
-  private def executeChoice(choice: Choice, serializedDecision: String): (GameState, Seq[GameAction]) = {
-    choice.handleDecision(serializedDecision, currentGameState) match {
-      case Some((decision, actions)) =>
-        (currentGameState.recordEvent(decision), actions)
-      case None =>
-        (currentGameState, Nil)
+  private def executeAutomaticActions(gameState: GameState): Unit = {
+    gameState.popAction() match {
+      case (gameActionManager: GameActionManager, gameState) =>
+        executeAutomaticActions(executeGameActionManager(gameActionManager, gameState))
+      case (gameObjectEvent: GameObjectEvent, gameState) =>
+        executeAutomaticActions(executeGameObjectEvent(gameObjectEvent, gameState))
+      case _ =>
+        _currentGameState = gameState
     }
   }
 
-  private def updateState(newState: (GameState, Seq[GameAction]), remainingActions: Seq[GameAction]) = {
-      val (newGameState, newActions) = newState
-      currentGameState = newGameState
-      pendingActions = newActions ++ remainingActions
+  private def executeGameActionManager(gameActionManager: GameActionManager, gameState: GameState): GameState = {
+    gameState.addActions(gameActionManager.execute(gameState))
+  }
+
+  private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {
+    gameObjectEvent.execute(gameState)
+      .updateGameState(gameState)
+      .recordEvent(ResolvedEvent(gameObjectEvent))
+  }
+
+  def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = this.synchronized {
+    currentGameState.popAction() match {
+      case (choice: Choice, gameState) if choice.playerToAct == actingPlayer =>
+        choice.handleDecision(serializedDecision, gameState) match {
+          case Some((decision, actions)) =>
+            executeAutomaticActions(gameState.recordEvent(decision).addActions(actions))
+          case None =>
+        }
+      case _ =>
+    }
   }
 }
 
 object GameStateManager {
   def initial(gameStartingData: GameStartingData): GameStateManager = {
-    val gameStateManager = new GameStateManager(GameState.initial(gameStartingData), Seq(StartGameAction))
-    gameStateManager.initialize()
-    gameStateManager
+    new GameStateManager(GameState.initial(gameStartingData))
   }
 }

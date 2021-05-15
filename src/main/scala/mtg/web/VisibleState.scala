@@ -10,8 +10,8 @@ sealed trait VisibleGameObject
 case class VisibleCard(name: String, set: String, collectorNumber: Int, objectId: Int) extends VisibleGameObject
 
 object VisibleState {
-  def forPlayer(playerIdentifier: PlayerIdentifier, gameStateManager: GameStateManager): VisibleState = {
-    VisibleState(gameStateManager.gameState.gameObjectState.hands(playerIdentifier).map(convertGameObject))
+  def forPlayer(playerIdentifier: PlayerIdentifier, gameState: GameState): VisibleState = {
+    VisibleState(gameState.gameObjectState.hands(playerIdentifier).map(convertGameObject))
   }
 
   def convertGameObject(gameObject: GameObject) = {

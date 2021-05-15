@@ -13,7 +13,7 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
 
       val manager = createGameStateManager(gameData, beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
-      val afterState = manager.gameState.gameObjectState
+      val afterState = manager.currentGameState.gameObjectState
 
       val expectedHand = playerOne.hand(beforeState).filter(o => o != cardToPutBack)
       val expectedLibraryMatchers = playerOne.library(beforeState).map(typedEqualTo(_)) :+ matchCardObject(cardToPutBack.card)
@@ -29,7 +29,7 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
 
       val manager = createGameStateManager(gameData, beforeState, choice)
       manager.handleDecision(Seq(firstCardToPutBack, secondCardToPutBack).map(_.objectId.sequentialId.toString).mkString(" "), playerOne)
-      val afterState = manager.gameState.gameObjectState
+      val afterState = manager.currentGameState.gameObjectState
 
       val expectedHand = playerOne.hand(beforeState).filter(o => o != firstCardToPutBack && o != secondCardToPutBack)
       val expectedLibraryMatchers = playerOne.library(beforeState).map(typedEqualTo(_)) :+ matchCardObject(firstCardToPutBack.card) :+ matchCardObject(secondCardToPutBack.card)

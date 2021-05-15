@@ -37,10 +37,6 @@ trait SpecWithGameObjectState extends SpecificationLike {
   val gameObjectStateWithInitialLibrariesOnly = emptyGameObjectState.setLibrary(playerOne, playerOneAllCards).setLibrary(playerTwo, playerTwoAllCards)
   val gameObjectStateWithInitialLibrariesAndHands = setInitialHandAndLibrary(emptyGameObjectState)
 
-  implicit def gameObjectStateToGameState(gameObjectState: GameObjectState): GameState = {
-    GameState(gameData, gameObjectState, GameHistory.empty)
-  }
-
   implicit class PlayerOps(playerIdentifier: PlayerIdentifier) {
     def library = Zone.Library(playerIdentifier)
     def hand = Zone.Hand(playerIdentifier)

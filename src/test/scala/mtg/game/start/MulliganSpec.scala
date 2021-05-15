@@ -29,8 +29,8 @@ class MulliganSpec extends SpecWithGameStateManager {
     afterState.hands(player).size mustEqual 7
   }
 
-  def checkGameStarted(gameStateManager: GameStateManager) = {
-      gameStateManager.nextAction mustEqual PriorityChoice(playerOne)
+  def checkGameStarted(gameState: GameState) = {
+      gameState.pendingActions.head mustEqual PriorityChoice(playerOne)
   }
 
   "mulligan action" should {
@@ -44,38 +44,37 @@ class MulliganSpec extends SpecWithGameStateManager {
 
     "begin the game if both players keep" in {
       val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
-      val beforeMulliganGameObjectState = manager.gameState.gameObjectState
+      val beforeMulliganGameObjectState = manager.currentGameState.gameObjectState
       manager.handleDecision("K", playerOne)
       manager.handleDecision("K", playerTwo)
 
-      manager.gameState.gameObjectState mustEqual beforeMulliganGameObjectState
-      checkGameStarted(manager)
+      val finalGameState = manager.currentGameState
+      finalGameState.gameObjectState mustEqual beforeMulliganGameObjectState
+      checkGameStarted(finalGameState)
     }
 
     "draw both players new cards if both players have mulliganed" in {
       val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
-      val beforeMulliganGameObjectState = manager.gameState.gameObjectState
+      val beforeMulliganGameObjectState = manager.currentGameState.gameObjectState
       manager.handleDecision("M", playerOne)
       manager.handleDecision("M", playerTwo)
-      val finalGameState = manager.gameState
 
+      val finalGameState = manager.currentGameState
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerOne)
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerTwo)
-
-      manager.nextAction mustEqual MulliganChoice(playerOne, 1)
+      finalGameState.pendingActions.head mustEqual MulliganChoice(playerOne, 1)
     }
 
     "only draw one player new cards if other player has kept" in {
       val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
-      val beforeMulliganGameObjectState = manager.gameState.gameObjectState
+      val beforeMulliganGameObjectState = manager.currentGameState.gameObjectState
       manager.handleDecision("K", playerOne)
       manager.handleDecision("M", playerTwo)
-      val finalGameState = manager.gameState
 
+      val finalGameState = manager.currentGameState
       checkLibraryAndHandAreTheSame(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerOne)
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerTwo)
-
-      manager.nextAction mustEqual MulliganChoice(playerTwo, 1)
+      finalGameState.pendingActions.head mustEqual MulliganChoice(playerTwo, 1)
     }
 
     "require a card to be put back after mulliganing once" in {
@@ -84,7 +83,8 @@ class MulliganSpec extends SpecWithGameStateManager {
       manager.handleDecision("M", playerTwo)
       manager.handleDecision("K", playerTwo)
 
-      manager.nextAction mustEqual ReturnCardsToLibraryChoice(playerTwo, 1)
+      val finalGameState = manager.currentGameState
+      finalGameState.pendingActions.head mustEqual ReturnCardsToLibraryChoice(playerTwo, 1)
     }
   }
 }
