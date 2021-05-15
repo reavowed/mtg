@@ -12,6 +12,7 @@ object TestApplication {
     val gameStartingData = GameStartingData(Seq(playerOne, playerTwo))
     val initialState = GameState.initial(gameStartingData)
     val gameStateManager = new GameStateManager(initialState)
+    gameStateManager.initialize()
     println(gameStateManager.gameState)
   }
 }

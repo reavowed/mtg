@@ -1,7 +1,6 @@
 package mtg.game.objects
 
-import mtg.game.PlayerIdentifier
-import mtg.game.zone.Zone
+import mtg.game.{PlayerIdentifier, Zone}
 
 abstract class GameObject {
   def objectId: ObjectId

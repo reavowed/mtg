@@ -1,19 +1,18 @@
 package mtg.game.objects
 
 import mtg.cards.CardPrinting
-import mtg.game.{GameStartingData, PlayerIdentifier}
-import mtg.game.zone.{Zone, ZoneState}
+import mtg.game.{GameStartingData, PlayerIdentifier, Zone}
 
 import scala.util.Random
 
 case class GameObjectState(
     nextObjectId: Int,
-    libraries: Map[PlayerIdentifier, ZoneState],
-    hands: Map[PlayerIdentifier, ZoneState],
-    sideboards: Map[PlayerIdentifier, ZoneState])
+    libraries: Map[PlayerIdentifier, Seq[GameObject]],
+    hands: Map[PlayerIdentifier, Seq[GameObject]],
+    sideboards: Map[PlayerIdentifier, Seq[GameObject]])
 {
-  def updateZone(zone: Zone, zoneStateUpdater: ZoneState => ZoneState): GameObjectState = {
-    zone.stateLens.modify(zoneStateUpdater)(this)
+  def updateZone(zone: Zone, objectsUpdater: Seq[GameObject] => Seq[GameObject]): GameObjectState = {
+    zone.stateLens.modify(objectsUpdater)(this)
   }
   def createNewObjectForZone(oldObject: GameObject, newZone: Zone): (GameObject, GameObjectState) = {
     (oldObject.forNewZone(ObjectId(nextObjectId), newZone), copy(nextObjectId = nextObjectId + 1))
@@ -33,15 +32,15 @@ object GameObjectState {
     }
     val libraries = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
-      playerIdentifier -> ZoneState(Random.shuffle(deck).map(createCardObject(_, playerIdentifier, Zone.Library(playerIdentifier))))
+      playerIdentifier -> Random.shuffle(deck).map(createCardObject(_, playerIdentifier, Zone.Library(playerIdentifier)))
     }).toMap
     val hands = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
-      playerIdentifier -> ZoneState(Nil)
+      playerIdentifier -> Nil
     }).toMap
     val sideboards = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
-      playerIdentifier -> ZoneState(sideboard.map(createCardObject(_, playerIdentifier, Zone.Sideboard(playerIdentifier))))
+      playerIdentifier -> sideboard.map(createCardObject(_, playerIdentifier, Zone.Sideboard(playerIdentifier)))
     }).toMap
 
     GameObjectState(
