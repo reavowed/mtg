@@ -24,7 +24,7 @@ object GameState {
     val startingPlayer = Random.shuffle(gameStartingData.players).head
     val playersInTurnOrder = GameData.getPlayersInApNapOrder(startingPlayer, gameStartingData.players)
     GameState(
-      GameData(playersInTurnOrder),
+      GameData.initial(playersInTurnOrder),
       GameObjectState.initial(gameStartingData),
       GameHistory.empty,
       Seq(StartGameAction))

@@ -11,12 +11,12 @@ object MulliganState {
     val decisions = gameState.gameHistory.preGameEvents.ofType[Decision]
       .filter(_.playerIdentifier == playerIdentifier)
       .map(_.chosenOption)
-      .ofType[MulliganOption];
-    MulliganState(
-      decisions.contains(MulliganOption.Keep),
-      decisions.count(_ == MulliganOption.Mulligan))
+      .ofType[MulliganOption]
+    val mulligansTaken = decisions.count(_ == MulliganOption.Mulligan)
+    val hasKept = decisions.contains(MulliganOption.Keep) || mulligansTaken == gameState.gameData.startingHandSize;
+    MulliganState(hasKept, mulligansTaken)
   }
-  def forAllPlayers(gameState: GameState): Map[String, MulliganState] = {
-    gameState.gameData.playersInTurnOrder.map(p => p.id -> forPlayer(p, gameState)).toMap
+  def forAllPlayers(gameState: GameState): Map[PlayerIdentifier, MulliganState] = {
+    gameState.gameData.playersInTurnOrder.map(p => p -> forPlayer(p, gameState)).toMap
   }
 }

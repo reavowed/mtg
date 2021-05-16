@@ -3,7 +3,6 @@ package mtg
 import mtg.cards.CardPrinting
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
-import mtg.game.state._
 import mtg.game.{GameData, PlayerIdentifier, Zone}
 import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
@@ -12,7 +11,7 @@ trait SpecWithGameObjectState extends SpecificationLike {
   val playerOne = PlayerIdentifier("P1")
   val playerTwo = PlayerIdentifier("P2")
   val players = Seq(playerOne, playerTwo)
-  val gameData = GameData(players)
+  val gameData = GameData.initial(players)
 
   val playerOneAllCards = Strixhaven.cardPrintings
   val playerTwoAllCards = Strixhaven.cardPrintings.reverse

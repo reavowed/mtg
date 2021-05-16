@@ -1,20 +1,20 @@
 package mtg.web.visibleState
 
-import mtg.game.PlayerIdentifier
+import mtg.game.{GameData, PlayerIdentifier}
 import mtg.game.state.{Choice, GameState}
 
 case class VisibleState(
-  player: String,
-  playersInTurnOrder: Seq[String],
+  player: PlayerIdentifier,
+  gameData: GameData,
   hand: Seq[VisibleGameObject],
-  mulliganState: Map[String, MulliganState],
+  mulliganState: Map[PlayerIdentifier, MulliganState],
   currentChoice: Option[CurrentChoice])
 
 object VisibleState {
   def forPlayer(playerIdentifier: PlayerIdentifier, gameState: GameState): VisibleState = {
     VisibleState(
-      playerIdentifier.id,
-      gameState.gameData.playersInTurnOrder.map(_.id),
+      playerIdentifier,
+      gameState.gameData,
       gameState.gameObjectState.hands(playerIdentifier).map(VisibleGameObject.apply),
       MulliganState.forAllPlayers(gameState),
       gameState.pendingActions.head.asOptionalInstanceOf[Choice].map(CurrentChoice(_)))

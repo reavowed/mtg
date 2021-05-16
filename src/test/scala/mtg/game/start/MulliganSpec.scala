@@ -86,5 +86,20 @@ class MulliganSpec extends SpecWithGameStateManager {
       val finalGameState = manager.currentGameState
       finalGameState.pendingActions.head mustEqual ReturnCardsToLibraryChoice(playerTwo, 1)
     }
+
+    "only allow seven mulligans" in {
+      val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
+      manager.handleDecision("K", playerOne)
+      manager.handleDecision("M", playerTwo)
+      manager.handleDecision("M", playerTwo)
+      manager.handleDecision("M", playerTwo)
+      manager.handleDecision("M", playerTwo)
+      manager.handleDecision("M", playerTwo)
+      manager.handleDecision("M", playerTwo)
+      manager.handleDecision("M", playerTwo)
+
+      val finalGameState = manager.currentGameState
+      finalGameState.pendingActions.head mustEqual ReturnCardsToLibraryChoice(playerTwo, 7)
+    }
   }
 }

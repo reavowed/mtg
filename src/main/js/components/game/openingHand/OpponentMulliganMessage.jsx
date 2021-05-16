@@ -8,7 +8,7 @@ function testCurrentChoice(gameState, type, playerId) {
 }
 
 function getOpponentMulliganMessage(gameState) {
-    const opponentId = _.filter(gameState.playersInTurnOrder, p => p !== gameState.player)[0];
+    const opponentId = _.filter(gameState.gameData.playersInTurnOrder, p => p !== gameState.player)[0];
     const opponentMulliganState = gameState.mulliganState[opponentId];
     if (opponentMulliganState.hasKept) {
         const keepMessage = "Your opponent has kept a " + (7 - opponentMulliganState.mulligansTaken) + " card hand";
