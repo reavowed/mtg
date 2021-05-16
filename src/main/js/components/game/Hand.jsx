@@ -4,9 +4,9 @@ import GameState from "../../GameState";
 import HorizontalCenter from "../layout/HorizontalCenter";
 import Card from "./Card";
 
-export default function Hand() {
-    const gameState = useContext(GameState);
+export default function Hand({cards}) {
+    cards = cards || useContext(GameState).hand;
     return <HorizontalCenter>
-        {_.map(gameState.hand, object => <Card card={object}/>)}
+        {_.map(cards, card => <Card key={card.objectId} card={card} className="mx-1" />)}
     </HorizontalCenter>;
 }

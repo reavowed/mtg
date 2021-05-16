@@ -3,19 +3,20 @@ import GameState from "../../../GameState";
 import ScreenCenter from "../../layout/ScreenCenter";
 import Hand from "../Hand";
 import FirstPlayerMessage from "./FirstPlayerMessage";
-import MulliganDecision from "./MulliganDecision";
+import MulliganChoice from "./MulliganChoice";
 import OpponentMulliganMessage from "./OpponentMulliganMessage";
+import ReturnCardsToLibraryChoice from "./ReturnCardsToLibraryChoice";
 
 
 export default function OpeningHand() {
     const gameState = useContext(GameState);
-    const decision = gameState.currentChoice.playerToAct !== gameState.player ? null :
-        gameState.currentChoice.type === "MulliganChoice" ? <MulliganDecision /> :
-        null;
+    const decision = gameState.currentChoice.playerToAct !== gameState.player ? <Hand /> :
+        gameState.currentChoice.type === "MulliganChoice" ? <MulliganChoice /> :
+        gameState.currentChoice.type === "ReturnCardsToLibraryChoice" ? <ReturnCardsToLibraryChoice /> :
+        <Hand />;
     return <ScreenCenter>
         <div>
             <FirstPlayerMessage />
-            <Hand />
             <OpponentMulliganMessage />
             {decision}
         </div>
