@@ -4,6 +4,9 @@ case class GameData(playersInTurnOrder: Seq[PlayerIdentifier], startingHandSize:
   def getPlayersInApNapOrder(activePlayer: PlayerIdentifier): Seq[PlayerIdentifier] = {
     GameData.getPlayersInApNapOrder(activePlayer, playersInTurnOrder)
   }
+  def getNextPlayerInTurnOrder(currentPlayer: PlayerIdentifier): PlayerIdentifier = {
+    (playersInTurnOrder :+ playersInTurnOrder.head).dropWhile(_ != currentPlayer).tail.head
+  }
 }
 
 object GameData {

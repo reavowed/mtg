@@ -8,5 +8,4 @@ abstract class ChoiceSpec extends SpecWithGameObjectState {
     choiceResult must beSome
     choiceResult.get._2
   }
-
 }
