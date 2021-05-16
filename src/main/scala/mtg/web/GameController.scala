@@ -1,6 +1,7 @@
 package mtg.web
 
 import mtg.game.PlayerIdentifier
+import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.{HttpStatus, ResponseEntity}
 import org.springframework.stereotype.Controller
@@ -21,9 +22,6 @@ class GameController @Autowired() (gameService: GameService) {
         </head>
         <body>
           <div id="container"/>
-          <script>
-            {Unparsed("const playerIdentifier = \"" + playerIdentifier + "\";")}
-          </script>
           <script crossorigin="" src="/js/main.js"></script>
         </body>
       </html>.toString
