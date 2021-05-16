@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {useContext, useState} from "preact/hooks";
+import {useCallback, useContext, useState} from "preact/hooks";
 import GameState from "../../../GameState";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import Card from "../Card";
@@ -14,20 +14,19 @@ export default function ReturnCardsToLibraryChoice() {
     const gameState = useContext(GameState);
     const [cardsPutBack, setCardsPutBack] = useState([]);
     const cardsNotPutBack = _.filter(gameState.hand, card => !_.some(cardsPutBack, cardPutBack => areCardsEqual(card, cardPutBack)));
-
     const enoughCardsPutBack = (cardsPutBack.length === gameState.currentChoice.details.numberOfCardsToReturn);
 
-    function putCardBack(card) {
-        setCardsPutBack([...cardsPutBack, card]);
-    }
-    function undoPutBack(card) {
-        setCardsPutBack(_.filter(cardsPutBack, cardPutBack => !areCardsEqual(card, cardPutBack)));
-    }
+    const putCardBack = useCallback(
+        (card) => setCardsPutBack([...cardsPutBack, card]),
+        [cardsPutBack]);
+    const undoPutBack = useCallback(
+        (card) => setCardsPutBack(_.filter(cardsPutBack, cardPutBack => !areCardsEqual(card, cardPutBack))),
+        [cardsPutBack]);
 
     return <div>
         <div className="mb-3">
             <HorizontalCenter>
-                {_.map(_.reverse(cardsPutBack), card => <Card key={card.objectId} card={card} onClick={() => undoPutBack(card)} className="cardOverlap" />)}
+                {_.map(_.reverse([...cardsPutBack]), card => <Card key={card.objectId} card={card} onClick={() => undoPutBack(card)} className="cardOverlap" />)}
                 {_.fill(Array(5), <CardBack className="cardOverlap"/>)}
             </HorizontalCenter>
         </div>
