@@ -1,4 +1,4 @@
-function getCurrentPath() {
+export function getCurrentPath() {
     let path = window.location.pathname;
     return path.endsWith('/') ? path : path + '/';
 }

@@ -25,6 +25,8 @@
   "dependencies": {
     "bootstrap": "^4.5.3",
     "lodash": "^4.17.21",
-    "preact": "^10.5.7"
+    "preact": "^10.5.7",
+    "sockjs-client": "^1.5.1",
+    "stompjs": "^2.3.3"
   }
 }

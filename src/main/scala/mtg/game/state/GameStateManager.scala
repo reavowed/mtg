@@ -1,12 +1,11 @@
 package mtg.game.state
 
-import mtg.game.start.StartGameAction
 import mtg.game.state.GameEvent.ResolvedEvent
 import mtg.game.{GameStartingData, PlayerIdentifier}
 
 import scala.annotation.tailrec
 
-class GameStateManager(private var _currentGameState: GameState) {
+class GameStateManager(private var _currentGameState: GameState, val onStateUpdate: GameState => Unit) {
   def currentGameState: GameState = this.synchronized { _currentGameState }
 
   executeAutomaticActions()
@@ -24,6 +23,7 @@ class GameStateManager(private var _currentGameState: GameState) {
         executeAutomaticActions(executeGameObjectEvent(gameObjectEvent, gameState))
       case _ =>
         _currentGameState = gameState
+        onStateUpdate(_currentGameState)
     }
   }
 
@@ -51,7 +51,7 @@ class GameStateManager(private var _currentGameState: GameState) {
 }
 
 object GameStateManager {
-  def initial(gameStartingData: GameStartingData): GameStateManager = {
-    new GameStateManager(GameState.initial(gameStartingData))
+  def initial(gameStartingData: GameStartingData, onStateUpdate: GameState => Unit): GameStateManager = {
+    new GameStateManager(GameState.initial(gameStartingData), onStateUpdate)
   }
 }
