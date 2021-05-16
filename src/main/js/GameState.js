@@ -8,6 +8,11 @@ import 'net';
 
 const GameState = createContext(null);
 const InternalProvider = GameState.Provider;
+
+function Spinner() {
+    return <ScreenCenter><div className="spinner-border"/></ScreenCenter>;
+}
+
 GameState.Provider = function({children}) {
     const [state, setState] = useState(null);
     useEffect(() => {
@@ -21,7 +26,7 @@ GameState.Provider = function({children}) {
             });
         });
     }, []);
-    return <InternalProvider value={state}>{state ? children : <ScreenCenter><div className="spinner-border"/></ScreenCenter> }</InternalProvider>;
+    return <InternalProvider value={state}>{state ? children : <Spinner/>}</InternalProvider>;
 }
 
 export default GameState;

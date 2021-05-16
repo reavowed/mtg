@@ -1,6 +1,7 @@
 import _ from "lodash";
 import {useContext} from "preact/hooks";
 import GameState from "../../../GameState";
+import {getPlural} from "../../../utils/word-helpers";
 
 function testCurrentChoice(gameState, type, playerId) {
     return gameState.currentChoice.type === type && gameState.currentChoice.playerToAct === playerId;
