@@ -4,6 +4,6 @@ import mtg.game.state.GameOption
 
 sealed trait MulliganOption extends GameOption
 object MulliganOption {
-  object Mulligan extends MulliganOption
-  object Keep extends MulliganOption
+  case object Mulligan extends MulliganOption
+  case object Keep extends MulliganOption
 }

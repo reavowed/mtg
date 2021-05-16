@@ -5,7 +5,7 @@ import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.{HttpStatus, ResponseEntity}
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.{GetMapping, PathVariable, ResponseBody}
+import org.springframework.web.bind.annotation.{GetMapping, PathVariable, PostMapping, RequestBody, ResponseBody}
 
 import scala.xml.Unparsed
 
@@ -32,5 +32,11 @@ class GameController @Autowired() (gameService: GameService) {
   @ResponseBody
   def getState(@PathVariable("playerIdentifier") playerIdentifier: String) = {
     VisibleState.forPlayer(PlayerIdentifier(playerIdentifier), gameService.gameStateManager.currentGameState)
+  }
+
+  @PostMapping(Array("/{playerIdentifier}/decision"))
+  @ResponseBody
+  def makeDecision(@PathVariable("playerIdentifier") playerIdentifier: String, @RequestBody decision: String) = {
+    gameService.gameStateManager.handleDecision(decision, PlayerIdentifier(playerIdentifier))
   }
 }

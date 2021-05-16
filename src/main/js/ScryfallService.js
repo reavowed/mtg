@@ -1,7 +1,8 @@
 import _ from "lodash";
+import {createContext} from "preact";
 import {postJsonAndParseResponse} from "./utils/fetch-helpers";
 
-export default class ScryfallService {
+class ScryfallService {
     knownCards = {};
     requests = [];
     timeoutId = 0;
@@ -61,5 +62,6 @@ export default class ScryfallService {
         this.knownCards[card.set.toUpperCase()] ||= {};
         this.knownCards[card.set.toUpperCase()][card.collector_number] = card;
     }
-
 }
+
+export default createContext(new ScryfallService());
