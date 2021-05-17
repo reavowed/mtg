@@ -1,7 +1,8 @@
 package mtg
 
 import mtg.game.objects.GameObjectState
-import mtg.game.state.{GameAction, GameHistory, GameResult, GameState, GameStateManager}
+import mtg.game.state.history.GameHistory
+import mtg.game.state.{GameAction, GameResult, GameState, GameStateManager}
 
 abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
 

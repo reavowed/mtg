@@ -2,7 +2,9 @@ package mtg.game.state
 
 import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
-import mtg.game.{GameData, GameStartingData}
+import mtg.game.state.history._
+import mtg.game.turns.{Turn, TurnPhase, TurnStep}
+import mtg.game.{GameData, GameStartingData, PlayerIdentifier}
 
 import scala.util.Random
 
@@ -12,7 +14,17 @@ case class GameState(
   gameHistory: GameHistory,
   pendingActions: Seq[GameAction])
 {
+  def activePlayer: PlayerIdentifier = gameHistory.turns.last.turn.activePlayer
+  def playersInApnapOrder: Seq[PlayerIdentifier] = gameData.getPlayersInApNapOrder(activePlayer)
+
   def currentTurnNumber: Int = gameHistory.turns.length
+  private def currentTurnHistory: Option[TurnHistory] = gameHistory.turns.lastOption
+  def currentTurn: Option[Turn] = currentTurnHistory.map(_.turn)
+  private def currentPhaseHistory: Option[PhaseHistory] = currentTurnHistory.flatMap(_.phases.lastOption)
+  def currentPhase: Option[TurnPhase] = currentPhaseHistory.map(_.phase)
+  private def currentStepHistory: Option[StepHistory] = currentPhaseHistory.flatMap(_.asOptionalInstanceOf[PhaseHistoryWithSteps]).flatMap(_.steps.lastOption)
+  def currentStep: Option[TurnStep] = currentStepHistory.map(_.step)
+
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))

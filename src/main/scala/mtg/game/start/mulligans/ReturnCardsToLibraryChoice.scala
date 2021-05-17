@@ -2,9 +2,10 @@ package mtg.game.start.mulligans
 
 import mtg._
 import mtg.events.MoveObjectEvent
-import mtg.game.{PlayerIdentifier, Zone}
 import mtg.game.objects.CardObject
-import mtg.game.state.{GameAction, ChoiceOption, GameState, LogEvent, TypedChoice}
+import mtg.game.state.history.LogEvent
+import mtg.game.state.{ChoiceOption, GameAction, GameState, TypedChoice}
+import mtg.game.{PlayerIdentifier, Zone}
 
 case class ReturnCardsToLibraryOption(cardsToReturn: Seq[CardObject]) extends ChoiceOption
 

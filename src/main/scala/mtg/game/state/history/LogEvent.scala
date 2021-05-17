@@ -1,4 +1,4 @@
-package mtg.game.state
+package mtg.game.state.history
 
 import mtg.game.PlayerIdentifier
 

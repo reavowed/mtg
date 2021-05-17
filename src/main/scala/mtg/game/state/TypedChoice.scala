@@ -1,6 +1,7 @@
 package mtg.game.state
 
-import mtg.game.state.GameEvent.Decision
+import mtg.game.state.history.GameEvent.Decision
+import mtg.game.state.history.{GameEvent, LogEvent}
 
 abstract class ChoiceOption
 

@@ -3,7 +3,7 @@ package mtg.game.start
 import mtg.SpecWithGameStateManager
 import mtg.game.objects.CardObject
 import mtg.game.start.mulligans.ReturnCardsToLibraryChoice
-import mtg.game.state.LogEvent
+import mtg.game.state.history.LogEvent
 
 class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
   "returning cards to library" should {
@@ -46,7 +46,7 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
 
-      manager.currentGameState.gameHistory.allLogEvents.map(_.logEvent) mustEqual Seq(LogEvent.ReturnCardsToLibrary(playerOne, 1))
+      manager.currentGameState.gameHistory.logEvents.map(_.logEvent) mustEqual Seq(LogEvent.ReturnCardsToLibrary(playerOne, 1))
     }
   }
 

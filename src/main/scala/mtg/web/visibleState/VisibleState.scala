@@ -19,6 +19,6 @@ object VisibleState {
       gameState.gameObjectState.hands(playerIdentifier).map(VisibleGameObject.apply),
       MulliganState.forAllPlayers(gameState),
       gameState.pendingActions.head.asOptionalInstanceOf[Choice].map(CurrentChoice(_)),
-      gameState.gameHistory.allLogEvents.map(LogEventWrapper.apply))
+      gameState.gameHistory.logEvents.map(LogEventWrapper.apply))
   }
 }

@@ -2,13 +2,13 @@ package mtg.web.visibleState
 
 import mtg.game.PlayerIdentifier
 import mtg.game.start.mulligans.MulliganOption
-import mtg.game.state.GameEvent.Decision
 import mtg.game.state.GameState
+import mtg.game.state.history.GameEvent.Decision
 
 case class MulliganState(hasKept: Boolean, mulligansTaken: Int)
 object MulliganState {
   def forPlayer(playerIdentifier: PlayerIdentifier, gameState: GameState): MulliganState = {
-    val decisions = gameState.gameHistory.preGame.gameEvents.ofType[Decision]
+    val decisions = gameState.gameHistory.preGameEvents.ofType[Decision]
       .filter(_.playerIdentifier == playerIdentifier)
       .map(_.chosenOption)
       .ofType[MulliganOption]

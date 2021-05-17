@@ -1,14 +1,15 @@
 package mtg.game.turns
 
 import mtg.game.state._
+import mtg.game.state.history.{GameHistory, LogEvent}
 
 case class BeginTurnEvent(turn: Turn) extends TurnCycleEvent {
-  override def execute(currentGameState: GameState): (GameHistory, Seq[GameAction], LogEvent) = {
+  override def execute(currentGameState: GameState): (GameHistory, Seq[GameAction], Option[LogEvent]) = {
     val newTurnNumber = currentGameState.currentTurnNumber + 1
     (
       currentGameState.gameHistory.startTurn(turn),
-      Seq(PriorityChoice(currentGameState.gameData.getPlayersInApNapOrder(turn.activePlayer))),
-      LogEvent.NewTurn(turn.activePlayer, newTurnNumber)
+      TurnPhase.All.map(BeginPhaseEvent),
+      Some(LogEvent.NewTurn(turn.activePlayer, newTurnNumber))
     )
   }
 }

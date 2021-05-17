@@ -2,7 +2,7 @@ package mtg.game.start
 
 import mtg.SpecWithGameStateManager
 import mtg.game.start.mulligans.DrawAndMulliganAction
-import mtg.game.state.LogEvent
+import mtg.game.state.history.LogEvent
 import mtg.game.turns.StartNextTurnAction
 
 class StartGameActionSpec extends SpecWithGameStateManager {

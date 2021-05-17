@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.game.state.GameEvent.ResolvedEvent
+import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.{GameStartingData, PlayerIdentifier}
 
 import scala.annotation.tailrec

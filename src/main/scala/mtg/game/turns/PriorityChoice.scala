@@ -1,7 +1,8 @@
 package mtg.game.turns
 
 import mtg.game.PlayerIdentifier
-import mtg.game.state.{GameAction, ChoiceOption, GameState, LogEvent, TypedChoice}
+import mtg.game.state.history.LogEvent
+import mtg.game.state.{ChoiceOption, GameAction, GameState, TypedChoice}
 
 trait PriorityOption extends ChoiceOption
 

@@ -1,8 +1,9 @@
 package mtg.game.start
 
 import mtg.SpecWithGameObjectState
+import mtg.game.state.history.GameHistory
 import mtg.game.{GameData, PlayerIdentifier}
-import mtg.game.state.{GameAction, GameHistory, GameState}
+import mtg.game.state.{GameAction, GameState}
 import mtg.game.turns.{BeginTurnEvent, StartNextTurnAction}
 import org.specs2.matcher.Matcher
 

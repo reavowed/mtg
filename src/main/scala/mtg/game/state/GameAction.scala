@@ -1,7 +1,8 @@
 package mtg.game.state
 
 import mtg.game.PlayerIdentifier
-import mtg.game.state.GameEvent.Decision
+import mtg.game.state.history.GameEvent.Decision
+import mtg.game.state.history.{GameHistory, LogEvent}
 
 sealed abstract class GameAction
 
@@ -10,7 +11,7 @@ abstract class GameObjectEvent extends GameAction {
 }
 
 abstract class TurnCycleEvent extends GameAction {
-  def execute(currentGameState: GameState): (GameHistory, Seq[GameAction], LogEvent)
+  def execute(currentGameState: GameState): (GameHistory, Seq[GameAction], Option[LogEvent])
 }
 
 abstract class InternalGameAction extends GameAction {
