@@ -1,14 +1,16 @@
 package mtg.game.turns
 
 import mtg.game.PlayerIdentifier
-import mtg.game.state.{GameAction, GameActionManager, GameState, LogEvent}
+import mtg.game.state.{GameAction, InternalGameAction, GameState, LogEvent}
 
-case class StartNextTurnAction(playerWithNextTurn: PlayerIdentifier) extends GameActionManager {
+case class StartNextTurnAction(playerWithNextTurn: PlayerIdentifier) extends InternalGameAction {
   override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+    val turn = new Turn(playerWithNextTurn)
+    val nextPlayer = currentGameState.gameData.getNextPlayerInTurnOrder(playerWithNextTurn)
     (
       Seq(
-        PriorityChoice(currentGameState.gameData.getPlayersInApNapOrder(playerWithNextTurn)),
-        StartNextTurnAction(currentGameState.gameData.getNextPlayerInTurnOrder(playerWithNextTurn))),
+        BeginTurnEvent(turn),
+        StartNextTurnAction(nextPlayer)),
       None
     )
   }

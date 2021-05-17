@@ -30,7 +30,8 @@ class MulliganSpec extends SpecWithGameStateManager {
   }
 
   def checkGameStarted(gameState: GameState) = {
-      gameState.pendingActions.head mustEqual PriorityChoice(players)
+    gameState.currentTurnNumber mustEqual 1
+    gameState.pendingActions.head mustEqual PriorityChoice(players)
   }
 
   "mulligan action" should {

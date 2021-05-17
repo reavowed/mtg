@@ -14,6 +14,8 @@ function EventLogMessage({entry}) {
             return "Player " + entry.details.player + " keeps a hand of " + getPlural(entry.details.handSize, "card", "cards") + ".";
         case "ReturnCardsToLibrary":
             return "Player " + entry.details.player + " puts " + getPlural(entry.details.numberOfCards, "card", "cards") + " on the bottom of their library.";
+        case "NewTurn":
+            return "Turn " + entry.details.turnNumber + " (" + entry.details.player + ")"
     }
 }
 

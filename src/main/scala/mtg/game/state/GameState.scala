@@ -12,6 +12,7 @@ case class GameState(
   gameHistory: GameHistory,
   pendingActions: Seq[GameAction])
 {
+  def currentTurnNumber: Int = gameHistory.turns.length
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
