@@ -12,7 +12,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
       val gameActions = StartNextTurnAction(playerOne).execute(gameState)
 
-      gameActions mustEqual Seq(PriorityChoice(Seq(playerOne, playerTwo)), StartNextTurnAction(playerTwo))
+      gameActions mustEqual (Seq(PriorityChoice(Seq(playerOne, playerTwo)), StartNextTurnAction(playerTwo)), None)
     }
 
     "pass turn from second to first player" in {
@@ -20,7 +20,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
       val gameActions = StartNextTurnAction(playerTwo).execute(gameState)
 
-      gameActions mustEqual Seq(PriorityChoice(Seq(playerTwo, playerOne)), StartNextTurnAction(playerOne))
+      gameActions mustEqual (Seq(PriorityChoice(Seq(playerTwo, playerOne)), StartNextTurnAction(playerOne)), None)
     }
   }
 }

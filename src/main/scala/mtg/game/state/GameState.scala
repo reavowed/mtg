@@ -13,7 +13,9 @@ case class GameState(
   pendingActions: Seq[GameAction])
 {
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
-  def recordEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addEvent(event))
+  def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
+  def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
+  def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
   private def setActions(newActions: Seq[GameAction]) = copy(pendingActions = newActions)
   def addActions(newActions: Seq[GameAction]) = setActions(newActions ++ pendingActions)
   def popAction(): (GameAction, GameState) = (pendingActions.head, setActions(pendingActions.tail))

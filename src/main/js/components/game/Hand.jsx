@@ -6,7 +6,7 @@ import Card from "./Card";
 
 export default function Hand({cards}) {
     cards = cards || useContext(GameState).hand;
-    return <HorizontalCenter>
+    return <HorizontalCenter className="flex-wrap">
         {_.map(cards, card => <Card key={card.objectId} card={card} className="mx-1" />)}
     </HorizontalCenter>;
 }

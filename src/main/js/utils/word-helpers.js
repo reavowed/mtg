@@ -1,7 +1,7 @@
 
 export function getPlural(number, singularWord, pluralWord) {
     if (number === 1) {
-        return "a " + singularWord;
+        return number + " " + singularWord;
     } else {
         return number + " " + pluralWord;
     }

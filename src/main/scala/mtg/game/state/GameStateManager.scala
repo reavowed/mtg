@@ -28,21 +28,22 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   }
 
   private def executeGameActionManager(gameActionManager: GameActionManager, gameState: GameState): GameState = {
-    gameState.addActions(gameActionManager.execute(gameState))
+    val (actions, logEvent) = gameActionManager.execute(gameState)
+    gameState.addActions(actions).recordLogEvent(logEvent)
   }
 
   private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {
     gameObjectEvent.execute(gameState)
       .updateGameState(gameState)
-      .recordEvent(ResolvedEvent(gameObjectEvent))
+      .recordGameEvent(ResolvedEvent(gameObjectEvent))
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = this.synchronized {
     currentGameState.popAction() match {
       case (choice: Choice, gameState) if choice.playerToAct == actingPlayer =>
         choice.handleDecision(serializedDecision, gameState) match {
-          case Some((decision, actions)) =>
-            executeAutomaticActions(gameState.recordEvent(decision).addActions(actions))
+          case Some((decision, actions, logEvent)) =>
+            executeAutomaticActions(gameState.recordGameEvent(decision).addActions(actions).recordLogEvent(logEvent))
           case None =>
         }
       case _ =>

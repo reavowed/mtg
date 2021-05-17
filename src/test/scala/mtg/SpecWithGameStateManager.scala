@@ -1,6 +1,5 @@
 package mtg
 
-import mtg.game.GameData
 import mtg.game.objects.GameObjectState
 import mtg.game.state.{GameAction, GameHistory, GameResult, GameState, GameStateManager}
 
@@ -15,15 +14,19 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
     }
   }
 
-  def createGameStateManager(gameData: GameData, gameObjectState: GameObjectState, actions: Seq[GameAction]): GameStateManager = {
-    new GameStateManager(GameState(gameData, gameObjectState, GameHistory.empty, actions), _ => {})
+  def createGameState(gameObjectState: GameObjectState, actions: Seq[GameAction]): GameState = {
+    GameState(gameData, gameObjectState, GameHistory.empty, actions)
   }
 
-  def createGameStateManager(gameData: GameData, gameObjectState: GameObjectState, action: GameAction): GameStateManager = {
-    createGameStateManager(gameData, gameObjectState, Seq(action, GameResult.Tie))
+  def createGameStateManager(gameObjectState: GameObjectState, actions: Seq[GameAction]): GameStateManager = {
+    new GameStateManager(createGameState(gameObjectState, actions), _ => {})
   }
 
-  def runAction(action: GameAction, gameData: GameData, gameObjectState: GameObjectState): GameState = {
-    createGameStateManager(gameData, gameObjectState, action).currentGameState
+  def createGameStateManager(gameObjectState: GameObjectState, action: GameAction): GameStateManager = {
+    createGameStateManager(gameObjectState, Seq(action, GameResult.Tie))
+  }
+
+  def runAction(action: GameAction, gameObjectState: GameObjectState): GameState = {
+    createGameStateManager(gameObjectState, action).currentGameState
   }
 }

@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.5.3",
+    "date-fns": "^2.21.3",
     "lodash": "^4.17.21",
     "preact": "^10.5.7",
     "sockjs-client": "^1.5.1",

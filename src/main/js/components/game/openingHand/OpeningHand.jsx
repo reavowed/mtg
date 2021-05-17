@@ -15,7 +15,7 @@ export default function OpeningHand() {
         gameState.currentChoice.type === "ReturnCardsToLibraryChoice" ? <ReturnCardsToLibraryChoice /> :
         <Hand />;
     return <ScreenCenter>
-        <div>
+        <div className="w-100">
             <FirstPlayerMessage />
             <OpponentMulliganMessage />
             {decision}

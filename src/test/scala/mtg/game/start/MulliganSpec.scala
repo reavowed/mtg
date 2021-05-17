@@ -35,15 +35,15 @@ class MulliganSpec extends SpecWithGameStateManager {
 
   "mulligan action" should {
     "draw all players cards if no mulligans have been taken" in {
-      val pregameState = emptyGameObjectState.setLibrary(playerOne, playerOneAllCards).setLibrary(playerTwo, playerTwoAllCards)
-      val finalGameState = runAction(StartGameAction, gameData, pregameState)
+      val pregameState = gameObjectStateWithInitialLibrariesOnly
+      val finalGameState = runAction(StartGameAction, pregameState)
 
       finalGameState.gameObjectState.hands(playerOne).map(_.card) must contain(exactly(pregameState.libraries(playerOne).take(7).map(_.card): _*))
       finalGameState.gameObjectState.hands(playerTwo).map(_.card) must contain(exactly(pregameState.libraries(playerTwo).take(7).map(_.card): _*))
     }
 
     "begin the game if both players keep" in {
-      val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
+      val manager = createGameStateManager(gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
       val beforeMulliganGameObjectState = manager.currentGameState.gameObjectState
       manager.handleDecision("K", playerOne)
       manager.handleDecision("K", playerTwo)
@@ -54,7 +54,7 @@ class MulliganSpec extends SpecWithGameStateManager {
     }
 
     "draw both players new cards if both players have mulliganed" in {
-      val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
+      val manager = createGameStateManager(gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
       val beforeMulliganGameObjectState = manager.currentGameState.gameObjectState
       manager.handleDecision("M", playerOne)
       manager.handleDecision("M", playerTwo)
@@ -66,7 +66,7 @@ class MulliganSpec extends SpecWithGameStateManager {
     }
 
     "only draw one player new cards if other player has kept" in {
-      val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
+      val manager = createGameStateManager(gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
       val beforeMulliganGameObjectState = manager.currentGameState.gameObjectState
       manager.handleDecision("K", playerOne)
       manager.handleDecision("M", playerTwo)
@@ -78,7 +78,7 @@ class MulliganSpec extends SpecWithGameStateManager {
     }
 
     "require a card to be put back after mulliganing once" in {
-      val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
+      val manager = createGameStateManager(gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
       manager.handleDecision("K", playerOne)
       manager.handleDecision("M", playerTwo)
       manager.handleDecision("K", playerTwo)
@@ -88,7 +88,7 @@ class MulliganSpec extends SpecWithGameStateManager {
     }
 
     "only allow seven mulligans" in {
-      val manager = createGameStateManager(gameData, gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
+      val manager = createGameStateManager(gameObjectStateWithInitialLibrariesAndHands, StartGameAction)
       manager.handleDecision("K", playerOne)
       manager.handleDecision("M", playerTwo)
       manager.handleDecision("M", playerTwo)

@@ -10,9 +10,7 @@ class DrawCardEventSpec extends SpecWithGameStateManager {
       val event = DrawCardEvent(playerOne)
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
 
-      val manager = createGameStateManager(gameData, beforeState, event)
-
-      val afterState = manager.currentGameState.gameObjectState
+      val afterState = runAction(event, beforeState).gameObjectState
 
       val cardThatShouldBeDrawn = playerOne.library(beforeState).head.asInstanceOf[CardObject].card
       val expectedCardMatchers = playerOne.hand(beforeState).map(typedEqualTo(_)) :+ matchCardObject(cardThatShouldBeDrawn)
@@ -25,9 +23,8 @@ class DrawCardEventSpec extends SpecWithGameStateManager {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands.setLibrary(playerOne, Nil)
       val event = DrawCardEvent(playerOne)
 
-      val manager = createGameStateManager(gameData, beforeState, event)
+      val afterState = runAction(event, beforeState).gameObjectState
 
-      val afterState = manager.currentGameState.gameObjectState
       afterState mustEqual beforeState
     }
   }

@@ -1,11 +1,11 @@
 import DecisionMaker from "../../DecisionMaker";
 import GameState from "../../GameState";
-import OpeningHand from "./openingHand/OpeningHand";
+import GameDisplay from "./GameDisplay";
 
 export default function Game() {
     return <GameState.Provider>
         <DecisionMaker.Provider>
-            <OpeningHand />
+            <GameDisplay />
         </DecisionMaker.Provider>
     </GameState.Provider>;
 }

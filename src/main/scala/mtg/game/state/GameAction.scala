@@ -10,21 +10,25 @@ abstract class GameObjectEvent extends GameAction {
 }
 
 abstract class GameActionManager extends GameAction {
-  def execute(currentGameState: GameState): Seq[GameAction]
+  def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent])
 }
 
 abstract class GameOption
 
 abstract class Choice extends GameAction {
   def playerToAct: PlayerIdentifier
-  def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, Seq[GameAction])]
+  def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])]
 }
 abstract class TypedChoice[TOption <: GameOption] extends Choice {
   def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[TOption]
-  def handleDecision(chosenOption: TOption, currentGameState: GameState): Seq[GameAction]
-  override def handleDecision(serializedChosenOption: String, currentGameState: GameState): Option[(Decision, Seq[GameAction])] = {
+  def handleDecision(chosenOption: TOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent])
+  override def handleDecision(serializedChosenOption: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])] = {
     parseOption(serializedChosenOption, currentGameState)
-      .map(option => (GameEvent.Decision(option, playerToAct), handleDecision(option, currentGameState)))
+      .map(option => {
+        val decision = GameEvent.Decision(option, playerToAct)
+        val (actions, logEvent) = handleDecision(option, currentGameState)
+        (decision, actions, logEvent)
+      })
   }
 }
 object TypedChoice {

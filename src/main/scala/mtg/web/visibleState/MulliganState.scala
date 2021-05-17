@@ -8,7 +8,7 @@ import mtg.game.state.GameState
 case class MulliganState(hasKept: Boolean, mulligansTaken: Int)
 object MulliganState {
   def forPlayer(playerIdentifier: PlayerIdentifier, gameState: GameState): MulliganState = {
-    val decisions = gameState.gameHistory.preGameEvents.ofType[Decision]
+    val decisions = gameState.gameHistory.preGame.gameEvents.ofType[Decision]
       .filter(_.playerIdentifier == playerIdentifier)
       .map(_.chosenOption)
       .ofType[MulliganOption]
