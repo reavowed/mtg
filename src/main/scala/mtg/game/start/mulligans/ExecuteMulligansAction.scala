@@ -1,9 +1,9 @@
 package mtg.game.start.mulligans
 
 import mtg.events.shuffle.ShuffleHandIntoLibrary
-import mtg.game.state.{GameAction, GameActionManager, GameEvent, GameState, LogEvent}
+import mtg.game.state.{GameAction, InternalGameAction, GameEvent, GameState, LogEvent}
 
-case class ExecuteMulligansAction(mulligansSoFar: Int) extends GameActionManager {
+case class ExecuteMulligansAction(mulligansSoFar: Int) extends InternalGameAction {
   override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
     val playersMulliganing = currentGameState.gameHistory.preGame.gameEvents.sinceEvent[DrawStartingHandsEvent].collect {
       case GameEvent.Decision(MulliganOption.Mulligan, player) => player

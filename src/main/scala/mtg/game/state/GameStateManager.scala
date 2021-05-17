@@ -17,8 +17,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   @tailrec
   private def executeAutomaticActions(gameState: GameState): Unit = {
     gameState.popAction() match {
-      case (gameActionManager: GameActionManager, gameState) =>
-        executeAutomaticActions(executeGameActionManager(gameActionManager, gameState))
+      case (internalGameAction: InternalGameAction, gameState) =>
+        executeAutomaticActions(executeInternalGameAction(internalGameAction, gameState))
       case (gameObjectEvent: GameObjectEvent, gameState) =>
         executeAutomaticActions(executeGameObjectEvent(gameObjectEvent, gameState))
       case _ =>
@@ -27,8 +27,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     }
   }
 
-  private def executeGameActionManager(gameActionManager: GameActionManager, gameState: GameState): GameState = {
-    val (actions, logEvent) = gameActionManager.execute(gameState)
+  private def executeInternalGameAction(internalGameAction: InternalGameAction, gameState: GameState): GameState = {
+    val (actions, logEvent) = internalGameAction.execute(gameState)
     gameState.addActions(actions).recordLogEvent(logEvent)
   }
 

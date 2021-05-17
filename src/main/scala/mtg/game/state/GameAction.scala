@@ -9,7 +9,7 @@ abstract class GameObjectEvent extends GameAction {
   def execute(currentGameState: GameState): GameObjectEventResult
 }
 
-abstract class InternalGameAction extends GameAction {
+abstract class GameActionManager extends GameAction {
   def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent])
 }
 
