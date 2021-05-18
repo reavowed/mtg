@@ -1,5 +1,6 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../../GameState";
+import BannerText from "../../layout/BannerText";
 import ScreenCenter from "../../layout/ScreenCenter";
 import Hand from "../Hand";
 import MulliganChoice from "./MulliganChoice";
@@ -8,7 +9,7 @@ import ReturnCardsToLibraryChoice from "./ReturnCardsToLibraryChoice";
 function OpeningHandWhileWaiting() {
     return <div>
         <Hand />
-        <h1 className="text-center mt-3">Waiting for your opponent to make a mulligan decision</h1>
+        <BannerText>Waiting for your opponent to make a mulligan decision</BannerText>
     </div>
 }
 

@@ -1,6 +1,7 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../../GameState";
 import {getPlural} from "../../../utils/word-helpers";
+import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import DecisionButton from "../DecisionButton";
 import Hand from "../Hand";
@@ -11,7 +12,7 @@ export default function MulliganChoice() {
     if (gameState.player === gameState.currentChoice.playerToAct) {
         return <div>
             <Hand />
-            <h1 className="text-center mt-3">Keep {getPlural(numberOfCardsToKeep, "card", "cards")} or mulligan to {getPlural(numberOfCardsToKeep - 1, "card", "cards")}?</h1>
+            <BannerText>Keep {getPlural(numberOfCardsToKeep, "card", "cards")} or mulligan to {getPlural(numberOfCardsToKeep - 1, "card", "cards")}?</BannerText>
             <HorizontalCenter>
                 <DecisionButton optionToChoose="K" text="Keep"/>
                 <DecisionButton optionToChoose="M" text="Mulligan"/>
