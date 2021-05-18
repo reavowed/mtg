@@ -6,6 +6,7 @@ import mtg.game.{GameData, PlayerIdentifier}
 case class VisibleState(
   player: PlayerIdentifier,
   gameData: GameData,
+  currentTurnNumber: Int,
   hand: Seq[VisibleGameObject],
   mulliganState: Map[PlayerIdentifier, MulliganState],
   currentChoice: Option[CurrentChoice],
@@ -16,6 +17,7 @@ object VisibleState {
     VisibleState(
       playerIdentifier,
       gameState.gameData,
+      gameState.currentTurnNumber,
       gameState.gameObjectState.hands(playerIdentifier).map(VisibleGameObject.apply),
       MulliganState.forAllPlayers(gameState),
       gameState.pendingActions.head.asOptionalInstanceOf[Choice].map(CurrentChoice(_)),

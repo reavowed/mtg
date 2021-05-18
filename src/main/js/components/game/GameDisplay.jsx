@@ -1,12 +1,24 @@
+import {useContext} from "preact/hooks";
+import GameState from "../../GameState";
+import ActiveGameController from "./ActiveGameController";
 import EventLog from "./EventLog";
 import OpeningHand from "./openingHand/OpeningHand";
 
+function MainDisplay() {
+    const gameState = useContext(GameState);
+    if (gameState.currentTurnNumber === 0) {
+        return <OpeningHand />;
+    } else {
+        return <ActiveGameController />;
+    }
+}
+
 export default function GameDisplay() {
-    return <div class="row">
-        <div class="col-md-9">
-            <OpeningHand />
+    return <div class="d-flex">
+        <div class="flex-grow-1 p-2">
+            <MainDisplay />
         </div>
-        <div class="col-md-3">
+        <div class="w-25">
             <EventLog />
         </div>
     </div>;
