@@ -12,4 +12,5 @@ object LogEvent {
   case class NewTurn(player: PlayerIdentifier, turnNumber: Int) extends LogEvent
   case class DrawForTurn(player: PlayerIdentifier) extends LogEvent
   case class SkipFirstDrawStep(player: PlayerIdentifier) extends LogEvent
+  case class PlayedLand(player: PlayerIdentifier, landName: String) extends LogEvent
 }

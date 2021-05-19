@@ -1,8 +1,8 @@
 package mtg.game.turns
 
 import mtg.characteristics.types.Type
-import mtg.events.PlayLandEvent
-import mtg.game.PlayerIdentifier
+import mtg.game.{PlayerIdentifier, actions}
+import mtg.game.actions.PlayLandEvent
 import mtg.game.objects.CardObject
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{ChoiceOption, GameAction, GameState, TypedChoice}
@@ -40,7 +40,7 @@ case class PriorityChoice(playerToAct: PlayerIdentifier, remainingPlayers: Seq[P
         else
           (Nil, None)
       case PriorityOption.PlayLand(landCard) =>
-        (Seq(PlayLandEvent(landCard), PriorityAction), None)
+        (Seq(actions.PlayLandAction(playerToAct, landCard), PriorityAction), None)
     }
   }
 }
