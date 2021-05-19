@@ -24,6 +24,7 @@ trait SpecWithGameObjectState extends SpecificationLike {
     1,
     players.map(p => p -> Nil).toMap,
     players.map(p => p -> Nil).toMap,
+    Nil,
     players.map(p => p -> Nil).toMap)
 
   def setInitialHandAndLibrary(gameObjectState: GameObjectState): GameObjectState = {

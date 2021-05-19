@@ -17,6 +17,9 @@ package object mtg {
     def takeWhileOfType[S : ClassTag]: Seq[S] = seq.takeWhile(classTag[S].runtimeClass.isInstance).as[S]
     def as[S: ClassTag]: Seq[S] = seq.map(_.asInstanceOf[S])
     def takeRightUntil(p: T => Boolean): Seq[T] = seq.reverse.takeWhile(t => !p(t)).reverse
+    def mapFind[S](f: T => Option[S]): Option[S] = {
+      seq.iterator.map(f).find(_.isDefined).flatten
+    }
   }
   implicit class TupleExtensionMethods[A, B](tuple: (A, B)) {
     def mapLeft[C](f: A => C): (C, B) = (f(tuple._1), tuple._2)

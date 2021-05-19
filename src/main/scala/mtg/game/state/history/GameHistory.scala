@@ -22,6 +22,8 @@ case class GameHistory(preGameEvents: Seq[GameEvent], turns: Seq[TurnHistory], l
   def addLogEvent(event: LogEvent): GameHistory = {
     copy(logEvents = logEvents :+ TimestampedLogEvent(event))
   }
+
+  def forCurrentTurn: Option[TurnHistory] = turns.lastOption
 }
 object GameHistory {
   val empty = GameHistory(Nil, Nil, Nil)

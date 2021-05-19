@@ -15,6 +15,7 @@ object Zone {
     def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]]
     override def stateLens: Lens[GameObjectState, Seq[GameObject]] = stateMapLens.at(playerIdentifier)(At(i => Lens((_: Map[PlayerIdentifier, Seq[GameObject]])(i))(v => map => (map - i) + (i -> v))))
   }
+  sealed abstract class Shared extends Zone
   case class Library(playerIdentifier: PlayerIdentifier) extends PlayerSpecific {
     override def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]] = Focus[GameObjectState](_.libraries)
   }
@@ -23,6 +24,9 @@ object Zone {
   }
   case class Sideboard(playerIdentifier: PlayerIdentifier) extends PlayerSpecific {
     override def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]] = Focus[GameObjectState](_.sideboards)
+  }
+  case object Battlefield extends Shared {
+    override def stateLens: Lens[GameObjectState, Seq[GameObject]] = Focus[GameObjectState](_.battlefield)
   }
 }
 

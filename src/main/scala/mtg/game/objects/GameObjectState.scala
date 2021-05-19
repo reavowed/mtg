@@ -9,6 +9,7 @@ case class GameObjectState(
     nextObjectId: Int,
     libraries: Map[PlayerIdentifier, Seq[GameObject]],
     hands: Map[PlayerIdentifier, Seq[GameObject]],
+    battlefield: Seq[GameObject],
     sideboards: Map[PlayerIdentifier, Seq[GameObject]])
 {
   def updateZone(zone: Zone, objectsUpdater: Seq[GameObject] => Seq[GameObject]): GameObjectState = {
@@ -47,6 +48,7 @@ object GameObjectState {
       nextObjectId,
       libraries,
       hands,
+      Nil,
       sideboards)
   }
 }

@@ -44,5 +44,4 @@ class DrawStepSpec extends SpecWithGameStateManager {
       finalState.gameHistory.logEvents must not(contain(logEvent(LogEvent.SkipFirstDrawStep(playerTwo))))
     }
   }
-
 }

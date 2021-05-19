@@ -19,7 +19,7 @@ case class GameState(
 
   def currentTurnNumber: Int = gameHistory.turns.length
   private def currentTurnHistory: Option[TurnHistory] = gameHistory.turns.lastOption
-  def currentTurn: Option[Turn] = currentTurnHistory.map(_.turn)
+  def currentTurn: Option[Turn] = gameHistory.forCurrentTurn.map(_.turn)
   private def currentPhaseHistory: Option[PhaseHistory] = currentTurnHistory.flatMap(_.phases.lastOption)
   def currentPhase: Option[TurnPhase] = currentPhaseHistory.map(_.phase)
   private def currentStepHistory: Option[StepHistory] = currentPhaseHistory.flatMap(_.asOptionalInstanceOf[PhaseHistoryWithSteps]).flatMap(_.steps.lastOption)

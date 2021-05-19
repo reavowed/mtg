@@ -1,5 +1,7 @@
 package mtg.web
 
+import mtg.data.cards.Plains
+import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.data.sets.Strixhaven
 import mtg.game.{GameStartingData, PlayerIdentifier, PlayerStartingData}
 import mtg.game.state.{GameState, GameStateManager}
@@ -13,8 +15,11 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
   val playerOne = PlayerIdentifier("P1")
   val playerTwo = PlayerIdentifier("P2")
   val players = Seq(playerOne, playerTwo)
-  val gameStartingData = GameStartingData(players.map(PlayerStartingData(_, Strixhaven.cardPrintings, Nil)))
+  val deckLol = (Seq.fill(38)(AgelessGuardian) ++ Seq.fill(22)(Plains)).map(Strixhaven.getCard(_).get)
+  val gameStartingData = GameStartingData(players.map(PlayerStartingData(_, deckLol, Nil)))
   val gameStateManager = GameStateManager.initial(gameStartingData, onStateUpdate)
+  gameStateManager.currentGameState.gameData.playersInTurnOrder.foreach(gameStateManager.handleDecision("K", _))
+  gameStateManager.currentGameState.playersInApnapOrder.foreach(gameStateManager.handleDecision("Pass", _))
 
   def onStateUpdate(gameState: GameState): Unit = {
     players.foreach(player => {

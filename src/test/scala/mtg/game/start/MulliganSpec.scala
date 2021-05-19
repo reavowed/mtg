@@ -1,12 +1,12 @@
 package mtg.game.start
 
-import mtg.{SpecWithGameObjectState, SpecWithGameStateManager}
+import mtg._
 import mtg.game.PlayerIdentifier
 import mtg.game.objects.{CardObject, GameObject, GameObjectState}
 import mtg.game.start.mulligans.{MulliganChoice, ReturnCardsToLibraryChoice}
-import mtg.game.state.{GameState, GameStateManager}
+import mtg.game.state.{GameAction, GameState}
 import mtg.game.turns.{PriorityChoice, TurnPhase, TurnStep}
-import org.specs2.matcher.MatchResult
+import org.specs2.matcher.{MatchResult, Matcher}
 
 class MulliganSpec extends SpecWithGameStateManager {
   def checkAllCardsAreNewObjects(gameObjects: Seq[GameObject], previousGameObjectState: GameObjectState): MatchResult[_] = {
@@ -33,7 +33,7 @@ class MulliganSpec extends SpecWithGameStateManager {
     gameState.currentTurnNumber mustEqual 1
     gameState.currentPhase must beSome[TurnPhase](TurnPhase.BeginningPhase)
     gameState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
-    gameState.pendingActions.head mustEqual PriorityChoice(players)
+    gameState.pendingActions.head must bePriorityForPlayer(playerOne)
   }
 
   "mulligan action" should {

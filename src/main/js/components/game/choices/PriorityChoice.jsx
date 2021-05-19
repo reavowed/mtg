@@ -5,7 +5,7 @@ export default function PriorityChoice() {
     return <div>
         <p>Cast spells, activate abilities, or play a land.</p>
         <HorizontalCenter>
-            <DecisionButton optionToChoose="P">Pass</DecisionButton>
+            <DecisionButton optionToChoose="Pass">Pass</DecisionButton>
         </HorizontalCenter>
     </div>;
 }
