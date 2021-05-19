@@ -8,6 +8,7 @@ case class VisibleState(
   gameData: GameData,
   currentTurnNumber: Int,
   hand: Seq[VisibleGameObject],
+  battlefield: Map[PlayerIdentifier, Seq[VisibleGameObject]],
   mulliganState: Map[PlayerIdentifier, MulliganState],
   currentChoice: Option[CurrentChoice],
   log: Seq[LogEventWrapper])
@@ -19,6 +20,7 @@ object VisibleState {
       gameState.gameData,
       gameState.currentTurnNumber,
       gameState.gameObjectState.hands(playerIdentifier).map(VisibleGameObject.apply),
+      gameState.gameObjectState.battlefield.groupBy(_.owner).view.mapValues(_.map(VisibleGameObject.apply)).toMap,
       MulliganState.forAllPlayers(gameState),
       gameState.pendingActions.head.asOptionalInstanceOf[Choice].map(CurrentChoice(_)),
       gameState.gameHistory.logEvents.map(LogEventWrapper.apply))
