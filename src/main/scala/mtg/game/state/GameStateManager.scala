@@ -1,7 +1,8 @@
 package mtg.game.state
 
 import mtg.game.state.history.GameEvent.ResolvedEvent
-import mtg.game.{GameStartingData, PlayerIdentifier}
+import mtg.game.turns.TurnCycleEventPreventer
+import mtg.game.{GameStartingData, PlayerIdentifier, turns}
 
 import scala.annotation.tailrec
 
@@ -30,8 +31,14 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   }
 
   private def executeTurnCycleEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): GameState = {
-    val (history, actions, logEvent) = turnCycleEvent.execute(gameState)
-    gameState.copy(gameHistory = history).addActions(actions).recordLogEvent(logEvent)
+    val preventResult = TurnCycleEventPreventer.fromRules.collectFirst(Function.unlift(_.checkEvent(turnCycleEvent, gameState).asOptionalInstanceOf[TurnCycleEventPreventer.Result.Prevent]))
+    preventResult match {
+      case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>
+        logEvent.map(gameState.recordLogEvent).getOrElse(gameState)
+      case _ =>
+        val (history, actions, logEvent) = turnCycleEvent.execute(gameState)
+        gameState.copy(gameHistory = history).addActions(actions).recordLogEvent(logEvent)
+    }
   }
 
   private def executeInternalGameAction(internalGameAction: InternalGameAction, gameState: GameState): GameState = {

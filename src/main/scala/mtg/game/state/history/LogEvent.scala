@@ -11,4 +11,5 @@ object LogEvent {
   case class ReturnCardsToLibrary(player: PlayerIdentifier, numberOfCards: Int) extends LogEvent
   case class NewTurn(player: PlayerIdentifier, turnNumber: Int) extends LogEvent
   case class DrawForTurn(player: PlayerIdentifier) extends LogEvent
+  case class SkipFirstDrawStep(player: PlayerIdentifier) extends LogEvent
 }

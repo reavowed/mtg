@@ -3,6 +3,7 @@ package mtg
 import mtg.cards.CardPrinting
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
+import mtg.game.state.GameState
 import mtg.game.{GameData, PlayerIdentifier, Zone}
 import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
@@ -41,6 +42,9 @@ trait SpecWithGameObjectState extends SpecificationLike {
     def hand = Zone.Hand(playerIdentifier)
   }
   implicit class ZoneOps(zone: Zone) {
+    def apply(gameState: GameState): Seq[GameObject] = {
+      apply(gameState.gameObjectState)
+    }
     def apply(gameObjectState: GameObjectState): Seq[GameObject] = {
       zone.stateLens.get(gameObjectState)
     }

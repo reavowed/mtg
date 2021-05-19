@@ -3,6 +3,7 @@ package mtg
 import mtg.game.objects.GameObjectState
 import mtg.game.state.history.GameHistory
 import mtg.game.state.{GameAction, GameResult, GameState, GameStateManager}
+import mtg.game.turns.{PriorityChoice, TurnPhase}
 
 abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
 
@@ -12,6 +13,17 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
     }
     def updateGameObjectState(f: GameObjectState => GameObjectState): GameStateManager = {
       updateGameState(_.updateGameObjectState(f(gameStateManager.currentGameState.gameObjectState)))
+    }
+    private def passUntil(predicate: GameState => Boolean): Unit = {
+      while (!predicate(gameStateManager.currentGameState) && gameStateManager.currentGameState.pendingActions.head.isInstanceOf[PriorityChoice]) {
+        gameStateManager.handleDecision("P", gameStateManager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playerToAct)
+      }
+    }
+    def passUntilTurn(turnNumber: Int): Unit = {
+      passUntil(_.currentTurnNumber == turnNumber)
+    }
+    def passUntilPhase(turnPhase: TurnPhase): Unit = {
+      passUntil(_.currentPhase.contains(turnPhase))
     }
   }
 

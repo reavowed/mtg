@@ -18,6 +18,8 @@ function EventLogMessage({entry}) {
             return "Turn " + entry.details.turnNumber + " (" + entry.details.player + ")"
         case "DrawForTurn":
             return "Player " + entry.details.player + " draws for turn.";
+        case "SkipFirstDrawStep":
+            return "Player " + entry.details.player + " skips their first draw step.";
     }
 }
 
