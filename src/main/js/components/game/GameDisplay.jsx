@@ -15,7 +15,7 @@ function MainDisplay() {
 
 export default function GameDisplay() {
     return <div class="d-flex">
-        <div class="flex-grow-1 p-2">
+        <div class="w-75">
             <MainDisplay />
         </div>
         <div class="w-25">
