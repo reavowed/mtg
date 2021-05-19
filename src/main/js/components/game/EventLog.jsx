@@ -16,6 +16,8 @@ function EventLogMessage({entry}) {
             return "Player " + entry.details.player + " puts " + getPlural(entry.details.numberOfCards, "card", "cards") + " on the bottom of their library.";
         case "NewTurn":
             return "Turn " + entry.details.turnNumber + " (" + entry.details.player + ")"
+        case "DrawForTurn":
+            return "Player " + entry.details.player + " draws for turn.";
     }
 }
 

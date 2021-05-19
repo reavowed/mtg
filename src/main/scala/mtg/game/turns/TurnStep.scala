@@ -1,13 +1,14 @@
 package mtg.game.turns
 
 import mtg.game.state.GameAction
+import mtg.game.turns.turnBasedActions.DrawForTurn
 
 sealed abstract class TurnStep(val actions: Seq[GameAction])
 
 object TurnStep {
   case object UntapStep extends TurnStep(Nil)
   case object UpkeepStep extends TurnStep(Seq(PriorityAction))
-  case object DrawStep extends TurnStep(Nil)
+  case object DrawStep extends TurnStep(Seq(DrawForTurn, PriorityAction))
 
   val BeginningPhaseSteps = Seq(UntapStep, UpkeepStep, DrawStep)
 
