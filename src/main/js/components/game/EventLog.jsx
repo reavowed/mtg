@@ -30,7 +30,7 @@ function EventLogEntry({entry}) {
 
 export default function EventLog() {
     const gameState = useContext(GameState);
-    return <div className="border-left w-100 vh-100 px-1">
+    return <div className="px-1">
         {_.map(gameState.log, (entry, i) => <EventLogEntry key={i} entry={entry}/>)}
     </div>
 }

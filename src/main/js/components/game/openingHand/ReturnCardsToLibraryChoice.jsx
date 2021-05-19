@@ -43,7 +43,7 @@ export default function ReturnCardsToLibraryChoice() {
         </HorizontalCenter>
         <BannerText>Choose {getPlural(numberOfCardsToReturn, "card", "cards")} to put back</BannerText>
         <HorizontalCenter className="mt-2">
-            <DecisionButton optionToChoose={_.map(cardsPutBack, card => card.objectId).join(" ")} text="Confirm" disabled={!enoughCardsPutBack}/>
+            <DecisionButton optionToChoose={_.map(cardsPutBack, card => card.objectId).join(" ")} disabled={!enoughCardsPutBack}>Confirm</DecisionButton>
         </HorizontalCenter>
     </div>;
 }

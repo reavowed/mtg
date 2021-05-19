@@ -14,8 +14,8 @@ export default function MulliganChoice() {
             <Hand />
             <BannerText>Keep {getPlural(numberOfCardsToKeep, "card", "cards")} or mulligan to {getPlural(numberOfCardsToKeep - 1, "card", "cards")}?</BannerText>
             <HorizontalCenter>
-                <DecisionButton optionToChoose="K" text="Keep"/>
-                <DecisionButton optionToChoose="M" text="Mulligan"/>
+                <DecisionButton optionToChoose="K">Keep</DecisionButton>
+                <DecisionButton optionToChoose="M">Mulligan</DecisionButton>
             </HorizontalCenter>
         </div>
     } else {

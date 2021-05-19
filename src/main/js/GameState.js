@@ -22,7 +22,9 @@ GameState.Provider = function({children}) {
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/user/' + getCurrentPath().split('/')[1] + '/topic/state', function(messageOutput) {
-                setState(JSON.parse(messageOutput.body));
+                const state = JSON.parse(messageOutput.body);
+                console.log(state);
+                setState(state);
             });
         });
     }, []);

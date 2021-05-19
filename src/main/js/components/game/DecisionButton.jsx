@@ -7,7 +7,5 @@ export default function DecisionButton({optionToChoose, text, ...props}) {
                    className="btn btn-primary btn-lg ml-2"
                    disabled={decisionMaker.requestInProgress}
                    onclick={!props.disabled && (() => decisionMaker.makeDecision(optionToChoose))}
-                   {...props}>
-        {text}
-    </button>
+                   {...props}/>;
 }
