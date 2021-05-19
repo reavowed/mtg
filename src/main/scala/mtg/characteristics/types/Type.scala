@@ -1,9 +1,8 @@
 package mtg.characteristics.types
 
-sealed class Type {
+sealed class Type
 
-}
-
-object Types {
-  val Land = new Type()
+object Type {
+  case object Land extends Type
+  case object Creature extends Type
 }

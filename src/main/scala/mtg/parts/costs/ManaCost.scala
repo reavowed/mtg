@@ -1,3 +1,3 @@
 package mtg.parts.costs
 
-case class ManaCost(symbols: Seq[ManaSymbol])
+case class ManaCost(symbols: ManaSymbol*)

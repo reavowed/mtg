@@ -1,3 +1,6 @@
 package mtg.cards
 
-class PowerAndToughness
+sealed class PowerAndToughness
+object PowerAndToughness {
+  case class Fixed(power: Int, toughness: Int) extends PowerAndToughness
+}

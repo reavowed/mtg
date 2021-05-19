@@ -6,15 +6,15 @@ import mtg.parts.costs.ManaCost
 
 class CardDefinition(
   val name: String,
-  manaCost: Option[ManaCost],
-  colorIndicator: Option[ColorIndicator],
-  superTypes: Seq[Supertype],
-  types: Seq[Type],
-  subTypes: Seq[Subtype],
-  oracleText: String,
-  abilitiesFromRulesText: Seq[Ability],
-  powerAndToughness: Option[PowerAndToughness],
-  loyalty: Option[Int])
+  val manaCost: Option[ManaCost],
+  val colorIndicator: Option[ColorIndicator],
+  val superTypes: Seq[Supertype],
+  val types: Seq[Type],
+  val subTypes: Seq[Subtype],
+  val oracleText: String,
+  val abilitiesFromRulesText: Seq[Ability],
+  val powerAndToughness: Option[PowerAndToughness],
+  val loyalty: Option[Int])
 {
   override def toString: String = getClass.getSimpleName
 }

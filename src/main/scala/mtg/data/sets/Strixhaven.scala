@@ -2,11 +2,13 @@ package mtg.data.sets
 
 import mtg.cards.{CardInSetData, Set}
 import mtg.data.cards._
+import mtg.data.cards.strixhaven.AgelessGuardian
 
 object Strixhaven extends Set(
   "Strixhaven",
   "STX",
   Seq(
+    CardInSetData(AgelessGuardian, 8),
     CardInSetData(Plains, 366),
     CardInSetData(Plains, 367),
     CardInSetData(Island, 368),
