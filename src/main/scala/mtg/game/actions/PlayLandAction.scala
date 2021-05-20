@@ -5,6 +5,7 @@ import mtg.game.{PlayerIdentifier, Zone}
 import mtg.game.objects.CardObject
 import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state.{GameAction, GameState, InternalGameAction}
+import mtg.game.turns.MainPhase
 
 case class PlayLandAction(player: PlayerIdentifier, land: CardObject) extends InternalGameAction {
   override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
@@ -59,11 +60,11 @@ object PlayLandAction {
   private def canPlayLandsAsSpecialAction(player: PlayerIdentifier, gameState: GameState): Boolean = {
     // RULE: 116.2a / Apr 22 2021 : A player can take this action any time they have priority and the stack is empty
     // during a main phase of their turn.
-    // NOTE: Priority check is implicitly implemented by the fact that we only even check this when the player has
+    // NOTE: Check for whose turn it is controlled by cannotPlayLands method above
+    // NOTE: Check for priority is implicitly implemented by the fact that we only even check this when the player has
     // priority
-    // TODO: check timing
-    // TODO: check land plays this turn
-    true
+    // TODO: check stack is empty
+    gameState.currentPhase.exists(_.isInstanceOf[MainPhase])
   }
   private def canPlayLandAsSpecialAction(land: CardObject, player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Crucible of Worlds

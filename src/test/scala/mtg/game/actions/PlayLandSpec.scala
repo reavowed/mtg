@@ -7,7 +7,7 @@ import mtg.data.sets.Strixhaven
 import mtg.game.objects.CardObject
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.game.turns.{PriorityChoice, StartNextTurnAction}
+import mtg.game.turns.{PriorityChoice, StartNextTurnAction, TurnStep}
 
 class PlayLandSpec extends SpecWithGameStateManager {
   "land actions with priority" should {
@@ -65,7 +65,17 @@ class PlayLandSpec extends SpecWithGameStateManager {
         playerOne.hand(manager.currentGameState).getCard(Swamp)))
     }
 
-    // TODO: no land actions outside of main phase
+    "not be available in upkeep" in {
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+
+      manager.currentGameState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
+    }
+
     // TODO: no land actions if stack is non-empty
     // TODO: land actions for lands in other zones with Crucible of Worlds effects
     // TODO: no land actions with Agressive Mining effects

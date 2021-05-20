@@ -1,6 +1,6 @@
 package mtg.game.state.history
 
-import mtg.game.turns.{Turn, TurnPhase, TurnPhaseWithSteps, TurnPhaseWithoutSteps, TurnStep}
+import mtg.game.turns.{Turn, TurnPhase, TurnPhaseWithSteps, MainPhase, TurnStep}
 
 sealed abstract class PhaseHistory {
   def turn: Turn
@@ -14,7 +14,7 @@ object PhaseHistory {
     phase match {
       case _: TurnPhaseWithSteps =>
         PhaseHistoryWithSteps(turn, phase, Nil)
-      case _: TurnPhaseWithoutSteps =>
+      case _: MainPhase =>
         PhaseHistoryWithoutSteps(turn, phase, Nil)
     }
   }
