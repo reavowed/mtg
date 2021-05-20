@@ -19,8 +19,9 @@ export default function CardRow({className, cards, as}) {
 
     const overlapCards = useCallback((ref) => {
         const cardElements = Array.from(ref.childNodes),
-            numberOfCards = cardElements.length,
-            imageWidth = cardElements[0].childNodes[0].clientWidth,
+            numberOfCards = cardElements.length;
+        if (numberOfCards == 0) return;
+        const imageWidth = cardElements[0].childNodes[0].clientWidth,
             availableWidth = ref.clientWidth,
             totalWidthToRemove = (imageWidth * numberOfCards) - availableWidth,
             individualWidthToRemove = totalWidthToRemove / (cards.length - 1);
