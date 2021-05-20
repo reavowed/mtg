@@ -10,8 +10,8 @@ import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.{PriorityChoice, StartNextTurnAction}
 
 class PlayLandSpec extends SpecWithGameStateManager {
-  "priority choice" should {
-    "list playable lands from hand" in {
+  "land actions with priority" should {
+    "be available for all lands in hand in main phase of own turn with empty stack" in {
       val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
       val plainsObject = playerOne.hand(initialState).mapFind(_.asOptionalInstanceOf[CardObject].filter(_.card.printing.cardDefinition == Plains)).get
@@ -24,20 +24,27 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(plainsObject, forestObject))
     }
 
-    "not list any playable lands if it's not the player's turn" in {
+    "not be available on another player's turn" in {
       val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, hand)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerTwo))
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
-      manager.passPriority(playerTwo)
+      manager.passPriority(playerOne)
 
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerTwo)
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
     }
+
+    // TODO: no land actions outside of main phase
+    // TODO: no land actions if stack is non-empty
+    // TODO: no land actions if already played one this turn
+    // TODO: land actions for lands in other zones with Crucible of Worlds effects
+    // TODO: no land actions with Agressive Mining effects
+    // TODO: no land actions from hand with Fires of Invention effects
   }
 
-  "playing a land" should {
+  "playing a land as a special action" should {
     "move the land to the battlefield" in {
       val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
@@ -62,4 +69,8 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.currentGameState.gameHistory.logEvents.last.logEvent mustEqual LogEvent.PlayedLand(playerOne, "Plains")
     }
   }
+
+  // TODO: test playing a land as instruction from effect
+  // - not on other player's turn
+  // - not if effect forbids
 }
