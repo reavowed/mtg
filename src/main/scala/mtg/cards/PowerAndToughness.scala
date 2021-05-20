@@ -1,6 +1,9 @@
 package mtg.cards
 
-sealed class PowerAndToughness
+sealed abstract class PowerAndToughness {
+  def basePower: Int
+  def baseToughness: Int
+}
 object PowerAndToughness {
-  case class Fixed(power: Int, toughness: Int) extends PowerAndToughness
+  case class Fixed(basePower: Int, baseToughness: Int) extends PowerAndToughness
 }

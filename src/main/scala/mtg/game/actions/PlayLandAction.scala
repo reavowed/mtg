@@ -1,30 +1,28 @@
 package mtg.game.actions
 
 import mtg.characteristics.types.Type
-import mtg.game.{PlayerIdentifier, Zone}
-import mtg.game.objects.CardObject
 import mtg.game.state.history.{GameEvent, LogEvent}
-import mtg.game.state.{GameAction, GameState, InternalGameAction}
+import mtg.game.state.{GameAction, GameState, InternalGameAction, ObjectWithState}
+import mtg.game.{PlayerIdentifier, Zone}
 
-case class PlayLandAction(player: PlayerIdentifier, land: CardObject) extends InternalGameAction {
+case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) extends InternalGameAction {
   override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
     val preventEvent = PlayLandAction.cannotPlayLands(player, currentGameState) || PlayLandAction.cannotPlayLand(land, player, currentGameState)
-    val eventOption = if (preventEvent) None else Some(PlayLandEvent(land))
+    val eventOption = if (preventEvent) None else Some(PlayLandEvent(land.gameObject))
     (
       eventOption.toSeq,
-      Some(LogEvent.PlayedLand(player, land.card.printing.cardDefinition.name))
+      Some(LogEvent.PlayedLand(player, land.characteristics.name.get))
     )
   }
 }
 
 object PlayLandAction {
-  def getPlayableLands(player: PlayerIdentifier, gameState: GameState): Seq[CardObject] = {
+  def getPlayableLands(player: PlayerIdentifier, gameState: GameState): Seq[ObjectWithState] = {
     if (cannotPlayLands(player, gameState) || !canPlayLandsAsSpecialAction(player, gameState))
       Nil
     else
-      gameState.gameObjectState.allVisibleObjects(player)
-        .ofType[CardObject]
-        .filter(_.card.printing.cardDefinition.types.contains(Type.Land))
+      gameState.derivedState.allObjectStates
+        .filter(_.characteristics.types.contains(Type.Land))
         .filter(!cannotPlayLand(_, player, gameState))
         .filter(canPlayLandAsSpecialAction(_, player, gameState))
   }
@@ -52,7 +50,7 @@ object PlayLandAction {
       false
     }
   }
-  private def cannotPlayLand(land: CardObject, player: PlayerIdentifier, gameState: GameState): Boolean = {
+  private def cannotPlayLand(land: ObjectWithState, player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Experimental Frenzy / Tomik, Distinguished Advokist
     false
   }
@@ -64,8 +62,8 @@ object PlayLandAction {
     // priority
     TimingChecks.isMainPhaseOfPlayersTurnWithEmptyStack(player, gameState)
   }
-  private def canPlayLandAsSpecialAction(land: CardObject, player: PlayerIdentifier, gameState: GameState): Boolean = {
+  private def canPlayLandAsSpecialAction(land: ObjectWithState, player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Crucible of Worlds
-    land.zone == Zone.Hand(player)
+    land.gameObject.zone == Zone.Hand(player)
   }
 }

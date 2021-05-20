@@ -16,7 +16,6 @@ class VanillaCreature(
     Nil,
     Seq(Type.Creature),
     subtypes,
-    "",
     Nil,
     Some(PowerAndToughness.Fixed(powerAndToughness._1, powerAndToughness._2)),
     None)

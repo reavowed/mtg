@@ -11,7 +11,6 @@ class CardDefinition(
   val superTypes: Seq[Supertype],
   val types: Seq[Type],
   val subTypes: Seq[Subtype],
-  val oracleText: String,
   val abilitiesFromRulesText: Seq[Ability],
   val powerAndToughness: Option[PowerAndToughness],
   val loyalty: Option[Int])

@@ -21,7 +21,9 @@ class PlayLandSpec extends SpecWithGameStateManager {
       val plainsObject = playerOne.hand(initialState).getCard(Plains)
       val forestObject = playerOne.hand(initialState).getCard(Forest)
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(plainsObject, forestObject))
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(
+        beObjectWithState(plainsObject),
+        beObjectWithState(forestObject)))
     }
 
     "not be available on another player's turn" in {
@@ -61,8 +63,8 @@ class PlayLandSpec extends SpecWithGameStateManager {
 
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(
-        playerOne.hand(manager.currentGameState).getCard(Forest),
-        playerOne.hand(manager.currentGameState).getCard(Swamp)))
+        beObjectWithState(playerOne.hand(manager.currentGameState).getCard(Forest)),
+        beObjectWithState(playerOne.hand(manager.currentGameState).getCard(Swamp))))
     }
 
     "not be available in upkeep" in {

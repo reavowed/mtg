@@ -1,24 +1,22 @@
 package mtg.game.turns
 
-import mtg.characteristics.types.Type
-import mtg.game.{PlayerIdentifier, actions}
-import mtg.game.actions.{PlayLandAction, PlayLandEvent}
-import mtg.game.objects.CardObject
+import mtg.game.actions.PlayLandAction
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{ChoiceOption, GameAction, GameState, TypedChoice}
+import mtg.game.state._
+import mtg.game.{PlayerIdentifier, actions}
 
 sealed trait PriorityOption extends ChoiceOption
 object PriorityOption {
   case object PassPriority extends PriorityOption
-  case class PlayLand(landCard: CardObject) extends PriorityOption
+  case class PlayLand(land: ObjectWithState) extends PriorityOption
 }
 
-case class PriorityChoice(playerToAct: PlayerIdentifier, remainingPlayers: Seq[PlayerIdentifier], playableLands: Seq[CardObject]) extends TypedChoice[PriorityOption] {
+case class PriorityChoice(playerToAct: PlayerIdentifier, remainingPlayers: Seq[PlayerIdentifier], playableLands: Seq[ObjectWithState]) extends TypedChoice[PriorityOption] {
 
   object PlayLand {
-    def unapply(string: String): Option[CardObject] = {
+    def unapply(string: String): Option[ObjectWithState] = {
       if (string.startsWith("Play ")) {
-        string.substring("Play ".length).toIntOption.flatMap(id => playableLands.find(_.objectId.sequentialId == id))
+        string.substring("Play ".length).toIntOption.flatMap(id => playableLands.find(_.gameObject.objectId.sequentialId == id))
       } else {
         None
       }

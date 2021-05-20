@@ -10,7 +10,6 @@ class BasicLand(val basicLandType: BasicLandType) extends CardDefinition(
   Seq(Supertype.Basic),
   Seq(Type.Land),
   Seq(basicLandType),
-  s"({T}: Add ${basicLandType.color.manaType.symbol.text}.)",
   Nil,
   None,
   None)

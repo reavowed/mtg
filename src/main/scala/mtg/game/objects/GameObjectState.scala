@@ -18,6 +18,9 @@ case class GameObjectState(
   def createNewObjectForZone(oldObject: GameObject, newZone: Zone): (GameObject, GameObjectState) = {
     (oldObject.forNewZone(ObjectId(nextObjectId), newZone), copy(nextObjectId = nextObjectId + 1))
   }
+  def allObjects: Seq[GameObject] = {
+    (libraries.flatMap(_._2) ++ hands.flatMap(_._2) ++ battlefield).toSeq
+  }
   def allVisibleObjects(player: PlayerIdentifier): Seq[GameObject] = {
     hands(player) ++ battlefield
   }

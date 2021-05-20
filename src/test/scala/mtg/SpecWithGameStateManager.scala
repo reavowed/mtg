@@ -4,7 +4,7 @@ import mtg.cards.CardDefinition
 import mtg.game.PlayerIdentifier
 import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState}
 import mtg.game.state.history.GameHistory
-import mtg.game.state.{GameAction, GameResult, GameState, GameStateManager}
+import mtg.game.state.{GameAction, GameResult, GameState, GameStateManager, ObjectWithState}
 import mtg.game.turns.{PriorityChoice, TurnPhase}
 import org.specs2.matcher.Matcher
 
@@ -15,6 +15,9 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
   }
   def beCardObject(card: Card): Matcher[GameObject] = { (gameObject: GameObject) =>
     (gameObject.asOptionalInstanceOf[CardObject].exists(_.card == card), "", "")
+  }
+  def beObjectWithState(gameObject: GameObject): Matcher[ObjectWithState] = {(objectWithState: ObjectWithState) =>
+    (objectWithState.gameObject == gameObject, "", "")
   }
 
   implicit class GameObjectSeqOps(gameObjects: Seq[GameObject]) {

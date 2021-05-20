@@ -11,6 +11,7 @@ import scala.util.Random
 case class GameState(
   gameData: GameData,
   gameObjectState: GameObjectState,
+  derivedState: DerivedState,
   gameHistory: GameHistory,
   pendingActions: Seq[GameAction])
 {
@@ -26,7 +27,9 @@ case class GameState(
   def currentStep: Option[TurnStep] = currentStepHistory.map(_.step)
 
   def updateHistory(f: GameHistory => GameHistory): GameState = copy(gameHistory = f(gameHistory))
-  def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
+  def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(
+    gameObjectState = newGameObjectState,
+    derivedState = DerivedState.calculateFromGameObjectState(newGameObjectState))
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
@@ -36,6 +39,13 @@ case class GameState(
 }
 
 object GameState {
+  def apply(
+    gameData: GameData,
+    gameObjectState: GameObjectState,
+    gameHistory: GameHistory,
+    pendingActions: Seq[GameAction]
+  ): GameState = GameState(gameData, gameObjectState, DerivedState.calculateFromGameObjectState(gameObjectState), gameHistory, pendingActions)
+
   def initial(gameStartingData: GameStartingData) = {
     val startingPlayer = Random.shuffle(gameStartingData.players).head
     val playersInTurnOrder = GameData.getPlayersInApNapOrder(startingPlayer, gameStartingData.players)
