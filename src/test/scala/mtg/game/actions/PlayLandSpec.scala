@@ -23,6 +23,18 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(plainsObject, forestObject))
     }
+
+    "not list any playable lands if it's not the player's turn" in {
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerTwo))
+      manager.passUntilPhase(PrecombatMainPhase)
+      manager.passPriority(playerTwo)
+
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
+    }
   }
 
   "playing a land" should {

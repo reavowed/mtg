@@ -23,9 +23,12 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
     def updateGameObjectState(f: GameObjectState => GameObjectState): GameStateManager = {
       updateGameState(_.updateGameObjectState(f(gameStateManager.currentGameState.gameObjectState)))
     }
+    def passPriority(player: PlayerIdentifier): Unit = {
+      gameStateManager.handleDecision("Pass", player)
+    }
     private def passUntil(predicate: GameState => Boolean): Unit = {
       while (!predicate(gameStateManager.currentGameState) && gameStateManager.currentGameState.pendingActions.head.isInstanceOf[PriorityChoice]) {
-        gameStateManager.handleDecision("Pass", gameStateManager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playerToAct)
+        passPriority(gameStateManager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playerToAct)
       }
     }
     def passUntilTurn(turnNumber: Int): Unit = {

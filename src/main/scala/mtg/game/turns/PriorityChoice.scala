@@ -2,7 +2,7 @@ package mtg.game.turns
 
 import mtg.characteristics.types.Type
 import mtg.game.{PlayerIdentifier, actions}
-import mtg.game.actions.PlayLandEvent
+import mtg.game.actions.{PlayLandAction, PlayLandEvent}
 import mtg.game.objects.CardObject
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{ChoiceOption, GameAction, GameState, TypedChoice}
@@ -52,7 +52,7 @@ object PriorityChoice {
         Some(PriorityChoice(
           playerToAct,
           remainingPlayers,
-          gameState.gameObjectState.hands(playerToAct).ofType[CardObject].filter(_.card.printing.cardDefinition.types.contains(Type.Land))))
+          PlayLandAction.getPlayableLands(playerToAct, gameState)))
       case Nil =>
         None
     }
