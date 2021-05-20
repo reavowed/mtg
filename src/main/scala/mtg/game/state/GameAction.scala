@@ -11,7 +11,7 @@ abstract class GameObjectEvent extends GameAction {
 }
 
 abstract class TurnCycleEvent extends GameAction {
-  def execute(currentGameState: GameState): (GameHistory, Seq[GameAction], Option[LogEvent])
+  def execute(currentGameState: GameState): (GameHistory => GameHistory, Seq[GameAction], Option[LogEvent])
 }
 
 abstract class InternalGameAction extends GameAction {

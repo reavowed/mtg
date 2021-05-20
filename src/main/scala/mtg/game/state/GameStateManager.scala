@@ -36,8 +36,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>
         logEvent.map(gameState.recordLogEvent).getOrElse(gameState)
       case _ =>
-        val (history, actions, logEvent) = turnCycleEvent.execute(gameState)
-        gameState.copy(gameHistory = history).addActions(actions).recordLogEvent(logEvent)
+        val (historyUpdater, actions, logEvent) = turnCycleEvent.execute(gameState)
+        gameState.updateHistory(historyUpdater).addActions(actions).recordLogEvent(logEvent)
     }
   }
 
