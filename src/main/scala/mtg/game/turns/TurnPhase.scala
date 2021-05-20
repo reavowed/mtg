@@ -1,7 +1,10 @@
 package mtg.game.turns
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.game.state.GameAction
+import mtg.utils.CaseObjectSerializer
 
+@JsonSerialize(using = classOf[CaseObjectSerializer])
 sealed abstract class TurnPhase(val actions: Seq[GameAction])
 
 sealed abstract class TurnPhaseWithSteps(val steps: Seq[TurnStep]) extends TurnPhase(steps.map(BeginStepEvent))

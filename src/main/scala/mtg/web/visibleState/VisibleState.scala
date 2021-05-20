@@ -1,12 +1,15 @@
 package mtg.web.visibleState
 
 import mtg.game.state.{Choice, GameState}
+import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.{GameData, PlayerIdentifier}
 
 case class VisibleState(
   player: PlayerIdentifier,
   gameData: GameData,
   currentTurnNumber: Int,
+  currentPhase: Option[TurnPhase],
+  currentStep: Option[TurnStep],
   hand: Seq[VisibleGameObject],
   battlefield: Map[PlayerIdentifier, Seq[VisibleGameObject]],
   mulliganState: Map[PlayerIdentifier, MulliganState],
@@ -19,6 +22,8 @@ object VisibleState {
       playerIdentifier,
       gameState.gameData,
       gameState.currentTurnNumber,
+      gameState.currentPhase,
+      gameState.currentStep,
       gameState.gameObjectState.hands(playerIdentifier).map(VisibleGameObject.apply),
       gameState.gameObjectState.battlefield.groupBy(_.owner).view.mapValues(_.map(VisibleGameObject.apply)).toMap,
       MulliganState.forAllPlayers(gameState),
