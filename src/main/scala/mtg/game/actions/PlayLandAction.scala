@@ -5,7 +5,6 @@ import mtg.game.{PlayerIdentifier, Zone}
 import mtg.game.objects.CardObject
 import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state.{GameAction, GameState, InternalGameAction}
-import mtg.game.turns.MainPhase
 
 case class PlayLandAction(player: PlayerIdentifier, land: CardObject) extends InternalGameAction {
   override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
@@ -40,7 +39,7 @@ object PlayLandAction {
   }
   private def cannotPlayLands(player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Aggressive Mining
-    if (player != gameState.activePlayer) {
+    if (!TimingChecks.isPlayersTurn(player, gameState)) {
       // RULE: 305.3 / Apr 22 2021 :  A player can’t play a land, for any reason, if it isn’t their turn. Ignore any
       // part of an effect that instructs a player to do so.
       true
@@ -63,8 +62,7 @@ object PlayLandAction {
     // NOTE: Check for whose turn it is controlled by cannotPlayLands method above
     // NOTE: Check for priority is implicitly implemented by the fact that we only even check this when the player has
     // priority
-    // TODO: check stack is empty
-    gameState.currentPhase.exists(_.isInstanceOf[MainPhase])
+    TimingChecks.isMainPhaseOfPlayersTurnWithEmptyStack(player, gameState)
   }
   private def canPlayLandAsSpecialAction(land: CardObject, player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Crucible of Worlds
