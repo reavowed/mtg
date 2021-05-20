@@ -1,5 +1,6 @@
 package mtg
 
+import mtg.cards.CardDefinition
 import mtg.game.PlayerIdentifier
 import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState}
 import mtg.game.state.history.GameHistory
@@ -14,6 +15,12 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
   }
   def beCardObject(card: Card): Matcher[GameObject] = { (gameObject: GameObject) =>
     (gameObject.asOptionalInstanceOf[CardObject].exists(_.card == card), "", "")
+  }
+
+  implicit class GameObjectSeqOps(gameObjects: Seq[GameObject]) {
+    def getCard(cardDefinition: CardDefinition): CardObject = {
+      gameObjects.ofType[CardObject].filter(_.card.printing.cardDefinition == cardDefinition).head
+    }
   }
 
   implicit class GameStateManagerOps(gameStateManager: GameStateManager) {
@@ -36,6 +43,10 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
     }
     def passUntilPhase(turnPhase: TurnPhase): Unit = {
       passUntil(_.currentPhase.contains(turnPhase))
+    }
+
+    def playLand(land: GameObject, player: PlayerIdentifier): Unit = {
+      gameStateManager.handleDecision("Play " + land.objectId.sequentialId, player)
     }
   }
 

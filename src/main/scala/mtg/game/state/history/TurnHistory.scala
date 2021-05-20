@@ -12,6 +12,9 @@ case class TurnHistory(turn: Turn, phases: Seq[PhaseHistory]) {
   def addGameEvent(event: GameEvent): TurnHistory = {
     copy(phases = phases.init :+ phases.last.addGameEvent(event))
   }
+  def gameEvents: Seq[GameEvent] = {
+    phases.flatMap(_.gameEvents)
+  }
 }
 object TurnHistory {
   def forTurn(turn: Turn): TurnHistory = TurnHistory(turn, Nil)

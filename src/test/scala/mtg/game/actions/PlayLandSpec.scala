@@ -2,7 +2,7 @@ package mtg.game.actions
 
 import mtg._
 import mtg.data.cards.strixhaven.AgelessGuardian
-import mtg.data.cards.{Forest, Plains}
+import mtg.data.cards.{Forest, Plains, Swamp}
 import mtg.data.sets.Strixhaven
 import mtg.game.objects.CardObject
 import mtg.game.state.history.LogEvent
@@ -14,12 +14,12 @@ class PlayLandSpec extends SpecWithGameStateManager {
     "be available for all lands in hand in main phase of own turn with empty stack" in {
       val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
-      val plainsObject = playerOne.hand(initialState).mapFind(_.asOptionalInstanceOf[CardObject].filter(_.card.printing.cardDefinition == Plains)).get
-      val forestObject = playerOne.hand(initialState).mapFind(_.asOptionalInstanceOf[CardObject].filter(_.card.printing.cardDefinition == Forest)).get
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
 
+      val plainsObject = playerOne.hand(initialState).getCard(Plains)
+      val forestObject = playerOne.hand(initialState).getCard(Forest)
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(plainsObject, forestObject))
     }
@@ -36,12 +36,41 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
     }
 
+    "not be available if player has already played a land this turn" in {
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(PrecombatMainPhase)
+      manager.playLand(playerOne.hand(initialState).getCard(Plains), playerOne)
+
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
+    }
+
+    "be available for all lands in hand if player has not played a land this turn" in {
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val library = Seq(Swamp).map(Strixhaven.getCard(_).get)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand).setLibrary(playerOne, library)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(PrecombatMainPhase)
+      manager.playLand(playerOne.hand(manager.currentGameState).getCard(Plains), playerOne)
+      manager.passUntilTurn(3)
+      manager.passUntilPhase(PrecombatMainPhase)
+
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(
+        playerOne.hand(manager.currentGameState).getCard(Forest),
+        playerOne.hand(manager.currentGameState).getCard(Swamp)))
+    }
+
     // TODO: no land actions outside of main phase
     // TODO: no land actions if stack is non-empty
-    // TODO: no land actions if already played one this turn
     // TODO: land actions for lands in other zones with Crucible of Worlds effects
     // TODO: no land actions with Agressive Mining effects
     // TODO: no land actions from hand with Fires of Invention effects
+    // TODO: land actions after play with Explore / Azusa
   }
 
   "playing a land as a special action" should {
@@ -52,7 +81,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
-      manager.handleDecision("Play " + plainsObject.objectId.sequentialId, playerOne)
+      manager.playLand(plainsObject, playerOne)
 
       manager.currentGameState.gameObjectState.battlefield must contain(exactly(beCardObject(plainsObject.card)))
       manager.currentGameState.gameObjectState.hands(playerOne) must not(contain(beCardObject(plainsObject.card)))

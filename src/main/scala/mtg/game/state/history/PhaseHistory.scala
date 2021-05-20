@@ -7,6 +7,7 @@ sealed abstract class PhaseHistory {
   def phase: TurnPhase
   def startStep(step: TurnStep): PhaseHistory
   def addGameEvent(event: GameEvent): PhaseHistory
+  def gameEvents: Seq[GameEvent]
 }
 object PhaseHistory {
   def apply(turn: Turn, phase: TurnPhase): PhaseHistory = {
@@ -23,13 +24,14 @@ case class PhaseHistoryWithSteps(turn: Turn, phase: TurnPhase, steps: Seq[StepHi
   override def startStep(step: TurnStep): PhaseHistory = {
     copy(steps = steps :+ StepHistory(turn, phase, step, Nil))
   }
-  def addGameEvent(event: GameEvent): PhaseHistory = {
+  override def addGameEvent(event: GameEvent): PhaseHistory = {
     copy(steps = steps.init :+ steps.last.addGameEvent(event))
   }
+  override def gameEvents: Seq[GameEvent] = steps.flatMap(_.gameEvents)
 }
-case class PhaseHistoryWithoutSteps(turn: Turn, phase: TurnPhase, events: Seq[GameEvent]) extends PhaseHistory {
+case class PhaseHistoryWithoutSteps(turn: Turn, phase: TurnPhase, gameEvents: Seq[GameEvent]) extends PhaseHistory {
   override def startStep(step: TurnStep): PhaseHistory = throw new RuntimeException("Cannot add step to " + phase.getClass.getSimpleName)
-  def addGameEvent(event: GameEvent): PhaseHistory = {
-    copy(events = events :+ event)
+  override def addGameEvent(event: GameEvent): PhaseHistory = {
+    copy(gameEvents = gameEvents :+ event)
   }
 }

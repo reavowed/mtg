@@ -3,7 +3,7 @@ package mtg.game.actions
 import mtg.characteristics.types.Type
 import mtg.game.{PlayerIdentifier, Zone}
 import mtg.game.objects.CardObject
-import mtg.game.state.history.LogEvent
+import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state.{GameAction, GameState, InternalGameAction}
 
 case class PlayLandAction(player: PlayerIdentifier, land: CardObject) extends InternalGameAction {
@@ -28,9 +28,29 @@ object PlayLandAction {
         .filter(!cannotPlayLand(_, player, gameState))
         .filter(canPlayLandAsSpecialAction(_, player, gameState))
   }
+  private def getNumberOfLandsPlayedThisTurn(gameState: GameState): Int = {
+    gameState.gameHistory.forCurrentTurn.toSeq.flatMap(_.gameEvents)
+      .ofType[GameEvent.ResolvedEvent].map(_.event)
+      .count(_.isInstanceOf[PlayLandEvent])
+  }
+  private def getNumberOfLandPlaysAvailable(gameState: GameState): Int = {
+    // TODO: effects such as Explore / Azusa
+    1
+  }
   private def cannotPlayLands(player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Aggressive Mining
-    player != gameState.activePlayer
+    if (player != gameState.activePlayer) {
+      // RULE: 305.3 / Apr 22 2021 :  A player can’t play a land, for any reason, if it isn’t their turn. Ignore any
+      // part of an effect that instructs a player to do so.
+      true
+    } else if (getNumberOfLandPlaysAvailable(gameState) <= getNumberOfLandsPlayedThisTurn(gameState)) {
+      // RULE: 305.2b / Apr 22 2021 : A player can’t play a land, for any reason, if the number of lands the player can
+      // play this turn is equal to or less than the number of lands they have already played this turn. Ignore any part
+      // of an effect that instructs a player to do so.
+      true
+    } else {
+      false
+    }
   }
   private def cannotPlayLand(land: CardObject, player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Experimental Frenzy / Tomik, Distinguished Advokist
