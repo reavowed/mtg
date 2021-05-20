@@ -41,7 +41,7 @@ export default function Card({card, ...props}) {
         $(document).off("click", handleDocumentClick);
     }
 
-    const imgRef = useRefWithEventHandler(addImageHandler, removeImageHandler, []);
+    const imgRef = useRefWithEventHandler(addImageHandler, removeImageHandler, [actions]);
 
     return scryfallCard && <Fragment>
         <img ref={imgRef} src={scryfallCard.image_uris.small} {...props} />
