@@ -1,5 +1,5 @@
 package mtg.parts.costs
 
-abstract class Cost {
-
+trait Cost {
+  def text: String
 }

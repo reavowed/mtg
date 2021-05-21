@@ -15,7 +15,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
   val playerOne = PlayerIdentifier("P1")
   val playerTwo = PlayerIdentifier("P2")
   val players = Seq(playerOne, playerTwo)
-  val deckLol = (Seq.fill(38)(AgelessGuardian) ++ Seq.fill(22)(Plains)).map(Strixhaven.getCard(_).get)
+  val deckLol = (Seq.fill(38)(AgelessGuardian) ++ Seq.fill(22)(Plains)).map(Strixhaven.cardPrintingsByDefinition)
   val gameStartingData = GameStartingData(players.map(PlayerStartingData(_, deckLol, Nil)))
   val gameStateManager = GameStateManager.initial(gameStartingData, onStateUpdate)
   gameStateManager.currentGameState.gameData.playersInTurnOrder.foreach(gameStateManager.handleDecision("K", _))

@@ -13,9 +13,9 @@ function getActionsFromGameState(gameState) {
         actions[objectId] = actions[objectId] || [];
         actions[objectId] = [...actions[objectId], action];
     }
-    _.forEach(gameState.currentChoice.details.playableLands, landId => addAction(landId, {
-        text: "Play",
-        option: "Play " + landId
+    _.forEach(gameState.currentChoice.details.availableActions, action => addAction(action.objectId, {
+        text: action.displayText,
+        option: action.optionText
     }));
     return actions;
 }

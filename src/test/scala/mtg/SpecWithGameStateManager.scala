@@ -1,6 +1,6 @@
 package mtg
 
-import mtg.cards.CardDefinition
+import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.game.PlayerIdentifier
 import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState}
 import mtg.game.state.history.GameHistory
@@ -21,6 +21,9 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
   }
 
   implicit class GameObjectSeqOps(gameObjects: Seq[GameObject]) {
+    def getCard(cardPrinting: CardPrinting): CardObject = {
+      gameObjects.ofType[CardObject].filter(_.card.printing == cardPrinting).head
+    }
     def getCard(cardDefinition: CardDefinition): CardObject = {
       gameObjects.ofType[CardObject].filter(_.card.printing.cardDefinition == cardDefinition).head
     }

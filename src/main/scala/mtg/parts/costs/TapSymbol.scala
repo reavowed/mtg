@@ -1,5 +1,3 @@
 package mtg.parts.costs
 
-case object TapSymbol extends Cost {
-
-}
+case object TapSymbol extends Symbol("T") with Cost

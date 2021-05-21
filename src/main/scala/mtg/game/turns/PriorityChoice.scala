@@ -1,22 +1,26 @@
 package mtg.game.turns
 
-import mtg.game.actions.PlayLandAction
-import mtg.game.state.history.LogEvent
+import mtg.game.PlayerIdentifier
+import mtg.game.actions.{PlayLandAction, PriorityAction}
 import mtg.game.state._
-import mtg.game.{PlayerIdentifier, actions}
+import mtg.game.state.history.LogEvent
 
 sealed trait PriorityOption extends ChoiceOption
 object PriorityOption {
   case object PassPriority extends PriorityOption
-  case class PlayLand(land: ObjectWithState) extends PriorityOption
+  case class PlayLand(playLandAction: PlayLandAction) extends PriorityOption
 }
 
-case class PriorityChoice(playerToAct: PlayerIdentifier, remainingPlayers: Seq[PlayerIdentifier], playableLands: Seq[ObjectWithState]) extends TypedChoice[PriorityOption] {
+case class PriorityChoice(
+  playerToAct: PlayerIdentifier,
+  remainingPlayers: Seq[PlayerIdentifier],
+  availableActions: Seq[PriorityAction],
+) extends TypedChoice[PriorityOption] {
 
   object PlayLand {
-    def unapply(string: String): Option[ObjectWithState] = {
+    def unapply(string: String): Option[PlayLandAction] = {
       if (string.startsWith("Play ")) {
-        string.substring("Play ".length).toIntOption.flatMap(id => playableLands.find(_.gameObject.objectId.sequentialId == id))
+        string.substring("Play ".length).toIntOption.flatMap(id => availableActions.ofType[PlayLandAction].find(_.land.gameObject.objectId.sequentialId == id))
       } else {
         None
       }
@@ -26,8 +30,8 @@ case class PriorityChoice(playerToAct: PlayerIdentifier, remainingPlayers: Seq[P
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[PriorityOption] = serializedChosenOption match {
     case "Pass" =>
       Some(PriorityOption.PassPriority)
-    case PlayLand(landCard) =>
-      Some(PriorityOption.PlayLand(landCard))
+    case PlayLand(action) =>
+      Some(PriorityOption.PlayLand(action))
     case _ => None
   }
   override def handleDecision(chosenOption: PriorityOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
@@ -37,8 +41,8 @@ case class PriorityChoice(playerToAct: PlayerIdentifier, remainingPlayers: Seq[P
           (PriorityChoice.create(remainingPlayers, currentGameState).toSeq, None)
         else
           (Nil, None)
-      case PriorityOption.PlayLand(landCard) =>
-        (Seq(actions.PlayLandAction(playerToAct, landCard), PriorityAction), None)
+      case PriorityOption.PlayLand(playLandAction) =>
+        (Seq(playLandAction, AllPlayersGetPriorityAction), None)
     }
   }
 }
@@ -50,7 +54,7 @@ object PriorityChoice {
         Some(PriorityChoice(
           playerToAct,
           remainingPlayers,
-          PlayLandAction.getPlayableLands(playerToAct, gameState)))
+          PriorityAction.getAll(playerToAct, gameState)))
       case Nil =>
         None
     }

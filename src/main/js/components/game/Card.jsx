@@ -6,10 +6,34 @@ import ScryfallService from "../../ScryfallService";
 import $ from "jQuery";
 import {useRefWithEventHandler} from "../../utils/hook-utils";
 
+function ActionText({text}) {
+    const elements = [];
+    while (text !== "") {
+        if (text.startsWith("{")) {
+            const closingBraceIndex = text.indexOf("}")
+            const symbolContents = text.substring(1, closingBraceIndex);
+            elements.push(<span className={"card-symbol card-symbol-" + symbolContents}/>);
+            text = text.substring(closingBraceIndex + 1);
+        } else {
+            const openingBraceIndex = text.indexOf("{");
+            if (openingBraceIndex > -1) {
+                elements.push(text.substring(0, openingBraceIndex))
+                text = text.substring(openingBraceIndex);
+            } else {
+                elements.push(text);
+                text = "";
+            }
+        }
+    }
+    return elements;
+}
+
 function ActionMenu({actions, ...props}) {
     const decisionMaker = useContext(DecisionMaker);
     return <div class="dropdown-menu dropdown-menu-sm" id="context-menu" {...props} >
-        {actions.map(action => <a class="dropdown-item" href="#" key={action.option} onclick={() => decisionMaker.makeDecision(action.option)}>{action.text}</a>)}
+        {actions.map(action => <a class="dropdown-item" href="#" key={action.option} onclick={() => decisionMaker.makeDecision(action.option)}>
+            <ActionText text={action.text} />
+        </a>)}
     </div>
 }
 

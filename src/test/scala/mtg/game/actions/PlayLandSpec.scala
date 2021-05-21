@@ -4,15 +4,20 @@ import mtg._
 import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.data.cards.{Forest, Plains, Swamp}
 import mtg.data.sets.Strixhaven
-import mtg.game.objects.CardObject
+import mtg.game.objects.{CardObject, GameObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.{PriorityChoice, StartNextTurnAction, TurnStep}
+import org.specs2.matcher.Matcher
 
 class PlayLandSpec extends SpecWithGameStateManager {
+  def bePlayLandAction(land: GameObject): Matcher[PlayLandAction] = {
+    {(playLandAction: PlayLandAction) => playLandAction.land} ^^ beObjectWithState(land)
+  }
+
   "land actions with priority" should {
     "be available for all lands in hand in main phase of own turn with empty stack" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
@@ -21,13 +26,13 @@ class PlayLandSpec extends SpecWithGameStateManager {
       val plainsObject = playerOne.hand(initialState).getCard(Plains)
       val forestObject = playerOne.hand(initialState).getCard(Forest)
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(
-        beObjectWithState(plainsObject),
-        beObjectWithState(forestObject)))
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction] must contain(exactly(
+        bePlayLandAction(plainsObject),
+        bePlayLandAction(forestObject)))
     }
 
     "not be available on another player's turn" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, hand)
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
@@ -35,11 +40,11 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.passPriority(playerOne)
 
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerTwo)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction] must beEmpty
     }
 
     "not be available if player has already played a land this turn" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
@@ -47,12 +52,12 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.playLand(playerOne.hand(initialState).getCard(Plains), playerOne)
 
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction] must beEmpty
     }
 
     "be available for all lands in hand if player has not played a land this turn" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
-      val library = Seq(Swamp).map(Strixhaven.getCard(_).get)
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
+      val library = Seq(Swamp).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand).setLibrary(playerOne, library)
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
@@ -62,20 +67,20 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.passUntilPhase(PrecombatMainPhase)
 
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must contain(exactly(
-        beObjectWithState(playerOne.hand(manager.currentGameState).getCard(Forest)),
-        beObjectWithState(playerOne.hand(manager.currentGameState).getCard(Swamp))))
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction] must contain(exactly(
+        bePlayLandAction(playerOne.hand(manager.currentGameState).getCard(Forest)),
+        bePlayLandAction(playerOne.hand(manager.currentGameState).getCard(Swamp))))
     }
 
     "not be available in upkeep" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
 
       manager.currentGameState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playableLands must beEmpty
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction] must beEmpty
     }
 
     // TODO: no land actions if stack is non-empty
@@ -87,7 +92,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
 
   "playing a land as a special action" should {
     "move the land to the battlefield" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
       val plainsObject = playerOne.hand(initialState).mapFind(_.asOptionalInstanceOf[CardObject].filter(_.card.printing.cardDefinition == Plains)).get
 
@@ -99,7 +104,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.currentGameState.gameObjectState.hands(playerOne) must not(contain(beCardObject(plainsObject.card)))
     }
     "log an event" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.getCard(_).get)
+      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
       val plainsObject = playerOne.hand(initialState).mapFind(_.asOptionalInstanceOf[CardObject].filter(_.card.printing.cardDefinition == Plains)).get
 

@@ -1,5 +1,5 @@
 package mtg.effects
 
-class Effect {
-
+abstract class Effect {
+  def text: String
 }

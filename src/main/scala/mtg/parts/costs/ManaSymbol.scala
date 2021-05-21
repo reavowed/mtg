@@ -3,8 +3,7 @@ package mtg.parts.costs
 import mtg.characteristics.{Color, ColorOrColorless}
 import mtg.parts.mana.{ColoredMana, ColorlessMana, ManaType}
 
-sealed abstract class ManaSymbol(symbolInside: String) {
-  val text = s"{$symbolInside}"
+sealed abstract class ManaSymbol(textInside: String) extends Symbol(textInside) {
   def colors: Set[Color]
 }
 
