@@ -40,7 +40,7 @@ package object mtg {
 
   implicit class SeqMonadExtensionMethods[F[_] : Monad, A](seq: Seq[F[A]]) {
     def swap: F[Seq[A]] = {
-      seq.foldLeft(Monad[F].point(Seq.empty[A])) { case (outputSeq, outputValue) =>
+      seq.foldLeft(Monad[F].point(Seq.empty[A])) { (outputSeq, outputValue) =>
         for {
           seq <- outputSeq
           value <- outputValue

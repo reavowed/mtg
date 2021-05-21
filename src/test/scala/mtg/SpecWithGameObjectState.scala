@@ -52,7 +52,7 @@ trait SpecWithGameObjectState extends SpecificationLike {
   }
 
   implicit class GameObjectStateOps(gameObjectState: GameObjectState) {
-    private def setZone(zone: Zone, playerIdentifier: PlayerIdentifier, cardPrintings: Seq[CardPrinting]): GameObjectState = {
+    def setZone(zone: Zone, playerIdentifier: PlayerIdentifier, cardPrintings: Seq[CardPrinting]): GameObjectState = {
       val cards = cardPrintings.map(Card(playerIdentifier, _))
       cards.foldLeft(gameObjectState.updateZone(zone, _ => Nil)) { (state, card) =>
         zone.stateLens.modify(s => s :+ CardObject(card, ObjectId(state.nextObjectId), zone))(state).copy(nextObjectId = state.nextObjectId + 1)
@@ -64,6 +64,11 @@ trait SpecWithGameObjectState extends SpecificationLike {
     }
     def setHand(playerIdentifier: PlayerIdentifier, cardPrintings: Seq[CardPrinting]): GameObjectState = {
       setZone(Zone.Hand(playerIdentifier), playerIdentifier, cardPrintings)
+    }
+    def setBattlefield(cardPrintingsByPlayer: Map[PlayerIdentifier, Seq[CardPrinting]]): GameObjectState = {
+      cardPrintingsByPlayer.foldLeft(gameObjectState) { case (state, (player, cardPrintings)) =>
+        state.setZone(Zone.Battlefield, player, cardPrintings)
+      }
     }
   }
   implicit class GameObjectOps(gameObject: GameObject) {

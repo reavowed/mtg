@@ -25,5 +25,5 @@ case class GenericManaSymbol(amount: Int) extends ManaSymbol(amount.toString) {
 
 object ManaSymbol {
   implicit def intToManaSymbol(amount: Int): ManaSymbol = GenericManaSymbol(amount)
-  implicit def colorOrColorlessToManaSymbol(colorOrColorless: ColorOrColorless): ManaSymbol = ManaTypeSymbol(colorOrColorless.manaType)
+  implicit def colorOrColorlessToManaSymbol(colorOrColorless: ColorOrColorless): ManaTypeSymbol = ManaTypeSymbol(colorOrColorless.manaType)
 }

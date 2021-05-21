@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.abilities.Ability
+import mtg.abilities.AbilityDefinition
 import mtg.cards.ColorIndicator
 import mtg.characteristics.Color
 import mtg.characteristics.types.{Subtype, Supertype, Type}
@@ -14,7 +14,7 @@ case class Characteristics(
   superTypes: Seq[Supertype],
   types: Seq[Type],
   subTypes: Seq[Subtype],
-  abilities: Seq[Ability],
+  abilities: Seq[AbilityDefinition],
   power: Option[Int],
   toughness: Option[Int],
   loyalty: Option[Int])

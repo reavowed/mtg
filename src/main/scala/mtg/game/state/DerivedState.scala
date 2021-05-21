@@ -1,5 +1,6 @@
 package mtg.game.state
 
+import mtg.characteristics.types.BasicLandType
 import mtg.game.objects.{GameObjectState, ObjectId}
 
 case class DerivedState(objectStates: Map[ObjectId, ObjectWithState]) {
@@ -8,10 +9,20 @@ case class DerivedState(objectStates: Map[ObjectId, ObjectWithState]) {
 
 object DerivedState {
   def calculateFromGameObjectState(gameObjectState: GameObjectState): DerivedState = {
-    val initialStates = gameObjectState.allObjects.map(gameObject =>
-      gameObject.objectId -> ObjectWithState(gameObject, gameObject.baseCharacteristics, None)
-    ).toMap
+    val initialStates = gameObjectState.allObjects.map(gameObject => ObjectWithState(gameObject, gameObject.baseCharacteristics, None))
 
-    DerivedState(initialStates)
+    val finalStates = Seq(
+      addIntrinsicManaAbilities(_)
+    ).foldLeft(initialStates) { (objectStates, updater) => updater(objectStates) }
+
+    DerivedState(finalStates.map(objectWithState => objectWithState.gameObject.objectId -> objectWithState).toMap)
+  }
+
+  def addIntrinsicManaAbilities(objectStates: Seq[ObjectWithState]): Seq[ObjectWithState] = {
+    objectStates.map { objectWithState =>
+      objectWithState.characteristics.subTypes.ofType[BasicLandType].foldLeft(objectWithState) { (objectWithState, landType) =>
+        objectWithState.addAbility(landType.intrinsicManaAbility)
+      }
+    }
   }
 }

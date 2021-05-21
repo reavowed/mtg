@@ -1,6 +1,6 @@
 package mtg.cards
 
-import mtg.abilities.Ability
+import mtg.abilities.AbilityDefinition
 import mtg.characteristics.types.{Subtype, Supertype, Type}
 import mtg.parts.costs.ManaCost
 
@@ -11,7 +11,7 @@ class CardDefinition(
   val superTypes: Seq[Supertype],
   val types: Seq[Type],
   val subTypes: Seq[Subtype],
-  val abilitiesFromRulesText: Seq[Ability],
+  val abilitiesFromRulesText: Seq[AbilityDefinition],
   val powerAndToughness: Option[PowerAndToughness],
   val loyalty: Option[Int])
 {

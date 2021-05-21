@@ -1,13 +1,18 @@
 package mtg.characteristics.types
 
+import mtg.abilities.ActivatedAbilityDefinition
 import mtg.characteristics.Color
+import mtg.effects.AddManaEffect
+import mtg.parts.costs.TapSymbol
 
 sealed class Subtype
 
 sealed class LandType extends Subtype
 sealed class CreatureType(val name: String) extends Subtype
 
-sealed class BasicLandType(val name: String, val color: Color) extends LandType
+sealed class BasicLandType(val name: String, val color: Color) extends LandType {
+  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), Seq(AddManaEffect(color)))
+}
 
 object BasicLandType {
   val Plains = new BasicLandType("Plains", Color.White)
