@@ -8,10 +8,16 @@ import Card from "./Card";
 
 function CardWrapper({card, as}) {
     return <div className="cardWrapper">
-        <div className="cardContainer">
-            {createElement(as, {card})}
-        </div>
+        {createElement(as, {card})}
     </div>
+}
+
+function getCardWidth(card) {
+    if (card.permanentStatus && card.permanentStatus.isTapped) {
+        return 204;
+    } else {
+        return 4146;
+    }
 }
 
 export default function CardRow({className, cards, as}) {
@@ -21,9 +27,9 @@ export default function CardRow({className, cards, as}) {
         const cardElements = Array.from(ref.childNodes),
             numberOfCards = cardElements.length;
         if (numberOfCards == 0) return;
-        const imageWidth = cardElements[0].childNodes[0].clientWidth,
-            availableWidth = ref.clientWidth,
-            totalWidthToRemove = (imageWidth * numberOfCards) - availableWidth,
+        const availableWidth = ref.clientWidth,
+            totalCardWidth = _.sum(_.map(cards, getCardWidth)),
+            totalWidthToRemove = totalCardWidth - availableWidth,
             individualWidthToRemove = totalWidthToRemove / (cards.length - 1);
 
         _.forEach(cardElements, (cardElement, i) => { cardElement.style = {}; });

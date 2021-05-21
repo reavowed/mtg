@@ -4,6 +4,7 @@ import ActionManager from "../../ActionManager";
 import DecisionMaker from "../../DecisionMaker";
 import ScryfallService from "../../ScryfallService";
 import $ from "jQuery";
+import {addClass} from "../../utils/element-utils";
 import {useRefWithEventHandler} from "../../utils/hook-utils";
 
 function ActionText({text}) {
@@ -67,8 +68,13 @@ export default function Card({card, ...props}) {
 
     const imgRef = useRefWithEventHandler(addImageHandler, removeImageHandler, [actions]);
 
-    return scryfallCard && <Fragment>
+    const containerClasses = ["cardContainer"]
+    if (card.permanentStatus && card.permanentStatus.isTapped) {
+        containerClasses.push("tapped")
+    }
+
+    return scryfallCard && <div className={containerClasses.join(" ")}>
         <img ref={imgRef} src={scryfallCard.image_uris.small} {...props} />
         {actionMenuDetails && <ActionMenu actions={actions} style={{display: "block", top: actionMenuDetails.top, left: actionMenuDetails.left }} />}
-    </Fragment>
+    </div>
 }
