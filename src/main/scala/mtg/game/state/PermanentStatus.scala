@@ -5,3 +5,6 @@ case class PermanentStatus(
   isFlipped: Boolean,
   isFaceDown: Boolean,
   isPhasedOut: Boolean)
+{
+  def tap(): PermanentStatus = copy(isTapped = true)
+}

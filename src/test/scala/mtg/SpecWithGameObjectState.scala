@@ -25,6 +25,7 @@ trait SpecWithGameObjectState extends SpecificationLike {
     players.map(p => p -> Nil).toMap,
     players.map(p => p -> Nil).toMap,
     Nil,
+    players.map(p => p -> Nil).toMap,
     players.map(p => p -> Nil).toMap)
 
   def setInitialHandAndLibrary(gameObjectState: GameObjectState): GameObjectState = {
@@ -55,7 +56,7 @@ trait SpecWithGameObjectState extends SpecificationLike {
     def setZone(zone: Zone, playerIdentifier: PlayerIdentifier, cardPrintings: Seq[CardPrinting]): GameObjectState = {
       val cards = cardPrintings.map(Card(playerIdentifier, _))
       cards.foldLeft(gameObjectState.updateZone(zone, _ => Nil)) { (state, card) =>
-        zone.stateLens.modify(s => s :+ CardObject(card, ObjectId(state.nextObjectId), zone))(state).copy(nextObjectId = state.nextObjectId + 1)
+        zone.stateLens.modify(s => s :+ CardObject(card, ObjectId(state.nextObjectId), zone, zone.defaultPermanentStatus))(state).copy(nextObjectId = state.nextObjectId + 1)
       }
     }
 

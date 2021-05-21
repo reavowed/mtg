@@ -1,7 +1,9 @@
 package mtg.game.objects
 
+import monocle.Focus
 import mtg.cards.CardPrinting
 import mtg.game.{GameStartingData, PlayerIdentifier, Zone}
+import mtg.utils.AtGuaranteed
 
 import scala.util.Random
 
@@ -10,19 +12,26 @@ case class GameObjectState(
     libraries: Map[PlayerIdentifier, Seq[GameObject]],
     hands: Map[PlayerIdentifier, Seq[GameObject]],
     battlefield: Seq[GameObject],
-    sideboards: Map[PlayerIdentifier, Seq[GameObject]])
+    sideboards: Map[PlayerIdentifier, Seq[GameObject]],
+    manaPools: Map[PlayerIdentifier, Seq[ManaObject]])
 {
   def updateZone(zone: Zone, objectsUpdater: Seq[GameObject] => Seq[GameObject]): GameObjectState = {
     zone.stateLens.modify(objectsUpdater)(this)
   }
+  def updateManaPool(player: PlayerIdentifier, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
+    Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
+  }
   def createNewObjectForZone(oldObject: GameObject, newZone: Zone): (GameObject, GameObjectState) = {
-    (oldObject.forNewZone(ObjectId(nextObjectId), newZone), copy(nextObjectId = nextObjectId + 1))
+    (oldObject.setObjectId(ObjectId(nextObjectId)).setZone(newZone).setPermanentStatus(newZone.defaultPermanentStatus), copy(nextObjectId = nextObjectId + 1))
   }
   def allObjects: Seq[GameObject] = {
     (libraries.flatMap(_._2) ++ hands.flatMap(_._2) ++ battlefield).toSeq
   }
   def allVisibleObjects(player: PlayerIdentifier): Seq[GameObject] = {
     hands(player) ++ battlefield
+  }
+  def updateGameObject(oldGameObject: GameObject, newGameObject: GameObject): GameObjectState = {
+    oldGameObject.zone.stateLens.modify(_.map(o => if (o == oldGameObject) newGameObject else o))(this)
   }
 }
 
@@ -35,15 +44,12 @@ object GameObjectState {
       objectId
     }
     def createCardObject(cardPrinting: CardPrinting, playerIdentifier: PlayerIdentifier, zone: Zone): CardObject = {
-      CardObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone)
+      CardObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone, None)
     }
+    def emptyMap[T]: Map[PlayerIdentifier, Seq[T]] = gameStartingData.playerData.map(_.playerIdentifier -> Nil).toMap
     val libraries = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
       playerIdentifier -> Random.shuffle(deck).map(createCardObject(_, playerIdentifier, Zone.Library(playerIdentifier)))
-    }).toMap
-    val hands = gameStartingData.playerData.map(playerStartingData => {
-      import playerStartingData._
-      playerIdentifier -> Nil
     }).toMap
     val sideboards = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
@@ -53,8 +59,9 @@ object GameObjectState {
     GameObjectState(
       nextObjectId,
       libraries,
-      hands,
+      emptyMap,
       Nil,
-      sideboards)
+      sideboards,
+      emptyMap)
   }
 }

@@ -3,10 +3,10 @@ package mtg.game.actions
 import mtg.characteristics.types.Type
 import mtg.game.objects.ObjectId
 import mtg.game.state.history.{GameEvent, LogEvent}
-import mtg.game.state.{GameAction, GameState, InternalGameAction, ObjectWithState}
+import mtg.game.state.{GameAction, GameState, ObjectWithState}
 import mtg.game.{PlayerIdentifier, Zone}
 
-case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) extends InternalGameAction with PriorityAction {
+case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = land.gameObject.objectId
   override def displayText: String = "Play"
   override def optionText: String = "Play " + land.gameObject.objectId
