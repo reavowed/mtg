@@ -78,5 +78,20 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
 
       manager.currentGameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
     }
+
+    "not tap for mana twice" in {
+      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(PrecombatMainPhase)
+
+      val plainsObject = manager.currentGameState.gameObjectState.battlefield.getCard(plains)
+      val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
+      manager.handleDecision(ability.optionText, playerOne)
+
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction] must beEmpty
+    }
   }
 }

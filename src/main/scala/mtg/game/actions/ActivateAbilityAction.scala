@@ -26,6 +26,7 @@ object ActivateAbilityAction {
   }
   private def canActivateAbility(player: PlayerIdentifier, source: ObjectWithState, ability: ActivatedAbilityDefinition): Boolean = {
     ability.functionalZones.contains(source.gameObject.zone.zoneType) &&
-      source.controller.getOrElse(source.gameObject.owner) == player
+      source.controller.getOrElse(source.gameObject.owner) == player &&
+      !ability.costs.exists(_.isUnpayable(source))
   }
 }
