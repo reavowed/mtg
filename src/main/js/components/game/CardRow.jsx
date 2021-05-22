@@ -26,7 +26,7 @@ export default function CardRow({className, cards, as}) {
     const overlapCards = useCallback((ref) => {
         const cardElements = Array.from(ref.childNodes),
             numberOfCards = cardElements.length;
-        if (numberOfCards == 0) return;
+        if (numberOfCards === 0) return;
         const availableWidth = ref.clientWidth,
             totalCardWidth = _.sum(_.map(cards, getCardWidth)),
             totalWidthToRemove = totalCardWidth - availableWidth,
@@ -44,7 +44,7 @@ export default function CardRow({className, cards, as}) {
     }, [cards]);
     const ref = useRefWithEventHandler(overlapCards, null, [cards]);
 
-    return <HorizontalCenter className={addClass(className, "px-2")} ref={ref}>
+    return <HorizontalCenter className={addClass(className, "cardRow px-2")} ref={ref}>
             {_.map(cards, card => <CardWrapper key={card.objectId} card={card} as={as} /> )}
         </HorizontalCenter>;
 }
