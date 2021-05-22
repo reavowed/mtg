@@ -7,7 +7,8 @@ import mtg.data.sets.Strixhaven
 import mtg.game.objects.{CardObject, GameObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.game.turns.{PriorityChoice, StartNextTurnAction, TurnStep}
+import mtg.game.turns.priority.PriorityChoice
+import mtg.game.turns.{StartNextTurnAction, TurnStep}
 import org.specs2.matcher.Matcher
 
 class PlayLandSpec extends SpecWithGameStateManager {

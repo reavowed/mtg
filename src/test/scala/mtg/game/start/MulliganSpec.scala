@@ -5,7 +5,7 @@ import mtg.game.PlayerIdentifier
 import mtg.game.objects.{CardObject, GameObject, GameObjectState}
 import mtg.game.start.mulligans.{MulliganChoice, ReturnCardsToLibraryChoice}
 import mtg.game.state.{GameAction, GameState}
-import mtg.game.turns.{PriorityChoice, TurnPhase, TurnStep}
+import mtg.game.turns.{TurnPhase, TurnStep}
 import org.specs2.matcher.{MatchResult, Matcher}
 
 class MulliganSpec extends SpecWithGameStateManager {

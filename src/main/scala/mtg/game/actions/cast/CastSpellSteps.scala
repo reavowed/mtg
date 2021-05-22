@@ -5,7 +5,8 @@ import mtg.game.actions.SpendManaAutomaticallyEvent
 import mtg.game.objects.{GameObject, ManaObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.state._
-import mtg.game.turns.PriorityFromPlayerAction
+import mtg.game.turns.priority
+import mtg.game.turns.priority.PriorityFromPlayerAction
 import mtg.game.{PlayerIdentifier, Zone}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
 
@@ -82,7 +83,7 @@ object CastSpellSteps {
     override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
       val spellWithState = currentGameState.derivedState.objectStates(spell.objectId)
       (
-        Seq(SpellCastEvent(spell), PriorityFromPlayerAction(player)),
+        Seq(SpellCastEvent(spell), priority.PriorityFromPlayerAction(player)),
         Some(LogEvent.CastSpell(player, spellWithState.characteristics.name.getOrElse("<unnamed spell>")))
       )
     }

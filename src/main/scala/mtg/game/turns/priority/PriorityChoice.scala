@@ -1,4 +1,4 @@
-package mtg.game.turns
+package mtg.game.turns.priority
 
 import mtg.game.PlayerIdentifier
 import mtg.game.actions.cast.CastSpellAction
@@ -50,7 +50,7 @@ case class PriorityChoice(
         if (remainingPlayers.nonEmpty)
           (PriorityChoice.create(remainingPlayers, currentGameState).toSeq, None)
         else
-          (Nil, None)
+          (Seq(ResolveTopStackObject), None)
       case PriorityOption.TakeAction(action) =>
         (Seq(action, PriorityFromPlayerAction(playerToAct)), None)
     }

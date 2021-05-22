@@ -1,4 +1,4 @@
-package mtg.game.turns
+package mtg.game.turns.priority
 
 import mtg.game.PlayerIdentifier
 import mtg.game.state.history.LogEvent

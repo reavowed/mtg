@@ -7,7 +7,8 @@ import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
 import mtg.game.objects.CardObject
 import mtg.game.state.PermanentStatus
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.game.turns.{PriorityChoice, StartNextTurnAction}
+import mtg.game.turns.StartNextTurnAction
+import mtg.game.turns.priority.PriorityChoice
 import org.specs2.matcher.Matcher
 
 class UntapStepSpec extends SpecWithGameStateManager {

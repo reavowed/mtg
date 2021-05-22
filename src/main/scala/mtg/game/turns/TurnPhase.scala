@@ -2,6 +2,7 @@ package mtg.game.turns
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.game.state.GameAction
+import mtg.game.turns.priority.PriorityFromActivePlayerAction
 import mtg.game.turns.turnEvents.BeginStepEvent
 import mtg.utils.CaseObjectSerializer
 

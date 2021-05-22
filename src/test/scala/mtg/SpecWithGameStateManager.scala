@@ -5,7 +5,8 @@ import mtg.game.PlayerIdentifier
 import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState}
 import mtg.game.state.history.GameHistory
 import mtg.game.state.{GameAction, GameResult, GameState, GameStateManager, ObjectWithState}
-import mtg.game.turns.{PriorityChoice, TurnPhase}
+import mtg.game.turns.TurnPhase
+import mtg.game.turns.priority.PriorityChoice
 import org.specs2.matcher.Matcher
 
 abstract class SpecWithGameStateManager extends SpecWithGameObjectState {

@@ -5,7 +5,8 @@ import mtg.data.cards.Plains
 import mtg.data.sets.Strixhaven
 import mtg.game.actions.ActivateAbilityAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.game.turns.{PriorityChoice, StartNextTurnAction}
+import mtg.game.turns.StartNextTurnAction
+import mtg.game.turns.priority.PriorityChoice
 
 class ManaPoolSpec extends SpecWithGameStateManager {
   "mana pool" should {

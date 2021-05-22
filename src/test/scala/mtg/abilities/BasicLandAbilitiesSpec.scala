@@ -9,7 +9,8 @@ import mtg.game.actions.ActivateAbilityAction
 import mtg.game.objects.{CardObject, GameObject}
 import mtg.game.state.{ObjectWithState, PermanentStatus}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.game.turns.{PriorityChoice, StartNextTurnAction}
+import mtg.game.turns.StartNextTurnAction
+import mtg.game.turns.priority.PriorityChoice
 import mtg.parts.costs.TapSymbol
 import org.specs2.matcher.Matcher
 

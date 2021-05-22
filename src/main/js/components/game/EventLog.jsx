@@ -24,6 +24,8 @@ function EventLogMessage({entry}) {
             return "Player " + entry.details.player + " plays " + entry.details.landName + " from their hand.";
         case "CastSpell":
             return "Player " + entry.details.player + " cast " + entry.details.spellName + " from their hand.";
+        case "ResolvePermanent":
+            return "Player " + entry.details.player + " resolves " + entry.details.permanentName + " and puts it onto the battlefield.";
     }
 }
 
