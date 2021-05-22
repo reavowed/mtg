@@ -1,10 +1,8 @@
-import {Fragment} from "preact";
 import {useContext, useEffect, useState} from "preact/hooks";
 import ActionManager from "../../ActionManager";
 import DecisionMaker from "../../DecisionMaker";
 import ScryfallService from "../../ScryfallService";
 import $ from "jQuery";
-import {addClass} from "../../utils/element-utils";
 import {useRefWithEventHandler} from "../../utils/hook-utils";
 
 function ActionText({text}) {

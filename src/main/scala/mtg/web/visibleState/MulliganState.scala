@@ -16,7 +16,10 @@ object MulliganState {
     val hasKept = decisions.contains(MulliganOption.Keep) || mulligansTaken == gameState.gameData.startingHandSize;
     MulliganState(hasKept, mulligansTaken)
   }
-  def forAllPlayers(gameState: GameState): Map[PlayerIdentifier, MulliganState] = {
-    gameState.gameData.playersInTurnOrder.map(p => p -> forPlayer(p, gameState)).toMap
+  def forAllPlayers(gameState: GameState): Option[Map[PlayerIdentifier, MulliganState]] = {
+    if (gameState.currentTurnNumber == 0)
+      Some(gameState.gameData.playersInTurnOrder.map(p => p -> forPlayer(p, gameState)).toMap)
+    else
+      None
   }
 }

@@ -1,8 +1,8 @@
-import {Fragment} from "preact";
 import {useContext} from "preact/hooks";
 import GameState from "../../GameState";
 import BannerText from "../layout/BannerText";
 import PriorityChoice from "./choices/PriorityChoice";
+import ManaPool from "./ManaPool";
 
 function getChoiceDisplay(choiceType) {
     switch (choiceType) {
@@ -25,6 +25,7 @@ export default function ActionPanel() {
         <BannerText as="p">Waiting for opponent</BannerText> :
         getChoiceDisplay(gameState.currentChoice.type);
     return <div>
+        <ManaPool />
         <BannerText as="h4">{getTurnDescription(gameState)}</BannerText>
         {contents}
     </div>;
