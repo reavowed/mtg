@@ -19,7 +19,6 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
   val gameStartingData = GameStartingData(players.map(PlayerStartingData(_, deckLol, Nil)))
   val gameStateManager = GameStateManager.initial(gameStartingData, onStateUpdate)
   gameStateManager.currentGameState.gameData.playersInTurnOrder.foreach(gameStateManager.handleDecision("K", _))
-  gameStateManager.currentGameState.playersInApnapOrder.foreach(gameStateManager.handleDecision("Pass", _))
 
   def onStateUpdate(gameState: GameState): Unit = {
     players.foreach(player => {

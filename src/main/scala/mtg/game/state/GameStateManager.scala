@@ -2,11 +2,14 @@ package mtg.game.state
 
 import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.turns.TurnCycleEventPreventer
+import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
+import mtg.game.turns.priority.PriorityChoice
 import mtg.game.{GameStartingData, PlayerIdentifier, turns}
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 
-class GameStateManager(private var _currentGameState: GameState, val onStateUpdate: GameState => Unit) {
+class GameStateManager(private var _currentGameState: GameState, val onStateUpdate: GameState => Unit, val stops: mutable.Map[PlayerIdentifier, Map[PlayerIdentifier, Seq[AnyRef]]]) {
   def currentGameState: GameState = this.synchronized { _currentGameState }
 
   executeAutomaticActions()
@@ -26,6 +29,14 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
         executeAutomaticActions(executeGameObjectEvent(gameObjectEvent, gameState))
       case (BackupAction(gameStateToRevertTo), _) =>
         executeAutomaticActions(gameStateToRevertTo)
+      case (priorityChoice: PriorityChoice, gameState)
+        if !stops(priorityChoice.playerToAct)(gameState.activePlayer).exists(gameState.currentStep.orElse(gameState.currentPhase).contains)
+      =>
+        executeDecision(priorityChoice, "Pass", gameState) match {
+          case Some(gameState) =>
+            executeAutomaticActions(gameState)
+          case None =>
+        }
       case _ =>
         _currentGameState = gameState
         onStateUpdate(_currentGameState)
@@ -57,18 +68,29 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = this.synchronized {
     currentGameState.popAction() match {
       case (choice: Choice, gameState) if choice.playerToAct == actingPlayer =>
-        choice.handleDecision(serializedDecision, gameState) match {
-          case Some((decision, actions, logEvent)) =>
-            executeAutomaticActions(gameState.recordGameEvent(decision).addActions(actions).recordLogEvent(logEvent))
+        executeDecision(choice, serializedDecision, gameState) match {
+          case Some(gameState) =>
+            executeAutomaticActions(gameState)
           case None =>
         }
       case _ =>
+    }
+  }
+
+  def executeDecision(choice: Choice, serializedDecision: String, gameState: GameState): Option[GameState] = {
+    choice.handleDecision(serializedDecision, gameState) match {
+      case Some((decision, actions, logEvent)) =>
+        Some(gameState.recordGameEvent(decision).addActions(actions).recordLogEvent(logEvent))
+      case None =>
+        None
     }
   }
 }
 
 object GameStateManager {
   def initial(gameStartingData: GameStartingData, onStateUpdate: GameState => Unit): GameStateManager = {
-    new GameStateManager(GameState.initial(gameStartingData), onStateUpdate)
+    val initialStops = mutable.Map(gameStartingData.players.map(p =>
+      p -> gameStartingData.players.map[(PlayerIdentifier, Seq[AnyRef])](q => q -> (if (p == q) Seq(PrecombatMainPhase, PostcombatMainPhase) else Nil)).toMap): _*)
+    new GameStateManager(GameState.initial(gameStartingData), onStateUpdate, initialStops)
   }
 }
