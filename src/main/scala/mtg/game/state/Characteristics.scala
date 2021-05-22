@@ -9,7 +9,7 @@ import mtg.parts.costs.ManaCost
 case class Characteristics(
   name: Option[String],
   manaCost: Option[ManaCost],
-  color: Set[Color],
+  colors: Set[Color],
   colorIndicator: Option[ColorIndicator],
   superTypes: Seq[Supertype],
   types: Seq[Type],

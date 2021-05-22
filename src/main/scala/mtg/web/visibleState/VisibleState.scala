@@ -1,5 +1,6 @@
 package mtg.web.visibleState
 
+import mtg.game.objects.GameObject
 import mtg.game.state.{Choice, GameState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.{GameData, PlayerIdentifier}
@@ -21,15 +22,16 @@ case class VisibleState(
 
 object VisibleState {
   def forPlayer(playerIdentifier: PlayerIdentifier, gameState: GameState): VisibleState = {
+    def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState.derivedState)
     VisibleState(
       playerIdentifier,
       gameState.gameData,
       gameState.currentTurnNumber,
       gameState.currentPhase,
       gameState.currentStep,
-      gameState.gameObjectState.hands(playerIdentifier).map(VisibleGameObject.apply),
-      gameState.gameObjectState.battlefield.groupBy(_.owner).view.mapValues(_.map(VisibleGameObject.apply)).toMap,
-      gameState.gameObjectState.stack.map(VisibleGameObject.apply),
+      gameState.gameObjectState.hands(playerIdentifier).map(getObject),
+      gameState.gameObjectState.battlefield.groupBy(_.owner).view.mapValues(_.map(getObject)).toMap,
+      gameState.gameObjectState.stack.map(getObject),
       gameState.gameObjectState.manaPools.view.mapValues(_.map(_.manaType)).toMap,
       MulliganState.forAllPlayers(gameState),
       gameState.pendingActions.head.asOptionalInstanceOf[Choice].map(CurrentChoice(_)),
