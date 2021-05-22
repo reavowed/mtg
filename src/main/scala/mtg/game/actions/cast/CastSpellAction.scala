@@ -1,23 +1,24 @@
-package mtg.game.actions
+package mtg.game.actions.cast
 
 import mtg.characteristics.types.Type
-import mtg.game.{PlayerIdentifier, ZoneType}
+import mtg.game.actions.{PriorityAction, TimingChecks}
 import mtg.game.objects.ObjectId
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, ObjectWithState}
+import mtg.game.state.{BackupAction, GameAction, GameState, ObjectWithState}
+import mtg.game.{PlayerIdentifier, ZoneType}
 
-case class CastSpellAction(player: PlayerIdentifier, objectToCast: ObjectWithState) extends PriorityAction {
+case class CastSpellAction(player: PlayerIdentifier, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
   override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
-    (Nil, None)
+    (Seq(CastSpellSteps.Start(player, objectToCast, backupAction)), None)
   }
 }
 
 object CastSpellAction {
-  def getCastableSpells(player: PlayerIdentifier, gameState: GameState): Seq[CastSpellAction] = {
+  def getCastableSpells(player: PlayerIdentifier, gameState: GameState, backupAction: BackupAction): Seq[CastSpellAction] = {
     if (cannotCastSpells(player, gameState)) {
       return Nil
     }
@@ -26,7 +27,7 @@ object CastSpellAction {
       .filter(!cannotCastSpell(player, gameState, _))
       .filter(hasGeneralPermissionToCastSpell(player, gameState, _))
       .filter(hasTimingPermissionToCastSpell(player, gameState, _))
-      .map(CastSpellAction(player, _))
+      .map(CastSpellAction(player, _, backupAction))
       .toSeq
   }
 

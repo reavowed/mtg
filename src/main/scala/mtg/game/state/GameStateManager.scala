@@ -24,6 +24,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
         executeAutomaticActions(executeInternalGameAction(internalGameAction, gameState))
       case (gameObjectEvent: GameObjectEvent, gameState) =>
         executeAutomaticActions(executeGameObjectEvent(gameObjectEvent, gameState))
+      case (BackupAction(gameStateToRevertTo), _) =>
+        executeAutomaticActions(gameStateToRevertTo)
       case _ =>
         _currentGameState = gameState
         onStateUpdate(_currentGameState)

@@ -18,6 +18,8 @@ abstract class InternalGameAction extends GameAction {
   def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent])
 }
 
+case class BackupAction(gameStateToRevertTo: GameState) extends GameAction
+
 abstract class Choice extends GameAction {
   def playerToAct: PlayerIdentifier
   def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])]

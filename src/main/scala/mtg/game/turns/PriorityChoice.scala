@@ -1,6 +1,7 @@
 package mtg.game.turns
 
 import mtg.game.PlayerIdentifier
+import mtg.game.actions.cast.CastSpellAction
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
 import mtg.game.state.history.LogEvent
@@ -21,6 +22,8 @@ case class PriorityChoice(
     def unapply(string: String): Option[PriorityAction] = {
       if (string.startsWith("Play ")) {
         string.substring("Play ".length).toIntOption.flatMap(id => availableActions.ofType[PlayLandAction].find(_.land.gameObject.objectId.sequentialId == id))
+      } else if (string.startsWith("Cast ")) {
+        string.substring("Cast ".length).toIntOption.flatMap(id => availableActions.ofType[CastSpellAction].find(_.objectToCast.gameObject.objectId.sequentialId == id))
       } else if (string.startsWith("Activate ")) {
         (string.substring("Activate ".length).split(" ").toSeq match {
           case Seq(aText, bText) => aText.toIntOption.flatMap(a => bText.toIntOption.map(a -> _))
@@ -58,10 +61,11 @@ object PriorityChoice {
   def create(playersLeftToAct: Seq[PlayerIdentifier], gameState: GameState): Option[PriorityChoice] = {
     playersLeftToAct match {
       case playerToAct +: remainingPlayers =>
+        val backupAction = BackupAction(gameState.addActions(Seq(PriorityForPlayersAction(playersLeftToAct))))
         Some(PriorityChoice(
           playerToAct,
           remainingPlayers,
-          PriorityAction.getAll(playerToAct, gameState)))
+          PriorityAction.getAll(playerToAct, gameState, backupAction)))
       case Nil =>
         None
     }

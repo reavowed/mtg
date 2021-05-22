@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 import mtg.game.PlayerIdentifier
+import mtg.game.actions.cast.CastSpellAction
 import mtg.game.objects.ObjectId
-import mtg.game.state.{GameState, InternalGameAction}
+import mtg.game.state.{BackupAction, GameState, InternalGameAction}
 
 @JsonSerialize(using = classOf[PriorityAction.Serializer])
 abstract class PriorityAction extends InternalGameAction {
@@ -15,8 +16,8 @@ abstract class PriorityAction extends InternalGameAction {
 }
 
 object PriorityAction {
-  def getAll(player: PlayerIdentifier, gameState: GameState): Seq[PriorityAction] = {
-    CastSpellAction.getCastableSpells(player, gameState) ++
+  def getAll(player: PlayerIdentifier, gameState: GameState, backupAction: BackupAction): Seq[PriorityAction] = {
+    CastSpellAction.getCastableSpells(player, gameState, backupAction) ++
     ActivateAbilityAction.getActivatableAbilities(player, gameState) ++
       PlayLandAction.getPlayableLands(player, gameState)
   }

@@ -14,11 +14,20 @@ package object mtg {
     def ofType[S : ClassTag]: Seq[S] = seq.collect {
       case s: S => s
     }
+    def splitByType[S : ClassTag]: (Seq[S], Seq[T]) = seq.foldLeft((Seq.empty[S], Seq.empty[T])) { case ((ss, ts), t) =>
+      t.asOptionalInstanceOf[S].map(s => (ss :+ s, ts)).getOrElse((ss, ts :+ t))
+    }
     def takeWhileOfType[S : ClassTag]: Seq[S] = seq.takeWhile(classTag[S].runtimeClass.isInstance).as[S]
     def as[S: ClassTag]: Seq[S] = seq.map(_.asInstanceOf[S])
     def takeRightUntil(p: T => Boolean): Seq[T] = seq.reverse.takeWhile(t => !p(t)).reverse
     def mapFind[S](f: T => Option[S]): Option[S] = {
       seq.iterator.map(f).find(_.isDefined).flatten
+    }
+    def findIndex(p: T => Boolean): Option[Int] = {
+      seq.zipWithIndex.find { case (t, _) => p(t) }.map(_._2)
+    }
+    def removeAtIndex(index: Int): Seq[T] = {
+      seq.take(index) ++ seq.drop(index + 1)
     }
   }
   implicit class TupleExtensionMethods[A, B](tuple: (A, B)) {

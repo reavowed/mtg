@@ -22,6 +22,8 @@ function EventLogMessage({entry}) {
             return "Player " + entry.details.player + " skips their first draw step.";
         case "PlayedLand":
             return "Player " + entry.details.player + " plays " + entry.details.landName + " from their hand.";
+        case "CastSpell":
+            return "Player " + entry.details.player + " cast " + entry.details.spellName + " from their hand.";
     }
 }
 

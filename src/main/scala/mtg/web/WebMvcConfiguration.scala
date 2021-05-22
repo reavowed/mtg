@@ -13,9 +13,4 @@ class WebMvcConfiguration extends WebMvcConfigurer {
   def objectMapper: ObjectMapper = {
     new ObjectMapper().registerModule(DefaultScalaModule)
   }
-
-  override def configurePathMatch(configurer: PathMatchConfigurer): Unit = {
-    super.configurePathMatch(configurer)
-    configurer.setUseSuffixPatternMatch(false)
-  }
 }

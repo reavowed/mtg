@@ -4,7 +4,7 @@ import mtg.cards.CardPrinting
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
 import mtg.game.state.GameState
-import mtg.game.{GameData, PlayerIdentifier, Zone}
+import mtg.game.{GameData, GameStartingData, PlayerIdentifier, PlayerStartingData, Zone}
 import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
 
@@ -20,13 +20,7 @@ trait SpecWithGameObjectState extends SpecificationLike {
   val (playerOneInitialHand, playerOneInitialLibrary) = playerOneAllCards.splitAt(7)
   val (playerTwoInitialHand, playerTwoInitialLibrary) = playerTwoAllCards.splitAt(7)
 
-  val emptyGameObjectState = GameObjectState(
-    1,
-    players.map(p => p -> Nil).toMap,
-    players.map(p => p -> Nil).toMap,
-    Nil,
-    players.map(p => p -> Nil).toMap,
-    players.map(p => p -> Nil).toMap)
+  val emptyGameObjectState = GameObjectState.initial(GameStartingData(players.map(PlayerStartingData(_, Nil, Nil))))
 
   def setInitialHandAndLibrary(gameObjectState: GameObjectState): GameObjectState = {
     gameObjectState

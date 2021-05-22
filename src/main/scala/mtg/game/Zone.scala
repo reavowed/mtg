@@ -12,6 +12,7 @@ object ZoneType {
   case object Hand extends ZoneType
   case object Sideboard extends ZoneType
   case object Battlefield extends ZoneType
+  case object Stack extends ZoneType
 }
 
 sealed abstract class Zone(val zoneType: ZoneType) {
@@ -39,6 +40,9 @@ object Zone {
   case object Battlefield extends Shared(ZoneType.Battlefield) {
     override def stateLens: Lens[GameObjectState, Seq[GameObject]] = Focus[GameObjectState](_.battlefield)
     override def defaultPermanentStatus: Option[PermanentStatus] = Some(PermanentStatus(false, false, false, false))
+  }
+  case object Stack extends Shared(ZoneType.Stack) {
+    override def stateLens: Lens[GameObjectState, Seq[GameObject]] = Focus[GameObjectState](_.stack)
   }
 }
 

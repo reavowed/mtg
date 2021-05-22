@@ -12,6 +12,7 @@ case class GameObjectState(
     libraries: Map[PlayerIdentifier, Seq[GameObject]],
     hands: Map[PlayerIdentifier, Seq[GameObject]],
     battlefield: Seq[GameObject],
+    stack: Seq[GameObject],
     sideboards: Map[PlayerIdentifier, Seq[GameObject]],
     manaPools: Map[PlayerIdentifier, Seq[ManaObject]])
 {
@@ -25,7 +26,7 @@ case class GameObjectState(
     (oldObject.setObjectId(ObjectId(nextObjectId)).setZone(newZone).setPermanentStatus(newZone.defaultPermanentStatus), copy(nextObjectId = nextObjectId + 1))
   }
   def allObjects: Seq[GameObject] = {
-    (libraries.flatMap(_._2) ++ hands.flatMap(_._2) ++ battlefield).toSeq
+    (libraries.flatMap(_._2) ++ hands.flatMap(_._2) ++ battlefield ++ stack).toSeq
   }
   def allVisibleObjects(player: PlayerIdentifier): Seq[GameObject] = {
     hands(player) ++ battlefield
@@ -60,6 +61,7 @@ object GameObjectState {
       nextObjectId,
       libraries,
       emptyMap,
+      Nil,
       Nil,
       sideboards,
       emptyMap)

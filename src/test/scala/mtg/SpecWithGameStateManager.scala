@@ -16,6 +16,9 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
   def beCardObject(card: Card): Matcher[GameObject] = { (gameObject: GameObject) =>
     (gameObject.asOptionalInstanceOf[CardObject].exists(_.card == card), "", "")
   }
+  def beCardObject(cardDefinition: CardDefinition): Matcher[GameObject] = { (gameObject: GameObject) =>
+    (gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition), "", "")
+  }
   def beObjectWithState(gameObject: GameObject): Matcher[ObjectWithState] = {(objectWithState: ObjectWithState) =>
     (objectWithState.gameObject == gameObject, "", "")
   }
