@@ -49,7 +49,7 @@ case class PriorityChoice(
         else
           (Nil, None)
       case PriorityOption.TakeAction(action) =>
-        (Seq(action, AllPlayersGetPriorityAction), None)
+        (Seq(action, PriorityFromPlayerAction(playerToAct)), None)
     }
   }
 }

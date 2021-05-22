@@ -11,7 +11,6 @@ import mtg.game.state.{ObjectWithState, PermanentStatus}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.{PriorityChoice, StartNextTurnAction}
 import mtg.parts.costs.TapSymbol
-import mtg.parts.mana.ManaType
 import org.specs2.matcher.Matcher
 
 class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
@@ -86,12 +85,25 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
 
-      val plainsObject = manager.currentGameState.gameObjectState.battlefield.getCard(plains)
       val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
       manager.handleDecision(ability.optionText, playerOne)
 
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction] must beEmpty
+    }
+
+    "return priority to NAP after tapping for mana" in {
+      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerTwo -> Seq(plains)))
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(PrecombatMainPhase)
+      manager.passPriority(playerOne)
+
+      val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
+      manager.handleDecision(ability.optionText, playerTwo)
+
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerTwo)
     }
   }
 }
