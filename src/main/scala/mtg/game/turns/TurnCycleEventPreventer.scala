@@ -2,6 +2,7 @@ package mtg.game.turns
 
 import mtg.game.state.{GameState, TurnCycleEvent}
 import mtg.game.state.history.LogEvent
+import mtg.game.turns.turnEvents.BeginStepEvent
 
 abstract class TurnCycleEventPreventer {
   def checkEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): TurnCycleEventPreventer.Result

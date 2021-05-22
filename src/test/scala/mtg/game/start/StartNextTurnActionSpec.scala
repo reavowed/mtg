@@ -4,7 +4,8 @@ import mtg.SpecWithGameObjectState
 import mtg.game.state.history.GameHistory
 import mtg.game.{GameData, PlayerIdentifier}
 import mtg.game.state.{GameAction, GameState}
-import mtg.game.turns.{BeginTurnEvent, StartNextTurnAction}
+import mtg.game.turns.StartNextTurnAction
+import mtg.game.turns.turnEvents.BeginTurnEvent
 import org.specs2.matcher.Matcher
 
 class StartNextTurnActionSpec extends SpecWithGameObjectState {
