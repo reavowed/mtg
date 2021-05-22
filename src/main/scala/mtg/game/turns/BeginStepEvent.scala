@@ -7,7 +7,7 @@ case class BeginStepEvent(step: TurnStep) extends TurnCycleEvent {
   override def execute(currentGameState: GameState): (GameHistory => GameHistory, Seq[GameAction], Option[LogEvent]) = {
     (
       _.startStep(step),
-      step.actions,
+      step.actions :+ EndStepEvent(step),
       None
     )
   }

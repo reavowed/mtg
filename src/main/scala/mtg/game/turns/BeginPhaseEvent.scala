@@ -7,7 +7,7 @@ case class BeginPhaseEvent(phase: TurnPhase) extends TurnCycleEvent {
   override def execute(currentGameState: GameState): (GameHistory => GameHistory, Seq[GameAction], Option[LogEvent]) = {
     (
       _.startPhase(phase),
-      phase.actions,
+      phase.actions :+ EndPhaseEvent(phase),
       None
     )
   }
