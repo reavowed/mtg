@@ -11,10 +11,11 @@ object TimingChecks {
   def isMainPhase(gameState: GameState): Boolean = {
     gameState.currentPhase.exists(_.isInstanceOf[MainPhase])
   }
-
-  def isMainPhaseOfPlayersTurnWithEmptyStack(player: PlayerIdentifier, gameState: GameState): Boolean = {
-    // TODO: check stack is empty
-    isPlayersTurn(player, gameState) && isMainPhase(gameState)
+  def isStackEmpty(gameState: GameState): Boolean = {
+    gameState.gameObjectState.stack.isEmpty
   }
 
+  def isMainPhaseOfPlayersTurnWithEmptyStack(player: PlayerIdentifier, gameState: GameState): Boolean = {
+    isPlayersTurn(player, gameState) && isMainPhase(gameState) && isStackEmpty(gameState)
+  }
 }

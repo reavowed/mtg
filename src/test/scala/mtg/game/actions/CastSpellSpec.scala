@@ -37,7 +37,30 @@ class CastSpellSpec extends SpecWithGameStateManager {
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction] must beEmpty
     }
 
-    "not be available for the non-active player" in {
+    "not be available for a creature card in hand if there is something on the stack" in {
+      val initialState = gameObjectStateWithInitialLibrariesAndHands
+        .setHand(playerOne, Seq(AgelessGuardian, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition))
+        .setBattlefield(Map(playerOne -> Seq(Plains, Plains).map(Strixhaven.cardPrintingsByDefinition)))
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(PrecombatMainPhase)
+
+      // Tap mana and cast first spell
+      manager.handleDecision(
+        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        playerOne)
+      manager.handleDecision(
+        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        playerOne)
+      manager.handleDecision(
+        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        playerOne)
+
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction] must beEmpty
+    }
+
+    "not be available for a creature card for the non-active player" in {
       val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, hand)
 

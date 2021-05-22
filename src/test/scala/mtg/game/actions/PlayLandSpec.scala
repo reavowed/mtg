@@ -4,6 +4,7 @@ import mtg._
 import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.data.cards.{Forest, Plains, Swamp}
 import mtg.data.sets.Strixhaven
+import mtg.game.actions.cast.CastSpellAction
 import mtg.game.objects.{CardObject, GameObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
@@ -80,6 +81,29 @@ class PlayLandSpec extends SpecWithGameStateManager {
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
 
       manager.currentGameState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
+      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
+      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction] must beEmpty
+    }
+
+    "not be available if stack is non-empty" in {
+      val initialState = gameObjectStateWithInitialLibrariesAndHands
+        .setHand(playerOne, Seq(AgelessGuardian, Plains).map(Strixhaven.cardPrintingsByDefinition))
+        .setBattlefield(Map(playerOne -> Seq(Plains, Plains).map(Strixhaven.cardPrintingsByDefinition)))
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(PrecombatMainPhase)
+
+      // Tap mana and cast spell
+      manager.handleDecision(
+        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        playerOne)
+      manager.handleDecision(
+        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        playerOne)
+      manager.handleDecision(
+        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        playerOne)
+
       manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
       manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction] must beEmpty
     }
