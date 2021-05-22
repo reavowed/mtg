@@ -7,4 +7,5 @@ case class PermanentStatus(
   isPhasedOut: Boolean)
 {
   def tap(): PermanentStatus = copy(isTapped = true)
+  def untap(): PermanentStatus = copy(isTapped = false)
 }

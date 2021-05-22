@@ -4,12 +4,12 @@ import mtg.game.objects.CardObject
 import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
 import mtg.game.{PlayerIdentifier, Zone}
 
-case class DrawCardEvent(playerIdentifier: PlayerIdentifier) extends GameObjectEvent {
+case class DrawCardEvent(player: PlayerIdentifier) extends GameObjectEvent {
   def execute(currentGameState: GameState): GameObjectEventResult = {
-    val library = currentGameState.gameObjectState.libraries(playerIdentifier)
+    val library = currentGameState.gameObjectState.libraries(player)
     library.dropWhile(o => !o.isInstanceOf[CardObject]).headOption match {
       case Some(topCard) =>
-        Seq(MoveObjectEvent(topCard, Zone.Hand(playerIdentifier)))
+        Seq(MoveObjectEvent(player, topCard, Zone.Hand(player)))
       case None =>
         ()
     }

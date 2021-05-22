@@ -2,14 +2,14 @@ package mtg.game.turns
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.game.state.GameAction
-import mtg.game.turns.turnBasedActions.DrawForTurn
+import mtg.game.turns.turnBasedActions.{DrawForTurn, UntapForTurn}
 import mtg.utils.CaseObjectSerializer
 
 @JsonSerialize(using = classOf[CaseObjectSerializer])
 sealed abstract class TurnStep(val actions: Seq[GameAction])
 
 object TurnStep {
-  case object UntapStep extends TurnStep(Nil)
+  case object UntapStep extends TurnStep(Seq(UntapForTurn))
   case object UpkeepStep extends TurnStep(Seq(PriorityFromActivePlayerAction))
   case object DrawStep extends TurnStep(Seq(DrawForTurn, PriorityFromActivePlayerAction))
 

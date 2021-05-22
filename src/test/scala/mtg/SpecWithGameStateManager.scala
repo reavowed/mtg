@@ -50,6 +50,10 @@ abstract class SpecWithGameStateManager extends SpecWithGameObjectState {
     def passUntilPhase(turnPhase: TurnPhase): Unit = {
       passUntil(_.currentPhase.contains(turnPhase))
     }
+    def passUntilTurnAndPhase(turnNumber: Int, turnPhase: TurnPhase): Unit = {
+      passUntilTurn(turnNumber)
+      passUntilPhase(turnPhase)
+    }
 
     def playLand(land: GameObject, player: PlayerIdentifier): Unit = {
       gameStateManager.handleDecision("Play " + land.objectId.sequentialId, player)

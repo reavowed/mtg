@@ -44,7 +44,7 @@ object GameObjectState {
       objectId
     }
     def createCardObject(cardPrinting: CardPrinting, playerIdentifier: PlayerIdentifier, zone: Zone): CardObject = {
-      CardObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone, None)
+      CardObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone, None, None)
     }
     def emptyMap[T]: Map[PlayerIdentifier, Seq[T]] = gameStartingData.playerData.map(_.playerIdentifier -> Nil).toMap
     val libraries = gameStartingData.playerData.map(playerStartingData => {

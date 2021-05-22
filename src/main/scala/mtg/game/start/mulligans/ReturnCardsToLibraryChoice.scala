@@ -19,7 +19,7 @@ case class ReturnCardsToLibraryChoice(playerToAct: PlayerIdentifier, numberOfCar
   }
   override def handleDecision(chosenOption: ReturnCardsToLibraryOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent])  = {
     (
-      chosenOption.cardsToReturn.map(MoveObjectEvent(_, Zone.Library(playerToAct))),
+      chosenOption.cardsToReturn.map(MoveObjectEvent(playerToAct, _, Zone.Library(playerToAct))),
       Some(LogEvent.ReturnCardsToLibrary(playerToAct, numberOfCardsToReturn))
     )
   }

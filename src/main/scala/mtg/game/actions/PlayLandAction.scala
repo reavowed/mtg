@@ -13,7 +13,7 @@ case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) exten
 
   override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
     val preventEvent = PlayLandAction.cannotPlayLands(player, currentGameState) || PlayLandAction.cannotPlayLand(land, player, currentGameState)
-    val eventOption = if (preventEvent) None else Some(PlayLandEvent(land.gameObject))
+    val eventOption = if (preventEvent) None else Some(PlayLandEvent(player, land.gameObject))
     (
       eventOption.toSeq,
       Some(LogEvent.PlayedLand(player, land.characteristics.name.get))

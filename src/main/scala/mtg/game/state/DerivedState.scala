@@ -9,7 +9,7 @@ case class DerivedState(objectStates: Map[ObjectId, ObjectWithState]) {
 
 object DerivedState {
   def calculateFromGameObjectState(gameObjectState: GameObjectState): DerivedState = {
-    val initialStates = gameObjectState.allObjects.map(gameObject => ObjectWithState(gameObject, gameObject.baseCharacteristics, None))
+    val initialStates = gameObjectState.allObjects.map(gameObject => ObjectWithState(gameObject, gameObject.baseCharacteristics, gameObject.defaultController))
 
     val finalStates = Seq(
       addIntrinsicManaAbilities(_)
