@@ -1,6 +1,6 @@
 package mtg.game
 
-case class GameData(playersInTurnOrder: Seq[PlayerIdentifier], startingHandSize: Int) {
+case class GameData(playersInTurnOrder: Seq[PlayerIdentifier], startingHandSize: Int, startingLifeTotal: Int) {
   def getPlayersInApNapOrder(activePlayer: PlayerIdentifier): Seq[PlayerIdentifier] = {
     GameData.getPlayersInApNapOrder(activePlayer, playersInTurnOrder)
   }
@@ -10,7 +10,7 @@ case class GameData(playersInTurnOrder: Seq[PlayerIdentifier], startingHandSize:
 }
 
 object GameData {
-  def initial(playersInTurnOrder: Seq[PlayerIdentifier]): GameData = GameData(playersInTurnOrder, 7)
+  def initial(playersInTurnOrder: Seq[PlayerIdentifier]): GameData = GameData(playersInTurnOrder, 7, 20)
 
   def getPlayersInApNapOrder(
     activePlayer: PlayerIdentifier,

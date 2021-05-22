@@ -2,13 +2,14 @@ package mtg.game.objects
 
 import monocle.Focus
 import mtg.cards.CardPrinting
-import mtg.game.{GameStartingData, PlayerIdentifier, Zone}
+import mtg.game.{GameData, GameStartingData, PlayerIdentifier, Zone}
 import mtg.utils.AtGuaranteed
 
 import scala.util.Random
 
 case class GameObjectState(
     nextObjectId: Int,
+    lifeTotals: Map[PlayerIdentifier, Int],
     libraries: Map[PlayerIdentifier, Seq[GameObject]],
     hands: Map[PlayerIdentifier, Seq[GameObject]],
     battlefield: Seq[GameObject],
@@ -37,7 +38,7 @@ case class GameObjectState(
 }
 
 object GameObjectState {
-  def initial(gameStartingData: GameStartingData) = {
+  def initial(gameStartingData: GameStartingData, gameData: GameData) = {
     var nextObjectId = 1
     def getNextObjectId = {
       val objectId = ObjectId(nextObjectId)
@@ -48,6 +49,10 @@ object GameObjectState {
       CardObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone, None, None)
     }
     def emptyMap[T]: Map[PlayerIdentifier, Seq[T]] = gameStartingData.playerData.map(_.playerIdentifier -> Nil).toMap
+    val lifeTotals = gameStartingData.playerData.map(playerStartingData => {
+      import playerStartingData._
+      playerIdentifier -> gameData.startingLifeTotal
+    }).toMap
     val libraries = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
       playerIdentifier -> Random.shuffle(deck).map(createCardObject(_, playerIdentifier, Zone.Library(playerIdentifier)))
@@ -59,6 +64,7 @@ object GameObjectState {
 
     GameObjectState(
       nextObjectId,
+      lifeTotals,
       libraries,
       emptyMap,
       Nil,
