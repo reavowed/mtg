@@ -16,7 +16,7 @@ function getCardWidth(card) {
     if (card.permanentStatus && card.permanentStatus.isTapped) {
         return 204;
     } else {
-        return 4146;
+        return 146;
     }
 }
 
