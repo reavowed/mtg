@@ -73,6 +73,6 @@ export default function Card({card, ...props}) {
 
     return scryfallCard && <div className={containerClasses.join(" ")}>
         <img ref={imgRef} src={scryfallCard.image_uris.small} {...props} />
-        {actionMenuDetails && <ActionMenu actions={actions} style={{display: "block", top: actionMenuDetails.top, left: actionMenuDetails.left }} />}
+        {actionMenuDetails && <ActionMenu actions={actions} style={{display: "block", position: "fixed", top: actionMenuDetails.top, left: actionMenuDetails.left }} />}
     </div>
 }
