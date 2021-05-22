@@ -1,5 +1,5 @@
 import {useContext} from "preact/hooks";
-import GameState from "../../GameState";
+import GameState from "../../contexts/GameState";
 import BannerText from "../layout/BannerText";
 import PriorityChoice from "./choices/PriorityChoice";
 import ManaPool from "./ManaPool";

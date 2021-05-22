@@ -1,5 +1,5 @@
 import {useContext} from "preact/hooks";
-import GameState from "../../GameState";
+import GameState from "../../contexts/GameState";
 import ScreenCenter from "../layout/ScreenCenter";
 import ActionPanel from "./ActionPanel";
 import ZoneLayout from "./ZoneLayout";

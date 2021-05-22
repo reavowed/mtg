@@ -1,5 +1,5 @@
 import {useContext} from "preact/hooks";
-import DecisionMaker from "../../DecisionMaker";
+import DecisionMaker from "../../contexts/DecisionMaker";
 
 export default function DecisionButton({optionToChoose, text, ...props}) {
     const decisionMaker = useContext(DecisionMaker);

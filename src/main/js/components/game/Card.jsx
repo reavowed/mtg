@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "preact/hooks";
-import ActionManager from "../../ActionManager";
-import DecisionMaker from "../../DecisionMaker";
-import ScryfallService from "../../ScryfallService";
+import ActionManager from "../../contexts/ActionManager";
+import DecisionMaker from "../../contexts/DecisionMaker";
+import ScryfallService from "../../contexts/ScryfallService";
 import $ from "jQuery";
 import {useRefWithEventHandler} from "../../utils/hook-utils";
 

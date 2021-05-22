@@ -1,6 +1,6 @@
-import ActionManager from "../../ActionManager";
-import DecisionMaker from "../../DecisionMaker";
-import GameState from "../../GameState";
+import ActionManager from "../../contexts/ActionManager";
+import DecisionMaker from "../../contexts/DecisionMaker";
+import GameState from "../../contexts/GameState";
 import GameLayout from "./GameLayout";
 
 export default function Game() {

@@ -1,5 +1,5 @@
 import {useContext} from "preact/hooks";
-import GameState from "../../../GameState";
+import GameState from "../../../contexts/GameState";
 import {getPlural} from "../../../utils/word-helpers";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";

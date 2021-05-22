@@ -1,5 +1,5 @@
 import {useContext} from "preact/hooks";
-import GameState from "../../GameState";
+import GameState from "../../contexts/GameState";
 import _ from "lodash";
 import CardRow from "./CardRow";
 

@@ -1,6 +1,5 @@
 import {createContext} from "preact";
 import {useCallback, useContext, useEffect, useState} from "preact/hooks";
-import {act} from "preact/test-utils";
 import GameState from "./GameState";
 import _ from "lodash";
 

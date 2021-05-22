@@ -1,6 +1,6 @@
 import _ from "lodash";
 import {useContext} from "preact/hooks";
-import GameState from "../../GameState";
+import GameState from "../../contexts/GameState";
 import HorizontalCenter from "../layout/HorizontalCenter";
 
 export default function ManaPool() {

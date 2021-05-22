@@ -1,5 +1,5 @@
 import {useCallback, useState} from "preact/hooks";
-import {post} from "./utils/fetch-helpers";
+import {post} from "../utils/fetch-helpers";
 
 const {createContext} = require("preact");
 

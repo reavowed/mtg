@@ -1,5 +1,5 @@
 import {useContext} from "preact/hooks";
-import GameState from "../../GameState";
+import GameState from "../../contexts/GameState";
 import CardColumn from "./CardColumn";
 
 export default function Stack() {

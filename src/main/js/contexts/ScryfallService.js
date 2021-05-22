@@ -1,6 +1,6 @@
 import _ from "lodash";
 import {createContext} from "preact";
-import {postJsonAndParseResponse} from "./utils/fetch-helpers";
+import {postJsonAndParseResponse} from "../utils/fetch-helpers";
 
 class ScryfallService {
     knownCards = {};
