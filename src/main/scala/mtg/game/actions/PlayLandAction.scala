@@ -45,7 +45,7 @@ object PlayLandAction {
   private def cannotPlayLands(player: PlayerIdentifier, gameState: GameState): Boolean = {
     // TODO: effects such as Aggressive Mining
     if (!TimingChecks.isPlayersTurn(player, gameState)) {
-      // RULE: 305.3 / Apr 22 2021 :  A player can’t play a land, for any reason, if it isn’t their turn. Ignore any
+      // RULE: 305.3 / Apr 22 2021 : A player can’t play a land, for any reason, if it isn’t their turn. Ignore any
       // part of an effect that instructs a player to do so.
       true
     } else if (getNumberOfLandPlaysAvailable(gameState) <= getNumberOfLandsPlayedThisTurn(gameState)) {

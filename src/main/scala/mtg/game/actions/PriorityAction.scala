@@ -16,6 +16,7 @@ abstract class PriorityAction extends InternalGameAction {
 
 object PriorityAction {
   def getAll(player: PlayerIdentifier, gameState: GameState): Seq[PriorityAction] = {
+    CastSpellAction.getCastableSpells(player, gameState) ++
     ActivateAbilityAction.getActivatableAbilities(player, gameState) ++
       PlayLandAction.getPlayableLands(player, gameState)
   }
