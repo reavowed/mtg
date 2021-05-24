@@ -4,7 +4,7 @@ import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.turns.TurnCycleEventPreventer
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice
-import mtg.game.{GameStartingData, PlayerIdentifier, turns}
+import mtg.game.{GameStartingData, PlayerIdentifier}
 
 import scala.annotation.tailrec
 import scala.collection.mutable

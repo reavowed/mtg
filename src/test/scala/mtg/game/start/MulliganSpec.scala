@@ -33,7 +33,7 @@ class MulliganSpec extends SpecWithGameStateManager {
     gameState.currentTurnNumber mustEqual 1
     gameState.currentPhase must beSome[TurnPhase](TurnPhase.BeginningPhase)
     gameState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
-    gameState.pendingActions.head must bePriorityForPlayer(playerOne)
+    gameState.pendingActions.head must bePriorityChoice.forPlayer(playerOne)
   }
 
   "mulligan action" should {

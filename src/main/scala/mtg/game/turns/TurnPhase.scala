@@ -20,4 +20,5 @@ object TurnPhase {
   case object EndingPhase extends TurnPhaseWithSteps(TurnStep.EndingPhaseSteps)
 
   val All = Seq(BeginningPhase, PrecombatMainPhase, CombatPhase, PostcombatMainPhase, EndingPhase)
+  val AllPhasesAndSteps = All ++ All.ofType[TurnPhaseWithSteps].flatMap(_.steps)
 }

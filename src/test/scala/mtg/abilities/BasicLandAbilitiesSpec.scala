@@ -5,6 +5,7 @@ import mtg.characteristics.Color
 import mtg.data.cards.Plains
 import mtg.data.sets.Strixhaven
 import mtg.effects.AddManaEffect
+import mtg.game.Zone
 import mtg.game.actions.ActivateAbilityAction
 import mtg.game.objects.{CardObject, GameObject}
 import mtg.game.state.{ObjectWithState, PermanentStatus}
@@ -24,87 +25,69 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
   }
   "basic land cards" should {
     "have an appropriate mana ability" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
 
-      val plainsObject = manager.currentGameState.gameObjectState.battlefield.find(_.asOptionalInstanceOf[CardObject].exists(_.card.printing == plains)).get
-      manager.currentGameState.derivedState.allObjectStates must contain(isObjectWithAbility(plainsObject, ActivatedAbilityDefinition(Seq(TapSymbol), Seq(AddManaEffect(Color.White)))))
+      val plainsObject = manager.getCard(Zone.Battlefield, Plains)
+      val plainsState = manager.getState(plainsObject)
+      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), Seq(AddManaEffect(Color.White))))
     }
 
     "be tappable for mana by their controller" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
 
-      val plainsObject = manager.currentGameState.gameObjectState.battlefield.getCard(plains)
-      val plainsState = manager.currentGameState.derivedState.objectStates(plainsObject.objectId)
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction] must contain(exactly(
-        beActivatableAbilityAction(plainsObject, plainsState.characteristics.abilities.head.asInstanceOf[ActivatedAbilityDefinition])))
+      val plainsObject = manager.getCard(Zone.Battlefield, Plains)
+      val plainsState = manager.getState(plainsObject)
+      manager.currentAction should bePriorityChoice.forPlayer(playerOne)
+        .withAvailableAbility(beActivatableAbilityAction(plainsObject, plainsState.characteristics.abilities.head.asInstanceOf[ActivatedAbilityDefinition]))
     }
 
     "not be tappable for mana by a player who doesn't control them" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
 
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerTwo)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction] must beEmpty
+      manager.currentAction should bePriorityChoice.forPlayer(playerTwo).withAvailableAbilities(beEmpty)
     }
 
     "tap for mana" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
+      manager.activateAbility(playerOne, Plains)
 
-      val plainsObject = manager.currentGameState.gameObjectState.battlefield.getCard(plains)
-      val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
-      manager.handleDecision(ability.optionText, playerOne)
-
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-
-      val plainsState = manager.currentGameState.derivedState.objectStates(plainsObject.objectId)
-      plainsState.gameObject.permanentStatus must beSome(PermanentStatus(isTapped = true, isFlipped = false, isFaceDown = false, isPhasedOut = false))
-
+      manager.currentAction should bePriorityChoice.forPlayer(playerOne)
+      manager.getCard(Zone.Battlefield, Plains) must beTapped
       manager.currentGameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
     }
 
     "not tap for mana twice" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
+      manager.activateAbility(playerOne, Plains)
 
-      val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
-      manager.handleDecision(ability.optionText, playerOne)
-
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction] must beEmpty
+      manager.currentAction should bePriorityChoice.forPlayer(playerOne).withAvailableAbilities(beEmpty)
     }
 
     "return priority to NAP after tapping for mana" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerTwo -> Seq(plains)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerTwo, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
+      manager.activateAbility(playerTwo, Plains)
 
-      val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
-      manager.handleDecision(ability.optionText, playerTwo)
-
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerTwo)
+      manager.currentAction should bePriorityChoice.forPlayer(playerTwo)
     }
   }
 }

@@ -29,6 +29,11 @@ package object mtg {
     def removeAtIndex(index: Int): Seq[T] = {
       seq.take(index) ++ seq.drop(index + 1)
     }
+    def single: T = seq match {
+      case t +: Nil => t
+      case Nil => throw new RuntimeException("Seq was empty")
+      case _ => throw new RuntimeException("Seq contained multiple elements")
+    }
   }
   implicit class TupleExtensionMethods[A, B](tuple: (A, B)) {
     def mapLeft[C](f: A => C): (C, B) = (f(tuple._1), tuple._2)

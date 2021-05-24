@@ -11,13 +11,10 @@ import mtg.game.turns.priority.PriorityChoice
 class ManaPoolSpec extends SpecWithGameStateManager {
   "mana pool" should {
     "empty at the end of a step" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+      val initialState = emptyGameObjectState.setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-
-      val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
-      manager.handleDecision(ability.optionText, playerOne)
+      manager.activateAbility(playerOne, Plains)
 
       manager.currentGameState.gameObjectState.manaPools(playerOne) must not(beEmpty)
 
@@ -28,14 +25,11 @@ class ManaPoolSpec extends SpecWithGameStateManager {
     }
 
     "empty at the end of a phase" in {
-      val plains = Strixhaven.cardPrintingsByDefinition(Plains)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(Map(playerOne -> Seq(plains)))
+      val initialState = emptyGameObjectState.setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
-
-      val ability = manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head
-      manager.handleDecision(ability.optionText, playerOne)
+      manager.activateAbility(playerOne, Plains)
 
       manager.currentGameState.gameObjectState.manaPools(playerOne) must not(beEmpty)
 

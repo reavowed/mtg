@@ -55,8 +55,7 @@ class GameController @Autowired() (gameService: GameService) {
     @PathVariable("playerToStopAt") playerToStopAt: String,
     @PathVariable("stepOrPhase") stepOrPhaseText: String
   ) = {
-    val all = TurnPhase.All ++ TurnPhase.All.ofType[TurnPhaseWithSteps].flatMap(_.steps)
-    val stepOrPhaseOption = all.find(CaseObjectSerializer.getClassName(_) == stepOrPhaseText)
+    val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(CaseObjectSerializer.getClassName(_) == stepOrPhaseText)
     stepOrPhaseOption.foreach(stepOrPhase => {
       gameService.gameStateManager.stops
         .updateWith(
@@ -75,8 +74,7 @@ class GameController @Autowired() (gameService: GameService) {
     @PathVariable("playerToStopAt") playerToStopAt: String,
     @PathVariable("stepOrPhase") stepOrPhaseText: String
   ) = {
-    val all = TurnPhase.All ++ TurnPhase.All.ofType[TurnPhaseWithSteps].flatMap(_.steps)
-    val stepOrPhaseOption = all.find(CaseObjectSerializer.getClassName(_) == stepOrPhaseText)
+    val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(CaseObjectSerializer.getClassName(_) == stepOrPhaseText)
     stepOrPhaseOption.foreach(stepOrPhase => {
       gameService.gameStateManager.stops
         .updateWith(

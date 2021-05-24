@@ -1,26 +1,30 @@
 package mtg
 
-import mtg.cards.CardPrinting
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
 import mtg.game.state.GameState
 import mtg.game.{GameData, GameStartingData, PlayerIdentifier, PlayerStartingData, Zone}
+import mtg.helpers.{GameObjectHelpers, GameObjectStateHelpers}
 import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
 
-trait SpecWithGameObjectState extends SpecificationLike {
+trait SpecWithGameObjectState
+    extends SpecificationLike
+    with GameObjectStateHelpers
+    with GameObjectHelpers
+{
   val playerOne = PlayerIdentifier("P1")
   val playerTwo = PlayerIdentifier("P2")
   val players = Seq(playerOne, playerTwo)
   val gameData = GameData.initial(players)
 
-  val playerOneAllCards = Strixhaven.cardPrintings
-  val playerTwoAllCards = Strixhaven.cardPrintings.reverse
+  val playerOneAllCards = Strixhaven.cardPrintings.map(_.cardDefinition)
+  val playerTwoAllCards = playerOneAllCards.reverse
 
   val (playerOneInitialHand, playerOneInitialLibrary) = playerOneAllCards.splitAt(7)
   val (playerTwoInitialHand, playerTwoInitialLibrary) = playerTwoAllCards.splitAt(7)
 
-  val emptyGameObjectState = GameObjectState.initial(GameStartingData(players.map(PlayerStartingData(_, Nil, Nil))))
+  val emptyGameObjectState = GameObjectState.initial(GameStartingData(players.map(PlayerStartingData(_, Nil, Nil))), gameData)
 
   def setInitialHandAndLibrary(gameObjectState: GameObjectState): GameObjectState = {
     gameObjectState
@@ -44,32 +48,6 @@ trait SpecWithGameObjectState extends SpecificationLike {
     def apply(gameObjectState: GameObjectState): Seq[GameObject] = {
       zone.stateLens.get(gameObjectState)
     }
-  }
-
-  implicit class GameObjectStateOps(gameObjectState: GameObjectState) {
-    def setZone(zone: Zone, playerIdentifier: PlayerIdentifier, cardPrintings: Seq[CardPrinting]): GameObjectState = {
-      val cards = cardPrintings.map(Card(playerIdentifier, _))
-      val defaultController = if (zone == Zone.Battlefield) Some(playerIdentifier) else None
-      cards.foldLeft(gameObjectState.updateZone(zone, _ => Nil)) { (state, card) =>
-        zone.stateLens.modify(s => s :+ CardObject(card, ObjectId(state.nextObjectId), zone, defaultController, zone.defaultPermanentStatus))(state)
-          .copy(nextObjectId = state.nextObjectId + 1)
-      }
-    }
-
-    def setLibrary(playerIdentifier: PlayerIdentifier, cardPrintings: Seq[CardPrinting]): GameObjectState = {
-      setZone(Zone.Library(playerIdentifier), playerIdentifier, cardPrintings)
-    }
-    def setHand(playerIdentifier: PlayerIdentifier, cardPrintings: Seq[CardPrinting]): GameObjectState = {
-      setZone(Zone.Hand(playerIdentifier), playerIdentifier, cardPrintings)
-    }
-    def setBattlefield(cardPrintingsByPlayer: Map[PlayerIdentifier, Seq[CardPrinting]]): GameObjectState = {
-      cardPrintingsByPlayer.foldLeft(gameObjectState) { case (state, (player, cardPrintings)) =>
-        state.setZone(Zone.Battlefield, player, cardPrintings)
-      }
-    }
-  }
-  implicit class GameObjectOps(gameObject: GameObject) {
-    def card: Card = gameObject.asInstanceOf[CardObject].card
   }
 
   def matchCardObject(card: Card): Matcher[GameObject] = {

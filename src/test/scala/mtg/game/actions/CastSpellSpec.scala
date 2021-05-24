@@ -18,58 +18,46 @@ class CastSpellSpec extends SpecWithGameStateManager {
   }
   "cast spell action" should {
     "be available for a creature card in hand at sorcery speed" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
-      val creatureObject = playerOne.hand(manager.currentGameState).getCard(AgelessGuardian)
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction] must contain(exactly(beCastSpellAction(creatureObject)))
+
+      val creatureObject = manager.getCard(playerOne.hand, AgelessGuardian)
+      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpell(beCastSpellAction(creatureObject))
     }
 
     "not be available for a creature card in hand in upkeep" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, hand)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction] must beEmpty
+      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpells(beEmpty)
     }
 
     "not be available for a creature card in hand if there is something on the stack" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, Seq(AgelessGuardian, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition))
-        .setBattlefield(Map(playerOne -> Seq(Plains, Plains).map(Strixhaven.cardPrintingsByDefinition)))
+        .setHand(playerOne, Seq(AgelessGuardian, AgelessGuardian))
+        .setBattlefield(playerOne, Seq(Plains, Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Tap mana and cast first spell
-      manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
-        playerOne)
-      manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
-        playerOne)
-      manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
-        playerOne)
+      manager.activateFirstAbility(playerOne, Plains)
+      manager.activateFirstAbility(playerOne, Plains)
+      manager.castFirstSpell(playerOne, AgelessGuardian)
 
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerOne)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction] must beEmpty
+      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpells(beEmpty)
     }
 
     "not be available for a creature card for the non-active player" in {
-      val hand = Seq(Plains, Forest, AgelessGuardian).map(Strixhaven.cardPrintingsByDefinition)
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, hand)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, Seq(Plains, Forest, AgelessGuardian))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
 
-      manager.currentGameState.pendingActions.head should bePriorityForPlayer(playerTwo)
-      manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction] must beEmpty
+      manager.currentAction must bePriorityChoice.forPlayer(playerTwo).withAvailableSpells(beEmpty)
     }
 
     // TODO: not for creature card with something on the stack
@@ -79,8 +67,8 @@ class CastSpellSpec extends SpecWithGameStateManager {
   "casting a vanilla creature" should {
     "do nothing with no mana in pool" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(Strixhaven.cardPrintingsByDefinition(AgelessGuardian)))
-        .setBattlefield(Map(playerOne -> Seq(Plains, Plains).map(Strixhaven.cardPrintingsByDefinition)))
+        .setHand(playerOne, Seq(AgelessGuardian))
+        .setBattlefield(playerOne, Seq(Plains, Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
@@ -95,8 +83,8 @@ class CastSpellSpec extends SpecWithGameStateManager {
 
     "move the card to the stack with correct mana in pool" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(Strixhaven.cardPrintingsByDefinition(AgelessGuardian)))
-        .setBattlefield(Map(playerOne -> Seq(Plains, Plains).map(Strixhaven.cardPrintingsByDefinition)))
+        .setHand(playerOne, Seq(AgelessGuardian))
+        .setBattlefield(playerOne, Seq(Plains, Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
@@ -122,8 +110,8 @@ class CastSpellSpec extends SpecWithGameStateManager {
 
     "move the card to the battlefield after all players pass" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(Strixhaven.cardPrintingsByDefinition(AgelessGuardian)))
-        .setBattlefield(Map(playerOne -> Seq(Plains, Plains).map(Strixhaven.cardPrintingsByDefinition)))
+        .setHand(playerOne, Seq(AgelessGuardian))
+        .setBattlefield(playerOne, Seq(Plains, Plains))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
