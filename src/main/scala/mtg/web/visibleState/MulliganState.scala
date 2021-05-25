@@ -1,5 +1,6 @@
 package mtg.web.visibleState
 
+import mtg._
 import mtg.game.PlayerIdentifier
 import mtg.game.start.mulligans.MulliganOption
 import mtg.game.state.GameState

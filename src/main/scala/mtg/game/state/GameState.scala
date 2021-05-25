@@ -2,6 +2,7 @@ package mtg.game.state
 
 import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
+import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.state.history._
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
 import mtg.game.{GameData, GameStartingData, PlayerIdentifier}
@@ -30,12 +31,15 @@ case class GameState(
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(
     gameObjectState = newGameObjectState,
     derivedState = DerivedState.calculateFromGameObjectState(newGameObjectState))
+  def recordGameEvent(event: GameObjectEvent): GameState = recordGameEvent(ResolvedEvent(event, derivedState))
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
   private def setActions(newActions: Seq[GameAction]) = copy(pendingActions = newActions)
   def addActions(newActions: Seq[GameAction]) = setActions(newActions ++ pendingActions)
   def popAction(): (GameAction, GameState) = (pendingActions.head, setActions(pendingActions.tail))
+
+  override def toString: String = "GameState"
 }
 
 object GameState {

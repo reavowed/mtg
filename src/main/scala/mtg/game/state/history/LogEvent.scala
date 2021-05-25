@@ -15,4 +15,5 @@ object LogEvent {
   case class PlayedLand(player: PlayerIdentifier, landName: String) extends LogEvent
   case class CastSpell(player: PlayerIdentifier, spellName: String) extends LogEvent
   case class ResolvePermanent(player: PlayerIdentifier, permanentName: String) extends LogEvent
+  case class DeclareAttackers(player: PlayerIdentifier, attackerNames: Seq[String]) extends LogEvent
 }

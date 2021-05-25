@@ -4,10 +4,10 @@ import mtg._
 import mtg.events.MoveObjectEvent
 import mtg.game.objects.CardObject
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{ChoiceOption, GameAction, GameState, TypedChoice}
+import mtg.game.state.{GameAction, GameState, TypedChoice}
 import mtg.game.{PlayerIdentifier, Zone}
 
-case class ReturnCardsToLibraryOption(cardsToReturn: Seq[CardObject]) extends ChoiceOption
+case class ReturnCardsToLibraryOption(cardsToReturn: Seq[CardObject])
 
 case class ReturnCardsToLibraryChoice(playerToAct: PlayerIdentifier, numberOfCardsToReturn: Int) extends TypedChoice[ReturnCardsToLibraryOption] {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[ReturnCardsToLibraryOption] = {

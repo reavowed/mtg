@@ -62,7 +62,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {
     gameObjectEvent.execute(gameState)
       .updateGameState(gameState)
-      .recordGameEvent(ResolvedEvent(gameObjectEvent))
+      .recordGameEvent(gameObjectEvent)
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = this.synchronized {

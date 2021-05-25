@@ -6,7 +6,7 @@ import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
 import mtg.game.state.history.LogEvent
 
-sealed trait PriorityOption extends ChoiceOption
+sealed trait PriorityOption
 object PriorityOption {
   case object PassPriority extends PriorityOption
   case class TakeAction(action: PriorityAction) extends PriorityOption

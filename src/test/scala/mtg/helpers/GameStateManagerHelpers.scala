@@ -7,7 +7,7 @@ import mtg.game.actions.cast.CastSpellAction
 import mtg.game.{PlayerIdentifier, Zone}
 import mtg.game.objects.{CardObject, GameObject, GameObjectState}
 import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
-import mtg.game.turns.TurnPhase
+import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.turns.priority.PriorityChoice
 
 trait GameStateManagerHelpers extends GameObjectHelpers {
@@ -36,8 +36,8 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       gameStateManager.handleDecision("Pass", player)
     }
     private def passUntil(predicate: GameState => Boolean): Unit = {
-      while (!predicate(gameStateManager.currentGameState) && gameStateManager.currentGameState.pendingActions.head.isInstanceOf[PriorityChoice]) {
-        passPriority(gameStateManager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].playerToAct)
+      while (!predicate(gameStateManager.currentGameState) && currentAction.isInstanceOf[PriorityChoice]) {
+        passPriority(currentAction.asInstanceOf[PriorityChoice].playerToAct)
       }
     }
     def passUntilTurn(turnNumber: Int): Unit = {
@@ -46,9 +46,16 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
     def passUntilPhase(turnPhase: TurnPhase): Unit = {
       passUntil(_.currentPhase.contains(turnPhase))
     }
+    def passUntilStep(turnStep: TurnStep): Unit = {
+      passUntil(_.currentStep.contains(turnStep))
+    }
     def passUntilTurnAndPhase(turnNumber: Int, turnPhase: TurnPhase): Unit = {
       passUntilTurn(turnNumber)
       passUntilPhase(turnPhase)
+    }
+    def passUntilTurnAndStep(turnNumber: Int, turnStep: TurnStep): Unit = {
+      passUntilTurn(turnNumber)
+      passUntilStep(turnStep)
     }
 
     def playLand(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
@@ -80,6 +87,9 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
         .filter(_.objectToCast.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
+    }
+    def attackWith(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+      gameStateManager.handleDecision(getCard(Zone.Battlefield, cardDefinition).objectId.sequentialId.toString, player)
     }
   }
 }

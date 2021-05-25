@@ -1,8 +1,6 @@
 package mtg.game.start.mulligans
 
-import mtg.game.state.ChoiceOption
-
-sealed trait MulliganOption extends ChoiceOption
+sealed trait MulliganOption
 object MulliganOption {
   case object Mulligan extends MulliganOption
   case object Keep extends MulliganOption
