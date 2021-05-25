@@ -2,7 +2,7 @@ import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
 import _ from "lodash";
 import format from "date-fns/format"
-import {getPlural} from "../../utils/word-helpers";
+import {commaList, getPlural} from "../../utils/word-helpers";
 
 function EventLogMessage({entry}) {
     switch (entry.type) {
@@ -21,11 +21,13 @@ function EventLogMessage({entry}) {
         case "SkipFirstDrawStep":
             return "Player " + entry.details.player + " skips their first draw step.";
         case "PlayedLand":
-            return "Player " + entry.details.player + " plays " + entry.details.landName + " from their hand.";
+            return "Player " + entry.details.player + " plays " + entry.details.landName + ".";
         case "CastSpell":
-            return "Player " + entry.details.player + " casts " + entry.details.spellName + " from their hand.";
+            return "Player " + entry.details.player + " casts " + entry.details.spellName + ".";
         case "ResolvePermanent":
             return "Player " + entry.details.player + " resolves " + entry.details.permanentName + " and puts it onto the battlefield.";
+        case "DeclareAttackers":
+            return "Player " + entry.details.player + " attacks with " + commaList(entry.details.attackerNames) + ".";
     }
 }
 
