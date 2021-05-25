@@ -8,13 +8,18 @@
   overflow: hidden;
   margin: 0 0.25rem;
 }
-.tapped {
+
+.cardContainer.tapped {
   width: 204px;
   height: 204px;
 }
-.tapped img {
+.cardContainer.tapped img {
   transform: rotate(90deg) translate(-100%, 0);
   transform-origin: 0 100%;
+}
+
+.cardContainer.attacking {
+  border: 5px solid orange;
 }
 
 .position-top {

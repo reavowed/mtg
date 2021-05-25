@@ -38,8 +38,8 @@ class GameController @Autowired() (gameService: GameService) {
 
   @PostMapping(Array("/{playerIdentifier}/decision"))
   @ResponseBody
-  def makeDecision(@PathVariable("playerIdentifier") playerIdentifier: String, @RequestBody decision: String) = {
-    gameService.gameStateManager.handleDecision(decision, PlayerIdentifier(playerIdentifier))
+  def makeDecision(@PathVariable("playerIdentifier") playerIdentifier: String, @RequestBody(required = false) decision: String) = {
+    gameService.gameStateManager.handleDecision(if (decision == null) "" else decision, PlayerIdentifier(playerIdentifier))
   }
 
   @GetMapping(value = Array("/{playerIdentifier}/stops"))

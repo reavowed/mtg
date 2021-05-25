@@ -32,6 +32,10 @@ case class GameObjectState(
   def allVisibleObjects(player: PlayerIdentifier): Seq[GameObject] = {
     hands(player) ++ battlefield
   }
+  def updateGameObject(objectId: ObjectId, f: GameObject => GameObject): GameObjectState = {
+    val oldObject = allObjects.find(_.objectId == objectId).get
+    oldObject.zone.stateLens.modify(_.map(o => if (o == oldObject) f(oldObject) else o))(this)
+  }
   def updateGameObject(oldGameObject: GameObject, newGameObject: GameObject): GameObjectState = {
     oldGameObject.zone.stateLens.modify(_.map(o => if (o == oldGameObject) newGameObject else o))(this)
   }

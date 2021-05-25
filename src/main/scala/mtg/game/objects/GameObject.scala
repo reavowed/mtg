@@ -3,7 +3,7 @@ package mtg.game.objects
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
-import mtg.game.state.{Characteristics, PermanentStatus}
+import mtg.game.state.{Characteristics, GameState, PermanentStatus}
 import mtg.game.{PlayerIdentifier, Zone}
 
 @JsonSerialize(using = classOf[GameObject.Serializer])
@@ -21,6 +21,8 @@ abstract class GameObject {
   def setPermanentStatus(newPermanentStatus: Option[PermanentStatus]): GameObject
   def setDefaultController(newDefaultController: Option[PlayerIdentifier]): GameObject
   def updatePermanentStatus(f: PermanentStatus => PermanentStatus): GameObject = setPermanentStatus(permanentStatus.map(f))
+
+  def currentCharacteristics(gameState: GameState): Characteristics = gameState.derivedState.objectStates(objectId).characteristics
 }
 
 object GameObject {
