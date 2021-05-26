@@ -22,6 +22,7 @@ export default function DeclareBlockersChoice() {
     // Update blocker lines when blockers change
     useEffect(() => {
         canvasManager.setLines([...selectedBlocks]);
+        return () => canvasManager.setLines([]);
     }, [selectedBlocks]);
 
     // Document click handling - reset in-progress blocker choice
