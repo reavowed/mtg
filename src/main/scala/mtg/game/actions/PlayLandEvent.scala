@@ -7,6 +7,6 @@ import mtg.game.{PlayerIdentifier, Zone}
 
 case class PlayLandEvent(player: PlayerIdentifier, landCard: GameObject) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {
-    Seq(MoveObjectEvent(player, landCard, Zone.Battlefield))
+    MoveObjectEvent(player, landCard, Zone.Battlefield)
   }
 }

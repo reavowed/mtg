@@ -9,7 +9,7 @@ case class DrawCardEvent(player: PlayerIdentifier) extends GameObjectEvent {
     val library = currentGameState.gameObjectState.libraries(player)
     library.dropWhile(o => !o.isInstanceOf[CardObject]).headOption match {
       case Some(topCard) =>
-        Seq(MoveObjectEvent(player, topCard, Zone.Hand(player)))
+        MoveObjectEvent(player, topCard, Zone.Hand(player))
       case None =>
         ()
     }

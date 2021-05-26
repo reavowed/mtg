@@ -17,6 +17,7 @@ object GameObjectEventResult {
   }
 
   implicit def updatedGameObjectState(gameObjectState: GameObjectState): GameObjectEventResult = UpdatedGameObjectState(gameObjectState)
+  implicit def subEvent(event: GameObjectEvent): GameObjectEventResult = SubEvents(Seq(event))
   implicit def subEvents(events: Seq[GameObjectEvent]): GameObjectEventResult = SubEvents(events)
   implicit def nothing(unit: Unit): GameObjectEventResult = Nothing
 }

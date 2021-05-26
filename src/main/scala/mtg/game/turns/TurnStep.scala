@@ -3,7 +3,7 @@ package mtg.game.turns
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
-import mtg.game.turns.turnBasedActions.{DeclareAttackers, DrawForTurn, UntapForTurn}
+import mtg.game.turns.turnBasedActions.{CombatDamage, DeclareAttackers, DrawForTurn, UntapForTurn}
 import mtg.utils.CaseObjectSerializer
 
 @JsonSerialize(using = classOf[CaseObjectSerializer])
@@ -16,15 +16,15 @@ object TurnStep {
 
   val BeginningPhaseSteps = Seq(UntapStep, UpkeepStep, DrawStep)
 
-  case object BeginningOfCombatStep extends TurnStep(Nil)
+  case object BeginningOfCombatStep extends TurnStep(Seq(PriorityFromActivePlayerAction))
   case object DeclareAttackersStep extends TurnStep(Seq(DeclareAttackers, PriorityFromActivePlayerAction))
   case object DeclareBlockersStep extends TurnStep(Nil)
-  case object CombatDamageStep extends TurnStep(Nil)
-  case object EndOfCombatStep extends TurnStep(Nil)
+  case object CombatDamageStep extends TurnStep(Seq(CombatDamage, PriorityFromActivePlayerAction))
+  case object EndOfCombatStep extends TurnStep(Seq(PriorityFromActivePlayerAction))
 
   val CombatPhaseSteps = Seq(BeginningOfCombatStep, DeclareAttackersStep, DeclareBlockersStep, CombatDamageStep, EndOfCombatStep)
 
-  case object EndStep extends TurnStep(Nil)
+  case object EndStep extends TurnStep(Seq(PriorityFromActivePlayerAction))
   case object CleanupStep extends TurnStep(Nil)
 
   val EndingPhaseSteps = Seq(EndStep, CleanupStep)

@@ -7,7 +7,7 @@ import mtg.game.Zone
 import mtg.game.turns.{StartNextTurnAction, TurnStep}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.priority.PriorityChoice
-import mtg.game.turns.turnBasedActions.ChooseAttackers
+import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
 
 class DeclareAttackersSpec extends SpecWithGameStateManager {
   "declare attackers" should {
@@ -44,7 +44,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
 
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
 
-      manager.currentAction must beAnInstanceOf[ChooseAttackers]
+      manager.currentAction must beAnInstanceOf[DeclareAttackersChoice]
     }
 
     "tap a creature declared as an attacker" in {

@@ -1,7 +1,7 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
 import BannerText from "../layout/BannerText";
-import DeclareAttackers from "./choices/DeclareAttackers";
+import DeclareAttackersChoice from "./choices/DeclareAttackersChoice";
 import PriorityChoice from "./choices/PriorityChoice";
 import ManaPool from "./ManaPool";
 
@@ -9,8 +9,8 @@ function getChoiceDisplay(choiceType) {
     switch (choiceType) {
         case "PriorityChoice":
             return <PriorityChoice />
-        case "ChooseAttackers":
-            return <DeclareAttackers />
+        case "DeclareAttackersChoice":
+            return <DeclareAttackersChoice />
     }
 }
 

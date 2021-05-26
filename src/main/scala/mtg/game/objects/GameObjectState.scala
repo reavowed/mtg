@@ -39,6 +39,9 @@ case class GameObjectState(
   def updateGameObject(oldGameObject: GameObject, newGameObject: GameObject): GameObjectState = {
     oldGameObject.zone.stateLens.modify(_.map(o => if (o == oldGameObject) newGameObject else o))(this)
   }
+  def updateLifeTotal(player: PlayerIdentifier, f: Int => Int): GameObjectState = {
+    Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)
+  }
 }
 
 object GameObjectState {

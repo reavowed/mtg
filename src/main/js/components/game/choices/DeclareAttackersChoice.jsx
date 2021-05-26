@@ -7,7 +7,7 @@ import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import DecisionButton from "../DecisionButton";
 
-export default function DeclareAttackers() {
+export default function DeclareAttackersChoice() {
     const gameState = useContext(GameState);
     const actionManager = useContext(ActionManager);
     const possibleAttackers = gameState.currentChoice.details.possibleAttackers;

@@ -5,6 +5,7 @@ import cats.syntax.flatMap._
 import cats.syntax.functor._
 
 import scala.annotation.tailrec
+import scala.collection.{SeqView, View}
 
 package object mtg {
   implicit class AnyExtensionMethods[T](t: T) {
@@ -33,6 +34,17 @@ package object mtg {
       case t +: Nil => t
       case Nil => throw new RuntimeException("Seq was empty")
       case _ => throw new RuntimeException("Seq contained multiple elements")
+    }
+  }
+  implicit class ViewExtensionMethods[T](view: View[T]) {
+    def ofType[S : ClassTag]: View[S] = view.collect {
+      case t if classTag[S].runtimeClass.isInstance(t) => t.asInstanceOf[S]
+    }
+    def mapFind[S](f: T => Option[S]): Option[S] = {
+      view.map(f).find(_.isDefined).flatten
+    }
+    def mapCollect[S](f: T => Option[S]): View[S] = {
+      view.collect(Function.unlift(f))
     }
   }
   implicit class TupleExtensionMethods[A, B](tuple: (A, B)) {
