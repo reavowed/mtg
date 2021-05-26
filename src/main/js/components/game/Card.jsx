@@ -41,5 +41,6 @@ export default function Card({card, ...props}) {
 
     return scryfallCard && <div className={containerClasses.join(" ")}>
         <img ref={imgRef} src={scryfallCard.image_uris.small} {...props} />
+        {card.markedDamage > 0 && <span class="position-absolute damage">{card.markedDamage}</span>}
     </div>
 }

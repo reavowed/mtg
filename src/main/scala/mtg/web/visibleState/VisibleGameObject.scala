@@ -1,7 +1,7 @@
 package mtg.web.visibleState
 
 import mtg.game.objects.{CardObject, GameObject, ObjectId}
-import mtg.game.state.{Characteristics, DerivedState, GameState, PermanentStatus}
+import mtg.game.state.{Characteristics, GameState, PermanentStatus}
 import mtg.game.turns.turnBasedActions.{DeclareAttackers, DeclareBlockers}
 
 sealed trait VisibleGameObject
@@ -18,6 +18,7 @@ case class VisibleCard(
   objectId: ObjectId,
   characteristics: Characteristics,
   permanentStatus: Option[PermanentStatus],
+  markedDamage: Int,
   modifiers: Map[String, Any]
 ) extends VisibleGameObject
 
@@ -38,5 +39,6 @@ object VisibleCard {
     cardObject.objectId,
     gameState.derivedState.objectStates(cardObject.objectId).characteristics,
     cardObject.permanentStatus,
+    cardObject.markedDamage,
     getModifiers(cardObject, gameState))
 }

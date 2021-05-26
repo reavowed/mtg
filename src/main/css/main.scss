@@ -25,6 +25,16 @@
   border: 5px solid dodgerblue;
 }
 
+.cardContainer .damage {
+  bottom: 5px;
+  right: 5px;
+  background: red;
+  padding: 0 5px;
+  color: white;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
 .position-top {
   top: 0;
 }
