@@ -5,18 +5,25 @@ import mtg.characteristics.types.Type
 import mtg.events.TapObjectEvent
 import mtg.game.PlayerIdentifier
 import mtg.game.objects.ObjectId
-import mtg.game.state.history.GameEvent.ResolvedEvent
+import mtg.game.state.history.GameEvent.{Decision, ResolvedEvent}
 import mtg.game.state.history.LogEvent
 import mtg.game.state._
 
 object DeclareAttackers extends InternalGameAction {
-  def wasContinuouslyControlled(objectWithState: ObjectWithState, gameState: GameState): Boolean = {
+  override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+    val choice = DeclareAttackersChoice(
+        currentGameState.activePlayer,
+        getDefendingPlayer(currentGameState),
+        getPossibleAttackers(currentGameState))
+    (Seq(choice).filter(_.possibleAttackers.nonEmpty), None)
+  }
+  private def wasContinuouslyControlled(objectWithState: ObjectWithState, gameState: GameState): Boolean = {
     gameState.gameHistory.forCurrentTurn.exists(
       _.gameEvents.ofType[ResolvedEvent].forall(
         _.stateAfterwards.objectStates.get(objectWithState.gameObject.objectId)
           .exists(_.controller.contains(gameState.activePlayer))))
   }
-  def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
+  private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
     gameState.gameObjectState.battlefield.view
       .map(o => gameState.derivedState.objectStates(o.objectId))
       .filter(o => o.characteristics.types.contains(Type.Creature))
@@ -28,25 +35,29 @@ object DeclareAttackers extends InternalGameAction {
       .toSeq
   }
 
-  override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
-    val possibleAttackers = getPossibleAttackers(currentGameState)
-    if (possibleAttackers.nonEmpty)
-      (Seq(DeclareAttackersChoice(currentGameState.activePlayer, getPossibleAttackers(currentGameState))), None)
-    else
-      (Nil, None)
+  def getDefendingPlayer(gameState: GameState): PlayerIdentifier = {
+    gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
+  }
+  def getAttackingCreatures(gameState: GameState): Seq[AttackingCreatureDetails] = {
+    gameState.gameHistory.forCurrentTurn
+      .flatMap(
+        _.gameEvents.view.ofType[Decision]
+          .map(_.chosenOption)
+          .mapFind(_.asOptionalInstanceOf[DeclaredAttackers]))
+      .toSeq
+      .flatMap(_.attackers)
   }
 }
 
-case class DeclaredAttacker(attacker: ObjectId, attackedPlayer: PlayerIdentifier)
-case class DeclaredAttackers(attackers: Seq[DeclaredAttacker])
+case class AttackingCreatureDetails(attacker: ObjectId, attackedPlayer: PlayerIdentifier)
+case class DeclaredAttackers(attackers: Seq[AttackingCreatureDetails])
 
-case class DeclareAttackersChoice(playerToAct: PlayerIdentifier, possibleAttackers: Seq[ObjectId]) extends TypedChoice[DeclaredAttackers] {
+case class DeclareAttackersChoice(playerToAct: PlayerIdentifier, defendingPlayer: PlayerIdentifier, possibleAttackers: Seq[ObjectId]) extends TypedChoice[DeclaredAttackers] {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[DeclaredAttackers] = {
-    val defendingPlayer = currentGameState.playersInApnapOrder.filter(_ != currentGameState.activePlayer).single
     serializedChosenOption
       .split(" ").toSeq
       .filter(_.nonEmpty)
-      .map(_.toIntOption.flatMap(i => possibleAttackers.find(_.sequentialId == i)).map(DeclaredAttacker(_, defendingPlayer)))
+      .map(_.toIntOption.flatMap(i => possibleAttackers.find(_.sequentialId == i)).map(AttackingCreatureDetails(_, defendingPlayer)))
       .swap
       .map(DeclaredAttackers)
   }

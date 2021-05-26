@@ -45,6 +45,9 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
 
       manager.currentAction must beAnInstanceOf[DeclareAttackersChoice]
+      manager.currentAction.asInstanceOf[DeclareAttackersChoice].possibleAttackers must contain(exactly(
+        manager.getCard(Zone.Battlefield, AgelessGuardian).objectId
+      ))
     }
 
     "tap a creature declared as an attacker" in {

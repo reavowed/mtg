@@ -26,6 +26,7 @@ object BasicLandType {
 }
 
 object CreatureType {
+  object Crocodile extends CreatureType("Crocodile")
   object Soldier extends CreatureType("Soldier")
   object Spirit extends CreatureType("Spirit")
 }

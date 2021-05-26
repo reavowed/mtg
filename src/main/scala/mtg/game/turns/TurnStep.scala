@@ -3,7 +3,7 @@ package mtg.game.turns
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
-import mtg.game.turns.turnBasedActions.{CombatDamage, DeclareAttackers, DrawForTurn, UntapForTurn}
+import mtg.game.turns.turnBasedActions.{CombatDamage, DeclareAttackers, DeclareBlockers, DrawForTurn, UntapForTurn}
 import mtg.utils.CaseObjectSerializer
 
 @JsonSerialize(using = classOf[CaseObjectSerializer])
@@ -18,7 +18,7 @@ object TurnStep {
 
   case object BeginningOfCombatStep extends TurnStep(Seq(PriorityFromActivePlayerAction))
   case object DeclareAttackersStep extends TurnStep(Seq(DeclareAttackers, PriorityFromActivePlayerAction))
-  case object DeclareBlockersStep extends TurnStep(Nil)
+  case object DeclareBlockersStep extends TurnStep(Seq(DeclareBlockers, PriorityFromActivePlayerAction))
   case object CombatDamageStep extends TurnStep(Seq(CombatDamage, PriorityFromActivePlayerAction))
   case object EndOfCombatStep extends TurnStep(Seq(PriorityFromActivePlayerAction))
 

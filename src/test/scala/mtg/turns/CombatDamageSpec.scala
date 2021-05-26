@@ -8,6 +8,7 @@ import mtg.game.turns.{StartNextTurnAction, TurnStep}
 
 class CombatDamageSpec extends SpecWithGameStateManager {
   "combat damage" should {
+    // TODO: be skipped if no attackers
     "deal damage from an unblocked creature to defending player" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, Seq(AgelessGuardian))

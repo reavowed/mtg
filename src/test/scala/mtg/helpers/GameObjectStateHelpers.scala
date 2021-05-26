@@ -17,11 +17,10 @@ trait GameObjectStateHelpers extends CardHelpers {
       gameObjectState.updateZone(zone, _ :+ cardObject).copy(nextObjectId = gameObjectState.nextObjectId + 1)
     }
     def addCardsToZone(zone: Zone, owner: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
-      cardDefinitions.foldLeft(gameObjectState.clearZone(zone)) { _.addCardToZone(_, zone, owner)}
+      cardDefinitions.foldLeft(gameObjectState) { _.addCardToZone(_, zone, owner)}
     }
     def clearZoneAndAddCards(zone: Zone, owner: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
-      clearZone(zone)
-      addCardsToZone(zone, owner, cardDefinitions)
+      clearZone(zone).addCardsToZone(zone, owner, cardDefinitions)
     }
     def setLibrary(playerIdentifier: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
       clearZoneAndAddCards(Zone.Library(playerIdentifier), playerIdentifier, cardDefinitions)
@@ -31,7 +30,7 @@ trait GameObjectStateHelpers extends CardHelpers {
     }
     def setBattlefield(playerIdentifier: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
       gameObjectState.updateZone(Zone.Battlefield, _.filter(!_.defaultController.contains(playerIdentifier)))
-      addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
+        .addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
     }
   }
 
