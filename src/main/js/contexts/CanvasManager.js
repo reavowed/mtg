@@ -2,6 +2,7 @@ import $ from "jquery";
 import _ from "lodash";
 import {createContext} from "preact";
 import {useCallback, useContext, useEffect, useState} from "preact/hooks";
+import {useInterval} from "../utils/hook-utils";
 import ObjectRefManager from "./ObjectRefManager";
 
 const CanvasManager = createContext(null);
@@ -26,10 +27,8 @@ CanvasManager.Provider = function({children}) {
         }
     }, [temporaryLineStart]);
 
-    // Redraw on any change
-    useEffect(() => {
-        function getMidpoint(objectId) {
-            const ref = objectRefManager.getObjectRef(objectId);
+    const drawLines = useCallback(() => {
+        function getMidpoint(ref) {
             const rect = ref.getBoundingClientRect();
             return {
                 x: rect.left + (rect.width/2),
@@ -46,25 +45,34 @@ CanvasManager.Provider = function({children}) {
             context.lineWidth = 5;
 
             if (temporaryLineStart && temporaryLineEnd) {
-                const {x: startX, y: startY} = getMidpoint(temporaryLineStart.objectId);
-                context.beginPath();
-                context.moveTo(startX, startY);
-                context.lineTo(temporaryLineEnd.x, temporaryLineEnd.y);
-                context.stroke();
+                const startRef = objectRefManager.getObjectRef(temporaryLineStart.objectId);
+                if (startRef) {
+                    const {x: startX, y: startY} = getMidpoint(startRef);
+                    context.beginPath();
+                    context.moveTo(startX, startY);
+                    context.lineTo(temporaryLineEnd.x, temporaryLineEnd.y);
+                    context.stroke();
+                }
             }
 
             _.forEach(lines, ([lineStart, lineEnd]) => {
-                const {x: startX, y: startY} = getMidpoint(lineStart);
-                const {x: endX, y: endY} = getMidpoint(lineEnd);
-                context.beginPath();
-                context.moveTo(startX, startY);
-                context.lineTo(endX, endY);
-                context.stroke();
+                const startRef = objectRefManager.getObjectRef(lineStart);
+                const endRef = objectRefManager.getObjectRef(lineEnd);
+                if (startRef && endRef) {
+                    const {x: startX, y: startY} = getMidpoint(startRef);
+                    const {x: endX, y: endY} = getMidpoint(endRef);
+                    context.beginPath();
+                    context.moveTo(startX, startY);
+                    context.lineTo(endX, endY);
+                    context.stroke();
+                }
             })
-
-
         }
-    }, [canvasRef, temporaryLineStart, temporaryLineEnd, lines]);
+    }, [canvasRef, temporaryLineStart, temporaryLineEnd, lines, objectRefManager]);
+
+    // Redraw on any change
+    useEffect(drawLines, [drawLines]);
+    useInterval(drawLines, 100);
 
     // Update temp line end on mouse move
     const moveMouseOnDocumentHandler = useCallback(event => {

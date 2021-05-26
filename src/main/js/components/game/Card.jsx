@@ -35,6 +35,9 @@ export default function Card({card, ...props}) {
     if (_.has(card.modifiers, "attacking")) {
         containerClasses.push("attacking");
     }
+    if (_.has(card.modifiers, "blocking")) {
+        containerClasses.push("blocking");
+    }
 
     return scryfallCard && <div className={containerClasses.join(" ")}>
         <img ref={imgRef} src={scryfallCard.image_uris.small} {...props} />
