@@ -28,7 +28,7 @@ export default function Card({card, ...props}) {
 
     const imgRef = useRefWithEventHandler(registerRef, deregisterRef, []);
 
-    const containerClasses = ["cardContainer", ...actionManager.getClasses(card.objectId)];
+    const containerClasses = ["cardContainer", "position-relative", ...actionManager.getClasses(card.objectId)];
     if (card.permanentStatus && card.permanentStatus.isTapped) {
         containerClasses.push("tapped")
     }

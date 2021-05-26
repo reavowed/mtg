@@ -1,6 +1,7 @@
 import _ from "lodash";
 import {createElement} from "preact";
-import {useCallback} from "preact/hooks";
+import {useCallback, useContext} from "preact/hooks";
+import ObjectRefManager from "../../contexts/ObjectRefManager";
 import {addClass} from "../../utils/element-utils";
 import {useRefWithEventHandler} from "../../utils/hook-utils";
 import HorizontalCenter from "../layout/HorizontalCenter";
@@ -32,11 +33,11 @@ export default function CardRow({className, cards, as}) {
             totalWidthToRemove = totalCardWidth - availableWidth,
             individualWidthToRemove = totalWidthToRemove / (cards.length - 1);
 
-        _.forEach(cardElements, (cardElement, i) => { cardElement.style = {}; });
+        _.forEach(cardElements, (cardElement) => { cardElement.style = {}; });
         if (totalWidthToRemove > 0) {
             _.forEach(cardElements, (cardElement, i) => {
                 if (i < cardElements.length - 1) {
-                    cardElement.style.width = (cardElement.childNodes[0].clientWidth - individualWidthToRemove) + "px";
+                    cardElement.style.width = (getCardWidth(cards[i]) - individualWidthToRemove) + "px";
                 }
                 cardElement.style.margin = "0";
             });
