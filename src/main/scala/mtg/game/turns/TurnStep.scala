@@ -3,7 +3,7 @@ package mtg.game.turns
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
-import mtg.game.turns.turnBasedActions.{CombatDamage, DeclareAttackers, DeclareBlockers, DrawForTurn, UntapForTurn}
+import mtg.game.turns.turnBasedActions.{CleanupAction, CombatDamage, DeclareAttackers, DeclareBlockers, DrawForTurn, UntapForTurn}
 import mtg.utils.CaseObjectSerializer
 
 @JsonSerialize(using = classOf[CaseObjectSerializer])
@@ -25,7 +25,7 @@ object TurnStep {
   val CombatPhaseSteps = Seq(BeginningOfCombatStep, DeclareAttackersStep, DeclareBlockersStep, CombatDamageStep, EndOfCombatStep)
 
   case object EndStep extends TurnStep(Seq(PriorityFromActivePlayerAction))
-  case object CleanupStep extends TurnStep(Nil)
+  case object CleanupStep extends TurnStep(Seq(CleanupAction))
 
   val EndingPhaseSteps = Seq(EndStep, CleanupStep)
 }
