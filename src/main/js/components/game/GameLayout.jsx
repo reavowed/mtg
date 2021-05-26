@@ -14,10 +14,10 @@ export default function GameLayout() {
         </div>
         <div className="w-25 border-left">
             <div className="d-flex flex-column w-100 vh-100">
-                <div className="flex-grow-1">
+                <div className="flex-grow-1 flex-shrink-1" style={{overflowY: "scroll"}}>
                     <EventLog/>
                 </div>
-                <div style={{height: 200}} className="border-top">
+                <div style={{height: 200}} className="border-top flex-grow-0 flex-shrink-0">
                     <ScreenCenter>
                         <ActionPanel/>
                     </ScreenCenter>
