@@ -23,7 +23,7 @@ case class VisibleState(
 
 object VisibleState {
   def forPlayer(playerIdentifier: PlayerIdentifier, gameState: GameState): VisibleState = {
-    def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState.derivedState)
+    def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState)
     VisibleState(
       playerIdentifier,
       gameState.gameData,

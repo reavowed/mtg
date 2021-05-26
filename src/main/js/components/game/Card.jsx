@@ -2,6 +2,7 @@ import {useCallback, useContext, useEffect, useState} from "preact/hooks";
 import ActionManager from "../../contexts/ActionManager";
 import ScryfallService from "../../contexts/ScryfallService";
 import $ from "jQuery";
+import _ from "lodash";
 import {useRefWithEventHandler} from "../../utils/hook-utils";
 
 export default function Card({card, ...props}) {
@@ -26,6 +27,9 @@ export default function Card({card, ...props}) {
     const containerClasses = ["cardContainer", ...actionManager.getClasses(card.objectId)];
     if (card.permanentStatus && card.permanentStatus.isTapped) {
         containerClasses.push("tapped")
+    }
+    if (_.has(card.modifiers, "attacking")) {
+        containerClasses.push("attacking");
     }
 
     return scryfallCard && <div className={containerClasses.join(" ")}>
