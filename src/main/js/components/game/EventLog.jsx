@@ -28,6 +28,8 @@ function EventLogMessage({entry}) {
             return "Player " + entry.details.player + " resolves " + entry.details.permanentName + " and puts it onto the battlefield.";
         case "DeclareAttackers":
             return "Player " + entry.details.player + " attacks with " + commaList(entry.details.attackerNames) + ".";
+        case "DeclareBlockers":
+            return "Player " + entry.details.player + " blocks " + commaList(_.map(entry.details.blockerAssignments, (blockers, attacker) => attacker + " with " + commaList(blockers))) + ".";
     }
 }
 

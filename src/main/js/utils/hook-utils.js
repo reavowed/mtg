@@ -1,15 +1,20 @@
-const {useEffect} = require("preact/hooks");
-const {useState} = require("preact/hooks");
+import {useEffect, useState} from "preact/hooks";
 
-export function useRefWithEventHandler(addHandler, removeHandler, dependencies) {
+export function useRefWithEffect(handler, dependencies) {
     const [currentRef, setCurrentRef] = useState(null);
     useEffect(() => {
         if (currentRef) {
-            addHandler(currentRef);
-            if (removeHandler) {
-                return () => removeHandler(currentRef);
-            }
+            return handler(currentRef);
         }
     }, [currentRef, ...dependencies]);
     return setCurrentRef;
+}
+
+export function useRefWithEventHandler(addHandler, removeHandler, dependencies) {
+    return useRefWithEffect(currentRef => {
+        addHandler(currentRef);
+        if (removeHandler) {
+            return () => removeHandler(currentRef);
+        }
+    }, [...dependencies, addHandler, removeHandler]);
 }

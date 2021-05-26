@@ -1,5 +1,6 @@
 import {useCallback, useContext, useEffect, useState} from "preact/hooks";
 import ActionManager from "../../contexts/ActionManager";
+import ObjectRefManager from "../../contexts/ObjectRefManager";
 import ScryfallService from "../../contexts/ScryfallService";
 import $ from "jQuery";
 import _ from "lodash";
@@ -7,6 +8,7 @@ import {useRefWithEventHandler} from "../../utils/hook-utils";
 
 export default function Card({card, ...props}) {
     const scryfallService = useContext(ScryfallService);
+    const objectRefManager = useContext(ObjectRefManager);
     const [scryfallCard, setScryfallCard] = useState(null);
     useEffect(() => scryfallService.requestCard(card, setScryfallCard), []);
 
@@ -15,14 +17,16 @@ export default function Card({card, ...props}) {
         actionManager.actionHandler(card.objectId, event);
     }, [card, actionManager]);
 
-    function addImageHandler(img) {
+    const registerRef = useCallback((img) => {
         $(img).on("click", handleClick);
-    }
-    function removeImageHandler(img) {
+        objectRefManager.setObjectRef(card.objectId, img);
+    }, [handleClick, card]);
+    const deregisterRef = useCallback((img) => {
         $(img).off("click", handleClick);
-    }
+        objectRefManager.setObjectRef(card.objectId, null);
+    }, [handleClick, card]);
 
-    const imgRef = useRefWithEventHandler(addImageHandler, removeImageHandler, [handleClick]);
+    const imgRef = useRefWithEventHandler(registerRef, deregisterRef, []);
 
     const containerClasses = ["cardContainer", ...actionManager.getClasses(card.objectId)];
     if (card.permanentStatus && card.permanentStatus.isTapped) {

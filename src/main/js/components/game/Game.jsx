@@ -1,6 +1,8 @@
 import ActionManager from "../../contexts/ActionManager";
+import CanvasManager from "../../contexts/CanvasManager";
 import DecisionMaker from "../../contexts/DecisionMaker";
 import GameState from "../../contexts/GameState";
+import ObjectRefManager from "../../contexts/ObjectRefManager";
 import StopsManager from "../../contexts/StopsManager";
 import GameLayout from "./GameLayout";
 
@@ -9,7 +11,11 @@ export default function Game() {
         <DecisionMaker.Provider>
             <ActionManager.Provider>
                 <StopsManager.Provider>
-                    <GameLayout/>
+                    <ObjectRefManager.Provider>
+                        <CanvasManager.Provider>
+                            <GameLayout/>
+                        </CanvasManager.Provider>
+                    </ObjectRefManager.Provider>
                 </StopsManager.Provider>
             </ActionManager.Provider>
         </DecisionMaker.Provider>

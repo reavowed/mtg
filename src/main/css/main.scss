@@ -21,10 +21,18 @@
 .cardContainer.attacking img {
   border: 5px solid orange;
 }
+.cardContainer.blocking img {
+  border: 5px solid dodgerblue;
+}
 
 .position-top {
   top: 0;
 }
 .position-bottom {
   bottom: 0;
+}
+
+canvas.overlay {
+  pointer-events: none;
+  z-index: 1;
 }

@@ -2,6 +2,7 @@ import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
 import BannerText from "../layout/BannerText";
 import DeclareAttackersChoice from "./choices/DeclareAttackersChoice";
+import DeclareBlockersChoice from "./choices/DeclareBlockersChoice";
 import PriorityChoice from "./choices/PriorityChoice";
 import ManaPool from "./ManaPool";
 
@@ -11,6 +12,8 @@ function getChoiceDisplay(choiceType) {
             return <PriorityChoice />
         case "DeclareAttackersChoice":
             return <DeclareAttackersChoice />
+        case "DeclareBlockersChoice":
+            return <DeclareBlockersChoice />
     }
 }
 
@@ -19,7 +22,7 @@ function convertPhaseOrStepToDisplayText(name) {
 }
 
 function getTurnDescription(gameState) {
-    return "Turn " + gameState.currentTurnNumber + " (" + gameState.player + ") - " + convertPhaseOrStepToDisplayText(gameState.currentStep || gameState.currentPhase);
+    return gameState.currentTurnNumber > 0 && "Turn " + gameState.currentTurnNumber + " (" + gameState.player + ") - " + convertPhaseOrStepToDisplayText(gameState.currentStep || gameState.currentPhase);
 }
 
 export default function ActionPanel() {
