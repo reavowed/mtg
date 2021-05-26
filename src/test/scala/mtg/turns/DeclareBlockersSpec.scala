@@ -14,24 +14,21 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
 
     "offer choice to block with an untapped creature" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, Seq(AgelessGuardian))
-        .setBattlefield(playerOne, Seq(Plains, Plains))
-        .setHand(playerTwo, Seq(SpinedKarok))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest))
+        .setHand(playerOne, AgelessGuardian)
+        .setBattlefield(playerOne, Plains, 2)
+        .setHand(playerTwo, SpinedKarok)
+        .setBattlefield(playerTwo, Forest, 3)
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
-      manager.activateFirstAbility(playerOne, Plains)
-      manager.activateFirstAbility(playerOne, Plains)
+      manager.activateAbilities(playerOne, Plains, 2)
       manager.castSpell(playerOne, AgelessGuardian)
 
       // Cast blocker
       manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-      manager.activateFirstAbility(playerTwo, Forest)
-      manager.activateFirstAbility(playerTwo, Forest)
-      manager.activateFirstAbility(playerTwo, Forest)
+      manager.activateAbilities(playerTwo, Forest, 3)
       manager.castSpell(playerTwo, SpinedKarok)
 
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)

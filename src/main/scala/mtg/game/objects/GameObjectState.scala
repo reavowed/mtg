@@ -53,7 +53,7 @@ object GameObjectState {
       objectId
     }
     def createCardObject(cardPrinting: CardPrinting, playerIdentifier: PlayerIdentifier, zone: Zone): CardObject = {
-      CardObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone, None, None)
+      CardObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone, None, None, 0)
     }
     def emptyMap[T]: Map[PlayerIdentifier, Seq[T]] = gameStartingData.playerData.map(_.playerIdentifier -> Nil).toMap
     val lifeTotals = gameStartingData.playerData.map(playerStartingData => {

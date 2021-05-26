@@ -38,38 +38,38 @@ object DeclareAttackers extends InternalGameAction {
   def getDefendingPlayer(gameState: GameState): PlayerIdentifier = {
     gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
   }
-  def getAttackingCreatures(gameState: GameState): Seq[AttackingCreatureDetails] = {
+  def getAttackDeclarations(gameState: GameState): Seq[AttackDeclaration] = {
     gameState.gameHistory.forCurrentTurn
       .flatMap(
         _.gameEvents.view.ofType[Decision]
           .map(_.chosenOption)
           .mapFind(_.asOptionalInstanceOf[DeclaredAttackers]))
       .toSeq
-      .flatMap(_.attackers)
+      .flatMap(_.attackDeclarations)
   }
 }
 
-case class AttackingCreatureDetails(attacker: ObjectId, attackedPlayer: PlayerIdentifier)
-case class DeclaredAttackers(attackers: Seq[AttackingCreatureDetails])
+case class AttackDeclaration(attacker: ObjectId, attackedPlayer: PlayerIdentifier)
+case class DeclaredAttackers(attackDeclarations: Seq[AttackDeclaration])
 
 case class DeclareAttackersChoice(playerToAct: PlayerIdentifier, defendingPlayer: PlayerIdentifier, possibleAttackers: Seq[ObjectId]) extends TypedChoice[DeclaredAttackers] {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[DeclaredAttackers] = {
     serializedChosenOption
       .split(" ").toSeq
       .filter(_.nonEmpty)
-      .map(_.toIntOption.flatMap(i => possibleAttackers.find(_.sequentialId == i)).map(AttackingCreatureDetails(_, defendingPlayer)))
+      .map(_.toIntOption.flatMap(i => possibleAttackers.find(_.sequentialId == i)).map(AttackDeclaration(_, defendingPlayer)))
       .swap
       .map(DeclaredAttackers)
   }
 
   override def handleDecision(chosenOption: DeclaredAttackers, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
     import chosenOption._
-    if (attackers.nonEmpty) {
+    if (attackDeclarations.nonEmpty) {
       (
-        Seq(TapAttackers(attackers.map(_.attacker))),
+        Seq(TapAttackers(attackDeclarations.map(_.attacker))),
         Some(LogEvent.DeclareAttackers(
           playerToAct,
-          attackers.map(_.attacker.currentCharacteristics(currentGameState).name.getOrElse("<unnamed creature>"))
+          attackDeclarations.map(_.attacker.currentCharacteristics(currentGameState).name.getOrElse("<unnamed creature>"))
         ))
       )
     } else {

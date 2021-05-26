@@ -78,6 +78,11 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
         .filter(_.source.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
+    def activateAbilities(player: PlayerIdentifier, cardDefinition: CardDefinition, number: Int): Unit = {
+      (1 to number).foreach(_ => activateFirstAbility(player, cardDefinition))
+    }
+
+
     def castSpell(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
         .filter(_.objectToCast.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).single
@@ -90,6 +95,12 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
     }
     def attackWith(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
       gameStateManager.handleDecision(getCard(Zone.Battlefield, cardDefinition).objectId.sequentialId.toString, player)
+    }
+    def block(player: PlayerIdentifier, blocker: CardDefinition, attacker: CardDefinition): Unit = {
+      gameStateManager.handleDecision(
+        getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString + " " +
+          getCard(Zone.Battlefield, attacker).objectId.sequentialId.toString + " ",
+        player)
     }
   }
 }

@@ -14,6 +14,7 @@ abstract class GameObject {
   def baseCharacteristics: Characteristics
   def defaultController: Option[PlayerIdentifier]
   def permanentStatus: Option[PermanentStatus]
+  def markedDamage: Int
 
   def forNewZone(newObjectId: ObjectId, newZone: Zone): GameObject
   def setObjectId(newObjectId: ObjectId): GameObject
@@ -21,6 +22,7 @@ abstract class GameObject {
   def setPermanentStatus(newPermanentStatus: Option[PermanentStatus]): GameObject
   def setDefaultController(newDefaultController: Option[PlayerIdentifier]): GameObject
   def updatePermanentStatus(f: PermanentStatus => PermanentStatus): GameObject = setPermanentStatus(permanentStatus.map(f))
+  def updateMarkedDamage(f: Int => Int): GameObject
 
   def currentCharacteristics(gameState: GameState): Characteristics = gameState.derivedState.objectStates(objectId).characteristics
 }

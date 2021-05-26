@@ -13,7 +13,7 @@ trait GameObjectStateHelpers extends CardHelpers {
       val cardPrinting = getCardPrinting(cardDefinition)
       val card = Card(owner, cardPrinting)
       val defaultController = if (zone == Zone.Battlefield || zone == Zone.Stack) Some(owner) else None
-      val cardObject = CardObject(card, ObjectId(gameObjectState.nextObjectId), zone, defaultController, zone.defaultPermanentStatus)
+      val cardObject = CardObject(card, ObjectId(gameObjectState.nextObjectId), zone, defaultController, zone.defaultPermanentStatus, 0)
       gameObjectState.updateZone(zone, _ :+ cardObject).copy(nextObjectId = gameObjectState.nextObjectId + 1)
     }
     def addCardsToZone(zone: Zone, owner: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
@@ -25,13 +25,23 @@ trait GameObjectStateHelpers extends CardHelpers {
     def setLibrary(playerIdentifier: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
       clearZoneAndAddCards(Zone.Library(playerIdentifier), playerIdentifier, cardDefinitions)
     }
-    def setHand(playerIdentifier: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
-      clearZoneAndAddCards(Zone.Hand(playerIdentifier), playerIdentifier, cardDefinitions)
+
+    class ZoneSetter(setZone: (PlayerIdentifier, Seq[CardDefinition]) => GameObjectState) {
+      def apply(playerIdentifier: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
+        setZone(playerIdentifier, cardDefinitions)
+      }
+      def apply(playerIdentifier: PlayerIdentifier, cardDefinition: CardDefinition): GameObjectState = {
+        setZone(playerIdentifier, Seq(cardDefinition))
+      }
+      def apply(playerIdentifier: PlayerIdentifier, cardDefinition: CardDefinition, number: Int): GameObjectState = {
+        setZone(playerIdentifier, Seq.fill(number)(cardDefinition))
+      }
     }
-    def setBattlefield(playerIdentifier: PlayerIdentifier, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
+    def setHand: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Hand(playerIdentifier), playerIdentifier, cardDefinitions))
+    def setBattlefield: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) =>
       gameObjectState.updateZone(Zone.Battlefield, _.filter(!_.defaultController.contains(playerIdentifier)))
         .addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
-    }
+    )
   }
 
 }
