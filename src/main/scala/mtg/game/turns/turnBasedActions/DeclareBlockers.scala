@@ -1,24 +1,24 @@
 package mtg.game.turns.turnBasedActions
 
-import mtg._
 import mtg.characteristics.types.Type
 import mtg.game.PlayerIdentifier
 import mtg.game.objects.ObjectId
-import mtg.game.state.history.GameEvent.Decision
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction, TypedChoice}
+import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult, TypedChoice}
 import mtg.utils.ParsingUtils
 
 object DeclareBlockers extends InternalGameAction {
-  override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     val defendingPlayer = DeclareAttackers.getDefendingPlayer(currentGameState)
     val attackers = DeclareAttackers.getAttackDeclarations(currentGameState).map(_.attacker)
     val possibleBlockers = getPossibleBlockers(defendingPlayer, currentGameState)
-    val choice = DeclareBlockersChoice(
-      defendingPlayer,
-      attackers,
-      possibleBlockers)
-    (Seq(choice).filter(_.attackers.nonEmpty).filter(_.possibleBlockers.nonEmpty), None)
+    if (attackers.nonEmpty && possibleBlockers.nonEmpty)
+      DeclareBlockersChoice(
+        defendingPlayer,
+        attackers,
+        possibleBlockers)
+    else
+      ()
   }
   private def getPossibleBlockers(defendingPlayer: PlayerIdentifier, gameState: GameState): Seq[ObjectId] = {
     gameState.gameObjectState.battlefield.view
@@ -31,21 +31,38 @@ object DeclareBlockers extends InternalGameAction {
       .toSeq
   }
   def getBlockDeclarations(gameState: GameState): Seq[BlockDeclaration] = {
-    gameState.gameHistory.forCurrentTurn
-      .flatMap(
-        _.gameEvents.view.ofType[Decision]
-          .map(_.chosenOption)
-          .mapFind(_.asOptionalInstanceOf[DeclaredBlockers]))
+    gameState.gameHistory.forCurrentTurn.view
+      .flatMap(_.gameEvents.getDecision[DeclaredBlockers])
+      .flatMap(_.blockDeclarations)
       .toSeq
-      .flatMap(_.blockingDetails)
   }
-  def getBlockDeclarationsForAttacker(attackerId: ObjectId, allBlockDeclarations: Seq[BlockDeclaration]): Seq[BlockDeclaration] = {
-    allBlockDeclarations.filter(_.blockedCreature == attackerId)
+  def getBlockerOrderings(gameState: GameState): Seq[BlockerOrdering] = {
+    gameState.gameHistory.forCurrentTurn.view
+      .flatMap(_.gameEvents.getDecisions[BlockerOrdering])
+      .toSeq
+  }
+  def getDeclaredBlockersForAttacker(attacker: ObjectId, gameState: GameState): Set[ObjectId] = {
+    getBlockDeclarations(gameState).view
+      .filter(_.attacker == attacker)
+      .map(_.blocker)
+      .toSet
+  }
+  def getDefaultBlockerOrdering(attacker: ObjectId, gameState: GameState): Option[Seq[ObjectId]] = {
+    val blockers = getDeclaredBlockersForAttacker(attacker, gameState)
+    if (blockers.size == 1) {
+      Some(blockers.toSeq)
+    } else {
+      None
+    }
+  }
+  def getBlockerOrdering(attacker: ObjectId, gameState: GameState): Option[Seq[ObjectId]] = {
+    getBlockerOrderings(gameState).find(_.attacker == attacker).map(_.blockersInOrder)
+      .orElse(getDefaultBlockerOrdering(attacker, gameState))
   }
 }
 
-case class BlockDeclaration(blocker: ObjectId, blockedCreature: ObjectId)
-case class DeclaredBlockers(blockingDetails: Seq[BlockDeclaration])
+case class BlockDeclaration(blocker: ObjectId, attacker: ObjectId)
+case class DeclaredBlockers(blockDeclarations: Seq[BlockDeclaration])
 
 case class DeclareBlockersChoice(
     playerToAct: PlayerIdentifier,
@@ -62,12 +79,44 @@ case class DeclareBlockersChoice(
       .map(DeclaredBlockers)
   }
   private def isValidBlock(blockingCreatureDetails: BlockDeclaration): Boolean = {
-    possibleBlockers.contains(blockingCreatureDetails.blocker) && attackers.contains(blockingCreatureDetails.blockedCreature)
+    possibleBlockers.contains(blockingCreatureDetails.blocker) && attackers.contains(blockingCreatureDetails.attacker)
   }
-  override def handleDecision(chosenOption: DeclaredBlockers, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
-    def getName(objectId: ObjectId): String = currentGameState.derivedState.objectStates(objectId).characteristics.name.getOrElse("<unnamed creature>")
-    val assignments = chosenOption.blockingDetails.groupBy(_.blockedCreature)
+  override def handleDecision(chosenBlocks: DeclaredBlockers, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+    def getName(objectId: ObjectId): String = currentGameState.derivedState.objectStates(objectId).characteristics.name
+    val assignments = chosenBlocks.blockDeclarations.groupBy(_.attacker)
       .map { case (id, details) => (getName(id), details.map(_.blocker).map(getName)) }
-    (Nil, Some(LogEvent.DeclareBlockers(playerToAct, assignments)))
+    (Seq(OrderBlockers(chosenBlocks.blockDeclarations)), Some(LogEvent.DeclareBlockers(playerToAct, assignments)))
+  }
+}
+
+case class OrderBlockers(blockDeclarations: Seq[BlockDeclaration]) extends InternalGameAction {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
+    blockDeclarations
+      .groupBy(_.attacker)
+      .filter(_._2.length > 1)
+      .map { case (attacker, blockDeclarations) =>
+        OrderBlockersChoice(currentGameState.activePlayer, attacker, blockDeclarations.map(_.blocker).toSet)
+      }.toSeq
+  }
+}
+
+case class BlockerOrdering(attacker: ObjectId, blockersInOrder: Seq[ObjectId])
+
+case class OrderBlockersChoice(playerToAct: PlayerIdentifier, attacker: ObjectId, blockers: Set[ObjectId]) extends TypedChoice[BlockerOrdering] {
+  override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[BlockerOrdering] = {
+    ParsingUtils.splitStringAsIds(serializedChosenOption).flatMap {
+      case blockersInOrder if blockersInOrder.toSet == blockers =>
+        Some(BlockerOrdering(attacker, blockersInOrder))
+      case _ =>
+        None
+    }
+  }
+
+  override def handleDecision(chosenOption: BlockerOrdering, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+    def getName(objectId: ObjectId): String = currentGameState.derivedState.objectStates(objectId).characteristics.name
+    (Nil, Some(LogEvent.OrderBlockers(
+      playerToAct,
+      getName(chosenOption.attacker),
+      chosenOption.blockersInOrder.map(getName))))
   }
 }

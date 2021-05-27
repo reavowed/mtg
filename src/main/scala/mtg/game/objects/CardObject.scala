@@ -14,5 +14,5 @@ case class CardObject(card: Card, objectId: ObjectId, zone: Zone, defaultControl
   override def setPermanentStatus(newPermanentStatus: Option[PermanentStatus]): CardObject = copy(permanentStatus = newPermanentStatus)
   override def updateMarkedDamage(f: Int => Int): CardObject = copy(markedDamage = f(markedDamage))
 
-  override def toString: String = s"CardObject(${card.baseCharacteristics.name.get} ${card.printing.set}-${card.printing.collectorNumber}, $objectId)"
+  override def toString: String = s"CardObject(${card.baseCharacteristics.name} ${card.printing.set}-${card.printing.collectorNumber}, $objectId)"
 }

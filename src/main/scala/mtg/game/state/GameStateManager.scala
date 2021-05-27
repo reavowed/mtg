@@ -55,7 +55,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   }
 
   private def executeInternalGameAction(internalGameAction: InternalGameAction, gameState: GameState): GameState = {
-    val (actions, logEvent) = internalGameAction.execute(gameState)
+    val InternalGameActionResult(actions, logEvent) = internalGameAction.execute(gameState)
     gameState.addActions(actions).recordLogEvent(logEvent)
   }
 

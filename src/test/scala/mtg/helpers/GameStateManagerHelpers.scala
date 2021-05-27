@@ -57,6 +57,9 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       passUntilTurn(turnNumber)
       passUntilStep(turnStep)
     }
+    def passUntilStackEmpty(): Unit = {
+      passUntil(_.gameObjectState.stack.isEmpty)
+    }
 
     def playLand(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
       val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
@@ -97,10 +100,28 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       gameStateManager.handleDecision(getCard(Zone.Battlefield, cardDefinition).objectId.sequentialId.toString, player)
     }
     def block(player: PlayerIdentifier, blocker: CardDefinition, attacker: CardDefinition): Unit = {
-      gameStateManager.handleDecision(
+      block(player, (blocker, attacker))
+    }
+    def block(player: PlayerIdentifier, blockers: (CardDefinition, CardDefinition)*): Unit = {
+      val serializedDecision = blockers.map { case (blocker, attacker) =>
         getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString + " " +
-          getCard(Zone.Battlefield, attacker).objectId.sequentialId.toString + " ",
-        player)
+          getCard(Zone.Battlefield, attacker).objectId.sequentialId.toString + " "
+      }.mkString(" ")
+
+      gameStateManager.handleDecision(serializedDecision, player)
+    }
+    def orderBlocks(player: PlayerIdentifier, blockers: CardDefinition*): Unit = {
+      val serializedDecision = blockers.map { blocker =>
+        getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString
+      }.mkString(" ")
+      gameStateManager.handleDecision(serializedDecision, player)
+    }
+    def assignDamage(player: PlayerIdentifier, damage: (CardDefinition, Int)*): Unit = {
+      val serializedDecision = damage.map { case (blocker, amount) =>
+        getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString + " " + amount
+      }.mkString(" ")
+
+      gameStateManager.handleDecision(serializedDecision, player)
     }
   }
 }

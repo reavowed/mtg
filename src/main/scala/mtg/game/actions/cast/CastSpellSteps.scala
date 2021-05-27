@@ -15,14 +15,10 @@ import scala.annotation.tailrec
 object CastSpellSteps {
 
   case class Start(player: PlayerIdentifier, objectToCast: ObjectWithState, backupAction: BackupAction) extends InternalGameAction {
-    override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
-      (
-        Seq(
-          MoveObjectEvent(player, objectToCast.gameObject, Zone.Stack),
-          PayCosts(player, backupAction)
-        ),
-        None
-      )
+    override def execute(currentGameState: GameState): InternalGameActionResult = {
+      Seq(
+        MoveObjectEvent(player, objectToCast.gameObject, Zone.Stack),
+        PayCosts(player, backupAction))
     }
   }
 
@@ -60,7 +56,7 @@ object CastSpellSteps {
       } yield manaAfterGeneric
     }
 
-    override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+    override def execute(currentGameState: GameState): InternalGameActionResult = {
       val spell = currentGameState.gameObjectState.stack.last
       val spellWithState = currentGameState.derivedState.objectStates(spell.objectId)
       spellWithState.characteristics.manaCost match {
@@ -69,23 +65,22 @@ object CastSpellSteps {
           val finalManaInPool = payManaAutomatically(cost.symbols, initialManaInPool)
           finalManaInPool match {
             case Some(finalManaInPool) =>
-              (Seq(SpendManaAutomaticallyEvent(player, finalManaInPool), FinishCasting(player, spell)), None)
+              Seq(SpendManaAutomaticallyEvent(player, finalManaInPool), FinishCasting(player, spell))
             case None =>
-              (Seq(backupAction), None)
+              backupAction
           }
         case None =>
-          (Seq(backupAction), None)
+          backupAction
       }
     }
   }
 
   case class FinishCasting(player: PlayerIdentifier, spell: GameObject) extends InternalGameAction {
-    override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+    override def execute(currentGameState: GameState): InternalGameActionResult = {
       val spellWithState = currentGameState.derivedState.objectStates(spell.objectId)
-      (
+      InternalGameActionResult(
         Seq(SpellCastEvent(spell), priority.PriorityFromPlayerAction(player)),
-        Some(LogEvent.CastSpell(player, spellWithState.characteristics.name.getOrElse("<unnamed spell>")))
-      )
+        Some(LogEvent.CastSpell(player, spellWithState.characteristics.name)))
     }
   }
 

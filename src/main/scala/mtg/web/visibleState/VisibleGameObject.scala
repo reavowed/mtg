@@ -28,7 +28,7 @@ object VisibleCard {
     if (DeclareAttackers.getAttackDeclarations(gameState).exists(_.attacker == cardObject.objectId)) {
       builder.addOne(("attacking", true))
     }
-    DeclareBlockers.getBlockDeclarations(gameState).find(_.blocker == cardObject.objectId).foreach(d => builder.addOne(("blocking", d.blockedCreature)))
+    DeclareBlockers.getBlockDeclarations(gameState).find(_.blocker == cardObject.objectId).foreach(d => builder.addOne(("blocking", d.attacker)))
     builder.result()
   }
 

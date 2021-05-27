@@ -10,12 +10,15 @@ import mtg.game.state.history.LogEvent
 import mtg.game.state._
 
 object DeclareAttackers extends InternalGameAction {
-  override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
-    val choice = DeclareAttackersChoice(
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
+    val possibleAttackers = getPossibleAttackers(currentGameState)
+    if (possibleAttackers.nonEmpty)
+      DeclareAttackersChoice(
         currentGameState.activePlayer,
         getDefendingPlayer(currentGameState),
-        getPossibleAttackers(currentGameState))
-    (Seq(choice).filter(_.possibleAttackers.nonEmpty), None)
+        possibleAttackers)
+    else
+      ()
   }
   private def wasContinuouslyControlled(objectWithState: ObjectWithState, gameState: GameState): Boolean = {
     gameState.gameHistory.forCurrentTurn.exists(
@@ -69,7 +72,7 @@ case class DeclareAttackersChoice(playerToAct: PlayerIdentifier, defendingPlayer
         Seq(TapAttackers(attackDeclarations.map(_.attacker))),
         Some(LogEvent.DeclareAttackers(
           playerToAct,
-          attackDeclarations.map(_.attacker.currentCharacteristics(currentGameState).name.getOrElse("<unnamed creature>"))
+          attackDeclarations.map(_.attacker.currentCharacteristics(currentGameState).name)
         ))
       )
     } else {

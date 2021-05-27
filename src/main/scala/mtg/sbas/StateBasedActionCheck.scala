@@ -1,16 +1,15 @@
 package mtg.sbas
 
-import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 
 object StateBasedActionCheck extends InternalGameAction {
   val allStateBasedActions = Seq(LethalDamageStateBasedAction)
-  override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     val actions = allStateBasedActions.flatMap(_.getApplicableEvents(currentGameState))
     if (actions.nonEmpty) {
-      (actions :+ StateBasedActionCheck, None)
+      actions :+ StateBasedActionCheck
     } else {
-      (Nil, None)
+      Nil
     }
   }
 }

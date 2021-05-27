@@ -1,10 +1,10 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameObjectEvent, GameObjectEventResult, GameState, InternalGameAction}
+import mtg.game.state.{GameAction, GameObjectEvent, GameObjectEventResult, GameState, InternalGameAction, InternalGameActionResult}
 
 object CleanupAction extends InternalGameAction {
-  override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = (Seq(DamageWearsOffEvent), None)
+  override def execute(currentGameState: GameState): InternalGameActionResult = DamageWearsOffEvent
 }
 
 object DamageWearsOffEvent extends GameObjectEvent {

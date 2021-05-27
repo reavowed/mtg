@@ -7,7 +7,7 @@ import mtg.characteristics.types.{Subtype, Supertype, Type}
 import mtg.parts.costs.ManaCost
 
 case class Characteristics(
-  name: Option[String],
+  name: String,
   manaCost: Option[ManaCost],
   colors: Set[Color],
   colorIndicator: Option[ColorIndicator],

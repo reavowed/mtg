@@ -3,7 +3,7 @@ package mtg.game.actions
 import mtg.characteristics.types.Type
 import mtg.game.objects.ObjectId
 import mtg.game.state.history.{GameEvent, LogEvent}
-import mtg.game.state.{GameAction, GameState, ObjectWithState}
+import mtg.game.state.{GameAction, GameState, InternalGameActionResult, ObjectWithState}
 import mtg.game.{PlayerIdentifier, Zone}
 
 case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) extends PriorityAction {
@@ -11,12 +11,12 @@ case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) exten
   override def displayText: String = "Play"
   override def optionText: String = "Play " + land.gameObject.objectId
 
-  override def execute(currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     val preventEvent = PlayLandAction.cannotPlayLands(player, currentGameState) || PlayLandAction.cannotPlayLand(land, player, currentGameState)
     val eventOption = if (preventEvent) None else Some(PlayLandEvent(player, land.gameObject))
-    (
+    InternalGameActionResult(
       eventOption.toSeq,
-      Some(LogEvent.PlayedLand(player, land.characteristics.name.get))
+      Some(LogEvent.PlayedLand(player, land.characteristics.name))
     )
   }
 

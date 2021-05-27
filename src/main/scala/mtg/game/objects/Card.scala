@@ -9,7 +9,7 @@ case class Card(owner: PlayerIdentifier, printing: CardPrinting) {
   def baseCharacteristics: Characteristics = {
     import printing.cardDefinition._
     Characteristics(
-      Some(name),
+      name,
       manaCost,
       colorIndicator.map(_.colors.toSet)
         .orElse(manaCost.map(_.symbols.toSet[ManaSymbol].flatMap(_.colors)))
