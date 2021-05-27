@@ -50,6 +50,7 @@ case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration]
                   currentGameState.activePlayer,
                   attacker,
                   blockers.map(b => (b, requiredDamageForLethal(b, currentGameState))),
+                  attacker.getPower(currentGameState),
                   attackedPlayer,
                   remainingAttackDeclarations,
                   blockDeclarations,
@@ -76,6 +77,7 @@ case class AssignCombatDamageChoice(
     playerToAct: PlayerIdentifier,
     attacker: ObjectId,
     blockers: Seq[(ObjectId, Int)],
+    damageToAssign: Int,
     attackedPlayer: PlayerIdentifier,
     attackDeclarations: Seq[AttackDeclaration],
     blockDeclarations: Seq[BlockDeclaration],
@@ -104,7 +106,7 @@ case class AssignCombatDamageChoice(
           }
       }
     }
-    ParsingUtils.splitStringAsInts(serializedChosenOption).flatMap(matchBlockers(_, blockers, Map.empty, attacker.getPower(currentGameState)))
+    ParsingUtils.splitStringAsInts(serializedChosenOption).flatMap(matchBlockers(_, blockers, Map.empty, damageToAssign))
   }
 
   override def handleDecision(chosenOption: CombatDamageAssignment, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {

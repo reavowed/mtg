@@ -6,6 +6,7 @@ import {addClass} from "../../utils/element-utils";
 import {useRefWithEventHandler} from "../../utils/hook-utils";
 import HorizontalCenter from "../layout/HorizontalCenter";
 import Card from "./Card";
+import CardWithActions from "./CardWithActions";
 
 function CardWrapper({card, as}) {
     return <div className="cardWrapper">
@@ -22,7 +23,7 @@ function getCardWidth(card) {
 }
 
 export default function CardRow({className, cards, as}) {
-    as = as || Card;
+    as = as || CardWithActions;
 
     const overlapCards = useCallback((ref) => {
         const cardElements = Array.from(ref.childNodes),

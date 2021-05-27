@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {useCallback, useContext, useEffect, useRef, useState} from "preact/hooks";
+import {useCallback, useContext, useEffect, useState} from "preact/hooks";
 import ActionManager from "../../../contexts/ActionManager";
 import CanvasManager from "../../../contexts/CanvasManager";
 import GameState from "../../../contexts/GameState";

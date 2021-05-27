@@ -28,6 +28,7 @@
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "preact": "^10.5.7",
+    "react-beautiful-dnd": "^13.1.0",
     "react-bootstrap": "^1.6.0",
     "sockjs-client": "^1.5.1",
     "stompjs": "^2.3.3"

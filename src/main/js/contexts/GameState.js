@@ -19,11 +19,9 @@ GameState.Provider = function({children}) {
         getJson('$currentPath/state').then(setState)
         const socket = new SockJS('/state');
         const stompClient = Stomp.over(socket);
-        stompClient.connect({}, function(frame) {
-            console.log('Connected: ' + frame);
+        stompClient.connect({}, function() {
             stompClient.subscribe('/user/' + getCurrentPath().split('/')[1] + '/topic/state', function(messageOutput) {
                 const state = JSON.parse(messageOutput.body);
-                console.log(state);
                 setState(state);
             });
         });

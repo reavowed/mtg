@@ -1,34 +1,13 @@
-import {useCallback, useContext, useEffect, useState} from "preact/hooks";
-import ActionManager from "../../contexts/ActionManager";
-import ObjectRefManager from "../../contexts/ObjectRefManager";
-import ScryfallService from "../../contexts/ScryfallService";
-import $ from "jQuery";
 import _ from "lodash";
-import {useRefWithEventHandler} from "../../utils/hook-utils";
+import {forwardRef} from "preact/compat";
+import {useContext, useEffect, useState} from "preact/hooks";
+import ScryfallService from "../../contexts/ScryfallService";
 
-export default function Card({card, ...props}) {
+export default forwardRef(function Card({card, containerClasses, ...props}, ref) {
     const scryfallService = useContext(ScryfallService);
-    const objectRefManager = useContext(ObjectRefManager);
     const [scryfallCard, setScryfallCard] = useState(null);
     useEffect(() => scryfallService.requestCard(card, setScryfallCard), []);
-
-    const actionManager = useContext(ActionManager);
-    const handleClick = useCallback((event) => {
-        actionManager.actionHandler(card.objectId, event);
-    }, [card, actionManager]);
-
-    const registerRef = useCallback((img) => {
-        $(img).on("click", handleClick);
-        objectRefManager.setObjectRef(card.objectId, img);
-    }, [handleClick, card]);
-    const deregisterRef = useCallback((img) => {
-        $(img).off("click", handleClick);
-        objectRefManager.setObjectRef(card.objectId, null);
-    }, [handleClick, card]);
-
-    const imgRef = useRefWithEventHandler(registerRef, deregisterRef, []);
-
-    const containerClasses = ["cardContainer", "position-relative", ...actionManager.getClasses(card.objectId)];
+    containerClasses = ["cardContainer", "position-relative", ...(containerClasses || [])];
     if (card.permanentStatus && card.permanentStatus.isTapped) {
         containerClasses.push("tapped")
     }
@@ -40,7 +19,7 @@ export default function Card({card, ...props}) {
     }
 
     return scryfallCard && <div className={containerClasses.join(" ")}>
-        <img ref={imgRef} src={scryfallCard.image_uris.small} {...props} />
-        {card.markedDamage > 0 && <span class="position-absolute damage">{card.markedDamage}</span>}
-    </div>
-}
+        <img ref={ref} src={scryfallCard.image_uris.small} {...props} />
+        {card.markedDamage > 0 && <span className="position-absolute damage">{card.markedDamage}</span>}
+    </div>;
+});

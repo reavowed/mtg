@@ -24,6 +24,9 @@ package object mtg {
     def mapFind[S](f: T => Option[S]): Option[S] = {
       seq.iterator.map(f).find(_.isDefined).flatten
     }
+    def mapWithIndex[S](f: (T, Int) => S): Seq[S] = {
+      seq.zipWithIndex.map(f.tupled)
+    }
     def findIndex(p: T => Boolean): Option[Int] = {
       seq.zipWithIndex.find { case (t, _) => p(t) }.map(_._2)
     }

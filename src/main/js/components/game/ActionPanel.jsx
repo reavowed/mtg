@@ -1,8 +1,10 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
 import BannerText from "../layout/BannerText";
+import AssignCombatDamageChoice from "./choices/AssignCombatDamageChoice";
 import DeclareAttackersChoice from "./choices/DeclareAttackersChoice";
 import DeclareBlockersChoice from "./choices/DeclareBlockersChoice";
+import OrderBlockersChoice from "./choices/OrderBlockersChoice";
 import PriorityChoice from "./choices/PriorityChoice";
 import ManaPool from "./ManaPool";
 
@@ -14,6 +16,10 @@ function getChoiceDisplay(choiceType) {
             return <DeclareAttackersChoice />
         case "DeclareBlockersChoice":
             return <DeclareBlockersChoice />
+        case "OrderBlockersChoice":
+            return <OrderBlockersChoice />
+        case "AssignCombatDamageChoice":
+            return <AssignCombatDamageChoice />
     }
 }
 
