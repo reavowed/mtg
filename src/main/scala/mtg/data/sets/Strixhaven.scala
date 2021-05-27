@@ -4,9 +4,12 @@ import mtg.cards.{CardInSetData, Set}
 import mtg.data.cards._
 import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
 
+import java.time.{LocalDate, Month}
+
 object Strixhaven extends Set(
   "Strixhaven",
   "STX",
+  LocalDate.of(2021, Month.APRIL, 23),
   Seq(
     CardInSetData(AgelessGuardian, 8),
     CardInSetData(SpinedKarok, 143),
