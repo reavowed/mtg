@@ -48,26 +48,11 @@ case class PriorityChoice(
     chosenOption match {
       case PriorityOption.PassPriority =>
         if (remainingPlayers.nonEmpty)
-          (PriorityChoice.create(remainingPlayers, currentGameState).toSeq, None)
+          (Seq(PriorityForPlayersAction(remainingPlayers)), None)
         else
           (Seq(ResolveTopStackObject), None)
       case PriorityOption.TakeAction(action) =>
         (Seq(action, PriorityFromPlayerAction(playerToAct)), None)
-    }
-  }
-}
-
-object PriorityChoice {
-  def create(playersLeftToAct: Seq[PlayerIdentifier], gameState: GameState): Option[PriorityChoice] = {
-    playersLeftToAct match {
-      case playerToAct +: remainingPlayers =>
-        val backupAction = BackupAction(gameState.addActions(Seq(PriorityForPlayersAction(playersLeftToAct))))
-        Some(PriorityChoice(
-          playerToAct,
-          remainingPlayers,
-          PriorityAction.getAll(playerToAct, gameState, backupAction)))
-      case Nil =>
-        None
     }
   }
 }

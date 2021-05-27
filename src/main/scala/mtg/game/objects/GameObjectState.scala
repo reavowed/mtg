@@ -13,6 +13,7 @@ case class GameObjectState(
     libraries: Map[PlayerIdentifier, Seq[GameObject]],
     hands: Map[PlayerIdentifier, Seq[GameObject]],
     battlefield: Seq[GameObject],
+    graveyards: Map[PlayerIdentifier, Seq[GameObject]],
     stack: Seq[GameObject],
     sideboards: Map[PlayerIdentifier, Seq[GameObject]],
     manaPools: Map[PlayerIdentifier, Seq[ManaObject]])
@@ -75,6 +76,7 @@ object GameObjectState {
       libraries,
       emptyMap,
       Nil,
+      emptyMap,
       Nil,
       sideboards,
       emptyMap)
