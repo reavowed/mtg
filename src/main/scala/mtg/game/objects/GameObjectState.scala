@@ -24,9 +24,17 @@ case class GameObjectState(
   def updateManaPool(player: PlayerIdentifier, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
   }
-  def createNewObjectForZone(oldObject: GameObject, newZone: Zone): (GameObject, GameObjectState) = {
-    (oldObject.setObjectId(ObjectId(nextObjectId)).setZone(newZone).setPermanentStatus(newZone.defaultPermanentStatus), copy(nextObjectId = nextObjectId + 1))
+  def deleteObject(gameObject: GameObject): GameObjectState = {
+    updateZone(gameObject.zone, _.filter(_ != gameObject))
   }
+  def addObject(zone: Zone, createGameObject: ObjectId => GameObject, getIndex: Seq[GameObject] => Int): GameObjectState = {
+    val newObject = createGameObject(ObjectId(nextObjectId))
+    updateZone(zone, existingObjects => {
+      val index = getIndex(existingObjects)
+      (existingObjects.take(index) :+ newObject) ++ existingObjects.drop(index)
+    }).copy(nextObjectId = nextObjectId + 1)
+  }
+
   def allObjects: Seq[GameObject] = {
     (libraries.flatMap(_._2) ++ hands.flatMap(_._2) ++ battlefield ++ stack).toSeq
   }
@@ -36,9 +44,6 @@ case class GameObjectState(
   def updateGameObject(objectId: ObjectId, f: GameObject => GameObject): GameObjectState = {
     val oldObject = allObjects.find(_.objectId == objectId).get
     oldObject.zone.stateLens.modify(_.map(o => if (o == oldObject) f(oldObject) else o))(this)
-  }
-  def updateGameObject(oldGameObject: GameObject, newGameObject: GameObject): GameObjectState = {
-    oldGameObject.zone.stateLens.modify(_.map(o => if (o == oldGameObject) newGameObject else o))(this)
   }
   def updateLifeTotal(player: PlayerIdentifier, f: Int => Int): GameObjectState = {
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)

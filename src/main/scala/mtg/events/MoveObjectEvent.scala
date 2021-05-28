@@ -7,7 +7,6 @@ import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
 case class MoveObjectEvent(player: PlayerIdentifier, objectId: ObjectId, destination: Zone) extends GameObjectEvent {
   def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.allObjects.find(_.objectId == objectId).map(gameObject => {
-      val (newObject, intermediateState) = currentGameState.gameObjectState.createNewObjectForZone(gameObject, destination)
       val defaultController = if (destination == Zone.Stack) {
         // RULE 112.2 / Apr 22 2021 : A spell's controller is, by default, the player who put it on the stack.
         Some(player)
@@ -23,9 +22,9 @@ case class MoveObjectEvent(player: PlayerIdentifier, objectId: ObjectId, destina
       } else {
         None
       }
-      intermediateState
-        .updateZone(gameObject.zone, gameObjects => gameObjects.filter(_ != gameObject))
-        .updateZone(destination, gameObjects => gameObjects :+ newObject.setDefaultController(defaultController))
+      currentGameState.gameObjectState
+        .deleteObject(gameObject)
+        .addObject(destination, gameObject.forNewZone(_, destination, defaultController), _.length)
     })
   }
 }

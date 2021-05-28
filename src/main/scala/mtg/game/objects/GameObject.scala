@@ -16,7 +16,7 @@ abstract class GameObject {
   def permanentStatus: Option[PermanentStatus]
   def markedDamage: Int
 
-  def forNewZone(newObjectId: ObjectId, newZone: Zone): GameObject
+  def forNewZone(newObjectId: ObjectId, newZone: Zone, newController: Option[PlayerIdentifier]): GameObject
   def setObjectId(newObjectId: ObjectId): GameObject
   def setZone(newZone: Zone): GameObject
   def setPermanentStatus(newPermanentStatus: Option[PermanentStatus]): GameObject

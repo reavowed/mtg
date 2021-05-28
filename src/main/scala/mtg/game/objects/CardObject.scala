@@ -8,7 +8,7 @@ case class CardObject(card: Card, objectId: ObjectId, zone: Zone, defaultControl
   def cardDefinition: CardDefinition = card.printing.cardDefinition
 
   override def owner: PlayerIdentifier = card.owner
-  override def forNewZone(newObjectId: ObjectId, newZone: Zone): GameObject = copy(objectId = newObjectId, zone = newZone)
+  override def forNewZone(newObjectId: ObjectId, newZone: Zone, newController: Option[PlayerIdentifier]): GameObject = CardObject(card, newObjectId, newZone, newController, newZone.defaultPermanentStatus, 0)
   override def baseCharacteristics: Characteristics = card.baseCharacteristics
 
   override def setObjectId(newObjectId: ObjectId): CardObject = copy(objectId = newObjectId)
