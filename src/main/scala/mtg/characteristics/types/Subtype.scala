@@ -11,12 +11,10 @@ import mtg.utils.CaseObjectSerializer
 sealed class Subtype
 
 sealed class LandType extends Subtype
-sealed class CreatureType(val name: String) extends Subtype
 
 sealed class BasicLandType(val name: String, val color: Color) extends LandType {
   def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), AddManaEffect(color))
 }
-
 object BasicLandType {
   object Plains extends BasicLandType("Plains", Color.White)
   object Island extends BasicLandType("Island", Color.Blue)
@@ -25,6 +23,7 @@ object BasicLandType {
   object Forest extends BasicLandType("Forest", Color.Green)
 }
 
+sealed class CreatureType(val name: String) extends Subtype
 object CreatureType {
   object Crocodile extends CreatureType("Crocodile")
   object Elf extends CreatureType("Elf")

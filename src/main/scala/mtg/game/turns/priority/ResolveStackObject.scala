@@ -10,7 +10,7 @@ import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameAc
 case class ResolveStackObject(stackObject: GameObject) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     val stackObjectWithState = currentGameState.derivedState.objectStates(stackObject.objectId)
-    if (stackObjectWithState.characteristics.types.exists(_.isInstanceOf[Type.PermanentType])) {
+    if (stackObjectWithState.characteristics.types.exists(_.isPermanent)) {
       // RULE 608.3 / Apr 22 2021 : If the object that's resolving is a permanent spell, its resolution involves a single
       // step (unless it's an Aura, a copy of a permanent spell, or a mutating creature spell). The spell card becomes a
       // permanent and is put onto the battlefield under the control of the spell's controller.

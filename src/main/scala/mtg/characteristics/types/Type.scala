@@ -4,13 +4,25 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.utils.CaseObjectSerializer
 
 @JsonSerialize(using = classOf[CaseObjectSerializer])
-sealed trait Type
+sealed trait Type {
+  def isSpell: Boolean
+  def isPermanent: Boolean
+}
 
 object Type {
-  sealed trait SpellType extends Type
-  sealed trait PermanentType extends SpellType
+  trait InstantOrSorcery extends Type {
+    override def isSpell: Boolean = true
+    override def isPermanent: Boolean = false
+  }
 
-  case object Land extends Type
-  case object Instant extends SpellType
-  case object Creature extends PermanentType
+  case object Land extends Type {
+    override def isSpell: Boolean = false
+    override def isPermanent: Boolean = true
+  }
+  case object Instant extends InstantOrSorcery
+  case object Sorcery extends InstantOrSorcery
+  case object Creature extends Type {
+    override def isSpell: Boolean = true
+    override def isPermanent: Boolean = true
+  }
 }
