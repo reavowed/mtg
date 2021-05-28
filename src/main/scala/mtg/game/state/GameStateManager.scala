@@ -1,6 +1,5 @@
 package mtg.game.state
 
-import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.turns.TurnCycleEventPreventer
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice

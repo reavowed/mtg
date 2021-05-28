@@ -109,6 +109,10 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.currentGameState mustEqual stateBeforeChoice
     }
 
+    "have correct oracle text" in {
+      EnvironmentalSciences.text mustEqual "Search your library for a basic land card, reveal it, put it into your hand, then shuffle. You gain 2 life."
+    }
+
     // TODO: not allow a non-basic land?
   }
 

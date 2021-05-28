@@ -9,8 +9,9 @@ sealed abstract class AbilityDefinition {
   def text: String
 }
 object AbilityDefinition {
-  implicit def effectToSpellAbility(effect: Effect): SpellAbility = SpellAbility(AbilityParagraph(Seq(effect)))
-  implicit def sentenceToSpellAbility(abilitySentence: AbilitySentence): SpellAbility = SpellAbility(AbilityParagraph(Seq(abilitySentence)))
+  implicit def effectToSpellAbility(effect: Effect): SpellAbility = SpellAbility(AbilityParagraph(effect))
+  implicit def sentenceToSpellAbility(abilitySentence: AbilitySentence): SpellAbility = SpellAbility(AbilityParagraph(abilitySentence))
+  implicit def paragraphToSpellAbility(abilityParagraph: AbilityParagraph): SpellAbility = SpellAbility(abilityParagraph)
 }
 
 case class ActivatedAbilityDefinition(

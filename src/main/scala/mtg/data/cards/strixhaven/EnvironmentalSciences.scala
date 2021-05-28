@@ -5,6 +5,7 @@ import mtg.characteristics.types.SpellType.Lesson
 import mtg.characteristics.types.Type
 import mtg.parts.costs.ManaCost
 import mtg.abilities.AbilityBuilder._
+import mtg.abilities.AbilityParagraph
 
 object EnvironmentalSciences extends Spell(
   "Environmental Sciences",
@@ -12,6 +13,6 @@ object EnvironmentalSciences extends Spell(
   Type.Sorcery,
   Seq(Lesson),
   Seq(
-    Seq(searchYourLibraryForA(basicLand), reveal(it), putIntoYourHand(it)).then(shuffle),
-    youGainLife(2)
-  ))
+    AbilityParagraph(
+      Seq(searchYourLibraryForA(basicLand), reveal(it), putIntoYourHand(it)).then(shuffle),
+      youGainLife(2))))
