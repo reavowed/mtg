@@ -12,7 +12,7 @@ case class ActivateAbilityAction(player: PlayerIdentifier, source: ObjectWithSta
   override def optionText: String = "Activate " + source.gameObject.objectId + " " + source.characteristics.abilities.indexOf(ability)
 
   override def execute(currentGameState: GameState): InternalGameActionResult = {
-    ability.costs.flatMap(_.payForAbility(source)) ++ ability.effects.flatMap(_.resolveForAbility(player))
+    ability.costs.flatMap(_.payForAbility(source)) ++ ability.effectParagraph.effects.flatMap(_.resolveForAbility(player))
   }
 }
 

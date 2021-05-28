@@ -14,7 +14,7 @@ sealed class LandType extends Subtype
 sealed class CreatureType(val name: String) extends Subtype
 
 sealed class BasicLandType(val name: String, val color: Color) extends LandType {
-  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), Seq(AddManaEffect(color)))
+  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), AddManaEffect(color))
 }
 
 object BasicLandType {

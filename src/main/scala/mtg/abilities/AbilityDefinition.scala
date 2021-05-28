@@ -1,6 +1,5 @@
 package mtg.abilities
 
-import mtg.effects.Effect
 import mtg.game.ZoneType
 import mtg.parts.costs.Cost
 
@@ -11,8 +10,8 @@ sealed abstract class AbilityDefinition {
 
 case class ActivatedAbilityDefinition(
     costs: Seq[Cost],
-    effects: Seq[Effect])
+    effectParagraph: AbilityParagraph)
   extends AbilityDefinition
 {
-  override def text: String = costs.map(_.text).mkString(", ") + ": " + effects.map(_.text).mkString(" ")
+  override def text: String = costs.map(_.text).mkString(", ") + ": " + effectParagraph.text
 }
