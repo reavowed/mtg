@@ -1,12 +1,10 @@
 package mtg
 
-import mtg.cards.{CardDefinition, CardPrinting}
-import mtg.game.PlayerIdentifier
+import mtg.cards.CardDefinition
 import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState}
 import mtg.game.state.history.GameHistory
-import mtg.game.state.{GameAction, GameResult, GameState, GameStateManager, ObjectWithState}
+import mtg.game.state._
 import mtg.game.turns.TurnPhase
-import mtg.game.turns.priority.PriorityChoice
 import mtg.helpers.{GameActionHelpers, GameStateManagerHelpers}
 import org.specs2.matcher.Matcher
 

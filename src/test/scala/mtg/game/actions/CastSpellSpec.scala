@@ -13,9 +13,6 @@ import mtg.game.turns.priority.PriorityChoice
 import org.specs2.matcher.Matcher
 
 class CastSpellSpec extends SpecWithGameStateManager {
-  def beCastSpellAction(gameObject: GameObject): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
-    (castSpellAction.objectToCast.gameObject == gameObject, "was given object", "was not given object")
-  }
   "cast spell action" should {
     "be available for a creature card in hand at sorcery speed" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
@@ -23,15 +20,14 @@ class CastSpellSpec extends SpecWithGameStateManager {
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
 
-      val creatureObject = manager.getCard(playerOne.hand, AgelessGuardian)
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpell(beCastSpellAction(creatureObject))
+      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpell(AgelessGuardian)
     }
 
     "not be available for a creature card in hand in upkeep" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpells(beEmpty)
+      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells
     }
 
     "not be available for a creature card in hand if there is something on the stack" in {
@@ -47,7 +43,7 @@ class CastSpellSpec extends SpecWithGameStateManager {
       manager.activateFirstAbility(playerOne, Plains)
       manager.castFirstSpell(playerOne, AgelessGuardian)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpells(beEmpty)
+      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells
     }
 
     "not be available for a creature card for the non-active player" in {
@@ -57,7 +53,7 @@ class CastSpellSpec extends SpecWithGameStateManager {
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerTwo).withAvailableSpells(beEmpty)
+      manager.currentAction must bePriorityChoice.forPlayer(playerTwo).withNoAvailableSpells
     }
 
     // TODO: not for creature card with something on the stack

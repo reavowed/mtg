@@ -7,5 +7,5 @@ import mtg.utils.CaseObjectSerializer
 sealed class Supertype
 
 object Supertype {
-  val Basic = new Supertype()
+  object Basic extends Supertype
 }

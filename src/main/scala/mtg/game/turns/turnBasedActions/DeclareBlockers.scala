@@ -4,7 +4,7 @@ import mtg.characteristics.types.Type
 import mtg.game.PlayerIdentifier
 import mtg.game.objects.ObjectId
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult, TypedChoice}
+import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult, TypedPlayerChoice}
 import mtg.utils.ParsingUtils
 
 object DeclareBlockers extends InternalGameAction {
@@ -68,7 +68,7 @@ case class DeclareBlockersChoice(
     playerToAct: PlayerIdentifier,
     attackers: Seq[ObjectId],
     possibleBlockers: Seq[ObjectId])
-  extends TypedChoice[DeclaredBlockers]
+  extends TypedPlayerChoice[DeclaredBlockers]
 {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[DeclaredBlockers] = {
     ParsingUtils.splitStringAsIds(serializedChosenOption)
@@ -102,7 +102,7 @@ case class OrderBlockers(blockDeclarations: Seq[BlockDeclaration]) extends Inter
 
 case class BlockerOrdering(attacker: ObjectId, blockersInOrder: Seq[ObjectId])
 
-case class OrderBlockersChoice(playerToAct: PlayerIdentifier, attacker: ObjectId, blockers: Set[ObjectId]) extends TypedChoice[BlockerOrdering] {
+case class OrderBlockersChoice(playerToAct: PlayerIdentifier, attacker: ObjectId, blockers: Set[ObjectId]) extends TypedPlayerChoice[BlockerOrdering] {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[BlockerOrdering] = {
     ParsingUtils.splitStringAsIds(serializedChosenOption).flatMap {
       case blockersInOrder if blockersInOrder.toSet == blockers =>

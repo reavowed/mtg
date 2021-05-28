@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.game.objects.GameObjectState
+import mtg.game.objects.{GameObject, GameObjectState, ObjectId}
 import mtg.game.start.StartGameAction
 import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.state.history._
@@ -26,6 +26,9 @@ case class GameState(
   def currentPhase: Option[TurnPhase] = currentPhaseHistory.map(_.phase)
   private def currentStepHistory: Option[StepHistory] = currentPhaseHistory.flatMap(_.asOptionalInstanceOf[PhaseHistoryWithSteps]).flatMap(_.steps.lastOption)
   def currentStep: Option[TurnStep] = currentStepHistory.map(_.step)
+
+  def getObjectState(objectId: ObjectId): ObjectWithState = derivedState.objectStates(objectId)
+  def getObjectState(gameObject: GameObject): ObjectWithState = getObjectState(gameObject.objectId)
 
   def updateHistory(f: GameHistory => GameHistory): GameState = copy(gameHistory = f(gameHistory))
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(

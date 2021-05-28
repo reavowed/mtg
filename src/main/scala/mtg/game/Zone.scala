@@ -3,7 +3,7 @@ package mtg.game
 import monocle.function.At
 import monocle.{Focus, Lens}
 import mtg.game.objects.{GameObject, GameObjectState}
-import mtg.game.state.PermanentStatus
+import mtg.game.state.{GameState, PermanentStatus}
 import mtg.utils.AtGuaranteed
 
 sealed abstract class ZoneType
@@ -18,6 +18,7 @@ object ZoneType {
 
 sealed abstract class Zone(val zoneType: ZoneType) {
   def stateLens: Lens[GameObjectState, Seq[GameObject]]
+  def getState(gameState: GameState): Seq[GameObject] = getState(gameState.gameObjectState)
   def getState(gameObjectState: GameObjectState): Seq[GameObject] = stateLens.get(gameObjectState)
   def defaultPermanentStatus: Option[PermanentStatus] = None
 }

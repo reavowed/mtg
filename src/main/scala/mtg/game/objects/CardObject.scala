@@ -1,9 +1,12 @@
 package mtg.game.objects
 
+import mtg.cards.CardDefinition
 import mtg.game.state.{Characteristics, PermanentStatus}
 import mtg.game.{PlayerIdentifier, Zone}
 
 case class CardObject(card: Card, objectId: ObjectId, zone: Zone, defaultController: Option[PlayerIdentifier], permanentStatus: Option[PermanentStatus], markedDamage: Int) extends GameObject {
+  def cardDefinition: CardDefinition = card.printing.cardDefinition
+
   override def owner: PlayerIdentifier = card.owner
   override def forNewZone(newObjectId: ObjectId, newZone: Zone): GameObject = copy(objectId = newObjectId, zone = newZone)
   override def baseCharacteristics: Characteristics = card.baseCharacteristics

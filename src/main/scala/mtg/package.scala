@@ -49,6 +49,13 @@ package object mtg {
     def mapCollect[S](f: T => Option[S]): View[S] = {
       view.collect(Function.unlift(f))
     }
+    def single: T = {
+      val iterator = view.iterator
+      if (!iterator.hasNext) throw new RuntimeException("View was empty")
+      val t = iterator.next()
+      if (iterator.hasNext) throw new RuntimeException("View contained multiple elements")
+      t
+    }
   }
   implicit class TupleExtensionMethods[A, B](tuple: (A, B)) {
     def mapLeft[C](f: A => C): (C, B) = (f(tuple._1), tuple._2)

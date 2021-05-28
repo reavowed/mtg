@@ -1,8 +1,10 @@
 package mtg.helpers
 
+import mtg.cards.CardDefinition
 import mtg.game.PlayerIdentifier
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
 import mtg.game.actions.cast.CastSpellAction
+import mtg.game.objects.{CardObject, GameObject}
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
@@ -11,6 +13,13 @@ import org.specs2.mutable.SpecificationLike
 import scala.collection.mutable.ListBuffer
 
 trait GameActionHelpers extends SpecificationLike {
+  def beCastSpellAction(cardDefinition: CardDefinition): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
+    (castSpellAction.objectToCast.gameObject.asOptionalInstanceOf[CardObject].exists(_.cardDefinition == cardDefinition), s"was '${cardDefinition.name}'", s"was not '${cardDefinition.name}'")
+  }
+  def beCastSpellAction(gameObject: GameObject): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
+    (castSpellAction.objectToCast.gameObject == gameObject, "was given object", "was not given object")
+  }
+
   class PriorityChoiceMatcher extends Matcher[GameAction] {
     private val baseMatcher: Matcher[GameAction] = beAnInstanceOf[PriorityChoice]
     private val otherMatchers: ListBuffer[Matcher[PriorityChoice]] = ListBuffer()
@@ -29,13 +38,16 @@ trait GameActionHelpers extends SpecificationLike {
       otherMatchers.addOne(((_: PriorityChoice).availableActions.ofType[ActivateAbilityAction]) ^^ abilityMatcher)
       this
     }
-    def withAvailableSpell(spellMatcher: Matcher[CastSpellAction]): PriorityChoiceMatcher = {
-      withAvailableSpells(contain(spellMatcher))
-    }
-    def withAvailableSpells(spellMatcher: Matcher[Seq[CastSpellAction]]): PriorityChoiceMatcher = {
-      otherMatchers.addOne(((_: PriorityChoice).availableActions.ofType[CastSpellAction]) ^^ spellMatcher)
+
+    def withAvailableSpell(cardDefinition: CardDefinition): PriorityChoiceMatcher = {
+      otherMatchers.addOne(((_: PriorityChoice).availableActions.ofType[CastSpellAction]) ^^ contain(beCastSpellAction(cardDefinition)))
       this
     }
+    def withNoAvailableSpells: PriorityChoiceMatcher = {
+      otherMatchers.addOne(((_: PriorityChoice).availableActions.ofType[CastSpellAction]) ^^ beEmpty)
+      this
+    }
+
     def withAvailableLands(landMatcher: Matcher[Seq[PlayLandAction]]): PriorityChoiceMatcher = {
       otherMatchers.addOne(((_: PriorityChoice).availableActions.ofType[PlayLandAction]) ^^ landMatcher)
       this

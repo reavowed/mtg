@@ -31,3 +31,8 @@ object CreatureType {
   object Spirit extends CreatureType("Spirit")
   object Warrior extends CreatureType("Warrior")
 }
+
+sealed class SpellType(val name: String) extends Subtype
+object SpellType {
+  object Lesson extends SpellType("Lesson")
+}

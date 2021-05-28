@@ -16,7 +16,7 @@ case class PriorityChoice(
   playerToAct: PlayerIdentifier,
   remainingPlayers: Seq[PlayerIdentifier],
   availableActions: Seq[PriorityAction],
-) extends TypedChoice[PriorityOption] {
+) extends TypedPlayerChoice[PriorityOption] {
 
   object TakeAction {
     def unapply(string: String): Option[PriorityAction] = {

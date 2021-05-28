@@ -20,7 +20,7 @@ abstract class InternalGameAction extends GameAction {
 
 case class BackupAction(gameStateToRevertTo: GameState) extends GameAction
 
-abstract class Choice extends GameAction {
+abstract class PlayerChoice extends GameAction {
   def playerToAct: PlayerIdentifier
   def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])]
 }

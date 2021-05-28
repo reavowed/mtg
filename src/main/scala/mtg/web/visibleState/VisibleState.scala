@@ -1,7 +1,7 @@
 package mtg.web.visibleState
 
 import mtg.game.objects.GameObject
-import mtg.game.state.{Choice, GameState}
+import mtg.game.state.{PlayerChoice, GameState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.{GameData, PlayerIdentifier}
 import mtg.parts.mana.ManaType
@@ -36,7 +36,7 @@ object VisibleState {
       gameState.gameObjectState.stack.map(getObject),
       gameState.gameObjectState.manaPools.view.mapValues(_.map(_.manaType)).toMap,
       MulliganState.forAllPlayers(gameState),
-      gameState.pendingActions.head.asOptionalInstanceOf[Choice].map(CurrentChoice(_)),
+      gameState.pendingActions.head.asOptionalInstanceOf[PlayerChoice].map(CurrentChoice(_)),
       gameState.gameHistory.logEvents.map(LogEventWrapper.apply))
   }
 }

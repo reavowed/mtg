@@ -3,7 +3,7 @@ package mtg.game.state
 import mtg.game.state.history.GameEvent.Decision
 import mtg.game.state.history.{GameEvent, LogEvent}
 
-abstract class TypedChoice[TOption <: AnyRef] extends Choice {
+abstract class TypedPlayerChoice[TOption <: AnyRef] extends PlayerChoice {
   def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[TOption]
   def handleDecision(chosenOption: TOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent])
   override def handleDecision(serializedChosenOption: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])] = {
@@ -15,7 +15,7 @@ abstract class TypedChoice[TOption <: AnyRef] extends Choice {
       })
   }
 }
-object TypedChoice {
+object TypedPlayerChoice {
   trait PartialFunctionParser[TOption] {
     def optionParser(currentGameState: GameState): PartialFunction[String, TOption]
     def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[TOption] = {

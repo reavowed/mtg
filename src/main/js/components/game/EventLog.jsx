@@ -32,6 +32,8 @@ function EventLogMessage({entry}) {
             return "Player " + entry.details.player + " blocks " + commaList(_.map(entry.details.blockerAssignments, (blockers, attacker) => attacker + " with " + commaList(blockers))) + ".";
         case "OrderBlockers":
             return "Player " + entry.details.player + " orders blockers for " + entry.details.attackerName + ": first " + entry.details.blockerNames.join(", then ") + ".";
+        case "RevealCard":
+            return "Player " + entry.details.player + " reveals " + entry.details.cardName + ".";
     }
 }
 

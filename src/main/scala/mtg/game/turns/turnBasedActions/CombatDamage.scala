@@ -82,7 +82,7 @@ case class AssignCombatDamageChoice(
     attackDeclarations: Seq[AttackDeclaration],
     blockDeclarations: Seq[BlockDeclaration],
     damageEvents: Seq[DealCombatDamageEvent])
-  extends TypedChoice[CombatDamageAssignment]
+  extends TypedPlayerChoice[CombatDamageAssignment]
 {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[CombatDamageAssignment] = {
     @tailrec

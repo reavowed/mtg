@@ -67,7 +67,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = this.synchronized {
     currentGameState.popAction() match {
-      case (choice: Choice, gameState) if choice.playerToAct == actingPlayer =>
+      case (choice: PlayerChoice, gameState) if choice.playerToAct == actingPlayer =>
         executeDecision(choice, serializedDecision, gameState) match {
           case Some(gameState) =>
             executeAutomaticActions(gameState)
@@ -77,7 +77,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     }
   }
 
-  def executeDecision(choice: Choice, serializedDecision: String, gameState: GameState): Option[GameState] = {
+  def executeDecision(choice: PlayerChoice, serializedDecision: String, gameState: GameState): Option[GameState] = {
     choice.handleDecision(serializedDecision, gameState) match {
       case Some((decision, actions, logEvent)) =>
         Some(gameState.recordGameEvent(decision).addActions(actions).recordLogEvent(logEvent))

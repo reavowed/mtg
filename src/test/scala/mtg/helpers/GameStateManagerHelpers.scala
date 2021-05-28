@@ -1,6 +1,5 @@
 package mtg.helpers
 
-import mtg.abilities.ActivatedAbilityDefinition
 import mtg.cards.CardDefinition
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
 import mtg.game.actions.cast.CastSpellAction
@@ -9,6 +8,7 @@ import mtg.game.objects.{CardObject, GameObject, GameObjectState}
 import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.turns.priority.PriorityChoice
+import mtg._
 
 trait GameStateManagerHelpers extends GameObjectHelpers {
 
@@ -20,6 +20,15 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       updateGameState(_.updateGameObjectState(f(gameStateManager.currentGameState.gameObjectState)))
     }
 
+    def getCard(cardDefinition: CardDefinition): CardObject = {
+      gameStateManager.currentGameState.gameObjectState.allObjects.view
+        .ofType[CardObject]
+        .filter(_.card.printing.cardDefinition == cardDefinition)
+        .single
+    }
+    def getCards(cardDefinitions: CardDefinition*): Seq[CardObject] = {
+      cardDefinitions.map(getCard)
+    }
     def getCard(zone: Zone, cardDefinition: CardDefinition): CardObject = {
       zone.getState(gameStateManager.currentGameState.gameObjectState).getCard(cardDefinition)
     }
@@ -59,6 +68,10 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
     }
     def passUntilStackEmpty(): Unit = {
       passUntil(_.gameObjectState.stack.isEmpty)
+    }
+    def resolveNext(): Unit = {
+      val stackSize = gameStateManager.currentGameState.gameObjectState.stack.size
+      passUntil(_.gameObjectState.stack.size < stackSize)
     }
 
     def playLand(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
@@ -122,6 +135,10 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       }.mkString(" ")
 
       gameStateManager.handleDecision(serializedDecision, player)
+    }
+
+    def chooseCard(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+      gameStateManager.handleDecision(getCard(cardDefinition).objectId.toString, player)
     }
   }
 }

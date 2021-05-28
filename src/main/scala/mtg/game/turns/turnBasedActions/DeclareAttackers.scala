@@ -55,7 +55,7 @@ object DeclareAttackers extends InternalGameAction {
 case class AttackDeclaration(attacker: ObjectId, attackedPlayer: PlayerIdentifier)
 case class DeclaredAttackers(attackDeclarations: Seq[AttackDeclaration])
 
-case class DeclareAttackersChoice(playerToAct: PlayerIdentifier, defendingPlayer: PlayerIdentifier, possibleAttackers: Seq[ObjectId]) extends TypedChoice[DeclaredAttackers] {
+case class DeclareAttackersChoice(playerToAct: PlayerIdentifier, defendingPlayer: PlayerIdentifier, possibleAttackers: Seq[ObjectId]) extends TypedPlayerChoice[DeclaredAttackers] {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[DeclaredAttackers] = {
     serializedChosenOption
       .split(" ").toSeq

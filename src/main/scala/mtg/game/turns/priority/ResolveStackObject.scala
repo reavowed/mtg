@@ -1,11 +1,11 @@
 package mtg.game.turns.priority
 
-import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
 import mtg.game.Zone
+import mtg.game.actions.ResolveInstantOrSorcerySpell
 import mtg.game.objects.GameObject
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 
 case class ResolveStackObject(stackObject: GameObject) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
@@ -20,6 +20,9 @@ case class ResolveStackObject(stackObject: GameObject) extends InternalGameActio
         Seq(MoveObjectEvent(controller, stackObject, Zone.Battlefield)),
         Some(LogEvent.ResolvePermanent(controller, stackObjectWithState.characteristics.name))
       )
+    } else if (stackObjectWithState.characteristics.types.exists(_.isSpell)) {
+      // TODO: Full implementation of 608.2
+      ResolveInstantOrSorcerySpell(stackObjectWithState)
     } else ???
   }
 }

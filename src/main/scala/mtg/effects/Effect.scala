@@ -1,9 +1,8 @@
 package mtg.effects
 
-import mtg.game.PlayerIdentifier
-import mtg.game.state.GameAction
+import mtg.game.state.GameState
 
 abstract class Effect {
   def text: String
-  def resolveForAbility(controller: PlayerIdentifier): Seq[GameAction]
+  def resolve(gameState: GameState, resolutionContext: ResolutionContext): EffectResult
 }

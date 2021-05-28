@@ -10,6 +10,7 @@ case class ObjectId(sequentialId: Int) {
   override def toString: String = sequentialId.toString
   def currentCharacteristics(gameState: GameState): Characteristics = gameState.derivedState.objectStates(this).characteristics
 
+  def getName(gameState: GameState): String = gameState.derivedState.objectStates(this).characteristics.name
   def getPower(gameState: GameState): Int = gameState.derivedState.objectStates(this).characteristics.power.getOrElse(0)
   def getToughness(gameState: GameState): Int = gameState.derivedState.objectStates(this).characteristics.toughness.getOrElse(0)
   def getMarkedDamage(gameState: GameState): Int = gameState.derivedState.objectStates(this).gameObject.markedDamage

@@ -6,13 +6,13 @@ import mtg.game.objects.ObjectId
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameAction, GameState, InternalGameActionResult, ObjectWithState}
 
-case class ActivateAbilityAction(player: PlayerIdentifier, source: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
+case class ActivateAbilityAction(source: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
   override def objectId: ObjectId = source.gameObject.objectId
   override def displayText: String = ability.text
   override def optionText: String = "Activate " + source.gameObject.objectId + " " + source.characteristics.abilities.indexOf(ability)
 
   override def execute(currentGameState: GameState): InternalGameActionResult = {
-    ability.costs.flatMap(_.payForAbility(source)) ++ ability.effectParagraph.effects.flatMap(_.resolveForAbility(player))
+    ability.costs.flatMap(_.payForAbility(source)) :+ ResolveActivatedAbility(source, ability)
   }
 }
 
@@ -20,7 +20,7 @@ object ActivateAbilityAction {
   def getActivatableAbilities(player: PlayerIdentifier, gameState: GameState): Seq[ActivateAbilityAction] = {
     gameState.derivedState.allObjectStates
       .flatMap { source =>
-        source.characteristics.abilities.ofType[ActivatedAbilityDefinition].zipWithIndex.map { case (a, i) => ActivateAbilityAction(player, source, a, i) }
+        source.characteristics.abilities.ofType[ActivatedAbilityDefinition].zipWithIndex.map { case (a, i) => ActivateAbilityAction(source, a, i) }
       }
       .filter(action => canActivateAbility(player, action.source, action.ability))
   }

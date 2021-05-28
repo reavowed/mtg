@@ -18,16 +18,15 @@ sealed trait AbilitySentence {
   def text: String
 }
 object AbilitySentence {
-  implicit def effectToSentence(effect: Effect): AbilitySentence = SingleClauseAbilitySentence(effect)
-}
-
-case class SingleClauseAbilitySentence(effect: Effect) extends AbilitySentence {
-  def effects: Seq[Effect] = Seq(effect)
-  override def text: String = effect.text.capitalize + "."
-}
-case class MultiClauseAbilitySentence(effects: Seq[Effect], joiner: String) extends AbilitySentence {
-  override def text: String = {
-    val clausesText = (effects.head.text.capitalize +: (if (effects.length > 2) effects.tail.init.map(_.text) else Nil)) :+ (joiner + " " + effects.last.text)
-    clausesText.mkString(", ")
+  case class SingleClause(effect: Effect) extends AbilitySentence {
+    def effects: Seq[Effect] = Seq(effect)
+    override def text: String = effect.text.capitalize + "."
   }
+  case class MultiClause(effects: Seq[Effect], joiner: String) extends AbilitySentence {
+    override def text: String = {
+      val clausesText = (effects.head.text.capitalize +: (if (effects.length > 2) effects.tail.init.map(_.text) else Nil)) :+ (joiner + " " + effects.last.text)
+      clausesText.mkString(", ")
+    }
+  }
+  implicit def effectToSentence(effect: Effect): AbilitySentence = SingleClause(effect)
 }

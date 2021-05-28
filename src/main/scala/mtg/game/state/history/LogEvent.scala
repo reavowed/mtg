@@ -18,4 +18,5 @@ object LogEvent {
   case class DeclareAttackers(player: PlayerIdentifier, attackerNames: Seq[String]) extends LogEvent
   case class DeclareBlockers(player: PlayerIdentifier, blockerAssignments: Map[String, Seq[String]]) extends LogEvent
   case class OrderBlockers(player: PlayerIdentifier, attackerName: String, blockerNames: Seq[String]) extends LogEvent
+  case class RevealCard(player: PlayerIdentifier, cardName: String) extends LogEvent
 }
