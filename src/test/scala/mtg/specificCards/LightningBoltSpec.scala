@@ -1,0 +1,60 @@
+package mtg.specificCards
+
+import mtg.SpecWithGameStateManager
+import mtg.data.cards.Mountain
+import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
+import mtg.data.cards.kaldheim.GrizzledOutrider
+import mtg.game.Zone
+import mtg.game.turns.StartNextTurnAction
+
+class LightningBoltSpec extends SpecWithGameStateManager {
+  "Lightning Bolt" should {
+    "kill a small creature" in {
+      val initialState = emptyGameObjectState
+        .setBattlefield(playerOne, Mountain)
+        .setHand(playerOne, LightningBolt)
+        .setBattlefield(playerTwo, SavannahLions)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.activateAbility(playerOne, Mountain)
+      manager.castSpell(playerOne, LightningBolt)
+      manager.chooseCard(playerOne, SavannahLions)
+      manager.resolveNext()
+
+      Zone.Battlefield(manager.currentGameState) must not(contain(beCardObject(SavannahLions)))
+      playerTwo.graveyard(manager.currentGameState) must contain(beCardObject(SavannahLions))
+    }
+    "deal three damage to a big creature" in {
+      val initialState = emptyGameObjectState
+        .setBattlefield(playerOne, Mountain)
+        .setHand(playerOne, LightningBolt)
+        .setBattlefield(playerTwo, GrizzledOutrider)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.activateAbility(playerOne, Mountain)
+      manager.castSpell(playerOne, LightningBolt)
+      manager.chooseCard(playerOne, GrizzledOutrider)
+      manager.resolveNext()
+
+      manager.getPermanent(GrizzledOutrider).markedDamage mustEqual 3
+    }
+    "deal three damage to a player" in {
+      val initialState = emptyGameObjectState
+        .setBattlefield(playerOne, Mountain)
+        .setHand(playerOne, LightningBolt)
+        .setBattlefield(playerTwo, GrizzledOutrider)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.activateAbility(playerOne, Mountain)
+      manager.castSpell(playerOne, LightningBolt)
+      manager.choosePlayer(playerOne, playerTwo)
+      manager.resolveNext()
+
+      manager.currentGameState.gameObjectState.lifeTotals(playerTwo) mustEqual 17
+    }
+
+    "have correct oracle text" in {
+      LightningBolt.text mustEqual "Lightning Bolt deals 3 damage to any target."
+    }
+  }
+}

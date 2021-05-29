@@ -34,12 +34,12 @@ class CleanupSpec extends SpecWithGameStateManager {
       manager.block(playerTwo, SpinedKarok, AgelessGuardian)
 
       manager.passUntilStep(TurnStep.EndStep)
-      manager.getCard(Zone.Battlefield, AgelessGuardian).markedDamage mustEqual 2
-      manager.getCard(Zone.Battlefield, SpinedKarok).markedDamage mustEqual 1
+      manager.getPermanent(AgelessGuardian).markedDamage mustEqual 2
+      manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
 
       manager.passUntilTurn(4)
-      manager.getCard(Zone.Battlefield, AgelessGuardian).markedDamage mustEqual 0
-      manager.getCard(Zone.Battlefield, SpinedKarok).markedDamage mustEqual 0
+      manager.getPermanent(AgelessGuardian).markedDamage mustEqual 0
+      manager.getPermanent(SpinedKarok).markedDamage mustEqual 0
     }
   }
 

@@ -4,9 +4,9 @@ import mtg.abilities.SpellAbility
 import mtg.effects.ResolutionContext
 import mtg.events.MoveObjectEvent
 import mtg.game.Zone
-import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult, ObjectWithState}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult, StackObjectWithState}
 
-case class ResolveInstantOrSorcerySpell(spell: ObjectWithState) extends InternalGameAction {
+case class ResolveInstantOrSorcerySpell(spell: StackObjectWithState) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     val resolutionContext = ResolutionContext.initial(spell)
     Seq(

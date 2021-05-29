@@ -12,7 +12,6 @@ object EnvironmentalSciences extends Spell(
   ManaCost(2),
   Type.Sorcery,
   Seq(Lesson),
-  Seq(
-    AbilityParagraph(
-      Seq(searchYourLibraryForA(basicLand), reveal(it), putIntoYourHand(it)).then(shuffle),
-      youGainLife(2))))
+  AbilityParagraph(
+    (searchYourLibraryForA(basicLand), reveal(it), put(it).intoYourHand).`then`(shuffle),
+    you.gain(2).life))

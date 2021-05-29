@@ -2,15 +2,9 @@ package mtg.turns
 
 import mtg.SpecWithGameStateManager
 import mtg.data.cards.{Forest, Plains}
-import mtg.data.sets.Strixhaven
 import mtg.game.Zone
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
-import mtg.game.objects.CardObject
-import mtg.game.state.PermanentStatus
-import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.StartNextTurnAction
-import mtg.game.turns.priority.PriorityChoice
-import org.specs2.matcher.Matcher
+import mtg.game.turns.TurnPhase.PrecombatMainPhase
 
 class UntapStepSpec extends SpecWithGameStateManager {
   "untap step" should {

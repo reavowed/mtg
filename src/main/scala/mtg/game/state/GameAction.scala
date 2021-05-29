@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.game.PlayerIdentifier
+import mtg.game.PlayerId
 import mtg.game.state.history.GameEvent.Decision
 import mtg.game.state.history.{GameHistory, LogEvent}
 
@@ -21,7 +21,7 @@ abstract class InternalGameAction extends GameAction {
 case class BackupAction(gameStateToRevertTo: GameState) extends GameAction
 
 abstract class PlayerChoice extends GameAction {
-  def playerToAct: PlayerIdentifier
+  def playerToAct: PlayerId
   def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])]
 }
 

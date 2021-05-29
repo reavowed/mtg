@@ -1,7 +1,7 @@
 package mtg.utils
 
 import mtg._
-import mtg.game.objects.ObjectId
+import mtg.game.ObjectId
 
 object ParsingUtils {
   def splitStringBySpaces(string: String): Seq[String] = {

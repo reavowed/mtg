@@ -1,28 +1,28 @@
 package mtg.game.start
 
 import mtg._
-import mtg.game.PlayerIdentifier
-import mtg.game.objects.{CardObject, GameObject, GameObjectState}
+import mtg.game.PlayerId
+import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.start.mulligans.{MulliganChoice, ReturnCardsToLibraryChoice}
-import mtg.game.state.{GameAction, GameState}
+import mtg.game.state.GameState
 import mtg.game.turns.{TurnPhase, TurnStep}
-import org.specs2.matcher.{MatchResult, Matcher}
+import org.specs2.matcher.MatchResult
 
 class MulliganSpec extends SpecWithGameStateManager {
   def checkAllCardsAreNewObjects(gameObjects: Seq[GameObject], previousGameObjectState: GameObjectState): MatchResult[_] = {
-    foreach(gameObjects.ofType[CardObject])(cardObject => cardObject.objectId.sequentialId.must(beGreaterThanOrEqualTo(previousGameObjectState.nextObjectId)))
+    foreach(gameObjects)(cardObject => cardObject.objectId.sequentialId.must(beGreaterThanOrEqualTo(previousGameObjectState.nextObjectId)))
   }
 
   def checkCardsAreDifferent(firstGameObjects: Seq[GameObject], secondGameObjects: Seq[GameObject]): MatchResult[_] = {
-    firstGameObjects.ofType[CardObject].map(_.card) must not(contain(eachOf(secondGameObjects.ofType[CardObject].map(_.card): _*)))
+    firstGameObjects.map(_.card) must not(contain(eachOf(secondGameObjects.map(_.card): _*)))
   }
 
-  def checkLibraryAndHandAreTheSame(beforeState: GameObjectState, afterState: GameObjectState, player: PlayerIdentifier) = {
+  def checkLibraryAndHandAreTheSame(beforeState: GameObjectState, afterState: GameObjectState, player: PlayerId) = {
     beforeState.hands(player) mustEqual afterState.hands(player)
     beforeState.libraries(player) mustEqual afterState.libraries(player)
   }
 
-  def checkMulliganAndNewHandDrawn(beforeState: GameObjectState, afterState: GameObjectState, player: PlayerIdentifier) = {
+  def checkMulliganAndNewHandDrawn(beforeState: GameObjectState, afterState: GameObjectState, player: PlayerId) = {
     checkAllCardsAreNewObjects(afterState.hands(player), beforeState)
     checkAllCardsAreNewObjects(afterState.libraries(player), beforeState)
     checkCardsAreDifferent(afterState.hands(player), beforeState.hands(player))

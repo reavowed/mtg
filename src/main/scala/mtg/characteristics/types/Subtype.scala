@@ -1,38 +1,37 @@
 package mtg.characteristics.types
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.characteristics.Color
 import mtg.effects.AddManaEffect
 import mtg.parts.costs.TapSymbol
-import mtg.utils.CaseObjectSerializer
+import mtg.utils.CaseObject
 
-@JsonSerialize(using = classOf[CaseObjectSerializer])
-sealed class Subtype
+sealed class Subtype extends CaseObject
 
 sealed class LandType extends Subtype
 
-sealed class BasicLandType(val name: String, val color: Color) extends LandType {
+sealed class BasicLandType(val color: Color) extends LandType {
   def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), AddManaEffect(color))
 }
 object BasicLandType {
-  object Plains extends BasicLandType("Plains", Color.White)
-  object Island extends BasicLandType("Island", Color.Blue)
-  object Swamp extends BasicLandType("Swamp", Color.Black)
-  object Mountain extends BasicLandType("Mountain", Color.Red)
-  object Forest extends BasicLandType("Forest", Color.Green)
+  object Plains extends BasicLandType(Color.White)
+  object Island extends BasicLandType(Color.Blue)
+  object Swamp extends BasicLandType(Color.Black)
+  object Mountain extends BasicLandType(Color.Red)
+  object Forest extends BasicLandType(Color.Green)
 }
 
-sealed class CreatureType(val name: String) extends Subtype
+sealed class CreatureType extends Subtype
 object CreatureType {
-  object Crocodile extends CreatureType("Crocodile")
-  object Elf extends CreatureType("Elf")
-  object Soldier extends CreatureType("Soldier")
-  object Spirit extends CreatureType("Spirit")
-  object Warrior extends CreatureType("Warrior")
+  object Cat extends CreatureType
+  object Crocodile extends CreatureType
+  object Elf extends CreatureType
+  object Soldier extends CreatureType
+  object Spirit extends CreatureType
+  object Warrior extends CreatureType
 }
 
-sealed class SpellType(val name: String) extends Subtype
+sealed class SpellType extends Subtype
 object SpellType {
-  object Lesson extends SpellType("Lesson")
+  object Lesson extends SpellType
 }

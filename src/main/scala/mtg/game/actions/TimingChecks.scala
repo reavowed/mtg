@@ -1,11 +1,11 @@
 package mtg.game.actions
 
-import mtg.game.PlayerIdentifier
+import mtg.game.PlayerId
 import mtg.game.state.GameState
 import mtg.game.turns.MainPhase
 
 object TimingChecks {
-  def isPlayersTurn(player: PlayerIdentifier, gameState: GameState): Boolean = {
+  def isPlayersTurn(player: PlayerId, gameState: GameState): Boolean = {
     player == gameState.activePlayer
   }
   def isMainPhase(gameState: GameState): Boolean = {
@@ -15,7 +15,7 @@ object TimingChecks {
     gameState.gameObjectState.stack.isEmpty
   }
 
-  def isMainPhaseOfPlayersTurnWithEmptyStack(player: PlayerIdentifier, gameState: GameState): Boolean = {
+  def isMainPhaseOfPlayersTurnWithEmptyStack(player: PlayerId, gameState: GameState): Boolean = {
     isPlayersTurn(player, gameState) && isMainPhase(gameState) && isStackEmpty(gameState)
   }
 }

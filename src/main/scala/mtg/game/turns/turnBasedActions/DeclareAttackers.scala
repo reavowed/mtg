@@ -3,8 +3,7 @@ package mtg.game.turns.turnBasedActions
 import mtg._
 import mtg.characteristics.types.Type
 import mtg.events.TapObjectEvent
-import mtg.game.PlayerIdentifier
-import mtg.game.objects.ObjectId
+import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.GameEvent.{Decision, ResolvedEvent}
 import mtg.game.state.history.LogEvent
 import mtg.game.state._
@@ -20,25 +19,23 @@ object DeclareAttackers extends InternalGameAction {
     else
       ()
   }
-  private def wasContinuouslyControlled(objectWithState: ObjectWithState, gameState: GameState): Boolean = {
+  private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
     gameState.gameHistory.forCurrentTurn.exists(
       _.gameEvents.ofType[ResolvedEvent].forall(
-        _.stateAfterwards.objectStates.get(objectWithState.gameObject.objectId)
-          .exists(_.controller.contains(gameState.activePlayer))))
+        _.stateAfterwards.permanentStates.get(objectId)
+          .exists(_.controller == gameState.activePlayer)))
   }
   private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
-    gameState.gameObjectState.battlefield.view
-      .map(o => gameState.derivedState.objectStates(o.objectId))
+    gameState.gameObjectState.derivedState.permanentStates.values.view
       .filter(o => o.characteristics.types.contains(Type.Creature))
-      .filter(o => o.controller.contains(gameState.activePlayer))
-      .filter(o => o.gameObject.permanentStatus.exists(!_.isTapped))
-      .filter(o => wasContinuouslyControlled(o, gameState))
+      .filter(o => o.controller == gameState.activePlayer)
+      .filter(o => !o.gameObject.status.isTapped)
+      .filter(o => wasContinuouslyControlled(o.gameObject.objectId, gameState))
       .map(o => o.gameObject.objectId)
-      // TODO: Either haste or continuously controlled since the turn began
       .toSeq
   }
 
-  def getDefendingPlayer(gameState: GameState): PlayerIdentifier = {
+  def getDefendingPlayer(gameState: GameState): PlayerId = {
     gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
   }
   def getAttackDeclarations(gameState: GameState): Seq[AttackDeclaration] = {
@@ -52,10 +49,10 @@ object DeclareAttackers extends InternalGameAction {
   }
 }
 
-case class AttackDeclaration(attacker: ObjectId, attackedPlayer: PlayerIdentifier)
+case class AttackDeclaration(attacker: ObjectId, attackedPlayer: PlayerId)
 case class DeclaredAttackers(attackDeclarations: Seq[AttackDeclaration])
 
-case class DeclareAttackersChoice(playerToAct: PlayerIdentifier, defendingPlayer: PlayerIdentifier, possibleAttackers: Seq[ObjectId]) extends TypedPlayerChoice[DeclaredAttackers] {
+case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: PlayerId, possibleAttackers: Seq[ObjectId]) extends TypedPlayerChoice[DeclaredAttackers] {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[DeclaredAttackers] = {
     serializedChosenOption
       .split(" ").toSeq

@@ -1,23 +1,22 @@
 package mtg.game.state
 
-import mtg.game.objects.{GameObject, GameObjectState, ObjectId}
+import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.start.StartGameAction
 import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.state.history._
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
-import mtg.game.{GameData, GameStartingData, PlayerIdentifier}
+import mtg.game.{GameData, GameStartingData, ObjectId, PlayerId}
 
 import scala.util.Random
 
 case class GameState(
   gameData: GameData,
   gameObjectState: GameObjectState,
-  derivedState: DerivedState,
   gameHistory: GameHistory,
   pendingActions: Seq[GameAction])
 {
-  def activePlayer: PlayerIdentifier = gameHistory.turns.last.turn.activePlayer
-  def playersInApnapOrder: Seq[PlayerIdentifier] = gameData.getPlayersInApNapOrder(activePlayer)
+  def activePlayer: PlayerId = gameHistory.turns.last.turn.activePlayer
+  def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
 
   def currentTurnNumber: Int = gameHistory.turns.length
   private def currentTurnHistory: Option[TurnHistory] = gameHistory.turns.lastOption
@@ -27,14 +26,10 @@ case class GameState(
   private def currentStepHistory: Option[StepHistory] = currentPhaseHistory.flatMap(_.asOptionalInstanceOf[PhaseHistoryWithSteps]).flatMap(_.steps.lastOption)
   def currentStep: Option[TurnStep] = currentStepHistory.map(_.step)
 
-  def getObjectState(objectId: ObjectId): ObjectWithState = derivedState.objectStates(objectId)
-  def getObjectState(gameObject: GameObject): ObjectWithState = getObjectState(gameObject.objectId)
-
   def updateHistory(f: GameHistory => GameHistory): GameState = copy(gameHistory = f(gameHistory))
-  def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(
-    gameObjectState = newGameObjectState,
-    derivedState = DerivedState.calculateFromGameObjectState(newGameObjectState))
-  def recordGameEvent(event: GameObjectEvent): GameState = recordGameEvent(ResolvedEvent(event, derivedState))
+  def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
+  def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
+  def recordGameEvent(event: GameObjectEvent): GameState = recordGameEvent(ResolvedEvent(event, gameObjectState.derivedState))
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
@@ -46,13 +41,6 @@ case class GameState(
 }
 
 object GameState {
-  def apply(
-    gameData: GameData,
-    gameObjectState: GameObjectState,
-    gameHistory: GameHistory,
-    pendingActions: Seq[GameAction]
-  ): GameState = GameState(gameData, gameObjectState, DerivedState.calculateFromGameObjectState(gameObjectState), gameHistory, pendingActions)
-
   def initial(gameStartingData: GameStartingData) = {
     val startingPlayer = Random.shuffle(gameStartingData.players).head
     val playersInTurnOrder = GameData.getPlayersInApNapOrder(startingPlayer, gameStartingData.players)

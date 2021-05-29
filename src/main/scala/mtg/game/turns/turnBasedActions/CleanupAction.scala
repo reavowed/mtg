@@ -10,7 +10,7 @@ object CleanupAction extends InternalGameAction {
 object DamageWearsOffEvent extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.battlefield.foldLeft(currentGameState.gameObjectState) { (state, obj) =>
-      state.updateGameObject(obj.objectId, _.updateMarkedDamage(_ => 0))
+      state.updatePermanentObject(obj.objectId, _.updateMarkedDamage(_ => 0))
     }
   }
 }

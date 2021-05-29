@@ -1,10 +1,8 @@
 package mtg.characteristics.types
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import mtg.utils.CaseObjectSerializer
+import mtg.utils.CaseObject
 
-@JsonSerialize(using = classOf[CaseObjectSerializer])
-sealed class Supertype
+sealed class Supertype extends CaseObject
 
 object Supertype {
   object Basic extends Supertype

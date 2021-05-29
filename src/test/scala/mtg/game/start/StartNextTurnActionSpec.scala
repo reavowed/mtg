@@ -2,7 +2,7 @@ package mtg.game.start
 
 import mtg.SpecWithGameObjectState
 import mtg.game.state.history.GameHistory
-import mtg.game.{GameData, PlayerIdentifier}
+import mtg.game.{GameData, PlayerId}
 import mtg.game.state.{GameAction, GameState, InternalGameActionResult}
 import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.turnEvents.BeginTurnEvent
@@ -10,7 +10,7 @@ import org.specs2.matcher.Matcher
 
 class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
-  def beBeginTurnAction(player: PlayerIdentifier): Matcher[GameAction] = {
+  def beBeginTurnAction(player: PlayerId): Matcher[GameAction] = {
     beAnInstanceOf[BeginTurnEvent].and({ (action: GameAction) =>
       action.asInstanceOf[BeginTurnEvent].turn.activePlayer
     } ^^ beEqualTo(player))

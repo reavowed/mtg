@@ -3,7 +3,6 @@ package mtg.data.sets
 import mtg.cards.{CardInSetData, Set}
 import mtg.data.cards._
 import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
 
 import java.time.{LocalDate, Month}
 

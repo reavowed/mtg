@@ -38,6 +38,9 @@ package object mtg {
       case Nil => throw new RuntimeException("Seq was empty")
       case _ => throw new RuntimeException("Seq contained multiple elements")
     }
+    def insertAtIndex(t: T, index: Int): Seq[T] = {
+      (seq.take(index) :+ t) ++ seq.drop(index)
+    }
   }
   implicit class ViewExtensionMethods[T](view: View[T]) {
     def ofType[S : ClassTag]: View[S] = view.collect {

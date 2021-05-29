@@ -16,5 +16,5 @@ class CardDefinition(
   val loyalty: Option[Int])
 {
   override def toString: String = getClass.getSimpleName
-  def text: String = abilitiesFromRulesText.map(_.text).mkString("\n")
+  def text: String = abilitiesFromRulesText.map(_.getText(name)).mkString("\n")
 }

@@ -1,24 +1,34 @@
 package mtg.game.state
 
 import mtg.characteristics.types.BasicLandType
-import mtg.game.objects.{GameObjectState, ObjectId}
+import mtg.game.ObjectId
+import mtg.game.objects.GameObjectState
 
-case class DerivedState(objectStates: Map[ObjectId, ObjectWithState]) {
-  def allObjectStates: Seq[ObjectWithState] = objectStates.values.toSeq
+import scala.collection.View
+import scala.reflect.ClassTag
+
+case class DerivedState(
+    basicStates: Map[ObjectId, BasicObjectWithState],
+    permanentStates: Map[ObjectId, PermanentObjectWithState],
+    spellStates: Map[ObjectId, StackObjectWithState]
+) {
+  def allObjectStates: Map[ObjectId, ObjectWithState] = basicStates ++ permanentStates ++ spellStates
 }
 
 object DerivedState {
   def calculateFromGameObjectState(gameObjectState: GameObjectState): DerivedState = {
-    val initialStates = gameObjectState.allObjects.map(gameObject => ObjectWithState(gameObject, gameObject.baseCharacteristics, gameObject.defaultController))
+    val baseStates = gameObjectState.allObjects.map(_.baseState)
 
     val finalStates = Seq(
       addIntrinsicManaAbilities(_)
-    ).foldLeft(initialStates) { (objectStates, updater) => updater(objectStates) }
+    ).foldLeft(baseStates) { (objectStates, updater) => updater(objectStates) }
 
-    DerivedState(finalStates.map(objectWithState => objectWithState.gameObject.objectId -> objectWithState).toMap)
+    def mapOfType[T <: ObjectWithState : ClassTag] = finalStates.ofType[T].map(objectWithState => objectWithState.gameObject.objectId -> objectWithState).toMap
+
+    DerivedState(mapOfType[BasicObjectWithState], mapOfType[PermanentObjectWithState], mapOfType[StackObjectWithState])
   }
 
-  def addIntrinsicManaAbilities(objectStates: Seq[ObjectWithState]): Seq[ObjectWithState] = {
+  def addIntrinsicManaAbilities(objectStates: View[ObjectWithState]): View[ObjectWithState] = {
     objectStates.map { objectWithState =>
       objectWithState.characteristics.subTypes.ofType[BasicLandType].foldLeft(objectWithState) { (objectWithState, landType) =>
         objectWithState.addAbility(landType.intrinsicManaAbility)

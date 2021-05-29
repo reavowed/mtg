@@ -1,10 +1,10 @@
 package mtg.game.start.mulligans
 
-import mtg.game.PlayerIdentifier
+import mtg.game.PlayerId
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameAction, GameState, TypedPlayerChoice}
 
-case class MulliganChoice(playerToAct: PlayerIdentifier, mulligansSoFar: Int)
+case class MulliganChoice(playerToAct: PlayerId, mulligansSoFar: Int)
   extends TypedPlayerChoice[MulliganOption] with TypedPlayerChoice.PartialFunctionParser[MulliganOption]
 {
   override def optionParser(currentGameState: GameState): PartialFunction[String, MulliganOption] = {

@@ -1,7 +1,6 @@
 package mtg.events
 
 import mtg.SpecWithGameStateManager
-import mtg.game.objects.CardObject
 
 class DrawCardEventSpec extends SpecWithGameStateManager {
 
@@ -12,8 +11,8 @@ class DrawCardEventSpec extends SpecWithGameStateManager {
 
       val afterState = runAction(event, beforeState).gameObjectState
 
-      val cardThatShouldBeDrawn = playerOne.library(beforeState).head.asInstanceOf[CardObject].card
-      val expectedCardMatchers = playerOne.hand(beforeState).map(typedEqualTo(_)) :+ matchCardObject(cardThatShouldBeDrawn)
+      val cardThatShouldBeDrawn = playerOne.library(beforeState).head.card
+      val expectedCardMatchers = playerOne.hand(beforeState).map(typedEqualTo(_)) :+ beCardObject(cardThatShouldBeDrawn)
 
       playerOne.hand(afterState) must contain(exactly(expectedCardMatchers: _*))
       playerOne.library(afterState) mustEqual playerOne.library(beforeState).tail

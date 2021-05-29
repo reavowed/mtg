@@ -1,5 +1,5 @@
 package mtg.game.turns
 
-import mtg.game.PlayerIdentifier
+import mtg.game.PlayerId
 
-class Turn(val activePlayer: PlayerIdentifier)
+class Turn(val activePlayer: PlayerId)

@@ -5,35 +5,35 @@ import mtg.game.actions.ResolveEffectChoice
 import mtg.game.objects.GameObject
 import mtg.game.state.{GameState, PlayerChoice}
 import mtg.game.turns.{TurnPhase, TurnStep}
-import mtg.game.{GameData, PlayerIdentifier, Zone}
+import mtg.game.{GameData, PlayerId, Zone}
 import mtg.parts.mana.ManaType
 
 case class VisibleState(
-  player: PlayerIdentifier,
+  player: PlayerId,
   gameData: GameData,
   currentTurnNumber: Int,
   currentPhase: Option[TurnPhase],
   currentStep: Option[TurnStep],
-  lifeTotals: Map[PlayerIdentifier, Int],
-  hands: Map[PlayerIdentifier, HiddenZoneContents],
-  libraries: Map[PlayerIdentifier, HiddenZoneContents],
-  battlefield: Map[PlayerIdentifier, Seq[VisibleGameObject]],
+  lifeTotals: Map[PlayerId, Int],
+  hands: Map[PlayerId, HiddenZoneContents],
+  libraries: Map[PlayerId, HiddenZoneContents],
+  battlefield: Map[PlayerId, Seq[VisibleGameObject]],
   stack: Seq[VisibleGameObject],
-  manaPools: Map[PlayerIdentifier, Seq[ManaType]],
-  mulliganState: Option[Map[PlayerIdentifier, MulliganState]],
+  manaPools: Map[PlayerId, Seq[ManaType]],
+  mulliganState: Option[Map[PlayerId, MulliganState]],
   currentChoice: Option[CurrentChoice],
   log: Seq[LogEventWrapper]
 )
 
 object VisibleState {
-  def forPlayer(playerIdentifier: PlayerIdentifier, gameState: GameState): VisibleState = {
+  def forPlayer(playerIdentifier: PlayerId, gameState: GameState): VisibleState = {
     def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState)
     def currentChoice = gameState.pendingActions.head.asOptionalInstanceOf[PlayerChoice]
     def currentlySearchingZone = currentChoice.flatMap(_.asOptionalInstanceOf[ResolveEffectChoice])
       .flatMap(_.effectChoice.asOptionalInstanceOf[SearchChoice])
       .filter(_.playerChoosing == playerIdentifier)
       .map(_.zone)
-    def getHiddenZoneContents(zone: Zone.PlayerSpecific, contents: Seq[GameObject]): HiddenZoneContents = {
+    def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): HiddenZoneContents = {
       if (zone == Zone.Hand(playerIdentifier) || currentlySearchingZone.contains(zone))
         HiddenZoneContents.CanSee(contents.map(getObject))
       else

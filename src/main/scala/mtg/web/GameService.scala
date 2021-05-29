@@ -1,13 +1,15 @@
 package mtg.web
 
-import mtg.cards.CardDefinition
+import mtg.cards.{CardDefinition, CardPrinting}
+import mtg.data.cards.alpha.LightningBolt
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, SpinedKarok}
-import mtg.data.cards.{Forest, Plains}
+import mtg.data.cards.{Forest, Mountain}
 import mtg.data.sets.Strixhaven
-import mtg.game.objects.{Card, CardObject}
+import mtg.game.Zone.BasicZone
+import mtg.game.objects.{BasicGameObject, Card, PermanentObject, StackObject}
 import mtg.game.state.{GameState, GameStateManager}
-import mtg.game.{GameStartingData, PlayerIdentifier, PlayerStartingData, Zone}
+import mtg.game.{GameStartingData, PlayerId, PlayerStartingData, Zone}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -15,24 +17,37 @@ import org.springframework.stereotype.Service
 
 @Service
 class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
-  def addCard(gameState: GameState, cardDefinition: CardDefinition, zone: Zone, owner: PlayerIdentifier): GameState = {
-    val printing = mtg.cards.Set.All.mapFind(_.cardPrintings.find(_.cardDefinition == cardDefinition)).get
-    gameState.updateGameObjectState(gameState.gameObjectState.addObject(zone, CardObject(Card(owner, printing), _, zone, Some(owner), zone.defaultPermanentStatus, 0), _.length))
+
+  def findCard(cardDefinition: CardDefinition): CardPrinting = {
+    mtg.cards.Set.All.mapFind(_.cardPrintings.find(_.cardDefinition == cardDefinition)).get
   }
-  val playerOne = PlayerIdentifier("P1")
-  val playerTwo = PlayerIdentifier("P2")
+  def addCard(gameState: GameState, cardDefinition: CardDefinition, zone: Zone, owner: PlayerId): GameState = {
+    val card = Card(owner, findCard(cardDefinition))
+    zone match {
+      case Zone.Stack =>
+        gameState.updateGameObjectState(_.addNewObject(StackObject(card, _, owner, Nil), _.length))
+      case Zone.Battlefield =>
+        gameState.updateGameObjectState(_.addNewObject(PermanentObject(card, _, owner), _.length))
+      case zone: BasicZone =>
+        gameState.updateGameObjectState(_.addNewObject(BasicGameObject(card, _, zone), _.length))
+    }
+  }
+  val playerOne = PlayerId("P1")
+  val playerTwo = PlayerId("P2")
   val players = Seq(playerOne, playerTwo)
 
   val gameStateManager: GameStateManager = {
     val gameStartingData = GameStartingData(Seq(
-      PlayerStartingData(playerOne, (Seq.fill(30)(EnvironmentalSciences) ++ Seq.fill(30)(Plains)).map(Strixhaven.cardPrintingsByDefinition), Nil),
-      PlayerStartingData(playerTwo, (Seq.fill(30)(EnvironmentalSciences) ++ Seq.fill(30)(Forest)).map(Strixhaven.cardPrintingsByDefinition), Nil)))
+      PlayerStartingData(playerOne, (Seq.fill(30)(LightningBolt) ++ Seq.fill(30)(Mountain)).map(findCard), Nil),
+      PlayerStartingData(playerTwo, (Seq.fill(30)(EnvironmentalSciences) ++ Seq.fill(30)(Forest)).map(findCard), Nil)))
 
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.currentGameState
 
     val cardsToAdd = Seq(
-      (Forest, Zone.Battlefield, playerOne),
+      (Mountain, Zone.Battlefield, playerOne),
+      (Mountain, Zone.Battlefield, playerOne),
+      (Mountain, Zone.Battlefield, playerOne),
       (GrizzledOutrider, Zone.Battlefield, playerOne),
       (Forest, Zone.Battlefield, playerOne),
       (AgelessGuardian, Zone.Battlefield, playerTwo),

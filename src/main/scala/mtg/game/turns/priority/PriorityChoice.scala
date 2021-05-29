@@ -1,6 +1,6 @@
 package mtg.game.turns.priority
 
-import mtg.game.PlayerIdentifier
+import mtg.game.PlayerId
 import mtg.game.actions.cast.CastSpellAction
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
@@ -13,8 +13,8 @@ object PriorityOption {
 }
 
 case class PriorityChoice(
-  playerToAct: PlayerIdentifier,
-  remainingPlayers: Seq[PlayerIdentifier],
+  playerToAct: PlayerId,
+  remainingPlayers: Seq[PlayerId],
   availableActions: Seq[PriorityAction],
 ) extends TypedPlayerChoice[PriorityOption] {
 

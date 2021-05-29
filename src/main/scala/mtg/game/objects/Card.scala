@@ -1,11 +1,11 @@
 package mtg.game.objects
 
 import mtg.cards.CardPrinting
-import mtg.game.PlayerIdentifier
+import mtg.game.PlayerId
 import mtg.game.state.Characteristics
 import mtg.parts.costs.ManaSymbol
 
-case class Card(owner: PlayerIdentifier, printing: CardPrinting) {
+case class Card(owner: PlayerId, printing: CardPrinting) {
   def baseCharacteristics: Characteristics = {
     import printing.cardDefinition._
     Characteristics(

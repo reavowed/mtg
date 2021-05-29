@@ -1,7 +1,7 @@
 package mtg
 
 import mtg.cards.CardDefinition
-import mtg.game.objects.{Card, CardObject, GameObject, GameObjectState}
+import mtg.game.objects.{Card, GameObject, GameObjectState}
 import mtg.game.state.history.GameHistory
 import mtg.game.state._
 import mtg.game.turns.TurnPhase
@@ -16,10 +16,10 @@ abstract class SpecWithGameStateManager
     with GameActionHelpers
 {
   def beCardObject(card: Card): Matcher[GameObject] = { (gameObject: GameObject) =>
-    (gameObject.asOptionalInstanceOf[CardObject].exists(_.card == card), "", "")
+    (gameObject.card == card, "", "")
   }
   def beCardObject(cardDefinition: CardDefinition): Matcher[GameObject] = { (gameObject: GameObject) =>
-    (gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition), "", "")
+    (gameObject.card.printing.cardDefinition == cardDefinition, "", "")
   }
   def beObjectWithState(gameObject: GameObject): Matcher[ObjectWithState] = {(objectWithState: ObjectWithState) =>
     (objectWithState.gameObject == gameObject, "", "")

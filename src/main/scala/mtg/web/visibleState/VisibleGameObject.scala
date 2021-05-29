@@ -1,9 +1,9 @@
 package mtg.web.visibleState
 
-import mtg.game.PlayerIdentifier
-import mtg.game.objects.{CardObject, GameObject, ObjectId}
+import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
 import mtg.game.state.{Characteristics, GameState, PermanentStatus}
 import mtg.game.turns.turnBasedActions.{DeclareAttackers, DeclareBlockers}
+import mtg.game.{ObjectId, PlayerId}
 
 case class VisibleGameObject(
   name: String,
@@ -11,32 +11,56 @@ case class VisibleGameObject(
   collectorNumber: Int,
   objectId: ObjectId,
   characteristics: Characteristics,
-  controller: Option[PlayerIdentifier],
+  controller: Option[PlayerId],
   permanentStatus: Option[PermanentStatus],
-  markedDamage: Int,
+  markedDamage: Option[Int],
   modifiers: Map[String, Any])
 object VisibleGameObject {
-  private def getModifiers(cardObject: CardObject, gameState: GameState): Map[String, Any] = {
+  private def getModifiers(gameObject: GameObject, gameState: GameState): Map[String, Any] = {
     val builder = Map.newBuilder[String, Any]
-    if (DeclareAttackers.getAttackDeclarations(gameState).exists(_.attacker == cardObject.objectId)) {
+    if (DeclareAttackers.getAttackDeclarations(gameState).exists(_.attacker == gameObject.objectId)) {
       builder.addOne(("attacking", true))
     }
-    DeclareBlockers.getBlockDeclarations(gameState).find(_.blocker == cardObject.objectId).foreach(d => builder.addOne(("blocking", d.attacker)))
+    DeclareBlockers.getBlockDeclarations(gameState).find(_.blocker == gameObject.objectId).foreach(d => builder.addOne(("blocking", d.attacker)))
     builder.result()
   }
 
   def apply(gameObject: GameObject, gameState: GameState): VisibleGameObject = gameObject match {
-    case cardObject: CardObject =>
-      val objectState = gameState.derivedState.objectStates(cardObject.objectId)
+    case gameObject: BasicGameObject =>
+      val objectState = gameState.gameObjectState.derivedState.basicStates(gameObject.objectId)
       VisibleGameObject(
-        cardObject.card.printing.cardDefinition.name,
-        cardObject.card.printing.set.code,
-        cardObject.card.printing.collectorNumber,
-        cardObject.objectId,
+        gameObject.card.printing.cardDefinition.name,
+        gameObject.card.printing.set.code,
+        gameObject.card.printing.collectorNumber,
+        gameObject.objectId,
         objectState.characteristics,
-        objectState.controller,
-        cardObject.permanentStatus,
-        cardObject.markedDamage,
-        getModifiers(cardObject, gameState))
+        None,
+        None,
+        None,
+        getModifiers(gameObject, gameState))
+    case gameObject: StackObject =>
+      val objectState = gameState.gameObjectState.derivedState.spellStates(gameObject.objectId)
+      VisibleGameObject(
+        gameObject.card.printing.cardDefinition.name,
+        gameObject.card.printing.set.code,
+        gameObject.card.printing.collectorNumber,
+        gameObject.objectId,
+        objectState.characteristics,
+        Some(objectState.controller),
+        None,
+        None,
+        getModifiers(gameObject, gameState))
+    case gameObject: PermanentObject =>
+      val objectState = gameState.gameObjectState.derivedState.permanentStates(gameObject.objectId)
+      VisibleGameObject(
+        gameObject.card.printing.cardDefinition.name,
+        gameObject.card.printing.set.code,
+        gameObject.card.printing.collectorNumber,
+        gameObject.objectId,
+        objectState.characteristics,
+        Some(objectState.controller),
+        Some(gameObject.status),
+        Some(gameObject.markedDamage),
+        getModifiers(gameObject, gameState))
   }
 }

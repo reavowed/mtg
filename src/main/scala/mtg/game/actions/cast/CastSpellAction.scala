@@ -2,27 +2,26 @@ package mtg.game.actions.cast
 
 import mtg.characteristics.types.Type
 import mtg.game.actions.{PriorityAction, TimingChecks}
-import mtg.game.objects.ObjectId
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{BackupAction, GameAction, GameState, InternalGameActionResult, ObjectWithState}
-import mtg.game.{PlayerIdentifier, ZoneType}
+import mtg.game.{ObjectId, PlayerId, ZoneType}
 
-case class CastSpellAction(player: PlayerIdentifier, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {
+case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
   override def execute(currentGameState: GameState): InternalGameActionResult = {
-    CastSpellSteps.Start(player, objectToCast, backupAction)
+    CastSpellSteps.Start(player, objectId, backupAction)
   }
 }
 
 object CastSpellAction {
-  def getCastableSpells(player: PlayerIdentifier, gameState: GameState, backupAction: BackupAction): Seq[CastSpellAction] = {
+  def getCastableSpells(player: PlayerId, gameState: GameState, backupAction: BackupAction): Seq[CastSpellAction] = {
     if (cannotCastSpells(player, gameState)) {
       return Nil
     }
-    gameState.derivedState.allObjectStates.view
+    gameState.gameObjectState.derivedState.allObjectStates.values.view
       .filter(isSpell)
       .filter(!cannotCastSpell(player, gameState, _))
       .filter(hasGeneralPermissionToCastSpell(player, gameState, _))
@@ -35,12 +34,12 @@ object CastSpellAction {
     objectWithState.characteristics.types.exists(_.isSpell)
   }
 
-  private def cannotCastSpells(player: PlayerIdentifier, gameState: GameState): Boolean = {
+  private def cannotCastSpells(player: PlayerId, gameState: GameState): Boolean = {
     // TODO: effects like Epic
     false
   }
 
-  private def cannotCastSpell(player: PlayerIdentifier, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
+  private def cannotCastSpell(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
     if (objectWithState.characteristics.types.contains(Type.Land)) {
       // RULE 305.9 / Apr 22 2021 : If an object is both a land and another card type, it can be played only as a land.
       // It can't be cast as a spell.
@@ -51,7 +50,7 @@ object CastSpellAction {
     }
   }
 
-  private def hasGeneralPermissionToCastSpell(player: PlayerIdentifier, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
+  private def hasGeneralPermissionToCastSpell(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
     if (objectWithState.gameObject.zone.zoneType == ZoneType.Hand) {
       true
     } else {
@@ -60,7 +59,7 @@ object CastSpellAction {
     }
   }
 
-  private def hasTimingPermissionToCastSpell(player: PlayerIdentifier, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
+  private def hasTimingPermissionToCastSpell(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
     if (objectWithState.characteristics.types.contains(Type.Instant)) {
       // RULE 117.1a / Apr 22 2021: A player may cast an instant spell any time they have priority.
       true

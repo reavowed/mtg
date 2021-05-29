@@ -3,12 +3,12 @@ package mtg.game.state
 import mtg.game.turns.TurnCycleEventPreventer
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice
-import mtg.game.{GameStartingData, PlayerIdentifier}
+import mtg.game.{GameStartingData, PlayerId}
 
 import scala.annotation.tailrec
 import scala.collection.mutable
 
-class GameStateManager(private var _currentGameState: GameState, val onStateUpdate: GameState => Unit, val stops: mutable.Map[PlayerIdentifier, Map[PlayerIdentifier, Seq[AnyRef]]]) {
+class GameStateManager(private var _currentGameState: GameState, val onStateUpdate: GameState => Unit, val stops: mutable.Map[PlayerId, Map[PlayerId, Seq[AnyRef]]]) {
   def currentGameState: GameState = this.synchronized { _currentGameState }
 
   executeAutomaticActions()
@@ -64,7 +64,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       .recordGameEvent(gameObjectEvent)
   }
 
-  def handleDecision(serializedDecision: String, actingPlayer: PlayerIdentifier): Unit = this.synchronized {
+  def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {
     currentGameState.popAction() match {
       case (choice: PlayerChoice, gameState) if choice.playerToAct == actingPlayer =>
         executeDecision(choice, serializedDecision, gameState) match {
@@ -89,7 +89,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
 object GameStateManager {
   def initial(gameStartingData: GameStartingData, onStateUpdate: GameState => Unit): GameStateManager = {
     val initialStops = mutable.Map(gameStartingData.players.map(p =>
-      p -> gameStartingData.players.map[(PlayerIdentifier, Seq[AnyRef])](q => q -> (if (p == q) Seq(PrecombatMainPhase, PostcombatMainPhase) else Nil)).toMap): _*)
+      p -> gameStartingData.players.map[(PlayerId, Seq[AnyRef])](q => q -> (if (p == q) Seq(PrecombatMainPhase, PostcombatMainPhase) else Nil)).toMap): _*)
     new GameStateManager(GameState.initial(gameStartingData), onStateUpdate, initialStops)
   }
 }

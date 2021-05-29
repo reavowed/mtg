@@ -59,8 +59,8 @@ class CombatDamageSpec extends SpecWithGameStateManager {
 
     manager.currentGameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
     manager.currentGameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
-    manager.getCard(Zone.Battlefield, AgelessGuardian).markedDamage mustEqual 2
-    manager.getCard(Zone.Battlefield, SpinedKarok).markedDamage mustEqual 1
+    manager.getPermanent(AgelessGuardian).markedDamage mustEqual 2
+    manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
   }
 
   "a blocked creature without trample should not deal excess damage to player" in {
@@ -126,8 +126,8 @@ class CombatDamageSpec extends SpecWithGameStateManager {
 
       // Assert
       manager.currentAction should bePriorityChoice
-      manager.getCard(Zone.Battlefield, SpinedKarok).markedDamage mustEqual 1
-      manager.getCard(Zone.Battlefield, GrizzledOutrider).markedDamage mustEqual 0
+      manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
+      manager.getPermanent(GrizzledOutrider).markedDamage mustEqual 0
     }
 
     "have to assign damage if it can deal excess damage to the first blocking creature" in {
@@ -236,7 +236,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       // Assert
       manager.currentAction should bePriorityChoice
       Zone.Graveyard(playerTwo)(manager.currentGameState) must contain(beCardObject(AgelessGuardian))
-      manager.getCard(Zone.Battlefield, SpinedKarok).markedDamage mustEqual 1
+      manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
     }
 
     "be allowed to assign more than lethal damage to the first blocker" in {
@@ -274,7 +274,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       // Assert
       manager.currentAction should bePriorityChoice
       Zone.Graveyard(playerTwo)(manager.currentGameState) must contain(beCardObject(AgelessGuardian))
-      manager.getCard(Zone.Battlefield, SpinedKarok).markedDamage mustEqual 0
+      manager.getPermanent(SpinedKarok).markedDamage mustEqual 0
     }
   }
 }

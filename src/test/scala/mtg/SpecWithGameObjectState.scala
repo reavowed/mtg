@@ -3,7 +3,7 @@ package mtg
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
 import mtg.game.state.GameState
-import mtg.game.{GameData, GameStartingData, PlayerIdentifier, PlayerStartingData, Zone}
+import mtg.game.{GameData, GameStartingData, PlayerId, PlayerStartingData, Zone}
 import mtg.helpers.{GameObjectHelpers, GameObjectStateHelpers}
 import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
@@ -13,8 +13,8 @@ trait SpecWithGameObjectState
     with GameObjectStateHelpers
     with GameObjectHelpers
 {
-  val playerOne = PlayerIdentifier("P1")
-  val playerTwo = PlayerIdentifier("P2")
+  val playerOne = PlayerId("P1")
+  val playerTwo = PlayerId("P2")
   val players = Seq(playerOne, playerTwo)
   val gameData = GameData.initial(players)
 
@@ -37,7 +37,7 @@ trait SpecWithGameObjectState
   val gameObjectStateWithInitialLibrariesOnly = emptyGameObjectState.setLibrary(playerOne, playerOneAllCards).setLibrary(playerTwo, playerTwoAllCards)
   val gameObjectStateWithInitialLibrariesAndHands = setInitialHandAndLibrary(emptyGameObjectState)
 
-  implicit class PlayerOps(playerIdentifier: PlayerIdentifier) {
+  implicit class PlayerOps(playerIdentifier: PlayerId) {
     def library = Zone.Library(playerIdentifier)
     def hand = Zone.Hand(playerIdentifier)
     def graveyard = Zone.Graveyard(playerIdentifier)
@@ -47,11 +47,7 @@ trait SpecWithGameObjectState
       apply(gameState.gameObjectState)
     }
     def apply(gameObjectState: GameObjectState): Seq[GameObject] = {
-      zone.stateLens.get(gameObjectState)
+      zone.getState(gameObjectState)
     }
-  }
-
-  def matchCardObject(card: Card): Matcher[GameObject] = {
-    { (gameObject: GameObject) => gameObject.asInstanceOf[CardObject].card } ^^ beEqualTo(card)
   }
 }

@@ -3,8 +3,8 @@ package mtg.helpers
 import mtg.cards.CardDefinition
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
 import mtg.game.actions.cast.CastSpellAction
-import mtg.game.{PlayerIdentifier, Zone}
-import mtg.game.objects.{CardObject, GameObject, GameObjectState}
+import mtg.game.{PlayerId, Zone}
+import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
 import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.turns.priority.PriorityChoice
@@ -20,20 +20,24 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       updateGameState(_.updateGameObjectState(f(gameStateManager.currentGameState.gameObjectState)))
     }
 
-    def getCard(cardDefinition: CardDefinition): CardObject = {
-      gameStateManager.currentGameState.gameObjectState.allObjects.view
-        .ofType[CardObject]
+    def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
+      gameStateManager.currentGameState.gameObjectState.battlefield.view
         .filter(_.card.printing.cardDefinition == cardDefinition)
         .single
     }
-    def getCards(cardDefinitions: CardDefinition*): Seq[CardObject] = {
+    def getCard(cardDefinition: CardDefinition): GameObject = {
+      gameStateManager.currentGameState.gameObjectState.allObjects.view
+        .filter(_.card.printing.cardDefinition == cardDefinition)
+        .single
+    }
+    def getCards(cardDefinitions: CardDefinition*): Seq[GameObject] = {
       cardDefinitions.map(getCard)
     }
-    def getCard(zone: Zone, cardDefinition: CardDefinition): CardObject = {
+    def getCard(zone: Zone, cardDefinition: CardDefinition): GameObject = {
       zone.getState(gameStateManager.currentGameState.gameObjectState).getCard(cardDefinition)
     }
     def getState(gameObject: GameObject): ObjectWithState = {
-      gameStateManager.currentGameState.derivedState.objectStates(gameObject.objectId)
+      gameObject.currentState(gameStateManager.currentGameState)
     }
     def getState(zone: Zone, cardDefinition: CardDefinition): ObjectWithState = {
       getState(getCard(zone, cardDefinition))
@@ -41,7 +45,7 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
 
     def currentAction: GameAction = gameStateManager.currentGameState.pendingActions.head
 
-    def passPriority(player: PlayerIdentifier): Unit = {
+    def passPriority(player: PlayerId): Unit = {
       gameStateManager.handleDecision("Pass", player)
     }
     private def passUntil(predicate: GameState => Boolean): Unit = {
@@ -74,48 +78,48 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       passUntil(_.gameObjectState.stack.size < stackSize)
     }
 
-    def playLand(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def playLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
-        .filter(_.land.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).single
+        .filter(_.land.gameObject.card.printing.cardDefinition == cardDefinition).single
       gameStateManager.handleDecision(landAction.optionText, player)
     }
-    def playFirstLand(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def playFirstLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
-        .filter(_.land.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).head
+        .filter(_.land.gameObject.card.printing.cardDefinition == cardDefinition).head
       gameStateManager.handleDecision(landAction.optionText, player)
     }
-    def activateAbility(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def activateAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
-        .filter(_.source.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).single
+        .filter(_.source.gameObject.card.printing.cardDefinition == cardDefinition).single
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
-    def activateFirstAbility(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def activateFirstAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
-        .filter(_.source.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).head
+        .filter(_.source.gameObject.card.printing.cardDefinition == cardDefinition).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
-    def activateAbilities(player: PlayerIdentifier, cardDefinition: CardDefinition, number: Int): Unit = {
+    def activateAbilities(player: PlayerId, cardDefinition: CardDefinition, number: Int): Unit = {
       (1 to number).foreach(_ => activateFirstAbility(player, cardDefinition))
     }
 
 
-    def castSpell(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def castSpell(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
-        .filter(_.objectToCast.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).single
+        .filter(_.objectToCast.gameObject.card.printing.cardDefinition == cardDefinition).single
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
-    def castFirstSpell(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def castFirstSpell(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
-        .filter(_.objectToCast.gameObject.asOptionalInstanceOf[CardObject].exists(_.card.printing.cardDefinition == cardDefinition)).head
+        .filter(_.objectToCast.gameObject.card.printing.cardDefinition == cardDefinition).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
-    def attackWith(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def attackWith(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       gameStateManager.handleDecision(getCard(Zone.Battlefield, cardDefinition).objectId.sequentialId.toString, player)
     }
-    def block(player: PlayerIdentifier, blocker: CardDefinition, attacker: CardDefinition): Unit = {
+    def block(player: PlayerId, blocker: CardDefinition, attacker: CardDefinition): Unit = {
       block(player, (blocker, attacker))
     }
-    def block(player: PlayerIdentifier, blockers: (CardDefinition, CardDefinition)*): Unit = {
+    def block(player: PlayerId, blockers: (CardDefinition, CardDefinition)*): Unit = {
       val serializedDecision = blockers.map { case (blocker, attacker) =>
         getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString + " " +
           getCard(Zone.Battlefield, attacker).objectId.sequentialId.toString + " "
@@ -123,13 +127,13 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
 
       gameStateManager.handleDecision(serializedDecision, player)
     }
-    def orderBlocks(player: PlayerIdentifier, blockers: CardDefinition*): Unit = {
+    def orderBlocks(player: PlayerId, blockers: CardDefinition*): Unit = {
       val serializedDecision = blockers.map { blocker =>
         getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString
       }.mkString(" ")
       gameStateManager.handleDecision(serializedDecision, player)
     }
-    def assignDamage(player: PlayerIdentifier, damage: (CardDefinition, Int)*): Unit = {
+    def assignDamage(player: PlayerId, damage: (CardDefinition, Int)*): Unit = {
       val serializedDecision = damage.map { case (blocker, amount) =>
         getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString + " " + amount
       }.mkString(" ")
@@ -137,8 +141,11 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
       gameStateManager.handleDecision(serializedDecision, player)
     }
 
-    def chooseCard(player: PlayerIdentifier, cardDefinition: CardDefinition): Unit = {
+    def chooseCard(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       gameStateManager.handleDecision(getCard(cardDefinition).objectId.toString, player)
+    }
+    def choosePlayer(player: PlayerId, chosenPlayer: PlayerId): Unit = {
+      gameStateManager.handleDecision(chosenPlayer.id, player)
     }
   }
 }

@@ -1,10 +1,8 @@
 package mtg.characteristics.types
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import mtg.utils.CaseObjectSerializer
+import mtg.utils.CaseObject
 
-@JsonSerialize(using = classOf[CaseObjectSerializer])
-sealed trait Type {
+sealed trait Type extends CaseObject {
   def isSpell: Boolean
   def isPermanent: Boolean
 }
@@ -22,6 +20,10 @@ object Type {
   case object Instant extends InstantOrSorcery
   case object Sorcery extends InstantOrSorcery
   case object Creature extends Type {
+    override def isSpell: Boolean = true
+    override def isPermanent: Boolean = true
+  }
+  case object Planeswalker extends Type {
     override def isSpell: Boolean = true
     override def isPermanent: Boolean = true
   }

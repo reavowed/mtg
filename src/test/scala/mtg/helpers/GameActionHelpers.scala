@@ -1,10 +1,10 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
-import mtg.game.PlayerIdentifier
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
+import mtg.game.PlayerId
 import mtg.game.actions.cast.CastSpellAction
-import mtg.game.objects.{CardObject, GameObject}
+import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
+import mtg.game.objects.GameObject
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
@@ -14,7 +14,7 @@ import scala.collection.mutable.ListBuffer
 
 trait GameActionHelpers extends SpecificationLike {
   def beCastSpellAction(cardDefinition: CardDefinition): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
-    (castSpellAction.objectToCast.gameObject.asOptionalInstanceOf[CardObject].exists(_.cardDefinition == cardDefinition), s"was '${cardDefinition.name}'", s"was not '${cardDefinition.name}'")
+    (castSpellAction.objectToCast.gameObject.cardDefinition == cardDefinition, s"was '${cardDefinition.name}'", s"was not '${cardDefinition.name}'")
   }
   def beCastSpellAction(gameObject: GameObject): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
     (castSpellAction.objectToCast.gameObject == gameObject, "was given object", "was not given object")
@@ -27,7 +27,7 @@ trait GameActionHelpers extends SpecificationLike {
 
     override def apply[S <: GameAction](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
 
-    def forPlayer(playerIdentifier: PlayerIdentifier): PriorityChoiceMatcher = {
+    def forPlayer(playerIdentifier: PlayerId): PriorityChoiceMatcher = {
       otherMatchers.addOne(((_: PriorityChoice).playerToAct) ^^ beTypedEqualTo(playerIdentifier))
       this
     }

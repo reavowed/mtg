@@ -1,10 +1,10 @@
 package mtg.game.start.mulligans
 
-import mtg.game.PlayerIdentifier
+import mtg.game.PlayerId
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult}
 
-case class DrawAndMulliganAction(playersToDrawAndMulligan: Seq[PlayerIdentifier], mulligansSoFar: Int) extends InternalGameAction {
+case class DrawAndMulliganAction(playersToDrawAndMulligan: Seq[PlayerId], mulligansSoFar: Int) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     val drawActions = Seq(DrawStartingHandsEvent(playersToDrawAndMulligan))
     if (mulligansSoFar < currentGameState.gameData.startingHandSize) {

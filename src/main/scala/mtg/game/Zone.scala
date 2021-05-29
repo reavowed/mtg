@@ -1,12 +1,12 @@
 package mtg.game
 
-import monocle.function.At
 import monocle.{Focus, Lens}
-import mtg.game.objects.{GameObject, GameObjectState}
-import mtg.game.state.{GameState, PermanentStatus}
+import mtg.game.objects.{BasicGameObject, GameObject, GameObjectState, PermanentObject, StackObject}
+import mtg.game.state.{GameState, ObjectWithState, PermanentStatus, StackObjectWithState}
 import mtg.utils.AtGuaranteed
 
-sealed abstract class ZoneType
+sealed abstract class ZoneType {
+}
 object ZoneType {
   case object Library extends ZoneType
   case object Hand extends ZoneType
@@ -17,38 +17,60 @@ object ZoneType {
 }
 
 sealed abstract class Zone(val zoneType: ZoneType) {
-  def stateLens: Lens[GameObjectState, Seq[GameObject]]
-  def getState(gameState: GameState): Seq[GameObject] = getState(gameState.gameObjectState)
-  def getState(gameObjectState: GameObjectState): Seq[GameObject] = stateLens.get(gameObjectState)
-  def defaultPermanentStatus: Option[PermanentStatus] = None
+  def getState(gameObjectState: GameObjectState): Seq[GameObject]
+  def getState(gameState: GameState): Seq[GameObject]
+  def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): GameObject
+}
+
+sealed abstract class TypedZone[ObjectType <: GameObject](zoneType: ZoneType) extends Zone(zoneType) {
+  def stateLens: Lens[GameObjectState, Seq[ObjectType]]
+  def getState(gameState: GameState): Seq[ObjectType] = getState(gameState.gameObjectState)
+  def getState(gameObjectState: GameObjectState): Seq[ObjectType] = stateLens.get(gameObjectState)
+  def updateState(gameObjectState: GameObjectState, f: Seq[ObjectType] => Seq[ObjectType]): GameObjectState = {
+    stateLens.modify(f)(gameObjectState)
+  }
+  def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): ObjectType
 }
 
 object Zone {
-  sealed abstract class PlayerSpecific(zoneType: ZoneType) extends Zone(zoneType) {
-    def playerIdentifier: PlayerIdentifier
-    def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]]
-    override def stateLens: Lens[GameObjectState, Seq[GameObject]] = stateMapLens.at(playerIdentifier)(AtGuaranteed.apply)
+  sealed abstract class PlayerSpecific[ObjectType <: GameObject](zoneType: ZoneType) extends TypedZone[ObjectType](zoneType) {
+    def playerIdentifier: PlayerId
+    def stateMapLens: Lens[GameObjectState, Map[PlayerId, Seq[ObjectType]]]
+    override def stateLens: Lens[GameObjectState, Seq[ObjectType]] = stateMapLens.at(playerIdentifier)(AtGuaranteed.apply)
   }
-  sealed abstract class Shared(zoneType: ZoneType) extends Zone(zoneType)
+  sealed abstract class Shared[ObjectType <: GameObject](zoneType: ZoneType) extends TypedZone[ObjectType](zoneType)
 
-  case class Library(playerIdentifier: PlayerIdentifier) extends PlayerSpecific(ZoneType.Library) {
-    override def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]] = Focus[GameObjectState](_.libraries)
+  trait BasicZone extends TypedZone[BasicGameObject] {
+    override def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): BasicGameObject = {
+      BasicGameObject(previousObjectState.gameObject.card, newObjectId, this)
+    }
   }
-  case class Hand(playerIdentifier: PlayerIdentifier) extends PlayerSpecific(ZoneType.Hand) {
-    override def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]] = Focus[GameObjectState](_.hands)
+
+  case class Library(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Library) with BasicZone {
+    override def stateMapLens: Lens[GameObjectState, Map[PlayerId, Seq[BasicGameObject]]] = Focus[GameObjectState](_.libraries)
+
   }
-  case object Battlefield extends Shared(ZoneType.Battlefield) {
-    override def stateLens: Lens[GameObjectState, Seq[GameObject]] = Focus[GameObjectState](_.battlefield)
-    override def defaultPermanentStatus: Option[PermanentStatus] = Some(PermanentStatus(false, false, false, false))
+  case class Hand(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Hand) with BasicZone {
+    override def stateMapLens: Lens[GameObjectState, Map[PlayerId, Seq[BasicGameObject]]] = Focus[GameObjectState](_.hands)
   }
-  case class Graveyard(playerIdentifier: PlayerIdentifier) extends PlayerSpecific(ZoneType.Graveyard) {
-    override def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]] = Focus[GameObjectState](_.graveyards)
+  case object Battlefield extends Shared[PermanentObject](ZoneType.Battlefield) {
+    override def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): PermanentObject = {
+      val controller = previousObjectState.asOptionalInstanceOf[StackObjectWithState].map(_.controller).getOrElse(playerMoving)
+      PermanentObject(previousObjectState.gameObject.card, newObjectId, controller)
+    }
+    override def stateLens: Lens[GameObjectState, Seq[PermanentObject]] = Focus[GameObjectState](_.battlefield)
   }
-  case object Stack extends Shared(ZoneType.Stack) {
-    override def stateLens: Lens[GameObjectState, Seq[GameObject]] = Focus[GameObjectState](_.stack)
+  case class Graveyard(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Graveyard) with BasicZone {
+    override def stateMapLens: Lens[GameObjectState, Map[PlayerId, Seq[BasicGameObject]]] = Focus[GameObjectState](_.graveyards)
   }
-  case class Sideboard(playerIdentifier: PlayerIdentifier) extends PlayerSpecific(ZoneType.Hand) {
-    override def stateMapLens: Lens[GameObjectState, Map[PlayerIdentifier, Seq[GameObject]]] = Focus[GameObjectState](_.sideboards)
+  case object Stack extends Shared[StackObject](ZoneType.Stack) {
+    override def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): StackObject = {
+      StackObject(previousObjectState.gameObject.card, newObjectId, playerMoving, Nil)
+    }
+    override def stateLens: Lens[GameObjectState, Seq[StackObject]] = Focus[GameObjectState](_.stack)
+  }
+  case class Sideboard(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Hand) with BasicZone {
+    override def stateMapLens: Lens[GameObjectState, Map[PlayerId, Seq[BasicGameObject]]] = Focus[GameObjectState](_.sideboards)
   }
 }
 

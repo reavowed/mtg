@@ -5,7 +5,7 @@ import mtg.effects.Effect
 case class AbilityText(paragraphs: Seq[AbilityParagraph])
 
 case class AbilityParagraph(sentences: AbilitySentence*) {
-  def text: String = sentences.map(_.text).mkString(" ")
+  def getText(cardName: String): String = sentences.map(_.getText(cardName)).mkString(" ")
   def effects: Seq[Effect] = sentences.flatMap(_.effects)
 }
 object AbilityParagraph {
@@ -15,16 +15,19 @@ object AbilityParagraph {
 
 sealed trait AbilitySentence {
   def effects: Seq[Effect]
-  def text: String
+  def getText(cardName: String): String
 }
 object AbilitySentence {
   case class SingleClause(effect: Effect) extends AbilitySentence {
     def effects: Seq[Effect] = Seq(effect)
-    override def text: String = effect.text.capitalize + "."
+    override def getText(cardName: String): String = effect.getText(cardName).capitalize + "."
   }
   case class MultiClause(effects: Seq[Effect], joiner: String) extends AbilitySentence {
-    override def text: String = {
-      val clausesText = (effects.head.text.capitalize +: (if (effects.length > 2) effects.tail.init.map(_.text) else Nil)) :+ (joiner + " " + effects.last.text)
+    override def getText(cardName: String): String = {
+      val clausesText = (
+        effects.head.getText(cardName).capitalize +:
+          (if (effects.length > 2) effects.tail.init.map(_.getText(cardName)) else Nil)
+        ) :+ (joiner + " " + effects.last.getText(cardName))
       clausesText.mkString(", ") + "."
     }
   }

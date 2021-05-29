@@ -1,12 +1,11 @@
 package mtg.game.actions
 
 import mtg.characteristics.types.Type
-import mtg.game.objects.ObjectId
 import mtg.game.state.history.{GameEvent, LogEvent}
-import mtg.game.state.{GameAction, GameState, InternalGameActionResult, ObjectWithState}
-import mtg.game.{PlayerIdentifier, Zone}
+import mtg.game.state.{GameState, InternalGameActionResult, ObjectWithState}
+import mtg.game.{ObjectId, PlayerId, Zone}
 
-case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) extends PriorityAction {
+case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = land.gameObject.objectId
   override def displayText: String = "Play"
   override def optionText: String = "Play " + land.gameObject.objectId
@@ -23,15 +22,16 @@ case class PlayLandAction(player: PlayerIdentifier, land: ObjectWithState) exten
 }
 
 object PlayLandAction {
-  def getPlayableLands(player: PlayerIdentifier, gameState: GameState): Seq[PlayLandAction] = {
+  def getPlayableLands(player: PlayerId, gameState: GameState): Seq[PlayLandAction] = {
     if (cannotPlayLands(player, gameState) || !canPlayLandsAsSpecialAction(player, gameState))
       Nil
     else
-      gameState.derivedState.allObjectStates
+      gameState.gameObjectState.derivedState.allObjectStates.values.view
         .filter(_.characteristics.types.contains(Type.Land))
         .filter(!cannotPlayLand(_, player, gameState))
         .filter(canPlayLandAsSpecialAction(_, player, gameState))
         .map(PlayLandAction(player, _))
+        .toSeq
   }
   private def getNumberOfLandsPlayedThisTurn(gameState: GameState): Int = {
     gameState.gameHistory.forCurrentTurn.toSeq.flatMap(_.gameEvents)
@@ -42,7 +42,7 @@ object PlayLandAction {
     // TODO: effects such as Explore / Azusa
     1
   }
-  private def cannotPlayLands(player: PlayerIdentifier, gameState: GameState): Boolean = {
+  private def cannotPlayLands(player: PlayerId, gameState: GameState): Boolean = {
     // TODO: effects such as Aggressive Mining
     if (!TimingChecks.isPlayersTurn(player, gameState)) {
       // RULE: 305.3 / Apr 22 2021 : A player can’t play a land, for any reason, if it isn’t their turn. Ignore any
@@ -57,11 +57,11 @@ object PlayLandAction {
       false
     }
   }
-  private def cannotPlayLand(land: ObjectWithState, player: PlayerIdentifier, gameState: GameState): Boolean = {
+  private def cannotPlayLand(land: ObjectWithState, player: PlayerId, gameState: GameState): Boolean = {
     // TODO: effects such as Experimental Frenzy / Tomik, Distinguished Advokist
     false
   }
-  private def canPlayLandsAsSpecialAction(player: PlayerIdentifier, gameState: GameState): Boolean = {
+  private def canPlayLandsAsSpecialAction(player: PlayerId, gameState: GameState): Boolean = {
     // RULE: 116.2a / Apr 22 2021 : A player can take this action any time they have priority and the stack is empty
     // during a main phase of their turn.
     // NOTE: Check for whose turn it is controlled by cannotPlayLands method above
@@ -69,7 +69,7 @@ object PlayLandAction {
     // priority
     TimingChecks.isMainPhaseOfPlayersTurnWithEmptyStack(player, gameState)
   }
-  private def canPlayLandAsSpecialAction(land: ObjectWithState, player: PlayerIdentifier, gameState: GameState): Boolean = {
+  private def canPlayLandAsSpecialAction(land: ObjectWithState, player: PlayerId, gameState: GameState): Boolean = {
     // TODO: effects such as Crucible of Worlds
     land.gameObject.zone == Zone.Hand(player)
   }

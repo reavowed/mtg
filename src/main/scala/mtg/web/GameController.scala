@@ -1,15 +1,12 @@
 package mtg.web
 
-import mtg.game.PlayerIdentifier
-import mtg.game.turns.{TurnPhase, TurnPhaseWithSteps, TurnStep}
-import mtg.utils.CaseObjectSerializer
+import mtg.game.PlayerId
+import mtg.game.turns.TurnPhase
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.{HttpStatus, ResponseEntity}
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.{DeleteMapping, GetMapping, PathVariable, PostMapping, RequestBody, ResponseBody}
-
-import scala.xml.Unparsed
+import org.springframework.web.bind.annotation._
 
 @Controller
 class GameController @Autowired() (gameService: GameService) {
@@ -33,19 +30,19 @@ class GameController @Autowired() (gameService: GameService) {
   @GetMapping(Array("/{playerIdentifier}/state"))
   @ResponseBody
   def getState(@PathVariable("playerIdentifier") playerIdentifier: String) = {
-    VisibleState.forPlayer(PlayerIdentifier(playerIdentifier), gameService.gameStateManager.currentGameState)
+    VisibleState.forPlayer(PlayerId(playerIdentifier), gameService.gameStateManager.currentGameState)
   }
 
   @PostMapping(Array("/{playerIdentifier}/decision"))
   @ResponseBody
   def makeDecision(@PathVariable("playerIdentifier") playerIdentifier: String, @RequestBody(required = false) decision: String) = {
-    gameService.gameStateManager.handleDecision(if (decision == null) "" else decision, PlayerIdentifier(playerIdentifier))
+    gameService.gameStateManager.handleDecision(if (decision == null) "" else decision, PlayerId(playerIdentifier))
   }
 
   @GetMapping(value = Array("/{playerIdentifier}/stops"))
   @ResponseBody
   def getStops(@PathVariable("playerIdentifier") playerIdentifier: String) = {
-    gameService.gameStateManager.stops(PlayerIdentifier(playerIdentifier))
+    gameService.gameStateManager.stops(PlayerId(playerIdentifier))
   }
 
   @PostMapping(value = Array("/{playerIdentifier}/stops/{playerToStopAt}/{stepOrPhase}"))
@@ -55,16 +52,16 @@ class GameController @Autowired() (gameService: GameService) {
     @PathVariable("playerToStopAt") playerToStopAt: String,
     @PathVariable("stepOrPhase") stepOrPhaseText: String
   ) = {
-    val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(CaseObjectSerializer.getClassName(_) == stepOrPhaseText)
+    val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(_.name == stepOrPhaseText)
     stepOrPhaseOption.foreach(stepOrPhase => {
       gameService.gameStateManager.stops
         .updateWith(
-          PlayerIdentifier(playerIdentifier))(
+          PlayerId(playerIdentifier))(
           _.map(_.updatedWith(
-            PlayerIdentifier(playerToStopAt))(
+            PlayerId(playerToStopAt))(
             _.map(existingStops => if (existingStops.contains(stepOrPhase)) existingStops else existingStops :+ stepOrPhase))))
     })
-    gameService.gameStateManager.stops(PlayerIdentifier(playerIdentifier))
+    gameService.gameStateManager.stops(PlayerId(playerIdentifier))
   }
 
   @DeleteMapping(value = Array("/{playerIdentifier}/stops/{playerToStopAt}/{stepOrPhase}"))
@@ -74,15 +71,15 @@ class GameController @Autowired() (gameService: GameService) {
     @PathVariable("playerToStopAt") playerToStopAt: String,
     @PathVariable("stepOrPhase") stepOrPhaseText: String
   ) = {
-    val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(CaseObjectSerializer.getClassName(_) == stepOrPhaseText)
+    val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(_.name == stepOrPhaseText)
     stepOrPhaseOption.foreach(stepOrPhase => {
       gameService.gameStateManager.stops
         .updateWith(
-          PlayerIdentifier(playerIdentifier))(
+          PlayerId(playerIdentifier))(
           _.map(_.updatedWith(
-            PlayerIdentifier(playerToStopAt))(
+            PlayerId(playerToStopAt))(
             _.map(existingStops => existingStops.filter(_ != stepOrPhase)))))
     })
-    gameService.gameStateManager.stops(PlayerIdentifier(playerIdentifier))
+    gameService.gameStateManager.stops(PlayerId(playerIdentifier))
   }
 }

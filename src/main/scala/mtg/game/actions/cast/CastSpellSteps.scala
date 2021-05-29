@@ -1,28 +1,58 @@
 package mtg.game.actions.cast
 
+import mtg.abilities.SpellAbility
+import mtg.effects.targets.TargetIdentifier
 import mtg.events.MoveObjectEvent
+import mtg.events.targets.AddTarget
 import mtg.game.actions.SpendManaAutomaticallyEvent
-import mtg.game.objects.{GameObject, ManaObject}
+import mtg.game.objects.{GameObject, ManaObject, StackObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.state._
 import mtg.game.turns.priority
-import mtg.game.turns.priority.PriorityFromPlayerAction
-import mtg.game.{PlayerIdentifier, Zone}
+import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId, Zone}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
 
 object CastSpellSteps {
 
-  case class Start(player: PlayerIdentifier, objectToCast: ObjectWithState, backupAction: BackupAction) extends InternalGameAction {
+  case class Start(player: PlayerId, objectToCast: ObjectId, backupAction: BackupAction) extends InternalGameAction {
     override def execute(currentGameState: GameState): InternalGameActionResult = {
       Seq(
-        MoveObjectEvent(player, objectToCast.gameObject, Zone.Stack),
+        MoveObjectEvent(player, objectToCast, Zone.Stack),
+        ChooseTargets(backupAction),
         PayCosts(player, backupAction))
     }
   }
 
-  case class PayCosts(player: PlayerIdentifier, backupAction: BackupAction) extends InternalGameAction {
+  case class ChooseTargets(backupAction: BackupAction) extends InternalGameAction {
+    override def execute(currentGameState: GameState): InternalGameActionResult = {
+      val spell = currentGameState.gameObjectState.stack.last
+      val spellWithState = spell.currentState(currentGameState)
+      val targetIdentifiers = spellWithState.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects).flatMap(_.targetIdentifiers)
+      def getValidOptions(targetIdentifier: TargetIdentifier): Seq[ObjectOrPlayer] = {
+        val validObjects = currentGameState.gameObjectState.allObjects
+          .map(_.objectId)
+          .filter(targetIdentifier.filter.isValid(_, currentGameState))
+        val validPlayers = currentGameState.gameData.playersInTurnOrder.view
+          .filter(targetIdentifier.filter.isValid(_, currentGameState))
+        (validObjects ++ validPlayers).toSeq
+      }
+      targetIdentifiers.map(targetIdentifier => TargetChoice(spellWithState.controller, spell, targetIdentifier.text, getValidOptions(targetIdentifier)))
+    }
+  }
+
+  case class ChosenTarget(objectOrPlayer: ObjectOrPlayer)
+  case class TargetChoice(playerToAct: PlayerId, spell: StackObject, targetDescription: String, validOptions: Seq[ObjectOrPlayer]) extends TypedPlayerChoice[ChosenTarget] {
+    override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[ChosenTarget] = {
+      validOptions.find(_.toString == serializedChosenOption).map(ChosenTarget)
+    }
+    override def handleDecision(chosenOption: ChosenTarget, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+      (Seq(AddTarget(spell.objectId, chosenOption.objectOrPlayer)), None)
+    }
+  }
+
+  case class PayCosts(player: PlayerId, backupAction: BackupAction) extends InternalGameAction {
     @tailrec
     private def payDirectManaCosts(manaTypeSymbols: Seq[ManaTypeSymbol], manaInPool: Seq[ManaObject]): Option[Seq[ManaObject]] = {
       manaTypeSymbols match {
@@ -58,14 +88,14 @@ object CastSpellSteps {
 
     override def execute(currentGameState: GameState): InternalGameActionResult = {
       val spell = currentGameState.gameObjectState.stack.last
-      val spellWithState = currentGameState.derivedState.objectStates(spell.objectId)
+      val spellWithState = spell.currentState(currentGameState)
       spellWithState.characteristics.manaCost match {
         case Some(cost) =>
           val initialManaInPool = currentGameState.gameObjectState.manaPools(player)
           val finalManaInPool = payManaAutomatically(cost.symbols, initialManaInPool)
           finalManaInPool match {
             case Some(finalManaInPool) =>
-              Seq(SpendManaAutomaticallyEvent(player, finalManaInPool), FinishCasting(player, spell))
+              Seq(SpendManaAutomaticallyEvent(player, finalManaInPool), FinishCasting(player))
             case None =>
               backupAction
           }
@@ -75,9 +105,10 @@ object CastSpellSteps {
     }
   }
 
-  case class FinishCasting(player: PlayerIdentifier, spell: GameObject) extends InternalGameAction {
+  case class FinishCasting(player: PlayerId) extends InternalGameAction {
     override def execute(currentGameState: GameState): InternalGameActionResult = {
-      val spellWithState = currentGameState.derivedState.objectStates(spell.objectId)
+      val spell = currentGameState.gameObjectState.stack.last
+      val spellWithState = spell.currentState(currentGameState)
       InternalGameActionResult(
         Seq(SpellCastEvent(spell), priority.PriorityFromPlayerAction(player)),
         Some(LogEvent.CastSpell(player, spellWithState.characteristics.name)))
