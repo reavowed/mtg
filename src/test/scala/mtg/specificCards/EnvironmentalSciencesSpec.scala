@@ -109,6 +109,23 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.currentGameState mustEqual stateBeforeChoice
     }
 
+    "go to graveyard after resolution" in {
+      val initialState = emptyGameObjectState
+        .setBattlefield(playerOne, Forest, 2)
+        .setHand(playerOne, EnvironmentalSciences)
+        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+
+      manager.passUntilPhase(PrecombatMainPhase)
+      manager.activateAbilities(playerOne, Forest, 2)
+      manager.castSpell(playerOne, EnvironmentalSciences)
+      manager.resolveNext()
+      manager.chooseCard(playerOne, Island)
+
+      Zone.Stack(manager.currentGameState) must not(contain(beCardObject(EnvironmentalSciences)))
+      playerOne.graveyard(manager.currentGameState) must contain(beCardObject(EnvironmentalSciences))
+    }
+
     "have correct oracle text" in {
       EnvironmentalSciences.text mustEqual "Search your library for a basic land card, reveal it, put it into your hand, then shuffle. You gain 2 life."
     }

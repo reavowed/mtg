@@ -40,6 +40,7 @@ trait SpecWithGameObjectState
   implicit class PlayerOps(playerIdentifier: PlayerIdentifier) {
     def library = Zone.Library(playerIdentifier)
     def hand = Zone.Hand(playerIdentifier)
+    def graveyard = Zone.Graveyard(playerIdentifier)
   }
   implicit class ZoneOps(zone: Zone) {
     def apply(gameState: GameState): Seq[GameObject] = {
