@@ -1,11 +1,10 @@
 import _ from "lodash";
 import {useContext, useState} from "preact/hooks";
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {Button, Modal} from "react-bootstrap";
 import GameState from "../../../contexts/GameState";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
-import Card from "../Card";
+import CardImage from "../card/CardImage";
 import DecisionButton from "../DecisionButton";
 
 export default function AssignCombatDamageChoice() {
@@ -38,14 +37,14 @@ export default function AssignCombatDamageChoice() {
             <Modal.Body>
                 <HorizontalCenter>
                     {blockers.map(([blocker, damage], index) => <div className={index > 0 && "ml-2"}>
-                        <Card card={blocker}/>
+                        <CardImage card={blocker}/>
                         <HorizontalCenter>
                             <input className="form-control text-center mt-2" style={{width: "50px"}} value={assignedDamage[blocker.objectId]} onChange={e => setAssignedDamage({...assignedDamage, [blocker.objectId]: e.target.value})} />
                         </HorizontalCenter>
                     </div>)}
                 </HorizontalCenter>
                 <HorizontalCenter>
-                    <Card card={attacker}/>
+                    <CardImage card={attacker}/>
                 </HorizontalCenter>
                 <BannerText>Assign Damage</BannerText>
                 <HorizontalCenter>

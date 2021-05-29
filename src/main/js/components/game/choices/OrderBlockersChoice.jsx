@@ -1,12 +1,12 @@
+import _ from "lodash";
 import {useCallback, useContext, useState} from "preact/hooks";
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import {Button, Modal} from "react-bootstrap";
 import GameState from "../../../contexts/GameState";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
-import Card from "../Card";
-import _ from "lodash";
+import CardImage from "../card/CardImage";
 import DecisionButton from "../DecisionButton";
-import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -64,7 +64,7 @@ export default function OrderBlockersChoice() {
                                                     zIndex: blockers.length - index
                                                 }}
                                             >
-                                                <Card card={blocker}/>
+                                                <CardImage card={blocker}/>
                                             </div>
                                         )}
                                     </Draggable>
@@ -75,7 +75,7 @@ export default function OrderBlockersChoice() {
                     </Droppable>
                 </DragDropContext>
                 <HorizontalCenter>
-                    <Card card={attacker}/>
+                    <CardImage card={attacker}/>
                 </HorizontalCenter>
                 <BannerText>Order Blockers</BannerText>
                 <HorizontalCenter>

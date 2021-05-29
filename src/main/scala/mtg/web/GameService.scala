@@ -1,7 +1,8 @@
 package mtg.web
 
 import mtg.cards.CardDefinition
-import mtg.data.cards.strixhaven.EnvironmentalSciences
+import mtg.data.cards.kaldheim.GrizzledOutrider
+import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, SpinedKarok}
 import mtg.data.cards.{Forest, Plains}
 import mtg.data.sets.Strixhaven
 import mtg.game.objects.{Card, CardObject}
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service
 class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
   def addCard(gameState: GameState, cardDefinition: CardDefinition, zone: Zone, owner: PlayerIdentifier): GameState = {
     val printing = mtg.cards.Set.All.mapFind(_.cardPrintings.find(_.cardDefinition == cardDefinition)).get
-    gameState.updateGameObjectState(gameState.gameObjectState.addObject(zone, CardObject(Card(playerOne, printing), _, zone, Some(owner), zone.defaultPermanentStatus, 0), _.length))
+    gameState.updateGameObjectState(gameState.gameObjectState.addObject(zone, CardObject(Card(owner, printing), _, zone, Some(owner), zone.defaultPermanentStatus, 0), _.length))
   }
   val playerOne = PlayerIdentifier("P1")
   val playerTwo = PlayerIdentifier("P2")
@@ -32,7 +33,10 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
 
     val cardsToAdd = Seq(
       (Forest, Zone.Battlefield, playerOne),
-      (Forest, Zone.Battlefield, playerOne)
+      (GrizzledOutrider, Zone.Battlefield, playerOne),
+      (Forest, Zone.Battlefield, playerOne),
+      (AgelessGuardian, Zone.Battlefield, playerTwo),
+      (SpinedKarok, Zone.Battlefield, playerTwo)
     )
 
     val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}

@@ -46,3 +46,25 @@ canvas.overlay {
   pointer-events: none;
   z-index: 1;
 }
+
+.modal-dialog {
+  max-width: 50%;
+}
+
+.justify-content-center {
+  justify-content: safe center !important;
+}
+
+.non-selectable {
+  padding: 2px;
+}
+.selectable {
+  border:2px solid #247bc2;
+  border-radius:7px;
+  box-shadow: 0 0 20px #247bc2;
+}
+.selected {
+  border:2px solid lawngreen;
+  border-radius:7px;
+  box-shadow: 0 0 20px lawngreen;
+}

@@ -1,10 +1,10 @@
 import $ from "jQuery";
 import _ from "lodash";
 import {useCallback, useContext} from "preact/hooks";
-import ActionManager from "../../contexts/ActionManager";
-import ObjectRefManager from "../../contexts/ObjectRefManager";
-import {useRefWithEventHandler} from "../../utils/hook-utils";
-import Card from "./Card";
+import ActionManager from "../../../contexts/ActionManager";
+import ObjectRefManager from "../../../contexts/ObjectRefManager";
+import {useRefWithEventHandler} from "../../../utils/hook-utils";
+import CardWithModifiers from "./CardWithModifiers";
 
 export default function CardWithActions({card, ...props}) {
     const objectRefManager = useContext(ObjectRefManager);
@@ -25,5 +25,5 @@ export default function CardWithActions({card, ...props}) {
 
     const imgRef = useRefWithEventHandler(registerRef, deregisterRef, []);
 
-    return <Card card={card} containerClasses={actionManager.getClasses(card.objectId)} ref={imgRef} {...props}/>;
+    return <CardWithModifiers card={card} containerClasses={actionManager.getClasses(card.objectId)} ref={imgRef} {...props}/>;
 }

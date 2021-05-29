@@ -4,8 +4,8 @@ import GameState from "../../../contexts/GameState";
 import {getPlural} from "../../../utils/word-helpers";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
-import Card from "../Card";
-import CardBack from "../CardBack";
+import CardImage from "../card/CardImage";
+import CardBack from "../card/CardBack";
 import DecisionButton from "../DecisionButton";
 import Hand from "../Hand";
 
@@ -16,7 +16,7 @@ function areCardsEqual(cardOne, cardTwo) {
 export default function ReturnCardsToLibraryChoice() {
     const gameState = useContext(GameState);
     const [cardsPutBack, setCardsPutBack] = useState([]);
-    const cardsNotPutBack = _.filter(gameState.hand, card => !_.some(cardsPutBack, cardPutBack => areCardsEqual(card, cardPutBack)));
+    const cardsNotPutBack = _.filter(gameState.hands[gameState.player], card => !_.some(cardsPutBack, cardPutBack => areCardsEqual(card, cardPutBack)));
     const numberOfCardsToReturn = gameState.currentChoice.details.numberOfCardsToReturn;
     const enoughCardsPutBack = (cardsPutBack.length === numberOfCardsToReturn);
 
@@ -28,13 +28,13 @@ export default function ReturnCardsToLibraryChoice() {
         [cardsPutBack]);
 
     const CardToPutBack = useCallback(
-        ({card, ...props}) => <Card card={card} onClick={!enoughCardsPutBack && (() => putCardBack(card))} {...props}/>,
+        ({card, ...props}) => <CardImage card={card} onClick={!enoughCardsPutBack && (() => putCardBack(card))} {...props}/>,
         [cardsPutBack]);
 
     return <div>
         <div className="mb-3">
             <HorizontalCenter>
-                {_.map(_.reverse([...cardsPutBack]), card => <Card key={card.objectId} card={card} onClick={() => undoPutBack(card)} className="cardOverlap" />)}
+                {_.map(_.reverse([...cardsPutBack]), card => <CardImage key={card.objectId} card={card} onClick={() => undoPutBack(card)} className="cardOverlap" />)}
                 {_.fill(Array(5), <CardBack className="cardOverlap"/>)}
             </HorizontalCenter>
         </div>

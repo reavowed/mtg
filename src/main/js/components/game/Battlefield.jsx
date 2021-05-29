@@ -5,7 +5,7 @@ import {OverlayTrigger, Popover} from "react-bootstrap";
 import CanvasManager from "../../contexts/CanvasManager";
 import GameState from "../../contexts/GameState";
 import StopsManager from "../../contexts/StopsManager";
-import CardRow from "./CardRow";
+import CardRow from "./card/CardRow";
 
 function StopForStepOrPhaseWithoutSteps({player, phaseOrStep, name}) {
     const stopsManager = useContext(StopsManager);

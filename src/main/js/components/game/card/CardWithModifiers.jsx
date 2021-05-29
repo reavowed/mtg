@@ -1,9 +1,9 @@
 import _ from "lodash";
 import {forwardRef} from "preact/compat";
 import {useContext, useEffect, useState} from "preact/hooks";
-import ScryfallService from "../../contexts/ScryfallService";
+import ScryfallService from "../../../contexts/ScryfallService";
 
-export default forwardRef(function Card({card, containerClasses, ...props}, ref) {
+export default forwardRef(function CardWithModifiers({card, containerClasses, ...props}, ref) {
     const scryfallService = useContext(ScryfallService);
     const [scryfallCard, setScryfallCard] = useState(null);
     useEffect(() => scryfallService.requestCard(card, setScryfallCard), []);

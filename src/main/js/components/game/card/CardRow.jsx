@@ -1,11 +1,9 @@
 import _ from "lodash";
 import {createElement} from "preact";
-import {useCallback, useContext} from "preact/hooks";
-import ObjectRefManager from "../../contexts/ObjectRefManager";
-import {addClass} from "../../utils/element-utils";
-import {useRefWithEventHandler} from "../../utils/hook-utils";
-import HorizontalCenter from "../layout/HorizontalCenter";
-import Card from "./Card";
+import {useCallback} from "preact/hooks";
+import {addClass} from "../../../utils/element-utils";
+import {useRefWithEventHandler} from "../../../utils/hook-utils";
+import HorizontalCenter from "../../layout/HorizontalCenter";
 import CardWithActions from "./CardWithActions";
 
 function CardWrapper({card, as}) {
@@ -46,7 +44,9 @@ export default function CardRow({className, cards, as}) {
     }, [cards]);
     const ref = useRefWithEventHandler(overlapCards, null, [cards]);
 
-    return <HorizontalCenter className={addClass(className, "cardRow px-2")} ref={ref}>
+    return <div className={addClass(className, "px-2")}>
+        <HorizontalCenter ref={ref}>
             {_.map(cards, card => <CardWrapper key={card.objectId} card={card} as={as} /> )}
-        </HorizontalCenter>;
+        </HorizontalCenter>
+    </div>;
 }

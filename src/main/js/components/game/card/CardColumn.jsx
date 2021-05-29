@@ -1,10 +1,10 @@
 import _ from "lodash";
 import {createElement} from "preact";
 import {useCallback} from "preact/hooks";
-import {addClass} from "../../utils/element-utils";
-import {useRefWithEventHandler} from "../../utils/hook-utils";
-import VerticalCenter from "../layout/VerticalCenter";
-import Card from "./Card";
+import {addClass} from "../../../utils/element-utils";
+import {useRefWithEventHandler} from "../../../utils/hook-utils";
+import VerticalCenter from "../../layout/VerticalCenter";
+import CardWithActions from "./CardWithActions";
 
 function CardWrapper({card, as}) {
     return <div className="cardWrapper">
@@ -13,7 +13,7 @@ function CardWrapper({card, as}) {
 }
 
 export default function CardColumn({className, cards, as}) {
-    as = as || Card;
+    as = as || CardWithActions;
 
     const overlapCards = useCallback((ref) => {
         const cardElements = Array.from(ref.childNodes),

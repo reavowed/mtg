@@ -1,7 +1,8 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
-import CardRow from "./CardRow";
+import CardRow from "./card/CardRow";
 
 export default function Hand({cards, ...props}) {
-    return <CardRow cards={cards || useContext(GameState).hand} {...props} />;
+    const gameState = useContext(GameState)
+    return <CardRow cards={cards || gameState.hands[gameState.player]} {...props} />;
 }
