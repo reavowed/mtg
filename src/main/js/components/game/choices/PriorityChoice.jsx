@@ -54,7 +54,7 @@ export default function PriorityChoice() {
     useEffect(() => {
         actionManager.setActionHandler(() => onObjectClick);
         return () => actionManager.setActionHandler(null);
-    }, [gameState]);
+    }, [onObjectClick]);
     useEffect(() => {
         $(document).on("click", onDocumentClick);
         return () => $(document).off("click", onDocumentClick);

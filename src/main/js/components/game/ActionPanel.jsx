@@ -7,6 +7,7 @@ import DeclareBlockersChoice from "./choices/DeclareBlockersChoice";
 import OrderBlockersChoice from "./choices/OrderBlockersChoice";
 import PriorityChoice from "./choices/PriorityChoice";
 import SearchChoice from "./choices/SearchChoice";
+import TargetChoice from "./choices/TargetChoice";
 import ManaPool from "./ManaPool";
 
 function getChoiceDisplay(choiceType) {
@@ -23,6 +24,8 @@ function getChoiceDisplay(choiceType) {
             return <AssignCombatDamageChoice />
         case "SearchChoice":
             return <SearchChoice />
+        case "TargetChoice":
+            return <TargetChoice />
     }
 }
 
