@@ -18,10 +18,12 @@ case class VisibleGameObject(
 object VisibleGameObject {
   private def getModifiers(gameObject: GameObject, gameState: GameState): Map[String, Any] = {
     val builder = Map.newBuilder[String, Any]
-    if (DeclareAttackers.getAttackDeclarations(gameState).exists(_.attacker == gameObject.objectId)) {
+    if (DeclareAttackers.isAttacking(gameObject.objectId, gameState)) {
       builder.addOne(("attacking", true))
     }
-    DeclareBlockers.getBlockDeclarations(gameState).find(_.blocker == gameObject.objectId).foreach(d => builder.addOne(("blocking", d.attacker)))
+    if (DeclareBlockers.isBlocking(gameObject.objectId, gameState)) {
+      builder.addOne(("blocking", true))
+    }
     builder.result()
   }
 

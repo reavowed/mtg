@@ -4,6 +4,7 @@ import mtg.characteristics.types.Type
 import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult, TypedPlayerChoice}
+import mtg.game.turns.TurnPhase
 import mtg.utils.ParsingUtils
 
 object DeclareBlockers extends InternalGameAction {
@@ -33,6 +34,11 @@ object DeclareBlockers extends InternalGameAction {
       .flatMap(_.blockDeclarations)
       .toSeq
   }
+  def isBlocking(objectId: ObjectId, gameState: GameState): Boolean = {
+    def wasDeclaredBlocker = getBlockDeclarations(gameState).exists(_.blocker == objectId)
+    wasDeclaredBlocker && !TurnPhase.CombatPhase.hasFinished(gameState)
+  }
+
   def getBlockerOrderings(gameState: GameState): Seq[BlockerOrdering] = {
     gameState.gameHistory.forCurrentTurn.view
       .flatMap(_.gameEvents.getDecisions[BlockerOrdering])

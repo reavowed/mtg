@@ -7,6 +7,7 @@ import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.GameEvent.{Decision, ResolvedEvent}
 import mtg.game.state.history.LogEvent
 import mtg.game.state._
+import mtg.game.turns.TurnPhase
 
 object DeclareAttackers extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
@@ -46,6 +47,11 @@ object DeclareAttackers extends InternalGameAction {
           .mapFind(_.asOptionalInstanceOf[DeclaredAttackers]))
       .toSeq
       .flatMap(_.attackDeclarations)
+  }
+
+  def isAttacking(objectId: ObjectId, gameState: GameState): Boolean = {
+    def wasDeclaredAttacker = getAttackDeclarations(gameState).exists(_.attacker == objectId)
+    wasDeclaredAttacker && !TurnPhase.CombatPhase.hasFinished(gameState)
   }
 }
 

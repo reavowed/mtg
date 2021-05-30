@@ -1,11 +1,18 @@
 package mtg.game.turns
 
-import mtg.game.state.GameAction
+import mtg.game.state.history.GameEvent.ResolvedEvent
+import mtg.game.state.{GameAction, GameState}
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
-import mtg.game.turns.turnEvents.BeginStepEvent
+import mtg.game.turns.turnEvents.{BeginStepEvent, EndPhaseEvent}
 import mtg.utils.CaseObjectWithName
 
-sealed abstract class TurnPhase(val actions: Seq[GameAction]) extends CaseObjectWithName
+sealed abstract class TurnPhase(val actions: Seq[GameAction]) extends CaseObjectWithName {
+  def hasFinished(gameState: GameState): Boolean = {
+    gameState.gameHistory.forCurrentTurn.exists(
+      _.gameEvents.ofType[ResolvedEvent].exists(
+        _.event == EndPhaseEvent(this)))
+  }
+}
 
 sealed abstract class TurnPhaseWithSteps(val steps: Seq[TurnStep]) extends TurnPhase(steps.map(BeginStepEvent))
 sealed abstract class MainPhase extends TurnPhase(Seq(PriorityFromActivePlayerAction))
