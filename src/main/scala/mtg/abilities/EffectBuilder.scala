@@ -1,6 +1,7 @@
 package mtg.abilities
 
 import mtg._
+import mtg.cards.text.SpellEffectSentence
 import mtg.characteristics.types.Supertype.Basic
 import mtg.characteristics.types.Type.Land
 import mtg.effects.filters.{CompoundCharacteristicFilter, Filter, SupertypeFilter, TypeFilter}
@@ -12,7 +13,7 @@ import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 object EffectBuilder {
   abstract class EffectsSeqExtension(effects: Seq[OneShotEffect]) {
-    def `then`(effect: OneShotEffect): EffectSentence = EffectSentence.MultiClause(effects :+ effect, "then")
+    def `then`(effect: OneShotEffect): SpellEffectSentence = SpellEffectSentence.MultiClause(effects :+ effect, "then")
   }
   implicit class ThreeEffectsExtension(effects: (OneShotEffect, OneShotEffect, OneShotEffect)) extends EffectsSeqExtension(effects.productIterator.toSeq.ofType[OneShotEffect])
 

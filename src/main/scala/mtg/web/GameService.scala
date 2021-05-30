@@ -3,6 +3,7 @@ package mtg.web
 import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.data.cards.alpha.LightningBolt
 import mtg.data.cards.kaldheim.GrizzledOutrider
+import mtg.data.cards.m21.AlpineWatchdog
 import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, SpinedKarok}
 import mtg.data.cards.{Forest, Mountain}
 import mtg.data.sets.Strixhaven
@@ -49,7 +50,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
       (Mountain, Zone.Battlefield, playerOne),
       (Mountain, Zone.Battlefield, playerOne),
       (GrizzledOutrider, Zone.Battlefield, playerOne),
-      (Forest, Zone.Battlefield, playerOne),
+      (AlpineWatchdog, Zone.Battlefield, playerOne),
       (AgelessGuardian, Zone.Battlefield, playerTwo),
       (SpinedKarok, Zone.Battlefield, playerTwo)
     )

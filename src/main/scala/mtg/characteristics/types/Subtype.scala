@@ -2,13 +2,11 @@ package mtg.characteristics.types
 
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.characteristics.Color
-import mtg.effects.oneshot
 import mtg.effects.oneshot.basic
-import mtg.effects.oneshot.basic.AddManaEffect
 import mtg.parts.costs.TapSymbol
-import mtg.utils.CaseObject
+import mtg.utils.CaseObjectWithName
 
-sealed class Subtype extends CaseObject
+sealed class Subtype extends CaseObjectWithName
 
 sealed class LandType extends Subtype
 
@@ -26,6 +24,7 @@ object BasicLandType {
 sealed class CreatureType extends Subtype
 object CreatureType {
   object Cat extends CreatureType
+  object Dog extends CreatureType
   object Crocodile extends CreatureType
   object Elf extends CreatureType
   object Soldier extends CreatureType

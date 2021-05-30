@@ -2,6 +2,7 @@ package mtg.turns
 
 import mtg.SpecWithGameStateManager
 import mtg.data.cards.Plains
+import mtg.data.cards.m21.AlpineWatchdog
 import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.game.Zone
 import mtg.game.turns.{StartNextTurnAction, TurnStep}
@@ -52,21 +53,24 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
 
     "tap a creature declared as an attacker" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, Seq(AgelessGuardian))
-        .setBattlefield(playerOne, Seq(Plains, Plains))
+        .setBattlefield(playerOne, AgelessGuardian)
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      manager.passUntilPhase(PrecombatMainPhase)
-
-      // Tap mana and cast creature
-      manager.activateFirstAbility(playerOne, Plains)
-      manager.activateFirstAbility(playerOne, Plains)
-      manager.castSpell(playerOne, AgelessGuardian)
-
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, AgelessGuardian)
 
       manager.getCard(Zone.Battlefield, AgelessGuardian) must beTapped
+    }
+
+    "not tap a creature with vigilance declared as an attacker" in {
+      val initialState = gameObjectStateWithInitialLibrariesAndHands
+        .setBattlefield(playerOne, AlpineWatchdog)
+
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(playerOne, AlpineWatchdog)
+
+      manager.getCard(Zone.Battlefield, AlpineWatchdog) must not(beTapped)
     }
 
     // TODO: Can't declare creature as attacker if gained control of it this turn

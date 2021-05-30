@@ -1,5 +1,6 @@
 package mtg.game.state
 
+import mtg.effects.continuous.EventPreventionEffect
 import mtg.game.turns.TurnCycleEventPreventer
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice
@@ -59,10 +60,22 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   }
 
   private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {
-    gameObjectEvent.execute(gameState)
-      .updateGameState(gameState)
-      .recordGameEvent(gameObjectEvent)
+    if (shouldPreventGameObjectEvent(gameObjectEvent, gameState)) {
+      gameState
+    } else {
+      gameObjectEvent.execute(gameState)
+        .updateGameState(gameState)
+        .recordGameEvent(gameObjectEvent)
+    }
   }
+
+  private def shouldPreventGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): Boolean = {
+    gameState.gameObjectState.derivedState.activeContinuousEffects.view
+      .ofType[EventPreventionEffect]
+      .exists(_.preventsEvent(gameObjectEvent, gameState))
+  }
+
+
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {
     currentGameState.popAction() match {

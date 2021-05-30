@@ -1,6 +1,8 @@
 package mtg.game.state
 
+import mtg.abilities.StaticAbility
 import mtg.characteristics.types.BasicLandType
+import mtg.effects.continuous.ContinuousEffect
 import mtg.game.ObjectId
 import mtg.game.objects.GameObjectState
 
@@ -12,7 +14,10 @@ case class DerivedState(
     permanentStates: Map[ObjectId, PermanentObjectWithState],
     spellStates: Map[ObjectId, StackObjectWithState]
 ) {
-  def allObjectStates: Map[ObjectId, ObjectWithState] = basicStates ++ permanentStates ++ spellStates
+  val allObjectStates: Map[ObjectId, ObjectWithState] = basicStates ++ permanentStates ++ spellStates
+  val activeContinuousEffects: Seq[ContinuousEffect] = allObjectStates.values.view
+    .flatMap(objectWithState => objectWithState.characteristics.abilities.ofType[StaticAbility].filter(_.isFunctional(objectWithState)).flatMap(_.getEffects(objectWithState)))
+    .toSeq
 }
 
 object DerivedState {

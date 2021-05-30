@@ -6,9 +6,9 @@ import mtg.game.PlayerId
 import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state._
 
-case class ResolveActivatedAbility(player: PlayerId, source: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {
+case class ResolveActivatedAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {
   override def execute(gameState: GameState): InternalGameActionResult = {
-    val resolutionContext = OneShotEffectResolutionContext.initial(source.gameObject.objectId, player, Nil)
+    val resolutionContext = OneShotEffectResolutionContext.initial(objectWithAbility.gameObject.objectId, player, Nil)
     ResolveEffects(ability.effectParagraph.effects, resolutionContext)
   }
 }

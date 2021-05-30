@@ -18,7 +18,7 @@ case class Card(owner: PlayerId, printing: CardPrinting) {
       superTypes,
       types,
       subTypes,
-      abilitiesFromRulesText,
+      textParagraphs.flatMap(_.abilityDefinitions),
       powerAndToughness.map(_.basePower),
       powerAndToughness.map(_.baseToughness),
       loyalty)

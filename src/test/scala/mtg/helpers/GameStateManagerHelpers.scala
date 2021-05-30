@@ -90,12 +90,12 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
     }
     def activateAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
-        .filter(_.source.gameObject.card.printing.cardDefinition == cardDefinition).single
+        .filter(_.objectWithAbility.gameObject.card.printing.cardDefinition == cardDefinition).single
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def activateFirstAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
-        .filter(_.source.gameObject.card.printing.cardDefinition == cardDefinition).head
+        .filter(_.objectWithAbility.gameObject.card.printing.cardDefinition == cardDefinition).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def activateAbilities(player: PlayerId, cardDefinition: CardDefinition, number: Int): Unit = {

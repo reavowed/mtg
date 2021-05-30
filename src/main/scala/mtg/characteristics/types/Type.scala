@@ -1,8 +1,8 @@
 package mtg.characteristics.types
 
-import mtg.utils.CaseObject
+import mtg.utils.CaseObjectWithName
 
-sealed trait Type extends CaseObject {
+sealed trait Type extends CaseObjectWithName {
   def isSpell: Boolean
   def isPermanent: Boolean
 }

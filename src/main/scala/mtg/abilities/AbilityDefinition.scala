@@ -1,31 +1,45 @@
 package mtg.abilities
 
+import mtg.cards.text.SpellEffectParagraph
+import mtg.characteristics.types.Type.{Instant, Sorcery}
+import mtg.effects.continuous.ContinuousEffect
 import mtg.effects.oneshot.OneShotEffect
 import mtg.game.ZoneType
+import mtg.game.state.ObjectWithState
 import mtg.parts.costs.Cost
+import mtg.utils.CaseObjectWithName
 
 sealed abstract class AbilityDefinition {
   def functionalZones: Set[ZoneType] = Set(ZoneType.Battlefield)
+  def isFunctional(objectWithAbility: ObjectWithState): Boolean = {
+    getFunctionalZones(objectWithAbility).contains(objectWithAbility.gameObject.zone.zoneType)
+  }
+  def getFunctionalZones(objectWithAbility: ObjectWithState): Set[ZoneType] = {
+    if (objectWithAbility.characteristics.types.intersect(Seq(Instant, Sorcery)).nonEmpty)
+      Set(ZoneType.Stack)
+    else
+      Set(ZoneType.Battlefield)
+  }
   def getText(cardName: String): String
-}
-object AbilityDefinition {
-  implicit def abilityToSeq(abilityDefinition: AbilityDefinition): Seq[AbilityDefinition] = Seq(abilityDefinition)
-  implicit def effectToSpellAbility(effect: OneShotEffect): SpellAbility = SpellAbility(EffectParagraph(effect))
-  implicit def effectToSpellAbilitySeq(effect: OneShotEffect): Seq[AbilityDefinition] = abilityToSeq(effectToSpellAbility(effect))
-  implicit def sentenceToSpellAbility(sentence: EffectSentence): SpellAbility = SpellAbility(EffectParagraph(sentence))
-  implicit def paragraphToSpellAbility(paragraph: EffectParagraph): SpellAbility = SpellAbility(paragraph)
-  implicit def paragraphToSpellAbilitySeq(paragraph: EffectParagraph): Seq[AbilityDefinition] = abilityToSeq(paragraphToSpellAbility(paragraph))
 }
 
 case class ActivatedAbilityDefinition(
     costs: Seq[Cost],
-    effectParagraph: EffectParagraph)
+    effectParagraph: SpellEffectParagraph)
   extends AbilityDefinition
 {
   override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + effectParagraph.getText(cardName)
 }
 
-case class SpellAbility(effectParagraph: EffectParagraph) extends AbilityDefinition {
+trait KeywordAbility extends AbilityDefinition with CaseObjectWithName {
+  override def getText(cardName: String): String = name
+}
+
+case class SpellAbility(effectParagraph: SpellEffectParagraph) extends AbilityDefinition {
   override def getText(cardName: String): String = effectParagraph.getText(cardName)
   def effects: Seq[OneShotEffect] = effectParagraph.effects
+}
+
+abstract class StaticAbility extends AbilityDefinition {
+  def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect]
 }

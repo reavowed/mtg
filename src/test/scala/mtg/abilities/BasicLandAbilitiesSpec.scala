@@ -17,7 +17,7 @@ import org.specs2.matcher.Matcher
 
 class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
   def beActivatableAbilityAction(gameObject: GameObject, abilityDefinition: ActivatedAbilityDefinition): Matcher[ActivateAbilityAction] = { (action: ActivateAbilityAction) =>
-    (action.source.gameObject == gameObject && action.ability == abilityDefinition, "", "")
+    (action.objectWithAbility.gameObject == gameObject && action.ability == abilityDefinition, "", "")
   }
 
   def isObjectWithAbility(gameObject: GameObject, abilityDefinition: AbilityDefinition): Matcher[ObjectWithState] = { (objectWithState : ObjectWithState) =>

@@ -5,13 +5,13 @@ import mtg.characteristics.types.SpellType.Lesson
 import mtg.characteristics.types.Type
 import mtg.parts.costs.ManaCost
 import mtg.abilities.EffectBuilder._
-import mtg.abilities.EffectParagraph
+import mtg.cards.text.SpellEffectParagraph
 
 object EnvironmentalSciences extends Spell(
   "Environmental Sciences",
   ManaCost(2),
   Type.Sorcery,
   Seq(Lesson),
-  EffectParagraph(
+  SpellEffectParagraph(
     (searchYourLibraryForA(basicLand), reveal(it), put(it).intoYourHand).`then`(shuffle),
     you.gain(2).life))

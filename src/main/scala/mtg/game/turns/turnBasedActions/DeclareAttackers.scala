@@ -66,7 +66,7 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
     import chosenOption._
     if (attackDeclarations.nonEmpty) {
       (
-        Seq(TapAttackers(attackDeclarations.map(_.attacker))),
+        attackDeclarations.map(_.attacker).map(TapAttacker),
         Some(LogEvent.DeclareAttackers(
           playerToAct,
           attackDeclarations.map(_.attacker.currentCharacteristics(currentGameState).name)
@@ -78,8 +78,8 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
   }
 }
 
-case class TapAttackers(attackers: Seq[ObjectId]) extends GameObjectEvent {
+case class TapAttacker(attacker: ObjectId) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {
-    attackers.map(TapObjectEvent)
+    TapObjectEvent(attacker)
   }
 }

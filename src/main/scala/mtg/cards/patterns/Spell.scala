@@ -1,7 +1,7 @@
 package mtg.cards.patterns
 
-import mtg.abilities.AbilityDefinition
 import mtg.cards.CardDefinition
+import mtg.cards.text.SpellEffectParagraph
 import mtg.characteristics.types.{SpellType, Type}
 import mtg.parts.costs.ManaCost
 
@@ -10,7 +10,7 @@ class Spell(
     manaCost: ManaCost,
     `type`: Type.InstantOrSorcery,
     subtypes: Seq[SpellType],
-    abilities: Seq[AbilityDefinition])
+    textParagraphs: Seq[SpellEffectParagraph])
   extends CardDefinition(
     name,
     Some(manaCost),
@@ -18,6 +18,6 @@ class Spell(
     Nil,
     Seq(`type`),
     subtypes,
-    abilities,
+    textParagraphs,
     None,
     None)

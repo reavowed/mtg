@@ -1,8 +1,8 @@
 package mtg.characteristics.types
 
-import mtg.utils.CaseObject
+import mtg.utils.CaseObjectWithName
 
-sealed class Supertype extends CaseObject
+sealed class Supertype extends CaseObjectWithName
 
 object Supertype {
   object Basic extends Supertype

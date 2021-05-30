@@ -4,6 +4,6 @@ import mtg.game.state.{GameAction, ObjectWithState}
 
 trait Cost {
   def text: String
-  def isUnpayable(abilitySource: ObjectWithState): Boolean
-  def payForAbility(abilitySource: ObjectWithState): Seq[GameAction]
+  def isUnpayable(objectWithAbility: ObjectWithState): Boolean
+  def payForAbility(objectWithAbility: ObjectWithState): Seq[GameAction]
 }

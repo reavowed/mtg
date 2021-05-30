@@ -29,7 +29,7 @@ case class PriorityChoice(
           case Seq(aText, bText) => aText.toIntOption.flatMap(a => bText.toIntOption.map(a -> _))
           case _ => None
         }).flatMap { case (objectId, abilityIndex) =>
-          availableActions.ofType[ActivateAbilityAction].find(a => a.source.gameObject.objectId.sequentialId == objectId && a.abilityIndex == abilityIndex)
+          availableActions.ofType[ActivateAbilityAction].find(a => a.objectWithAbility.gameObject.objectId.sequentialId == objectId && a.abilityIndex == abilityIndex)
         }
       } else {
         None

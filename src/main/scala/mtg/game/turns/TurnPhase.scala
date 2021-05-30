@@ -3,9 +3,9 @@ package mtg.game.turns
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
 import mtg.game.turns.turnEvents.BeginStepEvent
-import mtg.utils.CaseObject
+import mtg.utils.CaseObjectWithName
 
-sealed abstract class TurnPhase(val actions: Seq[GameAction]) extends CaseObject
+sealed abstract class TurnPhase(val actions: Seq[GameAction]) extends CaseObjectWithName
 
 sealed abstract class TurnPhaseWithSteps(val steps: Seq[TurnStep]) extends TurnPhase(steps.map(BeginStepEvent))
 sealed abstract class MainPhase extends TurnPhase(Seq(PriorityFromActivePlayerAction))
