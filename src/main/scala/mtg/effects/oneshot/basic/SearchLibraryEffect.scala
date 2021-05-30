@@ -1,12 +1,14 @@
-package mtg.effects
+package mtg.effects.oneshot.basic
+
 import mtg.effects.filters.Filter
+import mtg.effects.oneshot.{OneShotEffect, OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
 import mtg.game.state.GameState
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.TextUtils._
 
-case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends Effect {
+case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEffect {
   override def getText(cardName: String): String = "search your library for " + objectFilter.text.withArticle + " card"
-  override def resolve(gameState: GameState, resolutionContext: ResolutionContext): EffectResult = {
+  override def resolve(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): OneShotEffectResult = {
     val player = resolutionContext.controller
     val zone = Zone.Library(player)
     val possibleChoices = zone.getState(gameState).view
@@ -22,10 +24,10 @@ case class SearchChoice(
     playerChoosing: PlayerId,
     zone: Zone,
     possibleChoices: Seq[ObjectId],
-    resolutionContext: ResolutionContext)
-  extends EffectChoice
+    resolutionContext: OneShotEffectResolutionContext)
+  extends OneShotEffectChoice
 {
-  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, ResolutionContext)] = {
+  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, OneShotEffectResolutionContext)] = {
     for {
       id <- serializedDecision.toIntOption
       chosenObjectId <- possibleChoices.find(_.sequentialId == id)

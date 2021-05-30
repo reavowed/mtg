@@ -1,7 +1,7 @@
 package mtg.effects.filters
 
 import mtg.characteristics.types.Type
-import mtg.effects.ResolutionContext
+import mtg.effects.oneshot.OneShotEffectResolutionContext
 import mtg.game.state.{Characteristics, GameState}
 
 case class TypeFilter(`type`: Type) extends CharacteristicFilter {

@@ -1,6 +1,6 @@
 package mtg.web.visibleState
 
-import mtg.effects.SearchChoice
+import mtg.effects.oneshot.basic.SearchChoice
 import mtg.game.actions.ResolveEffectChoice
 import mtg.game.objects.GameObject
 import mtg.game.state.{GameState, PlayerChoice}

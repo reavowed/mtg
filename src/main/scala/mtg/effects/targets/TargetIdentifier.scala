@@ -1,8 +1,8 @@
 package mtg.effects.targets
 
-import mtg.effects.ResolutionContext
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.Identifier
+import mtg.effects.oneshot.OneShotEffectResolutionContext
 import mtg.game.ObjectOrPlayer
 import mtg.game.state.GameState
 
@@ -11,7 +11,7 @@ trait TargetIdentifier extends Identifier[ObjectOrPlayer] {
   override def getText(cardName: String): String = text
   def text: String = s"target ${filter.text}"
 
-  override def get(gameState: GameState, resolutionContext: ResolutionContext): (ObjectOrPlayer, ResolutionContext) = {
+  override def get(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): (ObjectOrPlayer, OneShotEffectResolutionContext) = {
     resolutionContext.popTarget
   }
   def getValidChoices(gameState: GameState): Seq[ObjectOrPlayer] = {

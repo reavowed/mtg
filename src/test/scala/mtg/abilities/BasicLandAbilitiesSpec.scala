@@ -3,7 +3,9 @@ package mtg.abilities
 import mtg.SpecWithGameStateManager
 import mtg.characteristics.Color
 import mtg.data.cards.Plains
-import mtg.effects.AddManaEffect
+import mtg.effects.oneshot
+import mtg.effects.oneshot.basic
+import mtg.effects.oneshot.basic.AddManaEffect
 import mtg.game.Zone
 import mtg.game.actions.ActivateAbilityAction
 import mtg.game.objects.GameObject
@@ -30,7 +32,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
 
       val plainsObject = manager.getCard(Zone.Battlefield, Plains)
       val plainsState = manager.getState(plainsObject)
-      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), AddManaEffect(Color.White)))
+      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(Color.White)))
     }
 
     "be tappable for mana by their controller" in {

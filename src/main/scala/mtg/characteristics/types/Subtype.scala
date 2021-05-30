@@ -2,7 +2,9 @@ package mtg.characteristics.types
 
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.characteristics.Color
-import mtg.effects.AddManaEffect
+import mtg.effects.oneshot
+import mtg.effects.oneshot.basic
+import mtg.effects.oneshot.basic.AddManaEffect
 import mtg.parts.costs.TapSymbol
 import mtg.utils.CaseObject
 
@@ -11,7 +13,7 @@ sealed class Subtype extends CaseObject
 sealed class LandType extends Subtype
 
 sealed class BasicLandType(val color: Color) extends LandType {
-  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), AddManaEffect(color))
+  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(color))
 }
 object BasicLandType {
   object Plains extends BasicLandType(Color.White)

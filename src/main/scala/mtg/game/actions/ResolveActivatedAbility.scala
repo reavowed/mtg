@@ -1,28 +1,28 @@
 package mtg.game.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.effects.{Effect, EffectChoice, EffectResult, ResolutionContext}
+import mtg.effects.oneshot.{OneShotEffect, OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
 import mtg.game.PlayerId
 import mtg.game.state.history.{GameEvent, LogEvent}
-import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult, ObjectWithState, PlayerChoice}
+import mtg.game.state._
 
 case class ResolveActivatedAbility(player: PlayerId, source: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {
   override def execute(gameState: GameState): InternalGameActionResult = {
-    val resolutionContext = ResolutionContext.initial(source.gameObject.objectId, player, Nil)
+    val resolutionContext = OneShotEffectResolutionContext.initial(source.gameObject.objectId, player, Nil)
     ResolveEffects(ability.effectParagraph.effects, resolutionContext)
   }
 }
 
-case class ResolveEffects(effects: Seq[Effect], resolutionContext: ResolutionContext) extends InternalGameAction {
+case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: OneShotEffectResolutionContext) extends InternalGameAction {
   override def execute(gameState: GameState): InternalGameActionResult = {
     effects match {
       case effect +: remainingEffects =>
         effect.resolve(gameState, resolutionContext) match {
-          case EffectResult.Event(event, newResolutionContext) =>
+          case OneShotEffectResult.Event(event, newResolutionContext) =>
             Seq(event, ResolveEffects(remainingEffects, newResolutionContext))
-          case EffectResult.Choice(choice) =>
+          case OneShotEffectResult.Choice(choice) =>
             ResolveEffectChoice(choice, remainingEffects)
-          case EffectResult.Log(logEvent, newResolutionContext) =>
+          case OneShotEffectResult.Log(logEvent, newResolutionContext) =>
             (ResolveEffects(remainingEffects, newResolutionContext), logEvent)
         }
       case Nil =>
@@ -31,7 +31,7 @@ case class ResolveEffects(effects: Seq[Effect], resolutionContext: ResolutionCon
   }
 }
 
-case class ResolveEffectChoice(effectChoice: EffectChoice, remainingEffects: Seq[Effect]) extends PlayerChoice {
+case class ResolveEffectChoice(effectChoice: OneShotEffectChoice, remainingEffects: Seq[OneShotEffect]) extends PlayerChoice {
   override def playerToAct: PlayerId = effectChoice.playerChoosing
   override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(GameEvent.Decision, Seq[GameAction], Option[LogEvent])] = {
     effectChoice.handleDecision(serializedDecision, currentGameState)

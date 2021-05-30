@@ -1,6 +1,6 @@
 package mtg.effects.filters
 
-import mtg.effects.ResolutionContext
+import mtg.effects.oneshot.OneShotEffectResolutionContext
 import mtg.game.ObjectId
 import mtg.game.state.{Characteristics, GameState}
 
