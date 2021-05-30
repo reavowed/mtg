@@ -9,9 +9,9 @@ import mtg.effects.identifiers.{Identifier, ItIdentifier, ThisIdentifier, YouIde
 import mtg.effects.targets.AnyTarget
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
-object AbilityBuilder {
+object EffectBuilder {
   abstract class EffectsSeqExtension(effects: Seq[Effect]) {
-    def `then`(effect: Effect): AbilitySentence = AbilitySentence.MultiClause(effects :+ effect, "then")
+    def `then`(effect: Effect): EffectSentence = EffectSentence.MultiClause(effects :+ effect, "then")
   }
   implicit class ThreeEffectsExtension(effects: (Effect, Effect, Effect)) extends EffectsSeqExtension(effects.productIterator.toSeq.ofType[Effect])
 

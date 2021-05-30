@@ -2,27 +2,27 @@ package mtg.abilities
 
 import mtg.effects.Effect
 
-case class AbilityText(paragraphs: Seq[AbilityParagraph])
+case class EffectText(paragraphs: Seq[EffectParagraph])
 
-case class AbilityParagraph(sentences: AbilitySentence*) {
+case class EffectParagraph(sentences: EffectSentence*) {
   def getText(cardName: String): String = sentences.map(_.getText(cardName)).mkString(" ")
   def effects: Seq[Effect] = sentences.flatMap(_.effects)
 }
-object AbilityParagraph {
-  implicit def sentenceToParagraph(sentence: AbilitySentence): AbilityParagraph = AbilityParagraph(sentence)
-  implicit def effectToParagraph(effect: Effect): AbilityParagraph = sentenceToParagraph(AbilitySentence.effectToSentence(effect))
+object EffectParagraph {
+  implicit def sentenceToParagraph(sentence: EffectSentence): EffectParagraph = EffectParagraph(sentence)
+  implicit def effectToParagraph(effect: Effect): EffectParagraph = sentenceToParagraph(EffectSentence.effectToSentence(effect))
 }
 
-sealed trait AbilitySentence {
+sealed trait EffectSentence {
   def effects: Seq[Effect]
   def getText(cardName: String): String
 }
-object AbilitySentence {
-  case class SingleClause(effect: Effect) extends AbilitySentence {
+object EffectSentence {
+  case class SingleClause(effect: Effect) extends EffectSentence {
     def effects: Seq[Effect] = Seq(effect)
     override def getText(cardName: String): String = effect.getText(cardName).capitalize + "."
   }
-  case class MultiClause(effects: Seq[Effect], joiner: String) extends AbilitySentence {
+  case class MultiClause(effects: Seq[Effect], joiner: String) extends EffectSentence {
     override def getText(cardName: String): String = {
       val clausesText = (
         effects.head.getText(cardName).capitalize +:
@@ -31,5 +31,5 @@ object AbilitySentence {
       clausesText.mkString(", ") + "."
     }
   }
-  implicit def effectToSentence(effect: Effect): AbilitySentence = SingleClause(effect)
+  implicit def effectToSentence(effect: Effect): EffectSentence = SingleClause(effect)
 }
