@@ -23,9 +23,12 @@ function EventLogMessage({entry}) {
         case "PlayedLand":
             return "Player " + entry.details.player + " plays " + entry.details.landName + ".";
         case "CastSpell":
-            return "Player " + entry.details.player + " casts " + entry.details.spellName + ".";
+            const targetDetails = entry.details.targetNames.length > 0 ? " targeting " + commaList(entry.details.targetNames) : "";
+            return "Player " + entry.details.player + " casts " + entry.details.spellName + targetDetails + ".";
         case "ResolvePermanent":
-            return "Player " + entry.details.player + " resolves " + entry.details.permanentName + " and puts it onto the battlefield.";
+            return "Player " + entry.details.player + " puts " + entry.details.permanentName + " onto the battlefield.";
+        case "ResolveSpell":
+            return "Player " + entry.details.player + " resolves " + entry.details.spellName + ".";
         case "DeclareAttackers":
             return "Player " + entry.details.player + " attacks with " + commaList(entry.details.attackerNames) + ".";
         case "DeclareBlockers":

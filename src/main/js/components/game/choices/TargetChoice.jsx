@@ -13,7 +13,7 @@ export default function TargetChoice() {
     const choice = gameState.currentChoice.details;
     const [chosenTarget, setChosenTarget] = useState(null);
 
-    const onObjectClick = useCallback((objectId) => {
+    const onClick = useCallback((objectId) => {
         if (chosenTarget === objectId) {
             setChosenTarget(null);
         } else if (_.includes(choice.validOptions, objectId)) {
@@ -30,13 +30,13 @@ export default function TargetChoice() {
         }
     }, [chosenTarget, gameState]);
     useEffect(() => {
-        actionManager.setActionHandler(() => onObjectClick);
+        actionManager.setActionHandler(() => onClick);
         actionManager.setClassGetter(() => getClasses);
         return () => {
             actionManager.setActionHandler(null);
             actionManager.setClassGetter(null);
         }
-    }, [onObjectClick, getClasses]);
+    }, [onClick, getClasses]);
 
     return <div>
         <BannerText as="p">Choose {choice.targetDescription}.</BannerText>

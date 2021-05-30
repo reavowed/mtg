@@ -2,9 +2,11 @@ import _ from "lodash";
 import {Fragment} from "preact";
 import {useContext, useEffect} from "preact/hooks";
 import {OverlayTrigger, Popover} from "react-bootstrap";
+import ActionManager from "../../contexts/ActionManager";
 import CanvasManager from "../../contexts/CanvasManager";
 import GameState from "../../contexts/GameState";
 import StopsManager from "../../contexts/StopsManager";
+import {addClass} from "../../utils/element-utils";
 import CardRow from "./card/CardRow";
 
 function StopForStepOrPhaseWithoutSteps({player, phaseOrStep, name}) {
@@ -75,6 +77,15 @@ function Stops({player, direction}) {
     </Fragment>;
 }
 
+function PlayerLifeTotal({player, direction, ...props}) {
+    const gameState = useContext(GameState);
+    const actionManager = useContext(ActionManager);
+    const className = `border-${direction} border-right ` + actionManager.getClasses(player).map(c => c).join(" ");
+    return <div className={className} {...props} onClick={event => actionManager.actionHandler(player, event)}>
+        <h4 className="m-0 p-2">{gameState.lifeTotals[player]}</h4>
+    </div>
+}
+
 export default function Battlefield() {
     const gameState = useContext(GameState);
     const canvasManager = useContext(CanvasManager);
@@ -102,7 +113,7 @@ export default function Battlefield() {
     return <div className="h-100">
         <div className="h-50 border-bottom d-flex flex-column justify-content-start position-relative">
             <div class="position-absolute position-bottom d-flex align-items-end">
-                <h4 class="m-0 p-2 border-top border-right">{gameState.lifeTotals[opponent]}</h4>
+                <PlayerLifeTotal direction="top" player={opponent}/>
                 <div className="mb-2"><Stops player={opponent} direction="top" /></div>
             </div>
             <CardRow cards={opponentNoncreatures} className="my-2"/>
@@ -110,7 +121,7 @@ export default function Battlefield() {
         </div>
         <div className="h-50 d-flex flex-column justify-content-end position-relative">
             <div class="position-absolute position-top d-flex align-items-start">
-                <h4 class="m-0 p-2 border-bottom border-right">{gameState.lifeTotals[player]}</h4>
+                <PlayerLifeTotal direction="bottom" player={player}/>
                 <div className="mt-2"><Stops player={player} direction="bottom"/></div>
             </div>
             <CardRow cards={playerCreatures} className="my-2"/>

@@ -2,11 +2,9 @@ import _ from "lodash";
 import {forwardRef} from "preact/compat";
 import {useContext, useEffect, useState} from "preact/hooks";
 import ScryfallService from "../../../contexts/ScryfallService";
+import CardImage from "./CardImage";
 
 export default forwardRef(function CardWithModifiers({card, containerClasses, ...props}, ref) {
-    const scryfallService = useContext(ScryfallService);
-    const [scryfallCard, setScryfallCard] = useState(null);
-    useEffect(() => scryfallService.requestCard(card, setScryfallCard), []);
     containerClasses = ["cardContainer", "position-relative", ...(containerClasses || [])];
     if (card.permanentStatus && card.permanentStatus.isTapped) {
         containerClasses.push("tapped")
@@ -18,8 +16,8 @@ export default forwardRef(function CardWithModifiers({card, containerClasses, ..
         containerClasses.push("blocking");
     }
 
-    return scryfallCard && <div className={containerClasses.join(" ")}>
-        <img ref={ref} src={scryfallCard.image_uris.small} {...props} />
+    return <div className={containerClasses.join(" ")}>
+        <CardImage ref={ref} card={card} />
         {card.markedDamage > 0 && <span className="position-absolute damage">{card.markedDamage}</span>}
     </div>;
 });

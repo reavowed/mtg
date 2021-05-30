@@ -1,5 +1,4 @@
 import $ from "jQuery";
-import _ from "lodash";
 import {useCallback, useContext} from "preact/hooks";
 import ActionManager from "../../../contexts/ActionManager";
 import ObjectRefManager from "../../../contexts/ObjectRefManager";

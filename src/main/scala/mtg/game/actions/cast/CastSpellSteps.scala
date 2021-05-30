@@ -111,7 +111,7 @@ object CastSpellSteps {
       val spellWithState = spell.currentState(currentGameState)
       InternalGameActionResult(
         Seq(SpellCastEvent(spell), priority.PriorityFromPlayerAction(player)),
-        Some(LogEvent.CastSpell(player, spellWithState.characteristics.name)))
+        Some(LogEvent.CastSpell(player, spellWithState.characteristics.name, spellWithState.gameObject.targets.map(_.getName(currentGameState)))))
     }
   }
 

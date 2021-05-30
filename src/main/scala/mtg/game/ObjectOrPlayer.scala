@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import mtg.game.state.{Characteristics, GameState}
 
-sealed trait ObjectOrPlayer
+sealed trait ObjectOrPlayer {
+  def getName(gameState: GameState): String
+}
 
 @JsonSerialize(using = classOf[ObjectId.Serializer])
 case class ObjectId(sequentialId: Int) extends ObjectOrPlayer {
@@ -28,6 +30,7 @@ object ObjectId {
 
 @JsonSerialize(using = classOf[PlayerId.Serializer])
 case class PlayerId(id: String) extends ObjectOrPlayer {
+  def getName(gameState: GameState): String = id
   override def toString: String = id
 }
 object PlayerId {
