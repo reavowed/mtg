@@ -1,28 +1,17 @@
 @import "bootstrap/scss/bootstrap";
 @import "./scryfallSymbols.css";
+@import "./cardLayout";
 
-.cardOverlap {
-  margin-left: -100px;
-}
 .cardWrapper {
   overflow: visible; // Necessary for proper display of img borders
   margin: 0 0.25rem;
 }
 
-.cardContainer.tapped {
-  width: 204px;
-  height: 204px;
+.cardContainer.attacking .cardOuterBorder{
+  box-shadow: 0 0 10px 5px orange;
 }
-.cardContainer.tapped img {
-  transform: rotate(90deg) translate(-100%, 0);
-  transform-origin: 0 100%;
-}
-
-.cardContainer.attacking img {
-  border: 5px solid orange;
-}
-.cardContainer.blocking img {
-  border: 5px solid dodgerblue;
+.cardContainer.blocking .cardOuterBorder{
+  box-shadow: 0 0 10px 5px dodgerblue;
 }
 
 .cardContainer .damage {
@@ -55,11 +44,11 @@ canvas.overlay {
   justify-content: safe center !important;
 }
 
-.selectable {
+.cardContainer.selectable .cardOuterBorder, .player.selectable {
   cursor: pointer;
   box-shadow: 0 0 10px 5px #247bc2;
 }
-.selected {
+.cardContainer.selected .cardOuterBorder, .player.selected {
   cursor: pointer;
   box-shadow: 0 0 10px 5px lawngreen;
 }

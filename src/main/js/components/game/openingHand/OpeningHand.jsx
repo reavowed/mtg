@@ -2,13 +2,14 @@ import {useContext} from "preact/hooks";
 import GameState from "../../../contexts/GameState";
 import BannerText from "../../layout/BannerText";
 import ScreenCenter from "../../layout/ScreenCenter";
+import CardWithText from "../card/CardWithText";
 import Hand from "../Hand";
 import MulliganChoice from "./MulliganChoice";
 import ReturnCardsToLibraryChoice from "./ReturnCardsToLibraryChoice";
 
 function OpeningHandWhileWaiting() {
     return <div>
-        <Hand />
+        <Hand as={CardWithText} />
         <BannerText>Waiting for your opponent to make a mulligan decision</BannerText>
     </div>
 }
@@ -18,7 +19,7 @@ export default function OpeningHand() {
     const decision = gameState.currentChoice.playerToAct !== gameState.player ? <OpeningHandWhileWaiting/> :
         gameState.currentChoice.type === "MulliganChoice" ? <MulliganChoice /> :
         gameState.currentChoice.type === "ReturnCardsToLibraryChoice" ? <ReturnCardsToLibraryChoice /> :
-        <Hand />;
+        <Hand as={CardWithText} />;
     return <ScreenCenter>
         <div className="w-100">
             {decision}

@@ -1,11 +1,11 @@
 package mtg.web
 
 import mtg.cards.{CardDefinition, CardPrinting}
-import mtg.data.cards.alpha.LightningBolt
+import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.m21.AlpineWatchdog
-import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, SpinedKarok}
-import mtg.data.cards.{Forest, Mountain}
+import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, ExpandedAnatomy, SpinedKarok}
+import mtg.data.cards.{Forest, Mountain, Plains}
 import mtg.data.sets.Strixhaven
 import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject, StackObject}
@@ -40,19 +40,20 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
   val gameStateManager: GameStateManager = {
     val gameStartingData = GameStartingData(Seq(
       PlayerStartingData(playerOne, (Seq.fill(30)(LightningBolt) ++ Seq.fill(30)(Mountain)).map(findCard), Nil),
-      PlayerStartingData(playerTwo, (Seq.fill(30)(EnvironmentalSciences) ++ Seq.fill(30)(Forest)).map(findCard), Nil)))
+      PlayerStartingData(playerTwo, (Seq.fill(30)(ExpandedAnatomy) ++ Seq.fill(30)(Plains)).map(findCard), Nil)))
 
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.currentGameState
 
     val cardsToAdd = Seq(
-      (Mountain, Zone.Battlefield, playerOne),
-      (Mountain, Zone.Battlefield, playerOne),
-      (Mountain, Zone.Battlefield, playerOne),
-      (GrizzledOutrider, Zone.Battlefield, playerOne),
-      (AlpineWatchdog, Zone.Battlefield, playerOne),
-      (AgelessGuardian, Zone.Battlefield, playerTwo),
-      (SpinedKarok, Zone.Battlefield, playerTwo)
+      (SavannahLions, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
+      (SavannahLions, Zone.Battlefield, playerTwo),
+      (Plains, Zone.Battlefield, playerTwo),
+      (Plains, Zone.Battlefield, playerTwo),
+      (Plains, Zone.Battlefield, playerTwo)
     )
 
     val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}

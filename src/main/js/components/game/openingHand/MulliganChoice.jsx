@@ -3,7 +3,7 @@ import GameState from "../../../contexts/GameState";
 import {getPlural} from "../../../utils/word-helpers";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
-import CardImage from "../card/CardImage";
+import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
 import Hand from "../Hand";
 
@@ -12,7 +12,7 @@ export default function MulliganChoice() {
     const numberOfCardsToKeep = 7 - gameState.currentChoice.details.mulligansSoFar;
     if (gameState.player === gameState.currentChoice.playerToAct) {
         return <div>
-            <Hand as={CardImage} />
+            <Hand as={CardWithText}/>
             <BannerText>Keep {getPlural(numberOfCardsToKeep, "card", "cards")} or mulligan to {getPlural(numberOfCardsToKeep - 1, "card", "cards")}?</BannerText>
             <HorizontalCenter>
                 <DecisionButton optionToChoose="K">Keep</DecisionButton>

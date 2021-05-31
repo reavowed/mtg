@@ -6,6 +6,7 @@ import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import CardImage from "../card/CardImage";
 import CardBack from "../card/CardBack";
+import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
 import Hand from "../Hand";
 
@@ -28,13 +29,13 @@ export default function ReturnCardsToLibraryChoice() {
         [cardsPutBack]);
 
     const CardToPutBack = useCallback(
-        ({card, ...props}) => <CardImage card={card} onClick={!enoughCardsPutBack && (() => putCardBack(card))} {...props}/>,
+        ({card, ...props}) => <CardWithText card={card} onClick={!enoughCardsPutBack && (() => putCardBack(card))} {...props}/>,
         [cardsPutBack]);
 
     return <div>
         <div className="mb-3">
             <HorizontalCenter>
-                {_.map(_.reverse([...cardsPutBack]), card => <CardImage key={card.objectId} card={card} onClick={() => undoPutBack(card)} className="cardOverlap" />)}
+                {_.map(_.reverse([...cardsPutBack]), card => <CardWithText key={card.objectId} card={card} onClick={() => undoPutBack(card)} className="cardOverlap" />)}
                 {_.fill(Array(5), <CardBack className="cardOverlap"/>)}
             </HorizontalCenter>
         </div>
