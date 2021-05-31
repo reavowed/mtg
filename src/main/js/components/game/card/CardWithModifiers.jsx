@@ -15,6 +15,6 @@ export default forwardRef(function CardWithModifiers({card, containerClasses, ..
     }
 
     return <CardImage ref={ref} card={card} className={containerClasses.join(" ")}>
-            {card.markedDamage > 0 && <span className="position-absolute damage">{card.markedDamage}</span>}
+            {card.markedDamage > 0 && <span className="damageMarker">{card.markedDamage}</span>}
         </CardImage>;
 });

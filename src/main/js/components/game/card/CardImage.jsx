@@ -20,6 +20,9 @@ export default forwardRef(function CardImage({card, className, children, ...prop
                         </div>
                     </div>
                     <img className="cardImage" src={scryfallCard.image_uris.art_crop} />
+                    {(card.characteristics.power || card.characteristics.toughness) &&
+                        <div className="powerToughnessLozenge">{card.characteristics.power}/{card.characteristics.toughness}</div>
+                    }
                     {children}
                 </div>
             </div>
