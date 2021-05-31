@@ -58,9 +58,16 @@ object DeclareBlockers extends InternalGameAction {
       None
     }
   }
-  def getBlockerOrdering(attacker: ObjectId, gameState: GameState): Option[Seq[ObjectId]] = {
+  def getOrderingOfBlockersForAttacker(attacker: ObjectId, gameState: GameState): Option[Seq[ObjectId]] = {
     getBlockerOrderings(gameState).find(_.attacker == attacker).map(_.blockersInOrder)
       .orElse(getDefaultBlockerOrdering(attacker, gameState))
+  }
+
+  def getOrderingOfAttackersForBlocker(blocker: ObjectId, gameState: GameState): Option[Seq[ObjectId]] = {
+    getBlockDeclarations(gameState)
+      .find(_.blocker == blocker)
+      .filter(_ => isBlocking(blocker, gameState))
+      .map(d => Seq(d.attacker).filter(DeclareAttackers.isAttacking(_, gameState)))
   }
 }
 

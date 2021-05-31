@@ -29,7 +29,7 @@ case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration]
       case attackDeclaration +: remainingAttackDeclarations =>
         import attackDeclaration._
         val power = attacker.getPower(currentGameState)
-        DeclareBlockers.getBlockerOrdering(attacker, currentGameState) match {
+        DeclareBlockers.getOrderingOfBlockersForAttacker(attacker, currentGameState) match {
           case Some(blockers) =>
             blockers match {
               case Nil =>

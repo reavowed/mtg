@@ -23,9 +23,9 @@ object VisibleGameObject {
     if (DeclareAttackers.isAttacking(gameObject.objectId, gameState)) {
       builder.addOne(("attacking", true))
     }
-    if (DeclareBlockers.isBlocking(gameObject.objectId, gameState)) {
-      builder.addOne(("blocking", true))
-    }
+    DeclareBlockers.getOrderingOfAttackersForBlocker(gameObject.objectId, gameState).foreach(attackers =>
+      builder.addOne(("blocking", attackers))
+    )
     builder.result()
   }
   private def getCounters(gameObject: GameObject): Map[String, Int] = {

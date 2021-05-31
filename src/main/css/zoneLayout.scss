@@ -1,0 +1,28 @@
+.library {
+  position: relative;
+  height: 113px;
+  width: 129px;
+  overflow: hidden;
+}
+
+.library img {
+  height: 113px;
+  width: 129px;
+}
+
+.zoneCount {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.graveyard {
+  position: relative;
+  height: 113px;
+  width: 129px;
+}

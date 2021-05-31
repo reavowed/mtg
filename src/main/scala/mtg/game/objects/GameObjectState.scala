@@ -37,7 +37,11 @@ case class GameObjectState(
   }
 
   def allObjects: View[GameObject] = {
-    libraries.flatMap(_._2).view ++ hands.flatMap(_._2).view ++ battlefield.view ++ stack.view
+    libraries.flatMap(_._2).view ++
+      hands.flatMap(_._2).view ++
+      battlefield.view ++
+      stack.view ++
+      graveyards.flatMap(_._2).view
   }
   def allVisibleObjects(player: PlayerId): Seq[GameObject] = {
     hands(player) ++ battlefield
