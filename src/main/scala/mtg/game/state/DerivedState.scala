@@ -1,10 +1,13 @@
 package mtg.game.state
 
+import mtg._
 import mtg.abilities.StaticAbility
 import mtg.characteristics.types.BasicLandType
+import mtg.characteristics.types.Type.Creature
 import mtg.effects.continuous.ContinuousEffect
 import mtg.game.ObjectId
 import mtg.game.objects.GameObjectState
+import mtg.parts.counters.PowerToughnessModifyingCounter
 
 import scala.collection.View
 import scala.reflect.ClassTag
@@ -25,7 +28,8 @@ object DerivedState {
     val baseStates = gameObjectState.allObjects.map(_.baseState)
 
     val finalStates = Seq(
-      addIntrinsicManaAbilities(_)
+      addIntrinsicManaAbilities(_),
+      applyPowerAndToughnessCounters(_)
     ).foldLeft(baseStates) { (objectStates, updater) => updater(objectStates) }
 
     def mapOfType[T <: ObjectWithState : ClassTag] = finalStates.ofType[T].map(objectWithState => objectWithState.gameObject.objectId -> objectWithState).toMap
@@ -39,5 +43,19 @@ object DerivedState {
         objectWithState.addAbility(landType.intrinsicManaAbility)
       }
     }
+  }
+
+  def applyPowerAndToughnessCounters(objectStates: View[ObjectWithState]): View[ObjectWithState] = {
+    objectStates
+      .map { objectWithState =>
+        if (objectWithState.characteristics.types.contains(Creature))
+          objectWithState.gameObject.counters.view.ofLeftType[PowerToughnessModifyingCounter]
+            .foldLeft(objectWithState) { case (obj, (counterType, number)) =>
+              obj.updateCharacteristics(c => c.copy(
+                power = c.power.map(_ + (counterType.powerModifier * number)),
+                toughness = c.toughness.map(_ + (counterType.toughnessModifier * number))))
+            }
+        else objectWithState
+      }
   }
 }

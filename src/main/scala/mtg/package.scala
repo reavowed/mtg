@@ -64,6 +64,11 @@ package object mtg {
     def mapLeft[C](f: A => C): (C, B) = (f(tuple._1), tuple._2)
     def mapRight[C](f: B => C): (A, C) = (tuple._1, f(tuple._2))
   }
+  implicit class TupleSeqExtensionMethods[A, B](tupleView: View[(A, B)]) {
+    def ofLeftType[C : ClassTag]: View[(C, B)] = tupleView.collect {
+      case (a, b) if classTag[C].runtimeClass.isInstance(a) => (a.asInstanceOf[C], b)
+    }
+  }
 
   implicit object optionMonad extends Monad[Option] {
     def flatMap[A, B](fa: Option[A])(f: A => Option[B]): Option[B] = fa.flatMap(f)

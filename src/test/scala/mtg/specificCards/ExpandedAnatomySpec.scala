@@ -53,7 +53,8 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
       manager.resolveNext()
 
       manager.getState(manager.getCard(SavannahLions)).gameObject.counters(PlusOnePlusOneCounter) mustEqual 2
+      manager.getState(manager.getCard(SavannahLions)).characteristics.power must beSome(4)
+      manager.getState(manager.getCard(SavannahLions)).characteristics.toughness must beSome(3)
     }
   }
-
 }
