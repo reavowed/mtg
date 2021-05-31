@@ -1,6 +1,7 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.oneshot.{OneShotEffect, OneShotEffectResolutionContext, OneShotEffectResult}
+import mtg.effects.OneShotEffect
+import mtg.effects.oneshot.{OneShotEffectResolutionContext, OneShotEffectResult}
 import mtg.events.shuffle.ShuffleLibrary
 import mtg.game.state.GameState
 

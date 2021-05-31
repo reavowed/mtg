@@ -2,6 +2,8 @@ package mtg.game.objects
 
 import monocle.Focus
 import mtg.cards.CardPrinting
+import mtg.effects.ContinuousEffect
+import mtg.effects.condition.Condition
 import mtg.game.state.DerivedState
 import mtg.game.{GameData, GameStartingData, ObjectId, PlayerId, TypedZone, Zone}
 import mtg.utils.AtGuaranteed
@@ -18,9 +20,11 @@ case class GameObjectState(
     graveyards: Map[PlayerId, Seq[BasicGameObject]],
     stack: Seq[StackObject],
     sideboards: Map[PlayerId, Seq[BasicGameObject]],
-    manaPools: Map[PlayerId, Seq[ManaObject]])
+    manaPools: Map[PlayerId, Seq[ManaObject]],
+    floatingActiveContinuousEffects: Seq[FloatingActiveContinuousEffect])
 {
   lazy val derivedState: DerivedState = DerivedState.calculateFromGameObjectState(this)
+  def activeContinuousEffects: View[ContinuousEffect] = floatingActiveContinuousEffects.view.map(_.effect) ++ DerivedState.getActiveContinuousEffectsFromStaticAbilities(derivedState.allObjectStates.values.view)
 
   def updateManaPool(player: PlayerId, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
@@ -46,6 +50,13 @@ case class GameObjectState(
   }
   def updateLifeTotal(player: PlayerId, f: Int => Int): GameObjectState = {
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)
+  }
+
+  def addEffect(continuousEffect: ContinuousEffect, endCondition: Condition): GameObjectState = {
+    updateEffects(_ :+ FloatingActiveContinuousEffect(continuousEffect, endCondition))
+  }
+  def updateEffects(f: Seq[FloatingActiveContinuousEffect] => Seq[FloatingActiveContinuousEffect]): GameObjectState = {
+    copy(floatingActiveContinuousEffects = f(floatingActiveContinuousEffects))
   }
 }
 
@@ -83,6 +94,7 @@ object GameObjectState {
       emptyMap,
       Nil,
       sideboards,
-      emptyMap)
+      emptyMap,
+      Nil)
   }
 }

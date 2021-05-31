@@ -2,8 +2,7 @@ package mtg.abilities
 
 import mtg.cards.text.SpellEffectParagraph
 import mtg.characteristics.types.Type.{Instant, Sorcery}
-import mtg.effects.continuous.ContinuousEffect
-import mtg.effects.oneshot.OneShotEffect
+import mtg.effects.{ContinuousEffect, OneShotEffect}
 import mtg.game.ZoneType
 import mtg.game.state.ObjectWithState
 import mtg.parts.costs.Cost
@@ -21,6 +20,7 @@ sealed abstract class AbilityDefinition {
       Set(ZoneType.Battlefield)
   }
   def getText(cardName: String): String
+  def getQuotedDescription(cardName: String): String = "\"" + getText(cardName) + "\""
 }
 
 case class ActivatedAbilityDefinition(
@@ -32,7 +32,8 @@ case class ActivatedAbilityDefinition(
 }
 
 trait KeywordAbility extends AbilityDefinition with CaseObjectWithName {
-  override def getText(cardName: String): String = name
+  override def getText(cardName: String): String = name.toLowerCase
+  override def getQuotedDescription(cardName: String): String = name.toLowerCase
 }
 
 case class SpellAbility(effectParagraph: SpellEffectParagraph) extends AbilityDefinition {

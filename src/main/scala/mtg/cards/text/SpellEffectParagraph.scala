@@ -1,7 +1,7 @@
 package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, SpellAbility}
-import mtg.effects.oneshot.OneShotEffect
+import mtg.effects.OneShotEffect
 
 case class SpellEffectParagraph(sentences: SpellEffectSentence*) extends TextParagraph {
   def getText(cardName: String): String = sentences.map(_.getText(cardName)).mkString(" ")

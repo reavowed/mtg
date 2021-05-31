@@ -1,5 +1,6 @@
 package mtg.game.state
 
+import mtg.effects.condition.EventCondition
 import mtg.effects.continuous.EventPreventionEffect
 import mtg.game.turns.TurnCycleEventPreventer
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
@@ -21,12 +22,10 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   @tailrec
   private def executeAutomaticActions(gameState: GameState): Unit = {
     gameState.popAction() match {
-      case (turnCycleEvent: TurnCycleEvent, gameState) =>
-        executeAutomaticActions(executeTurnCycleEvent(turnCycleEvent, gameState))
       case (internalGameAction: InternalGameAction, gameState) =>
         executeAutomaticActions(executeInternalGameAction(internalGameAction, gameState))
-      case (gameObjectEvent: GameObjectEvent, gameState) =>
-        executeAutomaticActions(executeGameObjectEvent(gameObjectEvent, gameState))
+      case (gameEvent: GameEvent, gameState) =>
+        executeAutomaticActions(executeGameEvent(gameEvent, gameState))
       case (BackupAction(gameStateToRevertTo), _) =>
         executeAutomaticActions(gameStateToRevertTo)
       case (priorityChoice: PriorityChoice, gameState)
@@ -43,20 +42,26 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     }
   }
 
-  private def executeTurnCycleEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): GameState = {
-    val preventResult = TurnCycleEventPreventer.fromRules.collectFirst(Function.unlift(_.checkEvent(turnCycleEvent, gameState).asOptionalInstanceOf[TurnCycleEventPreventer.Result.Prevent]))
-    preventResult match {
-      case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>
-        logEvent.map(gameState.recordLogEvent).getOrElse(gameState)
-      case _ =>
-        val (historyUpdater, actions, logEvent) = turnCycleEvent.execute(gameState)
-        gameState.updateHistory(historyUpdater).addActions(actions).recordLogEvent(logEvent)
-    }
-  }
-
   private def executeInternalGameAction(internalGameAction: InternalGameAction, gameState: GameState): GameState = {
     val InternalGameActionResult(actions, logEvent) = internalGameAction.execute(gameState)
     gameState.addActions(actions).recordLogEvent(logEvent)
+  }
+
+  private def executeGameEvent(gameEvent: GameEvent, gameState: GameState): GameState = {
+    val gameStateAfterEvent = gameEvent match {
+      case gameObjectEvent: GameObjectEvent =>
+        executeGameObjectEvent(gameObjectEvent, gameState)
+      case turnCycleEvent: TurnCycleEvent =>
+        executeTurnCycleEvent(turnCycleEvent, gameState)
+    }
+    gameStateAfterEvent.updateGameObjectState(_.updateEffects(_.filter(activeEffect => {
+      val objectExists = gameStateAfterEvent.gameObjectState.allObjects.exists(_.objectId == activeEffect.effect.affectedObject)
+      val matchesCondition = activeEffect.endCondition match {
+        case eventCondition: EventCondition =>
+          eventCondition.matchesEvent(gameEvent)
+      }
+      objectExists && !matchesCondition
+    })))
   }
 
   private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {
@@ -70,12 +75,21 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   }
 
   private def shouldPreventGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): Boolean = {
-    gameState.gameObjectState.derivedState.activeContinuousEffects.view
+    gameState.gameObjectState.activeContinuousEffects
       .ofType[EventPreventionEffect]
       .exists(_.preventsEvent(gameObjectEvent, gameState))
   }
 
-
+  private def executeTurnCycleEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): GameState = {
+    val preventResult = TurnCycleEventPreventer.fromRules.collectFirst(Function.unlift(_.checkEvent(turnCycleEvent, gameState).asOptionalInstanceOf[TurnCycleEventPreventer.Result.Prevent]))
+    preventResult match {
+      case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>
+        logEvent.map(gameState.recordLogEvent).getOrElse(gameState)
+      case _ =>
+        val (historyUpdater, actions, logEvent) = turnCycleEvent.execute(gameState)
+        gameState.updateHistory(historyUpdater).addActions(actions).recordLogEvent(logEvent)
+    }
+  }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {
     currentGameState.popAction() match {

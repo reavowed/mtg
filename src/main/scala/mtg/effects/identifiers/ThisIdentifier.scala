@@ -6,7 +6,7 @@ import mtg.game.state.GameState
 
 object ThisIdentifier extends Identifier[ObjectId] {
   override def get(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): (ObjectId, OneShotEffectResolutionContext) = {
-    (resolutionContext.resolvingObject, resolutionContext.addObject(resolutionContext.resolvingObject))
+    (resolutionContext.resolvingObject, resolutionContext.addIdentifiedObject(resolutionContext.resolvingObject))
   }
   override def getText(cardName: String): String = cardName
 }

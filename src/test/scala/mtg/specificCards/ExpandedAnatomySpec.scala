@@ -1,6 +1,8 @@
 package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
+import mtg.abilities.AbilityDefinition
+import mtg.abilities.keyword.Vigilance
 import mtg.data.cards.alpha.SavannahLions
 import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, ExpandedAnatomy, SpinedKarok}
 import mtg.data.cards.{Forest, Island, Plains}
@@ -55,6 +57,43 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
       manager.getState(manager.getCard(SavannahLions)).gameObject.counters(PlusOnePlusOneCounter) mustEqual 2
       manager.getState(manager.getCard(SavannahLions)).characteristics.power must beSome(4)
       manager.getState(manager.getCard(SavannahLions)).characteristics.toughness must beSome(3)
+    }
+
+    "grants the creature vigilance" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, Seq(ExpandedAnatomy))
+        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
+        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+
+      manager.passUntilPhase(PrecombatMainPhase)
+      manager.activateAbilities(playerOne, Plains, 3)
+      manager.castSpell(playerOne, ExpandedAnatomy)
+      manager.chooseCard(playerOne, SavannahLions)
+      manager.resolveNext()
+
+      manager.getState(manager.getCard(SavannahLions)).characteristics.abilities must contain[AbilityDefinition](Vigilance)
+    }
+
+    "not grant the creature vigilance after the current turn" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, Seq(ExpandedAnatomy))
+        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
+        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+
+      manager.passUntilPhase(PrecombatMainPhase)
+      manager.activateAbilities(playerOne, Plains, 3)
+      manager.castSpell(playerOne, ExpandedAnatomy)
+      manager.chooseCard(playerOne, SavannahLions)
+      manager.resolveNext()
+      manager.passUntilTurn(2)
+
+      manager.getState(manager.getCard(SavannahLions)).characteristics.abilities must not(contain[AbilityDefinition](Vigilance))
+    }
+
+    "have correct oracle text" in {
+      ExpandedAnatomy.text mustEqual "Put two +1/+1 counters on target creature. It gains vigilance until end of turn."
     }
   }
 }

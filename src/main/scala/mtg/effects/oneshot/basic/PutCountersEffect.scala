@@ -1,8 +1,9 @@
 package mtg.effects.oneshot.basic
 
+import mtg.effects.OneShotEffect
 import mtg.parts.counters.CounterType
 import mtg.effects.identifiers.Identifier
-import mtg.effects.oneshot.{OneShotEffect, OneShotEffectResolutionContext, OneShotEffectResult}
+import mtg.effects.oneshot.{OneShotEffectResolutionContext, OneShotEffectResult}
 import mtg.events.PutCountersEvent
 import mtg.game.ObjectId
 import mtg.game.state.GameState

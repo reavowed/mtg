@@ -6,11 +6,13 @@ import mtg.game.state.history.{GameHistory, LogEvent}
 
 sealed abstract class GameAction
 
-abstract class GameObjectEvent extends GameAction {
+sealed abstract class GameEvent extends GameAction
+
+abstract class GameObjectEvent extends GameEvent {
   def execute(currentGameState: GameState): GameObjectEventResult
 }
 
-abstract class TurnCycleEvent extends GameAction {
+abstract class TurnCycleEvent extends GameEvent {
   def execute(currentGameState: GameState): (GameHistory => GameHistory, Seq[GameAction], Option[LogEvent])
 }
 

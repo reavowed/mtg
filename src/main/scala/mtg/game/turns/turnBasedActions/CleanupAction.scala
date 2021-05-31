@@ -1,10 +1,12 @@
 package mtg.game.turns.turnBasedActions
 
-import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameObjectEvent, GameObjectEventResult, GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state._
+import mtg.game.turns.Turn
 
 object CleanupAction extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = DamageWearsOffEvent
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
+    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd(currentGameState.currentTurn.get))
+  }
 }
 
 object DamageWearsOffEvent extends GameObjectEvent {
@@ -13,4 +15,8 @@ object DamageWearsOffEvent extends GameObjectEvent {
       state.updatePermanentObject(obj.objectId, _.updateMarkedDamage(_ => 0))
     }
   }
+}
+
+case class UntilEndOfTurnEffectsEnd(turn: Turn) extends GameObjectEvent {
+  override def execute(currentGameState: GameState): GameObjectEventResult = ()
 }

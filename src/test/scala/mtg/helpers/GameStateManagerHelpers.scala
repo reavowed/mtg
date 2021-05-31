@@ -9,6 +9,7 @@ import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.turns.priority.PriorityChoice
 import mtg._
+import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
 
 trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelpers {
 
@@ -45,8 +46,15 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       gameStateManager.handleDecision("Pass", player)
     }
     private def passUntil(predicate: GameState => Boolean): Unit = {
-      while (!predicate(gameStateManager.currentGameState) && currentAction.isInstanceOf[PriorityChoice]) {
-        passPriority(currentAction.asInstanceOf[PriorityChoice].playerToAct)
+      while (!predicate(gameStateManager.currentGameState)) {
+        currentAction match {
+          case choice: PriorityChoice =>
+            passPriority(choice.playerToAct)
+          case choice: DeclareAttackersChoice =>
+            gameStateManager.handleDecision("", choice.playerToAct)
+          case _ =>
+            return
+        }
       }
     }
     def passUntilTurn(turnNumber: Int): Unit = {

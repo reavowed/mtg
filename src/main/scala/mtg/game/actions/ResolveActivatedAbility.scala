@@ -1,7 +1,8 @@
 package mtg.game.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.effects.oneshot.{OneShotEffect, OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
+import mtg.effects.OneShotEffect
+import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
 import mtg.game.PlayerId
 import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state._

@@ -1,7 +1,8 @@
 package mtg.effects.oneshot.basic
 
+import mtg.effects.OneShotEffect
 import mtg.effects.filters.Filter
-import mtg.effects.oneshot.{OneShotEffect, OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
+import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
 import mtg.game.state.GameState
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.TextUtils._
@@ -31,6 +32,6 @@ case class SearchChoice(
     for {
       id <- serializedDecision.toIntOption
       chosenObjectId <- possibleChoices.find(_.sequentialId == id)
-    } yield (ChosenObject(chosenObjectId), resolutionContext.addObject(chosenObjectId))
+    } yield (ChosenObject(chosenObjectId), resolutionContext.addIdentifiedObject(chosenObjectId))
   }
 }

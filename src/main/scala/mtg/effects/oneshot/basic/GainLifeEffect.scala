@@ -1,7 +1,8 @@
 package mtg.effects.oneshot.basic
 
+import mtg.effects.OneShotEffect
 import mtg.effects.identifiers.Identifier
-import mtg.effects.oneshot.{OneShotEffect, OneShotEffectResolutionContext, OneShotEffectResult}
+import mtg.effects.oneshot.{OneShotEffectResolutionContext, OneShotEffectResult}
 import mtg.events.GainLifeEvent
 import mtg.game.PlayerId
 import mtg.game.state.GameState
