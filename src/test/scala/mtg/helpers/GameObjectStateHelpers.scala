@@ -3,10 +3,28 @@ package mtg.helpers
 import mtg.cards.CardDefinition
 import mtg.game.Zone.BasicZone
 import mtg.game.objects._
+import mtg.game.state.ObjectWithState
 import mtg.game.{PlayerId, TypedZone, Zone}
 
-trait GameObjectStateHelpers extends CardHelpers {
+trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
   implicit class GameObjectStateExtensions(gameObjectState: GameObjectState) {
+    def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
+      gameObjectState.battlefield.view
+        .filter(_.card.printing.cardDefinition == cardDefinition)
+        .single
+    }
+    def getCard(cardDefinition: CardDefinition): GameObject = {
+      gameObjectState.allObjects.view
+        .filter(_.card.printing.cardDefinition == cardDefinition)
+        .single
+    }
+    def getCards(cardDefinitions: CardDefinition*): Seq[GameObject] = {
+      cardDefinitions.map(getCard)
+    }
+    def getCard(zone: Zone, cardDefinition: CardDefinition): GameObject = {
+      zone.getState(gameObjectState).getCard(cardDefinition)
+    }
+
     def clearZone[T <: GameObject](zone: TypedZone[T]): GameObjectState = {
       zone.updateState(gameObjectState, _ => Nil)
     }
@@ -15,7 +33,7 @@ trait GameObjectStateHelpers extends CardHelpers {
       val card = Card(owner, cardPrinting)
       zone match {
         case Zone.Stack =>
-          gameObjectState.addNewObject(StackObject(card, _, owner, Nil), _.length)
+          throw new Exception("Trying to create things directly on the stack seems like a bad idea")
         case Zone.Battlefield =>
           gameObjectState.addNewObject(PermanentObject(card, _, owner), _.length)
         case zone: BasicZone =>

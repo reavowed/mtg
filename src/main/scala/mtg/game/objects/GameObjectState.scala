@@ -39,12 +39,10 @@ case class GameObjectState(
     hands(player) ++ battlefield
   }
   def updatePermanentObject(objectId: ObjectId, f: PermanentObject => PermanentObject): GameObjectState = {
-    val oldObject = battlefield.find(_.objectId == objectId).get
-    oldObject.zone.stateLens.modify(_.map(o => if (o == oldObject) f(oldObject) else o))(this)
+    battlefield.find(_.objectId == objectId).get.update(this, f)
   }
   def updateStackObject(objectId: ObjectId, f: StackObject => StackObject): GameObjectState = {
-    val oldObject = stack.find(_.objectId == objectId).get
-    oldObject.zone.stateLens.modify(_.map(o => if (o == oldObject) f(oldObject) else o))(this)
+    stack.find(_.objectId == objectId).get.update(this, f)
   }
   def updateLifeTotal(player: PlayerId, f: Int => Int): GameObjectState = {
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)

@@ -5,13 +5,13 @@ import mtg.characteristics.types.SpellType.Lesson
 import mtg.characteristics.types.Type
 import mtg.parts.costs.ManaCost
 import mtg.abilities.builder.EffectBuilder._
-import mtg.cards.text.SpellEffectParagraph
+import mtg.characteristics.types.Type.Creature
+import mtg.parts.counters.PlusOnePlusOneCounter
 
-object EnvironmentalSciences extends Spell(
-  "Environmental Sciences",
-  ManaCost(2),
+object ExpandedAnatomy extends Spell(
+  "Expanded Anatomy",
+  ManaCost(3),
   Type.Sorcery,
   Seq(Lesson),
-  SpellEffectParagraph(
-    (searchYourLibraryForA(basicLand), reveal(it), put(it).intoYourHand).`then`(shuffle),
-    you.gain(2).life))
+  put(2, PlusOnePlusOneCounter).on(target(Creature))
+)

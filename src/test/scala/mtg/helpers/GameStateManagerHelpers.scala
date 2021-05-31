@@ -10,7 +10,7 @@ import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.turns.priority.PriorityChoice
 import mtg._
 
-trait GameStateManagerHelpers extends GameObjectHelpers {
+trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelpers {
 
   implicit class GameStateManagerOps(gameStateManager: GameStateManager) {
     def updateGameState(f: GameState => GameState): GameStateManager = {
@@ -21,20 +21,16 @@ trait GameStateManagerHelpers extends GameObjectHelpers {
     }
 
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
-      gameStateManager.currentGameState.gameObjectState.battlefield.view
-        .filter(_.card.printing.cardDefinition == cardDefinition)
-        .single
+      gameStateManager.currentGameState.gameObjectState.getPermanent(cardDefinition)
     }
     def getCard(cardDefinition: CardDefinition): GameObject = {
-      gameStateManager.currentGameState.gameObjectState.allObjects.view
-        .filter(_.card.printing.cardDefinition == cardDefinition)
-        .single
+      gameStateManager.currentGameState.gameObjectState.getCard(cardDefinition)
     }
     def getCards(cardDefinitions: CardDefinition*): Seq[GameObject] = {
-      cardDefinitions.map(getCard)
+      gameStateManager.currentGameState.gameObjectState.getCards(cardDefinitions: _*)
     }
     def getCard(zone: Zone, cardDefinition: CardDefinition): GameObject = {
-      zone.getState(gameStateManager.currentGameState.gameObjectState).getCard(cardDefinition)
+      gameStateManager.currentGameState.gameObjectState.getCard(zone, cardDefinition)
     }
     def getState(gameObject: GameObject): ObjectWithState = {
       gameObject.currentState(gameStateManager.currentGameState)

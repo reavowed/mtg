@@ -1,8 +1,8 @@
 package mtg.game
 
 import monocle.{Focus, Lens}
-import mtg.game.objects.{BasicGameObject, GameObject, GameObjectState, PermanentObject, StackObject}
-import mtg.game.state.{GameState, ObjectWithState, PermanentStatus, StackObjectWithState}
+import mtg.game.objects._
+import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
 import mtg.utils.AtGuaranteed
 
 sealed abstract class ZoneType {
@@ -65,7 +65,7 @@ object Zone {
   }
   case object Stack extends Shared[StackObject](ZoneType.Stack) {
     override def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): StackObject = {
-      StackObject(previousObjectState.gameObject.card, newObjectId, playerMoving, Nil)
+      StackObject(previousObjectState.gameObject.card, newObjectId, playerMoving)
     }
     override def stateLens: Lens[GameObjectState, Seq[StackObject]] = Focus[GameObjectState](_.stack)
   }

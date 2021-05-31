@@ -26,7 +26,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val card = Card(owner, findCard(cardDefinition))
     zone match {
       case Zone.Stack =>
-        gameState.updateGameObjectState(_.addNewObject(StackObject(card, _, owner, Nil), _.length))
+        throw new Exception("Trying to create things directly on the stack seems like a bad idea")
       case Zone.Battlefield =>
         gameState.updateGameObjectState(_.addNewObject(PermanentObject(card, _, owner), _.length))
       case zone: BasicZone =>

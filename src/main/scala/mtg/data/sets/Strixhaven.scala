@@ -2,7 +2,7 @@ package mtg.data.sets
 
 import mtg.cards.{CardInSetData, Set}
 import mtg.data.cards._
-import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, SpinedKarok}
+import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, ExpandedAnatomy, SpinedKarok}
 
 import java.time.{LocalDate, Month}
 
@@ -12,6 +12,7 @@ object Strixhaven extends Set(
   LocalDate.of(2021, Month.APRIL, 23),
   Seq(
     CardInSetData(EnvironmentalSciences, 1),
+    CardInSetData(ExpandedAnatomy, 2),
     CardInSetData(AgelessGuardian, 8),
     CardInSetData(SpinedKarok, 143),
     CardInSetData(Plains, 366),

@@ -30,15 +30,7 @@ object CastSpellSteps {
       val spell = currentGameState.gameObjectState.stack.last
       val spellWithState = spell.currentState(currentGameState)
       val targetIdentifiers = spellWithState.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects).flatMap(_.targetIdentifiers)
-      def getValidOptions(targetIdentifier: TargetIdentifier): Seq[ObjectOrPlayer] = {
-        val validObjects = currentGameState.gameObjectState.allObjects
-          .map(_.objectId)
-          .filter(targetIdentifier.filter.isValid(_, currentGameState))
-        val validPlayers = currentGameState.gameData.playersInTurnOrder.view
-          .filter(targetIdentifier.filter.isValid(_, currentGameState))
-        (validObjects ++ validPlayers).toSeq
-      }
-      targetIdentifiers.map(targetIdentifier => TargetChoice(spellWithState.controller, spell, targetIdentifier.text, getValidOptions(targetIdentifier)))
+      targetIdentifiers.map(targetIdentifier => TargetChoice(spellWithState.controller, spell, targetIdentifier.text, targetIdentifier.getValidChoices(currentGameState)))
     }
   }
 

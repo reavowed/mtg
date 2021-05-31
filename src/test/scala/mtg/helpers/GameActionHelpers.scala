@@ -1,18 +1,19 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
-import mtg.game.PlayerId
+import mtg.game.{ObjectOrPlayer, PlayerId}
 import mtg.game.actions.cast.CastSpellAction
+import mtg.game.actions.cast.CastSpellSteps.TargetChoice
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
-import mtg.game.objects.GameObject
-import mtg.game.state.GameAction
+import mtg.game.objects.{GameObject, GameObjectState}
+import mtg.game.state.{GameAction, GameStateManager}
 import mtg.game.turns.priority.PriorityChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 import org.specs2.mutable.SpecificationLike
 
 import scala.collection.mutable.ListBuffer
 
-trait GameActionHelpers extends SpecificationLike {
+trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
   def beCastSpellAction(cardDefinition: CardDefinition): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
     (castSpellAction.objectToCast.gameObject.cardDefinition == cardDefinition, s"was '${cardDefinition.name}'", s"was not '${cardDefinition.name}'")
   }
@@ -54,5 +55,29 @@ trait GameActionHelpers extends SpecificationLike {
     }
   }
 
+  sealed class TargetMagnet(val value: ObjectOrPlayer)
+  object TargetMagnet {
+    implicit def fromCardDefinition(cardDefinition: CardDefinition)(implicit gameObjectState: GameObjectState) = new TargetMagnet(gameObjectState.getCard(cardDefinition).objectId)
+    implicit def fromPlayer(playerId: PlayerId) = new TargetMagnet(playerId)
+  }
+
+  class TargetChoiceMatcher extends Matcher[GameAction] {
+    private val baseMatcher: Matcher[GameAction] = beAnInstanceOf[TargetChoice]
+    private val otherMatchers: ListBuffer[Matcher[TargetChoice]] = ListBuffer()
+    private def finalMatcher: Matcher[GameAction] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameAction).asInstanceOf[TargetChoice]}))
+
+    override def apply[S <: GameAction](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
+
+    def forPlayer(playerIdentifier: PlayerId): TargetChoiceMatcher = {
+      otherMatchers.addOne(((_: TargetChoice).playerToAct) ^^ beTypedEqualTo(playerIdentifier))
+      this
+    }
+    def withAvailableTargets(targetMagnets: TargetMagnet*): TargetChoiceMatcher = {
+      otherMatchers.addOne(((_: TargetChoice).validOptions) ^^ contain(exactly(targetMagnets.map(_.value): _*)))
+      this
+    }
+  }
+
   def bePriorityChoice: PriorityChoiceMatcher = new PriorityChoiceMatcher
+  def beTargetChoice: TargetChoiceMatcher = new TargetChoiceMatcher
 }
