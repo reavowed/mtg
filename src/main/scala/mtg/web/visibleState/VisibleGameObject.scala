@@ -1,7 +1,7 @@
 package mtg.web.visibleState
 
 import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
-import mtg.game.state.{Characteristics, GameState, PermanentStatus}
+import mtg.game.state.{Characteristics, GameState, ObjectWithState, PermanentStatus}
 import mtg.game.turns.turnBasedActions.{DeclareAttackers, DeclareBlockers}
 import mtg.game.{ObjectId, PlayerId}
 
@@ -15,6 +15,7 @@ case class VisibleGameObject(
   controller: Option[PlayerId],
   permanentStatus: Option[PermanentStatus],
   markedDamage: Option[Int],
+  counters: Map[String, Int],
   modifiers: Map[String, Any])
 object VisibleGameObject {
   private def getModifiers(gameObject: GameObject, gameState: GameState): Map[String, Any] = {
@@ -26,6 +27,9 @@ object VisibleGameObject {
       builder.addOne(("blocking", true))
     }
     builder.result()
+  }
+  private def getCounters(gameObject: GameObject): Map[String, Int] = {
+    gameObject.counters.map(_.mapLeft(_.description))
   }
 
   def apply(gameObject: GameObject, gameState: GameState): VisibleGameObject = gameObject match {
@@ -41,6 +45,7 @@ object VisibleGameObject {
         None,
         None,
         None,
+        getCounters(gameObject),
         getModifiers(gameObject, gameState))
     case gameObject: StackObject =>
       val objectState = gameState.gameObjectState.derivedState.spellStates(gameObject.objectId)
@@ -54,6 +59,7 @@ object VisibleGameObject {
         Some(objectState.controller),
         None,
         None,
+        getCounters(gameObject),
         getModifiers(gameObject, gameState))
     case gameObject: PermanentObject =>
       val objectState = gameState.gameObjectState.derivedState.permanentStates(gameObject.objectId)
@@ -67,6 +73,7 @@ object VisibleGameObject {
         Some(objectState.controller),
         Some(gameObject.status),
         Some(gameObject.markedDamage),
+        getCounters(gameObject),
         getModifiers(gameObject, gameState))
   }
 }

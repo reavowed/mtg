@@ -1,3 +1,5 @@
 package mtg.parts.counters
 
-case object PlusOnePlusOneCounter extends PowerToughnessModifyingCounter(1, 1)
+import mtg.utils.CaseObjectWithName
+
+case object PlusOnePlusOneCounter extends PowerToughnessModifyingCounter(1, 1) with CaseObjectWithName

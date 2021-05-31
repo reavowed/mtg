@@ -15,6 +15,9 @@ export default forwardRef(function CardWithModifiers({card, containerClasses, ..
     }
 
     return <CardImage ref={ref} card={card} className={containerClasses.join(" ")}>
+        <span className="cardMarkers">
             {card.markedDamage > 0 && <span className="damageMarker">{card.markedDamage}</span>}
-        </CardImage>;
+            {card.counters["+1/+1"] > 0 && <span className="plusOnePlusOneCounters">{card.counters["+1/+1"]}</span>}
+        </span>
+    </CardImage>;
 });
