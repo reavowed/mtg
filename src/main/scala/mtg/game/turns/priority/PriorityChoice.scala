@@ -44,15 +44,15 @@ case class PriorityChoice(
       Some(PriorityOption.TakeAction(action))
     case _ => None
   }
-  override def handleDecision(chosenOption: PriorityOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+  override def handleDecision(chosenOption: PriorityOption, currentGameState: GameState): GameActionResult = {
     chosenOption match {
       case PriorityOption.PassPriority =>
         if (remainingPlayers.nonEmpty)
-          (Seq(PriorityForPlayersAction(remainingPlayers)), None)
+          PriorityForPlayersAction(remainingPlayers)
         else
-          (Seq(ResolveTopStackObject), None)
+          ResolveTopStackObject
       case PriorityOption.TakeAction(action) =>
-        (Seq(action, PriorityFromPlayerAction(playerToAct)), None)
+        Seq(action, PriorityFromPlayerAction(playerToAct))
     }
   }
 }

@@ -43,8 +43,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   }
 
   private def executeInternalGameAction(internalGameAction: InternalGameAction, gameState: GameState): GameState = {
-    val InternalGameActionResult(actions, logEvent) = internalGameAction.execute(gameState)
-    gameState.addActions(actions).recordLogEvent(logEvent)
+    gameState.handleActionResult(internalGameAction.execute(gameState))
   }
 
   private def executeGameEvent(gameEvent: GameEvent, gameState: GameState): GameState = {
@@ -86,8 +85,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>
         logEvent.map(gameState.recordLogEvent).getOrElse(gameState)
       case _ =>
-        val (historyUpdater, actions, logEvent) = turnCycleEvent.execute(gameState)
-        gameState.updateHistory(historyUpdater).addActions(actions).recordLogEvent(logEvent)
+        val (historyUpdater, actionResult) = turnCycleEvent.execute(gameState)
+        gameState.updateHistory(historyUpdater).handleActionResult(actionResult)
     }
   }
 
@@ -105,8 +104,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
 
   def executeDecision(choice: PlayerChoice, serializedDecision: String, gameState: GameState): Option[GameState] = {
     choice.handleDecision(serializedDecision, gameState) match {
-      case Some((decision, actions, logEvent)) =>
-        Some(gameState.recordGameEvent(decision).addActions(actions).recordLogEvent(logEvent))
+      case Some((decision, actionResult)) =>
+        Some(gameState.recordGameEvent(decision).handleActionResult(actionResult))
       case None =>
         None
     }

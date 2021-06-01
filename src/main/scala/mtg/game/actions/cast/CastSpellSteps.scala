@@ -17,7 +17,7 @@ import scala.annotation.tailrec
 object CastSpellSteps {
 
   case class Start(player: PlayerId, objectToCast: ObjectId, backupAction: BackupAction) extends InternalGameAction {
-    override def execute(currentGameState: GameState): InternalGameActionResult = {
+    override def execute(currentGameState: GameState): GameActionResult = {
       Seq(
         MoveObjectEvent(player, objectToCast, Zone.Stack),
         ChooseTargets(backupAction),
@@ -26,7 +26,7 @@ object CastSpellSteps {
   }
 
   case class ChooseTargets(backupAction: BackupAction) extends InternalGameAction {
-    override def execute(currentGameState: GameState): InternalGameActionResult = {
+    override def execute(currentGameState: GameState): GameActionResult = {
       val spell = currentGameState.gameObjectState.stack.last
       val spellWithState = spell.currentState(currentGameState)
       val targetIdentifiers = spellWithState.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects).flatMap(_.targetIdentifiers)
@@ -39,8 +39,8 @@ object CastSpellSteps {
     override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[ChosenTarget] = {
       validOptions.find(_.toString == serializedChosenOption).map(ChosenTarget)
     }
-    override def handleDecision(chosenOption: ChosenTarget, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
-      (Seq(AddTarget(spell.objectId, chosenOption.objectOrPlayer)), None)
+    override def handleDecision(chosenOption: ChosenTarget, currentGameState: GameState): GameActionResult = {
+      AddTarget(spell.objectId, chosenOption.objectOrPlayer)
     }
   }
 
@@ -78,7 +78,7 @@ object CastSpellSteps {
       } yield manaAfterGeneric
     }
 
-    override def execute(currentGameState: GameState): InternalGameActionResult = {
+    override def execute(currentGameState: GameState): GameActionResult = {
       val spell = currentGameState.gameObjectState.stack.last
       val spellWithState = spell.currentState(currentGameState)
       spellWithState.characteristics.manaCost match {
@@ -98,10 +98,10 @@ object CastSpellSteps {
   }
 
   case class FinishCasting(player: PlayerId) extends InternalGameAction {
-    override def execute(currentGameState: GameState): InternalGameActionResult = {
+    override def execute(currentGameState: GameState): GameActionResult = {
       val spell = currentGameState.gameObjectState.stack.last
       val spellWithState = spell.currentState(currentGameState)
-      InternalGameActionResult(
+      GameActionResult(
         Seq(SpellCastEvent(spell), priority.PriorityFromPlayerAction(player)),
         Some(LogEvent.CastSpell(player, spellWithState.characteristics.name, spellWithState.gameObject.targets.map(_.getName(currentGameState)))))
     }

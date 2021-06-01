@@ -8,14 +8,14 @@ import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state._
 
 case class ResolveActivatedAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {
-  override def execute(gameState: GameState): InternalGameActionResult = {
+  override def execute(gameState: GameState): GameActionResult = {
     val resolutionContext = OneShotEffectResolutionContext.initial(objectWithAbility.gameObject.objectId, player, Nil)
     ResolveEffects(ability.effectParagraph.effects, resolutionContext)
   }
 }
 
 case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: OneShotEffectResolutionContext) extends InternalGameAction {
-  override def execute(gameState: GameState): InternalGameActionResult = {
+  override def execute(gameState: GameState): GameActionResult = {
     effects match {
       case effect +: remainingEffects =>
         effect.resolve(gameState, resolutionContext) match {
@@ -34,10 +34,10 @@ case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: OneSho
 
 case class ResolveEffectChoice(effectChoice: OneShotEffectChoice, remainingEffects: Seq[OneShotEffect]) extends PlayerChoice {
   override def playerToAct: PlayerId = effectChoice.playerChoosing
-  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(GameEvent.Decision, Seq[GameAction], Option[LogEvent])] = {
+  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(GameEvent.Decision, GameActionResult)] = {
     effectChoice.handleDecision(serializedDecision, currentGameState)
       .map { case (decision, newResolutionContext) =>
-        (GameEvent.Decision(decision, playerToAct), Seq(ResolveEffects(remainingEffects, newResolutionContext)), None)
+        (GameEvent.Decision(decision, playerToAct), ResolveEffects(remainingEffects, newResolutionContext))
       }
   }
 }

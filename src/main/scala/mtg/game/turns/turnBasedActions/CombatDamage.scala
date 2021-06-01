@@ -9,7 +9,7 @@ import mtg.utils.ParsingUtils
 import scala.annotation.tailrec
 
 object CombatDamage extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
+  override def execute(currentGameState: GameState): GameActionResult = {
     val attackDeclarations = DeclareAttackers.getAttackDeclarations(currentGameState)
     val blockDeclarations = DeclareBlockers.getBlockDeclarations(currentGameState)
     if (attackDeclarations.nonEmpty)
@@ -24,7 +24,7 @@ case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration]
     blocker.getToughness(gameState) - blocker.getMarkedDamage(gameState) - damageEvents.filter(_.recipient == blocker).map(_.amount).sum
   }
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
+  override def execute(currentGameState: GameState): GameActionResult = {
     attackDeclarations match {
       case attackDeclaration +: remainingAttackDeclarations =>
         import attackDeclaration._
@@ -108,9 +108,9 @@ case class AssignCombatDamageChoice(
     ParsingUtils.splitStringAsInts(serializedChosenOption).flatMap(matchBlockers(_, blockers, Map.empty, damageToAssign))
   }
 
-  override def handleDecision(chosenOption: CombatDamageAssignment, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+  override def handleDecision(chosenOption: CombatDamageAssignment, currentGameState: GameState): GameActionResult = {
     val assignedDamageEvents = chosenOption.blockerDamage.map { case (blocker, amount) => DealCombatDamageEvent(attacker, blocker, amount)}.toSeq
-    (Seq(AssignAttackerCombatDamage(attackDeclarations, blockDeclarations, damageEvents ++ assignedDamageEvents)), None)
+    AssignAttackerCombatDamage(attackDeclarations, blockDeclarations, damageEvents ++ assignedDamageEvents)
   }
 }
 

@@ -5,13 +5,14 @@ import mtg.game.state.history.{GameEvent, LogEvent}
 
 abstract class TypedPlayerChoice[TOption <: AnyRef] extends PlayerChoice {
   def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[TOption]
-  def handleDecision(chosenOption: TOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent])
-  override def handleDecision(serializedChosenOption: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])] = {
+  def handleDecision(chosenOption: TOption, currentGameState: GameState): GameActionResult
+  override def handleDecision(serializedChosenOption: String, currentGameState: GameState): Option[(Decision, GameActionResult)] = {
     parseOption(serializedChosenOption, currentGameState)
       .map(option => {
-        val decision = GameEvent.Decision(option, playerToAct)
-        val (actions, logEvent) = handleDecision(option, currentGameState)
-        (decision, actions, logEvent)
+        (
+          GameEvent.Decision(option, playerToAct),
+          handleDecision(option, currentGameState)
+        )
       })
   }
 }

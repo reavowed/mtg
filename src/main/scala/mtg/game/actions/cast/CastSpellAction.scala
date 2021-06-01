@@ -3,7 +3,7 @@ package mtg.game.actions.cast
 import mtg.characteristics.types.Type
 import mtg.game.actions.{PriorityAction, TimingChecks}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{BackupAction, GameAction, GameState, InternalGameActionResult, ObjectWithState}
+import mtg.game.state.{BackupAction, GameAction, GameState, GameActionResult, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, ZoneType}
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {
@@ -11,7 +11,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, back
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
+  override def execute(currentGameState: GameState): GameActionResult = {
     CastSpellSteps.Start(player, objectId, backupAction)
   }
 }

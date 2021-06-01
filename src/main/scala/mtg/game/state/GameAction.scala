@@ -13,18 +13,18 @@ abstract class GameObjectEvent extends GameEvent {
 }
 
 abstract class TurnCycleEvent extends GameEvent {
-  def execute(currentGameState: GameState): (GameHistory => GameHistory, Seq[GameAction], Option[LogEvent])
+  def execute(currentGameState: GameState): (GameHistory => GameHistory, GameActionResult)
 }
 
 abstract class InternalGameAction extends GameAction {
-  def execute(currentGameState: GameState): InternalGameActionResult
+  def execute(currentGameState: GameState): GameActionResult
 }
 
 case class BackupAction(gameStateToRevertTo: GameState) extends GameAction
 
 abstract class PlayerChoice extends GameAction {
   def playerToAct: PlayerId
-  def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, Seq[GameAction], Option[LogEvent])]
+  def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, GameActionResult)]
 }
 
 sealed abstract class GameResult extends GameAction

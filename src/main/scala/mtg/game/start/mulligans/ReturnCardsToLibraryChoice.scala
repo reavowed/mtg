@@ -4,7 +4,7 @@ import mtg._
 import mtg.events.MoveObjectEvent
 import mtg.game.objects.GameObject
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, TypedPlayerChoice}
+import mtg.game.state.{GameAction, GameState, GameActionResult, TypedPlayerChoice}
 import mtg.game.{PlayerId, Zone}
 
 case class ReturnCardsToLibraryOption(cardsToReturn: Seq[GameObject])
@@ -16,10 +16,10 @@ case class ReturnCardsToLibraryChoice(playerToAct: PlayerId, numberOfCardsToRetu
       cardObjects <- ids.map(id => currentGameState.gameObjectState.hands(playerToAct).find(_.objectId.sequentialId == id)).swap
     } yield ReturnCardsToLibraryOption(cardObjects)
   }
-  override def handleDecision(chosenOption: ReturnCardsToLibraryOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent])  = {
+  override def handleDecision(chosenOption: ReturnCardsToLibraryOption, currentGameState: GameState): GameActionResult  = {
     (
       chosenOption.cardsToReturn.map(MoveObjectEvent(playerToAct, _, Zone.Library(playerToAct))),
-      Some(LogEvent.ReturnCardsToLibrary(playerToAct, numberOfCardsToReturn))
+      LogEvent.ReturnCardsToLibrary(playerToAct, numberOfCardsToReturn)
     )
   }
 }

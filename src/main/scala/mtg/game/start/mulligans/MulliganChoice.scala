@@ -2,7 +2,7 @@ package mtg.game.start.mulligans
 
 import mtg.game.PlayerId
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, TypedPlayerChoice}
+import mtg.game.state.{GameAction, GameState, GameActionResult, TypedPlayerChoice}
 
 case class MulliganChoice(playerToAct: PlayerId, mulligansSoFar: Int)
   extends TypedPlayerChoice[MulliganOption] with TypedPlayerChoice.PartialFunctionParser[MulliganOption]
@@ -12,7 +12,7 @@ case class MulliganChoice(playerToAct: PlayerId, mulligansSoFar: Int)
     case "K" => MulliganOption.Keep
   }
 
-  override def handleDecision(chosenOption: MulliganOption, currentGameState: GameState): (Seq[GameAction], Option[LogEvent]) = {
+  override def handleDecision(chosenOption: MulliganOption, currentGameState: GameState): GameActionResult = {
     val actions = if (chosenOption == MulliganOption.Keep && mulligansSoFar > 0)
       Seq(ReturnCardsToLibraryChoice(playerToAct, mulligansSoFar))
     else
@@ -21,6 +21,6 @@ case class MulliganChoice(playerToAct: PlayerId, mulligansSoFar: Int)
       case MulliganOption.Mulligan => LogEvent.Mulligan(playerToAct, currentGameState.gameData.startingHandSize - mulligansSoFar - 1)
       case MulliganOption.Keep => LogEvent.KeepHand(playerToAct, currentGameState.gameData.startingHandSize - mulligansSoFar)
     }
-    (actions, Some(logEvent))
+    (actions, logEvent)
   }
 }
