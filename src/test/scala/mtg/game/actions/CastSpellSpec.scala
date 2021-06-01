@@ -56,7 +56,6 @@ class CastSpellSpec extends SpecWithGameStateManager {
       manager.currentAction must bePriorityChoice.forPlayer(playerTwo).withNoAvailableSpells
     }
 
-    // TODO: not for creature card with something on the stack
     // TODO: Can't cast Dryad Arbor
   }
 
