@@ -23,6 +23,14 @@
 
 .graveyard {
   position: relative;
+}
+
+.graveyardOutline {
   height: 113px;
   width: 129px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-image: url('../img/graveyard.png');
+  background-repeat: no-repeat;
+  background-position: center;
 }

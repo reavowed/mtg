@@ -9,8 +9,10 @@ export default function Graveyard({player, className, ...props}) {
     const graveyard = gameState.graveyards[player]
     const graveyardSize = _.isNumber(graveyard) ? graveyard : graveyard.length;
     const topCard = graveyardSize > 0 && graveyard[graveyardSize - 1];
-    return <div className={addClass(className, "graveyard")} {...props}>
-        {graveyardSize > 0 && <CardImage card={topCard} key={topCard.objectId} />}
-        {graveyardSize > 0 && <span className="zoneCount">{graveyardSize}</span>}
-    </div>
+    return graveyardSize > 0 ?
+        <div className={addClass(className, "graveyard")} {...props}>
+            <CardImage card={topCard} key={topCard.objectId} />
+            <span className="zoneCount">{graveyardSize}</span>
+        </div> :
+        <div className={addClass(className, "graveyardOutline")} {...props}/>;
 }

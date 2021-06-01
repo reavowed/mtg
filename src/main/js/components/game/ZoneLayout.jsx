@@ -4,7 +4,6 @@ import CanvasManager from "../../contexts/CanvasManager";
 import GameState from "../../contexts/GameState";
 import Graveyard from "./Graveyard";
 import Battlefield from "./layout/Battlefield";
-import CardRow from "./card/CardRow";
 import Hand from "./Hand";
 import Stops from "./layout/Stops";
 import Library from "./Library";
@@ -43,8 +42,8 @@ export default function ZoneLayout() {
                                 <div className="d-flex h-100 ml-2">
                                     <div className="flex-grow-0">
                                         <div className="d-flex flex-column h-100">
-                                            <Graveyard className="flex-grow-0 mb-2" player={opponent}/>
-                                            <Library className="flex-grow-0 mb-2" player={opponent}/>
+                                            <Graveyard className="flex-grow-0 mt-2" player={opponent}/>
+                                            <Library className="flex-grow-0 mt-2" player={opponent}/>
                                             <div className="flex-grow-1"/>
                                         </div>
                                     </div>

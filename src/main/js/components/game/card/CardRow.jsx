@@ -12,13 +12,7 @@ function CardWrapper({card, as}) {
     </div>
 }
 
-function getCardWidth(card) {
-    if (card.permanentStatus && card.permanentStatus.isTapped) {
-        return 204;
-    } else {
-        return 146;
-    }
-}
+const cardWidth = 129;
 
 export default function CardRow({className, cards, as}) {
     as = as || CardWithActions;
@@ -28,7 +22,7 @@ export default function CardRow({className, cards, as}) {
             numberOfCards = cardElements.length;
         if (numberOfCards === 0) return;
         const availableWidth = ref.clientWidth,
-            totalCardWidth = _.sum(_.map(cards, getCardWidth)),
+            totalCardWidth = cardWidth * cards.length,
             totalWidthToRemove = totalCardWidth - availableWidth,
             individualWidthToRemove = totalWidthToRemove / (cards.length - 1);
 
@@ -36,7 +30,7 @@ export default function CardRow({className, cards, as}) {
         if (totalWidthToRemove > 0) {
             _.forEach(cardElements, (cardElement, i) => {
                 if (i < cardElements.length - 1) {
-                    cardElement.style.width = (getCardWidth(cards[i]) - individualWidthToRemove) + "px";
+                    cardElement.style.width = (cardWidth - individualWidthToRemove) + "px";
                 }
                 cardElement.style.margin = "0";
             });
