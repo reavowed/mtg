@@ -52,6 +52,7 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(IntroductionToAnnihilation, GrizzledOutrider))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+        .setLibrary(playerTwo, Seq(Forest))
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
 
       manager.passUntilPhase(PrecombatMainPhase)
