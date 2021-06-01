@@ -8,8 +8,7 @@ case class MoveObjectEvent(player: PlayerId, objectId: ObjectId, destination: Zo
   def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.derivedState.allObjectStates.get(objectId).map(gameObjectWithState => {
         // TODO: Handle putting something onto the battlefield under another player's control
-      gameObjectWithState.gameObject
-        .removeFromCurrentZone(currentGameState.gameObjectState)
+      currentGameState.gameObjectState.deleteObject(gameObjectWithState.gameObject)
         .addNewObject(destination.newObjectForZone(gameObjectWithState, player, _), _.length)
     })
   }

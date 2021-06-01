@@ -4,6 +4,7 @@ import mtg.SpecWithGameStateManager
 import mtg.abilities.AbilityDefinition
 import mtg.abilities.keyword.Vigilance
 import mtg.data.cards.alpha.SavannahLions
+import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, ExpandedAnatomy, SpinedKarok}
 import mtg.data.cards.{Forest, Island, Plains}
 import mtg.effects.oneshot.basic.SearchChoice
@@ -26,9 +27,9 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
       manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpell(ExpandedAnatomy)
     }
 
-    "allow targeting any creature" in {
+    "allow targeting any creature on the battlefield" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(ExpandedAnatomy))
+        .setHand(playerOne, Seq(ExpandedAnatomy, GrizzledOutrider))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))

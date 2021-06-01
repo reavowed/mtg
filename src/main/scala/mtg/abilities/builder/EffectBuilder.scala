@@ -36,6 +36,7 @@ object EffectBuilder extends FilterBuilder with IdentifierBuilder with TargetBui
     def gain(amount: Int) = new {
       def life = GainLifeEffect(playerIdentifier, amount)
     }
+    def drawsACard = new DrawACardEffect(playerIdentifier)
   }
 
   def searchYourLibraryForA(objectFilter: Filter[ObjectId]): SearchLibraryEffect = SearchLibraryEffect(objectFilter)
@@ -43,6 +44,7 @@ object EffectBuilder extends FilterBuilder with IdentifierBuilder with TargetBui
   def put(objectIdentifier: Identifier[ObjectId]) = new {
     def intoYourHand = basic.PutIntoHandEffect(objectIdentifier)
   }
+  def exile(objectIdentifier: Identifier[ObjectId]): ExileEffect = ExileEffect(objectIdentifier)
   def put(number: Int, counterType: CounterType) = new {
     def on(objectIdentifier: Identifier[ObjectId]): PutCountersEffect = PutCountersEffect(number, counterType, objectIdentifier)
   }

@@ -8,7 +8,7 @@ import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.TextUtils._
 
 case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEffect {
-  override def getText(cardName: String): String = "search your library for " + objectFilter.text.withArticle + " card"
+  override def getText(cardName: String): String = "search your library for " + objectFilter.text.withArticle
   override def resolve(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): OneShotEffectResult = {
     val player = resolutionContext.controller
     val zone = Zone.Library(player)

@@ -1,8 +1,9 @@
 package mtg.game
 
 import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import mtg.game.objects.PermanentObject
 import mtg.game.state.{Characteristics, GameState}
 
 sealed trait ObjectOrPlayer {
@@ -12,7 +13,10 @@ sealed trait ObjectOrPlayer {
 @JsonSerialize(using = classOf[ObjectId.Serializer])
 case class ObjectId(sequentialId: Int) extends ObjectOrPlayer {
   override def toString: String = sequentialId.toString
+  def findCurrentCharacteristics(gameState: GameState): Option[Characteristics] = gameState.gameObjectState.derivedState.allObjectStates.get(this).map(_.characteristics)
   def currentCharacteristics(gameState: GameState): Characteristics = gameState.gameObjectState.derivedState.allObjectStates(this).characteristics
+
+  def findPermanent(gameState: GameState): Option[PermanentObject] = gameState.gameObjectState.battlefield.find(_.objectId == this)
 
   def getName(gameState: GameState): String = currentCharacteristics(gameState).name
   def getPower(gameState: GameState): Int = currentCharacteristics(gameState).power.getOrElse(0)

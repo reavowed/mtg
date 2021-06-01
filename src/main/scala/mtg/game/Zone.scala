@@ -5,14 +5,14 @@ import mtg.game.objects._
 import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
 import mtg.utils.AtGuaranteed
 
-sealed abstract class ZoneType {
-}
+sealed abstract class ZoneType
 object ZoneType {
   case object Library extends ZoneType
   case object Hand extends ZoneType
   case object Battlefield extends ZoneType
   case object Graveyard extends ZoneType
   case object Stack extends ZoneType
+  case object Exile extends ZoneType
   case object Sideboard extends ZoneType
 }
 
@@ -71,6 +71,9 @@ object Zone {
   }
   case class Sideboard(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Hand) with BasicZone {
     override def stateMapLens: Lens[GameObjectState, Map[PlayerId, Seq[BasicGameObject]]] = Focus[GameObjectState](_.sideboards)
+  }
+  case object Exile extends Shared[BasicGameObject](ZoneType.Exile) with BasicZone {
+    override def stateLens: Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.exile)
   }
 }
 

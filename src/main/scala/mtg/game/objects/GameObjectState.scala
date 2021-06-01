@@ -4,7 +4,7 @@ import monocle.Focus
 import mtg.cards.CardPrinting
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
-import mtg.game.state.DerivedState
+import mtg.game.state.{DerivedState, ObjectWithState}
 import mtg.game.{GameData, GameStartingData, ObjectId, PlayerId, TypedZone, Zone}
 import mtg.utils.AtGuaranteed
 
@@ -19,8 +19,10 @@ case class GameObjectState(
     battlefield: Seq[PermanentObject],
     graveyards: Map[PlayerId, Seq[BasicGameObject]],
     stack: Seq[StackObject],
+    exile: Seq[BasicGameObject],
     sideboards: Map[PlayerId, Seq[BasicGameObject]],
     manaPools: Map[PlayerId, Seq[ManaObject]],
+    lastKnownInformation: Map[ObjectId, ObjectWithState],
     floatingActiveContinuousEffects: Seq[FloatingActiveContinuousEffect])
 {
   lazy val derivedState: DerivedState = DerivedState.calculateFromGameObjectState(this)
@@ -31,6 +33,7 @@ case class GameObjectState(
   }
   def deleteObject(gameObject: GameObject): GameObjectState = {
     gameObject.removeFromCurrentZone(this)
+      .copy(lastKnownInformation = derivedState.allObjectStates.get(gameObject.objectId).foldLeft(lastKnownInformation)(_.updated(gameObject.objectId, _)))
   }
   def addNewObject(createNewObject: ObjectId => GameObject, getIndex: Seq[GameObject] => Int): GameObjectState = {
     createNewObject(ObjectId(nextObjectId)).add(this, getIndex).copy(nextObjectId = nextObjectId + 1)
@@ -41,10 +44,8 @@ case class GameObjectState(
       hands.flatMap(_._2).view ++
       battlefield.view ++
       stack.view ++
-      graveyards.flatMap(_._2).view
-  }
-  def allVisibleObjects(player: PlayerId): Seq[GameObject] = {
-    hands(player) ++ battlefield
+      graveyards.flatMap(_._2).view ++
+      exile.view
   }
   def updatePermanentObject(objectId: ObjectId, f: PermanentObject => PermanentObject): GameObjectState = {
     battlefield.find(_.objectId == objectId).get.update(this, f)
@@ -61,6 +62,10 @@ case class GameObjectState(
   }
   def updateEffects(f: Seq[FloatingActiveContinuousEffect] => Seq[FloatingActiveContinuousEffect]): GameObjectState = {
     copy(floatingActiveContinuousEffects = f(floatingActiveContinuousEffects))
+  }
+
+  def getCurrentOrLastKnownState(objectId: ObjectId): Option[ObjectWithState] = {
+    derivedState.allObjectStates.get(objectId) orElse lastKnownInformation.get(objectId)
   }
 }
 
@@ -97,8 +102,10 @@ object GameObjectState {
       Nil,
       emptyMap,
       Nil,
+      Nil,
       sideboards,
       emptyMap,
+      Map.empty,
       Nil)
   }
 }

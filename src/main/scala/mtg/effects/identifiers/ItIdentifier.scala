@@ -9,4 +9,5 @@ object ItIdentifier extends Identifier[ObjectId] {
     (resolutionContext.identifiedObjects.last.asInstanceOf[ObjectId], resolutionContext)
   }
   override def getText(cardName: String): String = "it"
+  override def getPossessiveText(cardName: String): String = "its"
 }

@@ -11,4 +11,4 @@ object LightningBolt extends Spell(
   ManaCost(Red),
   Type.Instant,
   Nil,
-  `this`.deals(3).damageTo(anyTarget))
+  cardName.deals(3).damageTo(anyTarget))

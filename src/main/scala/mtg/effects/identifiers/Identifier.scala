@@ -7,4 +7,5 @@ import mtg.game.state.GameState
 trait Identifier[+T <: ObjectOrPlayer] {
   def get(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): (T, OneShotEffectResolutionContext)
   def getText(cardName: String): String
+  def getPossessiveText(cardName: String): String = getText(cardName) + "'s"
 }
