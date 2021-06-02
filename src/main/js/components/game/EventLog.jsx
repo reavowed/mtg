@@ -36,7 +36,12 @@ function EventLogMessage({entry}) {
         case "OrderBlockers":
             return "Player " + entry.details.player + " orders blockers for " + entry.details.attackerName + ": first " + entry.details.blockerNames.join(", then ") + ".";
         case "RevealCard":
-            return "Player " + entry.details.player + " reveals " + entry.details.cardName + ".";
+            return "Player " + entry.details.player + " reveals " + entry.details.cardName + ".";;
+        case "Scry":
+            const clauses = [];
+            entry.details.cardsOnTop && clauses.push(getPlural(entry.details.cardsOnTop, "card", "cards") + " to the top");
+            entry.details.cardsOnBottom && clauses.push(getPlural(entry.details.cardsOnBottom, "card", "cards") + " to the bottom");
+            return "Player " + entry.details.player + " scries " + commaList(clauses) + ".";
     }
 }
 

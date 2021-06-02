@@ -11,6 +11,7 @@ case class SpellEffectParagraph(sentences: SpellEffectSentence*) extends TextPar
 object SpellEffectParagraph {
   implicit def fromSingleEffect(effect: OneShotEffect): SpellEffectParagraph = SpellEffectParagraph(SpellEffectSentence.SingleClause(effect))
   implicit def seqFromSingleEffect(effect: OneShotEffect): Seq[SpellEffectParagraph] = Seq(fromSingleEffect(effect))
+  implicit def seqFromSingleSentence(sentence: SpellEffectSentence): Seq[SpellEffectParagraph] = Seq(SpellEffectParagraph(sentence))
 }
 
 sealed trait SpellEffectSentence {

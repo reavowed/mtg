@@ -1,10 +1,11 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
+import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.{ObjectOrPlayer, PlayerId}
 import mtg.game.actions.cast.CastSpellAction
 import mtg.game.actions.cast.CastSpellSteps.TargetChoice
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
+import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, ResolveEffectChoice}
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.{GameAction, GameStateManager}
 import mtg.game.turns.priority.PriorityChoice
@@ -12,6 +13,7 @@ import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 import org.specs2.mutable.SpecificationLike
 
 import scala.collection.mutable.ListBuffer
+import scala.reflect.ClassTag
 
 trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
   def beCastSpellAction(cardDefinition: CardDefinition): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
@@ -80,4 +82,6 @@ trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
 
   def bePriorityChoice: PriorityChoiceMatcher = new PriorityChoiceMatcher
   def beTargetChoice: TargetChoiceMatcher = new TargetChoiceMatcher
+  def beEffectChoice[T <: OneShotEffectChoice : ClassTag](m: Matcher[T]): Matcher[GameAction] = beAnInstanceOf[ResolveEffectChoice] and
+    ((_: GameAction).asInstanceOf[ResolveEffectChoice].effectChoice) ^^ (beAnInstanceOf[T] and (((_: OneShotEffectChoice).asInstanceOf[T]) ^^ m))
 }

@@ -15,8 +15,8 @@ case class VisibleState(
   currentPhase: Option[TurnPhase],
   currentStep: Option[TurnStep],
   lifeTotals: Map[PlayerId, Int],
-  hands: Map[PlayerId, HiddenZoneContents],
-  libraries: Map[PlayerId, HiddenZoneContents],
+  hands: Map[PlayerId, Seq[PossiblyHiddenGameObject]],
+  libraries: Map[PlayerId, Seq[PossiblyHiddenGameObject]],
   battlefield: Map[PlayerId, Seq[VisibleGameObject]],
   graveyards: Map[PlayerId, Seq[VisibleGameObject]],
   stack: Seq[VisibleGameObject],
@@ -34,11 +34,10 @@ object VisibleState {
       .flatMap(_.effectChoice.asOptionalInstanceOf[SearchChoice])
       .filter(_.playerChoosing == playerIdentifier)
       .map(_.zone)
-    def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): HiddenZoneContents = {
-      if (zone == Zone.Hand(playerIdentifier) || currentlySearchingZone.contains(zone))
-        HiddenZoneContents.CanSee(contents.map(getObject))
-      else
-        HiddenZoneContents.CantSee(contents.length)
+    def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): Seq[PossiblyHiddenGameObject] = {
+      val canSeeZone = zone == Zone.Hand(playerIdentifier) || currentChoice.exists(_.temporarilyVisibleZones.contains(zone))
+      def canSeeObject(gameObject: GameObject): Boolean = canSeeZone || currentChoice.exists(_.temporarilyVisibleObjects.contains(gameObject.objectId))
+      contents.map(gameObject => if (canSeeObject(gameObject)) getObject(gameObject) else HiddenGameObject)
     }
     VisibleState(
       playerIdentifier,

@@ -5,18 +5,24 @@ import mtg.game.state.{Characteristics, GameState, ObjectWithState, PermanentSta
 import mtg.game.turns.turnBasedActions.{DeclareAttackers, DeclareBlockers}
 import mtg.game.{ObjectId, PlayerId}
 
+sealed trait PossiblyHiddenGameObject
+
+case object HiddenGameObject extends PossiblyHiddenGameObject
+
 case class VisibleGameObject(
-  name: String,
-  set: String,
-  collectorNumber: Int,
-  objectId: ObjectId,
-  characteristics: Characteristics,
-  text: String,
-  controller: Option[PlayerId],
-  permanentStatus: Option[PermanentStatus],
-  markedDamage: Option[Int],
-  counters: Map[String, Int],
-  modifiers: Map[String, Any])
+    name: String,
+    set: String,
+    collectorNumber: Int,
+    objectId: ObjectId,
+    characteristics: Characteristics,
+    text: String,
+    controller: Option[PlayerId],
+    permanentStatus: Option[PermanentStatus],
+    markedDamage: Option[Int],
+    counters: Map[String, Int],
+    modifiers: Map[String, Any])
+  extends PossiblyHiddenGameObject
+
 object VisibleGameObject {
   private def getModifiers(gameObject: GameObject, gameState: GameState): Map[String, Any] = {
     val builder = Map.newBuilder[String, Any]

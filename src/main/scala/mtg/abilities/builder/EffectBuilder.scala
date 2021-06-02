@@ -7,8 +7,8 @@ import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.Identifier
-import mtg.effects.oneshot.basic.{GainAbilityEffect, _}
-import mtg.effects.oneshot.basic
+import mtg.effects.oneshot.actions._
+import mtg.effects.oneshot.basic._
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.parts.counters.CounterType
 
@@ -17,36 +17,38 @@ object EffectBuilder extends FilterBuilder with IdentifierBuilder with TargetBui
   abstract class EffectsSeqExtension(effects: Seq[OneShotEffect]) {
     def `then`(effect: OneShotEffect): SpellEffectSentence = SpellEffectSentence.MultiClause(effects :+ effect, "then")
   }
-
+  implicit class EffectExtension(effect: OneShotEffect) extends EffectsSeqExtension(Seq(effect))
   implicit class ThreeEffectsExtension(effects: (OneShotEffect, OneShotEffect, OneShotEffect)) extends EffectsSeqExtension(effects.productIterator.toSeq.ofType[OneShotEffect])
 
   case class DealEffectBuilder(objectIdentifier: Identifier[ObjectId], amount: Int) {
-      def damageTo(recipientIdentifier: Identifier[ObjectOrPlayer]): DealDamageEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
+      def damageTo(recipientIdentifier: Identifier[ObjectOrPlayer]): OneShotEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
   }
   case class GainAbilityEffectBuilder(objectIdentifier: Identifier[ObjectId], abilityDefinition: AbilityDefinition) {
-      def until(conditionDefinition: ConditionDefinition): GainAbilityEffect = basic.GainAbilityEffect(objectIdentifier, abilityDefinition, conditionDefinition)
+      def until(conditionDefinition: ConditionDefinition): OneShotEffect = GainAbilityEffect(objectIdentifier, abilityDefinition, conditionDefinition)
   }
 
   implicit class ObjectIdentifierExtension(objectIdentifier: Identifier[ObjectId]) {
-    def deals(amount: Int) = DealEffectBuilder(objectIdentifier, amount)
-    def gains(abilityDefinition: AbilityDefinition) = GainAbilityEffectBuilder(objectIdentifier, abilityDefinition)
+    def deals(amount: Int): DealEffectBuilder = DealEffectBuilder(objectIdentifier, amount)
+    def gains(abilityDefinition: AbilityDefinition): GainAbilityEffectBuilder = GainAbilityEffectBuilder(objectIdentifier, abilityDefinition)
   }
 
   implicit class PlayerIdentifierExtension(playerIdentifier: Identifier[PlayerId]) {
     def gain(amount: Int) = new {
-      def life = GainLifeEffect(playerIdentifier, amount)
+      def life: OneShotEffect = GainLifeEffect(playerIdentifier, amount)
     }
-    def drawsACard = new DrawACardEffect(playerIdentifier)
+    def drawsACard: OneShotEffect = DrawsACardEffect(playerIdentifier)
   }
 
-  def searchYourLibraryForA(objectFilter: Filter[ObjectId]): SearchLibraryEffect = SearchLibraryEffect(objectFilter)
-  def reveal(objectIdentifier: Identifier[ObjectId]): RevealEffect = RevealEffect(objectIdentifier)
+  def searchYourLibraryForA(objectFilter: Filter[ObjectId]): OneShotEffect = SearchLibraryEffect(objectFilter)
+  def reveal(objectIdentifier: Identifier[ObjectId]): OneShotEffect = RevealEffect(objectIdentifier)
   def put(objectIdentifier: Identifier[ObjectId]) = new {
-    def intoYourHand = basic.PutIntoHandEffect(objectIdentifier)
+    def intoYourHand: OneShotEffect = PutIntoHandEffect(objectIdentifier)
   }
-  def exile(objectIdentifier: Identifier[ObjectId]): ExileEffect = ExileEffect(objectIdentifier)
+  def exile(objectIdentifier: Identifier[ObjectId]): OneShotEffect = ExileEffect(objectIdentifier)
   def put(number: Int, counterType: CounterType) = new {
-    def on(objectIdentifier: Identifier[ObjectId]): PutCountersEffect = PutCountersEffect(number, counterType, objectIdentifier)
+    def on(objectIdentifier: Identifier[ObjectId]): OneShotEffect = PutCountersEffect(number, counterType, objectIdentifier)
   }
-  def shuffle: ShuffleEffect.type = ShuffleEffect
+  def shuffle: OneShotEffect = ShuffleEffect
+  def scry(number: Int): OneShotEffect = ScryEffect(number)
+  def drawACard: OneShotEffect = DrawACardEffect
 }

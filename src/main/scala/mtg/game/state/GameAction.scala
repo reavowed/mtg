@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.game.PlayerId
+import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.state.history.GameEvent.Decision
 import mtg.game.state.history.{GameHistory, LogEvent}
 
@@ -25,6 +25,8 @@ case class BackupAction(gameStateToRevertTo: GameState) extends GameAction
 abstract class PlayerChoice extends GameAction {
   def playerToAct: PlayerId
   def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, GameActionResult)]
+  def temporarilyVisibleZones: Seq[Zone] = Nil
+  def temporarilyVisibleObjects: Seq[ObjectId] = Nil
 }
 
 sealed abstract class GameResult extends GameAction

@@ -6,6 +6,7 @@ import DeclareAttackersChoice from "./choices/DeclareAttackersChoice";
 import DeclareBlockersChoice from "./choices/DeclareBlockersChoice";
 import OrderBlockersChoice from "./choices/OrderBlockersChoice";
 import PriorityChoice from "./choices/PriorityChoice";
+import ScryChoice from "./choices/ScryChoice";
 import SearchChoice from "./choices/SearchChoice";
 import TargetChoice from "./choices/TargetChoice";
 import ManaPool from "./ManaPool";
@@ -26,6 +27,8 @@ function getChoiceDisplay(choiceType) {
             return <SearchChoice />
         case "TargetChoice":
             return <TargetChoice />
+        case "ScryChoice":
+            return <ScryChoice />
     }
 }
 

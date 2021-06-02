@@ -3,7 +3,7 @@ package mtg.game.actions
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.effects.OneShotEffect
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
-import mtg.game.PlayerId
+import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state._
 
@@ -36,8 +36,11 @@ case class ResolveEffectChoice(effectChoice: OneShotEffectChoice, remainingEffec
   override def playerToAct: PlayerId = effectChoice.playerChoosing
   override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(GameEvent.Decision, GameActionResult)] = {
     effectChoice.handleDecision(serializedDecision, currentGameState)
-      .map { case (decision, newResolutionContext) =>
-        (GameEvent.Decision(decision, playerToAct), ResolveEffects(remainingEffects, newResolutionContext))
+      .map { case (decision, result, newResolutionContext) =>
+        (GameEvent.Decision(decision, playerToAct), result.copy(childActions = result.childActions :+ ResolveEffects(remainingEffects, newResolutionContext)))
       }
   }
+
+  override def temporarilyVisibleZones: Seq[Zone] = effectChoice.temporarilyVisibleZones
+  override def temporarilyVisibleObjects: Seq[ObjectId] = effectChoice.temporarilyVisibleObjects
 }

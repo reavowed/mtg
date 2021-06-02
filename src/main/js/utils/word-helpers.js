@@ -11,6 +11,6 @@ export function commaList(words) {
     if (words.length === 1) {
         return words[0];
     } else {
-        return words.slice(0, words.length - 2).join(", ") + " and " + words[words.length - 1];
+        return words.slice(0, words.length - 1).join(", ") + " and " + words[words.length - 1];
     }
 }

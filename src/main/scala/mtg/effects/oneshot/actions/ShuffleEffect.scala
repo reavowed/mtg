@@ -1,4 +1,4 @@
-package mtg.effects.oneshot.basic
+package mtg.effects.oneshot.actions
 
 import mtg.effects.OneShotEffect
 import mtg.effects.oneshot.{OneShotEffectResolutionContext, OneShotEffectResult}

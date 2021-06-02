@@ -7,9 +7,9 @@ import mtg.events.DrawCardEvent
 import mtg.game.PlayerId
 import mtg.game.state.GameState
 
-case object DrawACardEffect extends OneShotEffect {
-  override def getText(cardName: String): String = "draw a card"
+case class DrawsACardEffect(playerIdentifier: Identifier[PlayerId]) extends OneShotEffect {
+  override def getText(cardName: String): String = playerIdentifier.getText(cardName) + " draws a card"
   override def resolve(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): OneShotEffectResult = {
-    (DrawCardEvent(resolutionContext.controller), resolutionContext)
+    playerIdentifier.get(gameState, resolutionContext).mapLeft(DrawCardEvent)
   }
 }
