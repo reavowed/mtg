@@ -1,10 +1,11 @@
 import {useContext, useState} from "preact/hooks";
 import {Button, Modal} from "react-bootstrap";
 import GameState from "../../../contexts/GameState";
+import {addClass} from "../../../utils/element-utils";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import _ from "lodash";
-import CardImage from "../card/CardImage";
+import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
 
 export default function SearchChoice() {
@@ -36,7 +37,7 @@ export default function SearchChoice() {
                                 }
                             }
                             const className = isChosen ? "selected" : canChoose ? "selectable" : "non-selectable";
-                            return <CardImage card={card} style={style} onClick={onClick} className={className}/>
+                            return <CardWithText card={card} style={style} onClick={onClick} className={addClass(className, "my-2")}/>
                         })}
                     </HorizontalCenter>
                 </div>
