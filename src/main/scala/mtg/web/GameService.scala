@@ -3,7 +3,7 @@ package mtg.web
 import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
 import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.m21.AlpineWatchdog
+import mtg.data.cards.m21.{AlpineWatchdog, ConcordiaPegasus}
 import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
 import mtg.data.cards.{Forest, Mountain, Plains}
 import mtg.data.sets.Strixhaven
@@ -46,11 +46,13 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialGameState = initialManager.currentGameState
 
     val cardsToAdd = Seq(
-      (SavannahLions, Zone.Battlefield, playerOne),
+      (ConcordiaPegasus, Zone.Battlefield, playerOne),
+      (AgelessGuardian, Zone.Battlefield, playerOne),
       (Mountain, Zone.Battlefield, playerOne),
       (Mountain, Zone.Battlefield, playerOne),
       (Mountain, Zone.Battlefield, playerOne),
-      (SavannahLions, Zone.Battlefield, playerTwo),
+      (ConcordiaPegasus, Zone.Battlefield, playerTwo),
+      (AgelessGuardian, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),

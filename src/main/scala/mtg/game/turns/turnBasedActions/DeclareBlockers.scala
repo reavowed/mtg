@@ -1,9 +1,10 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.characteristics.types.Type
+import mtg.effects.continuous.BlockerRestriction
 import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction, GameActionResult, TypedPlayerChoice}
+import mtg.game.state.{GameAction, GameActionResult, GameState, InternalGameAction, TypedPlayerChoice}
 import mtg.game.turns.TurnPhase
 import mtg.utils.ParsingUtils
 
@@ -11,7 +12,7 @@ object DeclareBlockers extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
     val defendingPlayer = DeclareAttackers.getDefendingPlayer(currentGameState)
     val attackers = DeclareAttackers.getAttackDeclarations(currentGameState).map(_.attacker)
-    val possibleBlockers = getPossibleBlockers(defendingPlayer, currentGameState)
+    val possibleBlockers = getPossibleBlockers(defendingPlayer, attackers, currentGameState)
     if (attackers.nonEmpty && possibleBlockers.nonEmpty)
       DeclareBlockersChoice(
         defendingPlayer,
@@ -20,13 +21,17 @@ object DeclareBlockers extends InternalGameAction {
     else
       ()
   }
-  private def getPossibleBlockers(defendingPlayer: PlayerId, gameState: GameState): Seq[ObjectId] = {
-    gameState.gameObjectState.derivedState.permanentStates.values.view
+  private def getPossibleBlockers(defendingPlayer: PlayerId, attackers: Seq[ObjectId], gameState: GameState): Map[ObjectId, Seq[ObjectId]] = {
+    val attackerStates = attackers.map(gameState.gameObjectState.derivedState.permanentStates)
+    val allPossibleBlockers = gameState.gameObjectState.derivedState.permanentStates.values.view
       .filter(o => o.characteristics.types.contains(Type.Creature))
       .filter(o => o.controller == defendingPlayer)
       .filter(o => !o.gameObject.status.isTapped)
-      .map(o => o.gameObject.objectId)
       .toSeq
+    val restrictions = gameState.gameObjectState.activeContinuousEffects.ofType[BlockerRestriction].toSeq
+    allPossibleBlockers.map(blockerState => {
+      blockerState.gameObject.objectId -> attackerStates.filter(attackerState => !restrictions.exists(_.preventsBlock(attackerState, blockerState))).map(_.gameObject.objectId)
+    }).filter(_._2.nonEmpty).toMap
   }
   def getBlockDeclarations(gameState: GameState): Seq[BlockDeclaration] = {
     gameState.gameHistory.forCurrentTurn.view
@@ -77,7 +82,7 @@ case class DeclaredBlockers(blockDeclarations: Seq[BlockDeclaration])
 case class DeclareBlockersChoice(
     playerToAct: PlayerId,
     attackers: Seq[ObjectId],
-    possibleBlockers: Seq[ObjectId])
+    possibleBlockers: Map[ObjectId, Seq[ObjectId]])
   extends TypedPlayerChoice[DeclaredBlockers]
 {
   override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[DeclaredBlockers] = {
@@ -88,8 +93,8 @@ case class DeclareBlockersChoice(
       .filter(_.forall(isValidBlock))
       .map(DeclaredBlockers)
   }
-  private def isValidBlock(blockingCreatureDetails: BlockDeclaration): Boolean = {
-    possibleBlockers.contains(blockingCreatureDetails.blocker) && attackers.contains(blockingCreatureDetails.attacker)
+  private def isValidBlock(blockDeclaration: BlockDeclaration): Boolean = {
+    possibleBlockers.get(blockDeclaration.blocker).exists(_.contains(blockDeclaration.attacker))
   }
   override def handleDecision(chosenBlocks: DeclaredBlockers, currentGameState: GameState): GameActionResult = {
     def getName(objectId: ObjectId): String = currentGameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name

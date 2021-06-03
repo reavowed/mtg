@@ -41,15 +41,17 @@ export default function DeclareBlockersChoice() {
             // Cancel possible blocker choice
             event.originalEvent.fromHandler = this;
             setCurrentPossibleBlocker(null);
-        } else if (currentPossibleBlocker && _.includes(attackers, objectId)) {
+        } else if (currentPossibleBlocker && _.includes(possibleBlockers[currentPossibleBlocker.objectId], objectId)) {
             // Complete possible blocker choice
             event.originalEvent.fromHandler = this
             setSelectedBlocks(prev => [...prev, [currentPossibleBlocker.objectId, objectId]]);
             setCurrentPossibleBlocker(null);
         } else if (_.some(selectedBlocks, x => x[0] === objectId)) {
-            // Cancel previously-made blocker choice
+            // Cancel previously-made blocker choice and start new one
+            event.originalEvent.fromHandler = this;
             setSelectedBlocks(prev => [..._.filter(prev, x => x[0] !== objectId)]);
-        } else if (_.includes(possibleBlockers, objectId)) {
+            setCurrentPossibleBlocker({objectId, event});
+        } else if (_.has(possibleBlockers, objectId)) {
             // Start possible blocker choice
             event.originalEvent.fromHandler = this;
             setCurrentPossibleBlocker({objectId, event});

@@ -14,13 +14,13 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
     // TODO: be skipped if no attackers
 
     "offer choice to block with an untapped creature" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands
+      val initialState = emptyGameObjectState
         .setHand(playerOne, AgelessGuardian)
         .setBattlefield(playerOne, Plains, 2)
         .setHand(playerTwo, SpinedKarok)
         .setBattlefield(playerTwo, Forest, 3)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -37,12 +37,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
 
       manager.currentAction must beAnInstanceOf[DeclareBlockersChoice]
-      manager.currentAction.asInstanceOf[DeclareBlockersChoice].possibleBlockers must contain(exactly(
-        manager.getCard(Zone.Battlefield, SpinedKarok).objectId
-      ))
-      manager.currentAction.asInstanceOf[DeclareBlockersChoice].attackers must contain(exactly(
-        manager.getCard(Zone.Battlefield, AgelessGuardian).objectId
-      ))
+      manager.currentAction.asInstanceOf[DeclareBlockersChoice].possibleBlockers mustEqual Map(getId(SpinedKarok) -> Seq(getId(AgelessGuardian)))
     }
 
     "require ordering if a single creature blocks an attacker" in {

@@ -3,7 +3,7 @@ package mtg.helpers
 import mtg.cards.CardDefinition
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
 import mtg.game.actions.cast.CastSpellAction
-import mtg.game.{PlayerId, Zone}
+import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
 import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
 import mtg.game.turns.{TurnPhase, TurnStep}
@@ -117,8 +117,8 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
         .filter(_.objectToCast.gameObject.card.printing.cardDefinition == cardDefinition).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
-    def attackWith(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      gameStateManager.handleDecision(getCard(Zone.Battlefield, cardDefinition).objectId.sequentialId.toString, player)
+    def attackWith(player: PlayerId, cardDefinitions: CardDefinition*): Unit = {
+      gameStateManager.handleDecision(cardDefinitions.map(d => getCard(Zone.Battlefield, d).objectId.sequentialId.toString).mkString(" "), player)
     }
     def block(player: PlayerId, blocker: CardDefinition, attacker: CardDefinition): Unit = {
       block(player, (blocker, attacker))
@@ -151,5 +151,9 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     def choosePlayer(player: PlayerId, chosenPlayer: PlayerId): Unit = {
       gameStateManager.handleDecision(chosenPlayer.id, player)
     }
+  }
+
+  def getId(cardDefinition: CardDefinition)(implicit gameStateManager: GameStateManager): ObjectId = {
+    gameStateManager.getCard(cardDefinition).objectId
   }
 }
