@@ -1,6 +1,7 @@
 package mtg.game.actions.spellsAndAbilities
 
 import mtg.abilities.SpellAbility
+import mtg.effects.EffectCreationContext
 import mtg.effects.continuous.TargetPreventionEffect
 import mtg.effects.targets.TargetIdentifier
 import mtg.events.targets.AddTarget
@@ -21,7 +22,7 @@ case class ChooseTargets(objectId: ObjectId, backupAction: BackupAction) extends
   }
 
   def getValidTargets(targetIdentifier: TargetIdentifier[_], gameState: GameState, source: StackObjectWithState, targetPreventionEffects: Seq[TargetPreventionEffect]): Seq[ObjectOrPlayer] = {
-    targetIdentifier.getValidChoices(gameState)
+    targetIdentifier.getValidChoices(gameState, EffectCreationContext(source.controller))
       .filter(choice => !targetPreventionEffects.exists(_.preventsTarget(source, choice, gameState)))
   }
 }

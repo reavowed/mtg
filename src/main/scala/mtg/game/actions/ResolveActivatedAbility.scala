@@ -1,20 +1,20 @@
 package mtg.game.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.effects.OneShotEffect
-import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
-import mtg.game.{ObjectId, PlayerId, Zone}
-import mtg.game.state.history.{GameEvent, LogEvent}
+import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
+import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.game.state._
+import mtg.game.state.history.GameEvent
+import mtg.game.{ObjectId, PlayerId, Zone}
 
 case class ResolveActivatedAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    val resolutionContext = OneShotEffectResolutionContext.initial(objectWithAbility.gameObject.objectId, player, Nil)
+    val resolutionContext = StackObjectResolutionContext.initial(objectWithAbility.gameObject.objectId, player, Nil)
     ResolveEffects(ability.effectParagraph.effects, resolutionContext)
   }
 }
 
-case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: OneShotEffectResolutionContext) extends InternalGameAction {
+case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: StackObjectResolutionContext) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     effects match {
       case effect +: remainingEffects =>

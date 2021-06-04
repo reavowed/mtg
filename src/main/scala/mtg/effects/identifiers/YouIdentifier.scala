@@ -1,13 +1,13 @@
 package mtg.effects.identifiers
 
-import mtg.effects.oneshot.OneShotEffectResolutionContext
+import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.PlayerId
 import mtg.game.state.GameState
 
-object YouIdentifier extends Identifier[PlayerId] {
-  override def get(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): (PlayerId, OneShotEffectResolutionContext) = {
-    (resolutionContext.controller, resolutionContext)
-  }
+object YouIdentifier extends StaticIdentifier[PlayerId] {
+  override def get(effectContext: EffectContext, gameState: GameState): PlayerId = effectContext.controllingPlayer
+
   override def getText(cardName: String): String = "you"
   override def getPossessiveText(cardName: String): String = "your"
+
 }

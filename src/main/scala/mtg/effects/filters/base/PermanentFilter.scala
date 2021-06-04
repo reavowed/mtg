@@ -1,11 +1,12 @@
 package mtg.effects.filters.base
 
+import mtg.effects.EffectContext
 import mtg.effects.filters.Filter
 import mtg.game.ObjectId
 import mtg.game.state.GameState
 
 object PermanentFilter extends Filter[ObjectId] {
-  override def isValid(objectId: ObjectId, gameState: GameState): Boolean = {
+  override def isValid(objectId: ObjectId, effectContext: EffectContext, gameState: GameState): Boolean = {
     objectId.findPermanent(gameState).nonEmpty
   }
   override def getText(cardName: String): String = "permanent"

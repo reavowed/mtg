@@ -14,6 +14,6 @@ object BeamingDefiance extends Spell(
   Instant,
   Nil,
   SpellEffectParagraph(
-    target(Creature)(gets(+2, +2), gains(Hexproof)).until(endOfTurn)
+    target(Creature(you.control))(gets(+2, +2), gains(Hexproof)).until(endOfTurn)
   )
 )

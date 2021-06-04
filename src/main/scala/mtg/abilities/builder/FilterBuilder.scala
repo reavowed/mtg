@@ -1,12 +1,21 @@
 package mtg.abilities.builder
 
 import mtg.characteristics.types.{Supertype, Type}
-import mtg.effects.filters.base.{CardFilter, PermanentFilter, SupertypeFilter, TypeFilter}
-import mtg.effects.filters.combination.{ImplicitPermanentFilter, NegatedCharacteristicFilter, PrefixFilter}
+import mtg.effects.filters.base._
+import mtg.effects.filters.combination.{ImplicitPermanentFilter, NegatedCharacteristicFilter, PrefixFilter, SuffixFilter}
 import mtg.effects.filters.{Filter, PartialFilter}
-import mtg.game.ObjectId
+import mtg.effects.identifiers.StaticIdentifier
+import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait FilterBuilder extends FilterBuilder.LowPriority {
+  implicit class PlayerIdentifierExtensions(playerIdentifier: StaticIdentifier[PlayerId]) {
+    def control: PartialFilter[ObjectId] = ControllerFilter(playerIdentifier)
+  }
+  implicit class FilterExtensions[T <: ObjectOrPlayer](filter: Filter[T]) {
+    def apply(suffixFilters: PartialFilter[T]*): Filter[T] = SuffixFilter(filter, suffixFilters)
+  }
+  implicit class TypeFilterExtensions(t: Type) extends FilterExtensions(typeToPermanentFilter(t))
+
   implicit def typeToFilter(t: Type): PartialFilter[ObjectId] = TypeFilter(t)
   implicit def supertypeToFilter(supertype: Supertype): PartialFilter[ObjectId] = SupertypeFilter(supertype)
 

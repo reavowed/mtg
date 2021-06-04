@@ -281,3 +281,4 @@ gradle-app.setting
 target/
 src/main/resources/static/js/
 src/main/resources/static/css/
+src/test/resources/oracle-cards*.json

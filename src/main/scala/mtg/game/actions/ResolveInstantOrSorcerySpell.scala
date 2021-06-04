@@ -1,15 +1,15 @@
 package mtg.game.actions
 
 import mtg.abilities.SpellAbility
-import mtg.effects.oneshot.OneShotEffectResolutionContext
+import mtg.effects.StackObjectResolutionContext
 import mtg.events.MoveObjectEvent
 import mtg.game.Zone
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult, StackObjectWithState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
 
 case class ResolveInstantOrSorcerySpell(spell: StackObjectWithState) extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
-    val resolutionContext = OneShotEffectResolutionContext.initial(spell)
+    val resolutionContext = StackObjectResolutionContext.initial(spell)
     Seq(
       ResolveEffects(spell.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects), resolutionContext),
       FinishResolvingInstantOrSorcerySpell(spell)

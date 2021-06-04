@@ -1,7 +1,7 @@
 package mtg.effects.oneshot.actions
 
-import mtg.effects.OneShotEffect
-import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResolutionContext, OneShotEffectResult}
+import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
+import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameObjectEvent, GameObjectEventResult, GameState}
 import mtg.game.{ObjectId, PlayerId, Zone}
@@ -9,8 +9,8 @@ import mtg.utils.ParsingUtils
 
 case class ScryEffect(number: Int) extends OneShotEffect {
   override def getText(cardName: String): String = s"scry $number"
-  override def resolve(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): OneShotEffectResult = {
-    val player = resolutionContext.controller
+  override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
+    val player = resolutionContext.controllingPlayer
     val library = gameState.gameObjectState.libraries(player)
     val cardsBeingScryed = library.take(number).map(_.objectId)
     ScryChoice(player, cardsBeingScryed, resolutionContext)
@@ -21,10 +21,10 @@ case class ScryDecision(cardsOnTop: Seq[ObjectId], cardsOnBottom: Seq[ObjectId])
 case class ScryChoice(
     playerChoosing: PlayerId,
     cardsBeingScryed: Seq[ObjectId],
-    resolutionContext: OneShotEffectResolutionContext)
+    resolutionContext: StackObjectResolutionContext)
   extends OneShotEffectChoice
 {
-  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, GameActionResult, OneShotEffectResolutionContext)] = {
+  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, GameActionResult, StackObjectResolutionContext)] = {
     for {
       (serializedCardsOnTop, serializedCardsOnBottom) <- serializedDecision.split("\\|", -1).toSeq match {
         case Seq(a, b) => Some(a, b)

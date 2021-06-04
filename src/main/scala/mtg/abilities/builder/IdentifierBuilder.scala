@@ -1,11 +1,11 @@
 package mtg.abilities.builder
 
-import mtg.effects.identifiers.{CardNameIdentifier, ControllerIdentifier, Identifier, ItIdentifier, YouIdentifier}
+import mtg.effects.identifiers.{CardNameIdentifier, ControllerIdentifier, Identifier, ItIdentifier, StaticIdentifier, YouIdentifier}
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait IdentifierBuilder {
   def it: Identifier[ObjectId] = ItIdentifier
-  def you: Identifier[PlayerId] = YouIdentifier
+  def you: StaticIdentifier[PlayerId] = YouIdentifier
   def cardName: Identifier[ObjectId] = CardNameIdentifier
 
   implicit class ObjectIdentifierExtensions(objectIdentifier: Identifier[ObjectId]) {
