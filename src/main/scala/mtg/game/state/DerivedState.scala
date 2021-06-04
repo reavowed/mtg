@@ -5,7 +5,7 @@ import mtg.abilities.StaticAbility
 import mtg.characteristics.types.BasicLandType
 import mtg.characteristics.types.Type.Creature
 import mtg.effects.ContinuousEffect
-import mtg.effects.continuous.AddAbilityEffect
+import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
 import mtg.game.ObjectId
 import mtg.game.objects.{FloatingActiveContinuousEffect, GameObjectState}
 import mtg.parts.counters.PowerToughnessModifyingCounter
@@ -38,7 +38,7 @@ object DerivedState {
     val finalStates = Seq(
       addIntrinsicManaAbilities(_),
       addAbilities(gameObjectState, _),
-      applyPowerAndToughnessCounters(_)
+      applyPowerAndToughnessModifiers(gameObjectState, _)
     ).foldLeft(baseStates) { (objectStates, updater) => updater(objectStates) }
 
     def mapOfType[T <: ObjectWithState : ClassTag] = finalStates.ofType[T].map(objectWithState => objectWithState.gameObject.objectId -> objectWithState).toMap
@@ -63,15 +63,16 @@ object DerivedState {
     }
   }
 
-  def applyPowerAndToughnessCounters(objectStates: View[ObjectWithState]): View[ObjectWithState] = {
+  def applyPowerAndToughnessModifiers(gameObjectState: GameObjectState, objectStates: View[ObjectWithState]): View[ObjectWithState] = {
+    val effects = getActiveContinuousEffects(gameObjectState, objectStates).ofType[ModifyPowerToughnessEffect].toSeq
     objectStates
-      .map { objectWithState =>
-        if (objectWithState.characteristics.types.contains(Creature))
-          objectWithState.gameObject.counters.view.ofLeftType[PowerToughnessModifyingCounter]
-            .foldLeft(objectWithState) { case (obj, (counterType, number)) =>
-              (1 to number).foldLeft(obj)((obj, _) => obj.updateCharacteristics(counterType.modifier.applyToCharacteristics))
-            }
-        else objectWithState
-      }
+      .map { objectWithState => {
+        val modifiers = effects.filter(_.affectedObject == objectWithState.gameObject.objectId).map(_.powerToughnessModifier) ++
+          (if (objectWithState.characteristics.types.contains(Creature))
+            objectWithState.gameObject.counters.view.ofLeftType[PowerToughnessModifyingCounter]
+              .map { case (counterType, number) => counterType.modifier * number}
+          else Nil)
+        modifiers.foldLeft(objectWithState)((o, m) => o.updateCharacteristics(m.applyToCharacteristics))
+      }}
   }
 }

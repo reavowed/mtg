@@ -3,6 +3,8 @@ package mtg.effects
 import mtg.game.state.Characteristics
 
 case class PowerToughnessModifier(powerModifier: Int, toughnessModifier: Int) {
+  def *(number: Int): PowerToughnessModifier = PowerToughnessModifier(powerModifier * number, toughnessModifier * number)
+
   def description: String = {
     def getDescription(modifier: Int) = if (modifier >= 0) "+" + modifier else modifier.toString
     getDescription(powerModifier) + "/" + getDescription(toughnessModifier)
