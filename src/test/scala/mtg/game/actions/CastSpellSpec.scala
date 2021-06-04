@@ -15,7 +15,7 @@ import org.specs2.matcher.Matcher
 class CastSpellSpec extends SpecWithGameStateManager {
   "cast spell action" should {
     "be available for a creature card in hand at sorcery speed" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
+      val initialState = emptyGameObjectState.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
@@ -24,14 +24,14 @@ class CastSpellSpec extends SpecWithGameStateManager {
     }
 
     "not be available for a creature card in hand in upkeep" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
+      val initialState = emptyGameObjectState.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.currentAction must bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells
     }
 
     "not be available for a creature card in hand if there is something on the stack" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands
+      val initialState = emptyGameObjectState
         .setHand(playerOne, Seq(AgelessGuardian, AgelessGuardian))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
@@ -47,7 +47,7 @@ class CastSpellSpec extends SpecWithGameStateManager {
     }
 
     "not be available for a creature card for the non-active player" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, Seq(Plains, Forest, AgelessGuardian))
+      val initialState = emptyGameObjectState.setHand(playerTwo, Seq(Plains, Forest, AgelessGuardian))
 
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
