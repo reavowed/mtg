@@ -12,7 +12,11 @@ case class ChooseTargets(objectId: ObjectId, backupAction: BackupAction) extends
     currentGameState.gameObjectState.derivedState.spellStates.get(objectId).toSeq.flatMap { stackObjectWithState =>
       val targetIdentifiers = stackObjectWithState.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects).flatMap(_.targetIdentifiers)
       val targetPreventionEffects = currentGameState.gameObjectState.activeContinuousEffects.ofType[TargetPreventionEffect].toSeq
-      targetIdentifiers.map(targetIdentifier => TargetChoice(stackObjectWithState.controller, objectId, targetIdentifier.text, getValidTargets(targetIdentifier, currentGameState, stackObjectWithState, targetPreventionEffects)))
+      targetIdentifiers.map(targetIdentifier => TargetChoice(
+        stackObjectWithState.controller,
+        objectId,
+        targetIdentifier.getText(stackObjectWithState.characteristics.name),
+        getValidTargets(targetIdentifier, currentGameState, stackObjectWithState, targetPreventionEffects)))
     }
   }
 

@@ -7,5 +7,5 @@ case class NegatedCharacteristicFilter(characteristicFilter: CharacteristicFilte
   override def matches(characteristics: Characteristics, gameState: GameState): Boolean = {
     !characteristicFilter.matches(characteristics, gameState)
   }
-  override def text: String = "non" + characteristicFilter.text
+  override def getText(cardName: String): String = "non" + characteristicFilter.getText(cardName)
 }

@@ -8,5 +8,5 @@ object PermanentFilter extends Filter[ObjectId] {
   override def isValid(objectId: ObjectId, gameState: GameState): Boolean = {
     objectId.findPermanent(gameState).nonEmpty
   }
-  override def text: String = "permanent"
+  override def getText(cardName: String): String = "permanent"
 }

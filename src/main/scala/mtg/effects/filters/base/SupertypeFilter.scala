@@ -8,5 +8,5 @@ case class SupertypeFilter(supertype: Supertype) extends CharacteristicFilter {
     characteristics.superTypes.contains(supertype)
   }
 
-  override def text: String = supertype.name.toLowerCase
+  override def getText(cardName: String): String = supertype.name.toLowerCase
 }

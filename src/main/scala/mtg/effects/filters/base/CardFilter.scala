@@ -10,5 +10,5 @@ object CardFilter extends Filter[ObjectId] {
     true
   }
 
-  override def text: String = "card"
+  override def getText(cardName: String): String = "card"
 }

@@ -1,7 +1,7 @@
 package mtg.effects.identifiers
 
 import mtg.effects.oneshot.OneShotEffectResolutionContext
-import mtg.game.{ObjectId, PlayerId}
+import mtg.game.PlayerId
 import mtg.game.state.GameState
 
 object YouIdentifier extends Identifier[PlayerId] {

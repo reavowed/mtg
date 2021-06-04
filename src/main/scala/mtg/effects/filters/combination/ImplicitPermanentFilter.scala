@@ -8,5 +8,5 @@ import mtg.game.state.GameState
 
 class ImplicitPermanentFilter(t: Type) extends Filter[ObjectId] {
   override def isValid(objectId: ObjectId, gameState: GameState): Boolean = PermanentFilter.matches(objectId, gameState) && TypeFilter(t).matches(objectId, gameState)
-  override def text: String = t.name.toLowerCase
+  override def getText(cardName: String): String = t.name.toLowerCase
 }

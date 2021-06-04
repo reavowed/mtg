@@ -9,5 +9,5 @@ case object AnyTarget extends ObjectOrPlayerTargetIdentifier(DisjunctiveFilter(
     new ImplicitPermanentFilter(Planeswalker),
     AnyPlayerFilter)
 ) {
-  override def text: String = "any target"
+  override def getText(cardName: String): String = "any target"
 }

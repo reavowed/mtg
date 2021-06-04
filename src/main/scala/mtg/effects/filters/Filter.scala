@@ -5,7 +5,7 @@ import mtg.game.state.GameState
 
 trait PartialFilter[T <: ObjectOrPlayer] {
   def matches(t: T, gameState: GameState): Boolean
-  def text: String
+  def getText(cardName: String): String
 }
 
 trait Filter[T <: ObjectOrPlayer] extends PartialFilter[T] {
@@ -21,7 +21,7 @@ object Filter {
         case _: PlayerId => false
       }
     }
-    override def text: String = objectFilter.text
+    override def getText(cardName: String): String = objectFilter.getText(cardName)
   }
   implicit class ExtendedPlayerFilter(playerFilter: Filter[PlayerId]) extends Filter[ObjectOrPlayer] {
     override def isValid(objectOrPlayer: ObjectOrPlayer, gameState: GameState): Boolean = {
@@ -30,6 +30,6 @@ object Filter {
         case player: PlayerId => playerFilter.isValid(player, gameState)
       }
     }
-    override def text: String = playerFilter.text
+    override def getText(cardName: String): String = playerFilter.getText(cardName)
   }
 }

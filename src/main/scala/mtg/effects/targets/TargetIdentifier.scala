@@ -7,8 +7,7 @@ import mtg.game.{ObjectId, ObjectOrPlayer}
 import mtg.game.state.GameState
 
 sealed abstract class TargetIdentifier[T <: ObjectOrPlayer](filter: Filter[T]) extends Identifier[T] {
-  def getText(cardName: String): String = text
-  def text: String = s"target ${filter.text}"
+  def getText(cardName: String): String = s"target ${filter.getText(cardName)}"
 
   def get(gameState: GameState, resolutionContext: OneShotEffectResolutionContext): (T, OneShotEffectResolutionContext) = {
     resolutionContext.popTarget.mapLeft(_.asInstanceOf[T])

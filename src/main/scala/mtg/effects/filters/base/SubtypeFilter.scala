@@ -8,5 +8,5 @@ case class SubtypeFilter(subtype: Subtype) extends CharacteristicFilter {
     characteristics.subTypes.contains(subtype)
   }
 
-  override def text: String = subtype.name
+  override def getText(cardName: String): String = subtype.name
 }

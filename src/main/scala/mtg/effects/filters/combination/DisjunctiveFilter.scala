@@ -9,5 +9,5 @@ case class DisjunctiveFilter[T <: ObjectOrPlayer](innerFilters: Filter[T]*) exte
     innerFilters.exists(_.isValid(t, gameState))
   }
 
-  override def text: String = innerFilters.map(_.text).mkString(" or ")
+  override def getText(cardName: String): String = innerFilters.map(_.getText(cardName)).mkString(" or ")
 }

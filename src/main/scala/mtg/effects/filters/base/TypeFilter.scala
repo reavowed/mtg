@@ -8,5 +8,5 @@ case class TypeFilter(`type`: Type) extends CharacteristicFilter {
     characteristics.types.contains(`type`)
   }
 
-  override def text: String = `type`.name.toLowerCase
+  override def getText(cardName: String): String = `type`.name.toLowerCase
 }
