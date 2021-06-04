@@ -1,8 +1,7 @@
 package mtg.parts.counters
 
-abstract class PowerToughnessModifyingCounter(val powerModifier: Int, val toughnessModifier: Int) extends CounterType {
-  override def description: String = {
-    def getDescription(modifier: Int) = if (modifier >= 0) "+" + modifier else modifier.toString
-    getDescription(powerModifier) + "/" + getDescription(toughnessModifier)
-  }
+import mtg.effects.PowerToughnessModifier
+
+abstract class PowerToughnessModifyingCounter(val modifier: PowerToughnessModifier) extends CounterType {
+  override def description: String = modifier.description
 }

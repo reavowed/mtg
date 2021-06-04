@@ -1,14 +1,14 @@
 package mtg.effects.filters.base
 
-import mtg.effects.filters.Filter
+import mtg.effects.filters.PartialFilter
 import mtg.game.ObjectId
 import mtg.game.state.{Characteristics, GameState}
 
-trait CharacteristicFilter extends Filter[ObjectId] {
-  def isValid(characteristics: Characteristics, gameState: GameState): Boolean
+trait CharacteristicFilter extends PartialFilter[ObjectId] {
+  def matches(characteristics: Characteristics, gameState: GameState): Boolean
 
-  override def isValid(objectId: ObjectId, gameState: GameState): Boolean = {
-    objectId.findCurrentCharacteristics(gameState).exists(isValid(_, gameState))
+  override def matches(objectId: ObjectId, gameState: GameState): Boolean = {
+    objectId.findCurrentCharacteristics(gameState).exists(matches(_, gameState))
   }
 
   def text: String

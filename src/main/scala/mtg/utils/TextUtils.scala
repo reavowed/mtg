@@ -1,6 +1,13 @@
 package mtg.utils
 
 object TextUtils {
+  implicit class StringSeqExtensions(seq: Seq[String]) {
+    def toCommaList: String = seq.length match {
+      case 0 => ""
+      case 1 => seq.head
+      case _ => seq.init.mkString(", ") + " and " + seq.last
+    }
+  }
   implicit class StringExtensions(str: String) {
     def withArticle: String = {
       getArticle(str) + " " + str

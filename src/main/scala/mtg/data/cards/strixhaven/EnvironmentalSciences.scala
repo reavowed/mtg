@@ -15,5 +15,5 @@ object EnvironmentalSciences extends Spell(
   Type.Sorcery,
   Seq(Lesson),
   SpellEffectParagraph(
-    (searchYourLibraryForA(Basic(Land).card), reveal(it), put(it).intoYourHand).`then`(shuffle),
+    (searchYourLibraryForA(card(Basic, Land)), reveal(it), put(it).intoYourHand).`then`(shuffle),
     you.gain(2).life))

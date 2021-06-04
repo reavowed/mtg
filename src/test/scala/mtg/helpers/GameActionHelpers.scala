@@ -2,9 +2,9 @@ package mtg.helpers
 
 import mtg.cards.CardDefinition
 import mtg.effects.oneshot.OneShotEffectChoice
-import mtg.game.{ObjectOrPlayer, PlayerId}
 import mtg.game.actions.cast.CastSpellAction
-import mtg.game.actions.cast.CastSpellSteps.TargetChoice
+import mtg.game.actions.spellsAndAbilities.TargetChoice
+import mtg.game.{ObjectOrPlayer, PlayerId}
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, ResolveEffectChoice}
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.{GameAction, GameStateManager}

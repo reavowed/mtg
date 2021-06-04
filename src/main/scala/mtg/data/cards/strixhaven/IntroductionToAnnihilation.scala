@@ -14,5 +14,5 @@ object IntroductionToAnnihilation extends Spell(
   Type.Sorcery,
   Seq(Lesson),
   SpellEffectParagraph(
-    exile(target(non(Land).permanent)),
+    exile(target(permanent(non(Land)))),
     it.s(controller).drawsACard))

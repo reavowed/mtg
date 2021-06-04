@@ -17,5 +17,5 @@ object ExpandedAnatomy extends Spell(
   Seq(Lesson),
   SpellEffectParagraph(
     put(2, PlusOnePlusOneCounter).on(target(Creature)),
-    it.gains(Vigilance).until(endOfTurn))
+    it(gains(Vigilance)).until(endOfTurn))
 )

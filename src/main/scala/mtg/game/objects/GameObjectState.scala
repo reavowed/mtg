@@ -57,8 +57,8 @@ case class GameObjectState(
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)
   }
 
-  def addEffect(continuousEffect: ContinuousEffect, endCondition: Condition): GameObjectState = {
-    updateEffects(_ :+ FloatingActiveContinuousEffect(continuousEffect, endCondition))
+  def addEffects(continuousEffects: Seq[ContinuousEffect], endCondition: Condition): GameObjectState = {
+    updateEffects(_ ++ continuousEffects.map(FloatingActiveContinuousEffect(_, endCondition)))
   }
   def updateEffects(f: Seq[FloatingActiveContinuousEffect] => Seq[FloatingActiveContinuousEffect]): GameObjectState = {
     copy(floatingActiveContinuousEffects = f(floatingActiveContinuousEffects))

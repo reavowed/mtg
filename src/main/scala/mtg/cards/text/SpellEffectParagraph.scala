@@ -2,6 +2,7 @@ package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, SpellAbility}
 import mtg.effects.OneShotEffect
+import mtg.effects.identifiers.Identifier
 
 case class SpellEffectParagraph(sentences: SpellEffectSentence*) extends TextParagraph {
   def getText(cardName: String): String = sentences.map(_.getText(cardName)).mkString(" ")
@@ -14,7 +15,7 @@ object SpellEffectParagraph {
   implicit def seqFromSingleSentence(sentence: SpellEffectSentence): Seq[SpellEffectParagraph] = Seq(SpellEffectParagraph(sentence))
 }
 
-sealed trait SpellEffectSentence {
+trait SpellEffectSentence {
   def effects: Seq[OneShotEffect]
   def getText(cardName: String): String
 }

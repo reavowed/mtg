@@ -4,7 +4,7 @@ import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.m21.{AlpineWatchdog, ConcordiaPegasus}
-import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
+import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
 import mtg.data.cards.{Forest, Mountain, Plains}
 import mtg.data.sets.Strixhaven
 import mtg.game.Zone.BasicZone
@@ -40,7 +40,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
   val gameStateManager: GameStateManager = {
     val gameStartingData = GameStartingData(Seq(
       PlayerStartingData(playerOne, (Seq.fill(30)(LightningBolt) ++ Seq.fill(30)(Mountain)).map(findCard), Nil),
-      PlayerStartingData(playerTwo, (Seq.fill(30)(IntroductionToProphecy) ++ Seq.fill(30)(Plains)).map(findCard), Nil)))
+      PlayerStartingData(playerTwo, (Seq.fill(30)(BeamingDefiance) ++ Seq.fill(30)(Plains)).map(findCard), Nil)))
 
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.currentGameState

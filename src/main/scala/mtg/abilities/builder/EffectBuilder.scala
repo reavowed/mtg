@@ -7,12 +7,20 @@ import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.Identifier
+import mtg.effects.oneshot.ContinuousEffectCreationEffect
 import mtg.effects.oneshot.actions._
 import mtg.effects.oneshot.basic._
+import mtg.effects.oneshot.descriptions.ContinuousEffectDescription
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.parts.counters.CounterType
 
-object EffectBuilder extends FilterBuilder with IdentifierBuilder with TargetBuilder with ConditionBuilder {
+object EffectBuilder
+  extends FilterBuilder
+    with IdentifierBuilder
+    with TargetBuilder
+    with ConditionBuilder
+    with ContinuousEffectBuilder
+{
 
   abstract class EffectsSeqExtension(effects: Seq[OneShotEffect]) {
     def `then`(effect: OneShotEffect): SpellEffectSentence = SpellEffectSentence.MultiClause(effects :+ effect, "then")
@@ -23,13 +31,13 @@ object EffectBuilder extends FilterBuilder with IdentifierBuilder with TargetBui
   case class DealEffectBuilder(objectIdentifier: Identifier[ObjectId], amount: Int) {
       def damageTo(recipientIdentifier: Identifier[ObjectOrPlayer]): OneShotEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
   }
-  case class GainAbilityEffectBuilder(objectIdentifier: Identifier[ObjectId], abilityDefinition: AbilityDefinition) {
-      def until(conditionDefinition: ConditionDefinition): OneShotEffect = GainAbilityEffect(objectIdentifier, abilityDefinition, conditionDefinition)
+  case class ContinuousEffectBuilder(objectIdentifier: Identifier[ObjectId], continuousEffectDescriptions: Seq[ContinuousEffectDescription]) {
+      def until(conditionDefinition: ConditionDefinition): OneShotEffect = ContinuousEffectCreationEffect(objectIdentifier, continuousEffectDescriptions, conditionDefinition)
   }
 
   implicit class ObjectIdentifierExtension(objectIdentifier: Identifier[ObjectId]) {
     def deals(amount: Int): DealEffectBuilder = DealEffectBuilder(objectIdentifier, amount)
-    def gains(abilityDefinition: AbilityDefinition): GainAbilityEffectBuilder = GainAbilityEffectBuilder(objectIdentifier, abilityDefinition)
+    def apply(continuousEffectDescriptions: ContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectIdentifier, continuousEffectDescriptions)
   }
 
   implicit class PlayerIdentifierExtension(playerIdentifier: Identifier[PlayerId]) {

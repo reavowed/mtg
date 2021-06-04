@@ -6,6 +6,41 @@ import mtg.effects.oneshot.basic
 import mtg.parts.costs.TapSymbol
 import mtg.utils.CaseObjectWithName
 
+sealed trait TypeSupertypeOrSubtype extends CaseObjectWithName
+
+sealed class Supertype extends TypeSupertypeOrSubtype
+
+object Supertype {
+  object Basic extends Supertype
+}
+
+sealed trait Type extends TypeSupertypeOrSubtype {
+  def isSpell: Boolean
+  def isPermanent: Boolean
+}
+
+object Type {
+  trait InstantOrSorcery extends Type {
+    override def isSpell: Boolean = true
+    override def isPermanent: Boolean = false
+  }
+
+  case object Land extends Type {
+    override def isSpell: Boolean = false
+    override def isPermanent: Boolean = true
+  }
+  case object Instant extends InstantOrSorcery
+  case object Sorcery extends InstantOrSorcery
+  case object Creature extends Type {
+    override def isSpell: Boolean = true
+    override def isPermanent: Boolean = true
+  }
+  case object Planeswalker extends Type {
+    override def isSpell: Boolean = true
+    override def isPermanent: Boolean = true
+  }
+}
+
 sealed class Subtype extends CaseObjectWithName
 
 sealed class LandType extends Subtype

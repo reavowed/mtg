@@ -3,9 +3,14 @@ package mtg.effects.filters
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.game.state.GameState
 
-trait Filter[T <: ObjectOrPlayer] {
-  def isValid(t: T, gameState: GameState): Boolean
+trait PartialFilter[T <: ObjectOrPlayer] {
+  def matches(t: T, gameState: GameState): Boolean
   def text: String
+}
+
+trait Filter[T <: ObjectOrPlayer] extends PartialFilter[T] {
+  def isValid(t: T, gameState: GameState): Boolean
+  override def matches(t: T, gameState: GameState): Boolean = isValid(t, gameState)
 }
 
 object Filter {

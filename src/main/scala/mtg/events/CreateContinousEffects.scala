@@ -4,8 +4,8 @@ import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
 import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
 
-case class CreateContinousEffect(effect: ContinuousEffect, endCondition: Condition) extends GameObjectEvent {
+case class CreateContinousEffects(effects: Seq[ContinuousEffect], endCondition: Condition) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {
-    currentGameState.gameObjectState.addEffect(effect, endCondition)
+    currentGameState.gameObjectState.addEffects(effects, endCondition)
   }
 }

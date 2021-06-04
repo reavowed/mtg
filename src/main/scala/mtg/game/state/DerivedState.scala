@@ -69,9 +69,7 @@ object DerivedState {
         if (objectWithState.characteristics.types.contains(Creature))
           objectWithState.gameObject.counters.view.ofLeftType[PowerToughnessModifyingCounter]
             .foldLeft(objectWithState) { case (obj, (counterType, number)) =>
-              obj.updateCharacteristics(c => c.copy(
-                power = c.power.map(_ + (counterType.powerModifier * number)),
-                toughness = c.toughness.map(_ + (counterType.toughnessModifier * number))))
+              (1 to number).foldLeft(obj)((obj, _) => obj.updateCharacteristics(counterType.modifier.applyToCharacteristics))
             }
         else objectWithState
       }
