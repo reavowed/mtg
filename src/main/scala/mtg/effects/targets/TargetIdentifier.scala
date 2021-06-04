@@ -1,33 +1,34 @@
 package mtg.effects.targets
 
-import mtg.effects.{EffectContext, StackObjectResolutionContext}
+import mtg.abilities.SpellAbility
+import mtg.effects.continuous.TargetPreventionEffect
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.Identifier
-import mtg.game.{ObjectId, ObjectOrPlayer}
-import mtg.game.state.GameState
+import mtg.effects.{EffectContext, StackObjectResolutionContext}
+import mtg.game.ObjectOrPlayer
+import mtg.game.state.{GameState, StackObjectWithState}
 
-sealed abstract class TargetIdentifier[T <: ObjectOrPlayer](filter: Filter[T]) extends Identifier[T] {
+import scala.reflect.ClassTag
+
+class TargetIdentifier[T <: ObjectOrPlayer : ClassTag](filter: Filter[T]) extends Identifier[T] {
   def getText(cardName: String): String = s"target ${filter.getText(cardName)}"
 
   def get(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
     resolutionContext.popTarget.mapLeft(_.asInstanceOf[T])
   }
-  def getValidChoices(gameState: GameState, effectContext: EffectContext): Seq[ObjectOrPlayer]
-}
-
-abstract class ObjectOrPlayerTargetIdentifier(filter: Filter[ObjectOrPlayer]) extends TargetIdentifier[ObjectOrPlayer](filter) {
-  def getValidChoices(gameState: GameState, effectContext: EffectContext): Seq[ObjectOrPlayer] = {
+  def getValidChoices(source: StackObjectWithState, gameState: GameState, effectContext: EffectContext): Seq[ObjectOrPlayer] = {
     (gameState.gameObjectState.allObjects.map(_.objectId) ++ gameState.gameData.playersInTurnOrder)
-      .filter(filter.isValid(_, effectContext, gameState))
+      .filter(isValidTarget(source, _, gameState, effectContext))
       .toSeq
+  }
+  def isValidTarget(source: StackObjectWithState, possibleTarget: ObjectOrPlayer, gameState: GameState, effectContext: EffectContext): Boolean = {
+    possibleTarget.asOptionalInstanceOf[T].exists(filter.isValid(_, effectContext, gameState)) &&
+      !gameState.gameObjectState.activeContinuousEffects.ofType[TargetPreventionEffect].exists(_.preventsTarget(source, possibleTarget, gameState))
   }
 }
 
-class ObjectTargetIdentifier(filter: Filter[ObjectId]) extends TargetIdentifier[ObjectId](filter) {
-  def getValidChoices(gameState: GameState, effectContext: EffectContext): Seq[ObjectOrPlayer] = {
-    gameState.gameObjectState.allObjects
-      .map(_.objectId)
-      .filter(filter.isValid(_, effectContext, gameState))
-      .toSeq
+object TargetIdentifier {
+  def getAll(stackObjectWithState: StackObjectWithState): Seq[TargetIdentifier[_]] = {
+    stackObjectWithState.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects).flatMap(_.targetIdentifiers)
   }
 }

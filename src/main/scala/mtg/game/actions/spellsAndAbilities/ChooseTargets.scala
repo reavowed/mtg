@@ -1,6 +1,5 @@
 package mtg.game.actions.spellsAndAbilities
 
-import mtg.abilities.SpellAbility
 import mtg.effects.EffectCreationContext
 import mtg.effects.continuous.TargetPreventionEffect
 import mtg.effects.targets.TargetIdentifier
@@ -11,19 +10,13 @@ import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 case class ChooseTargets(objectId: ObjectId, backupAction: BackupAction) extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
     currentGameState.gameObjectState.derivedState.spellStates.get(objectId).toSeq.flatMap { stackObjectWithState =>
-      val targetIdentifiers = stackObjectWithState.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects).flatMap(_.targetIdentifiers)
-      val targetPreventionEffects = currentGameState.gameObjectState.activeContinuousEffects.ofType[TargetPreventionEffect].toSeq
+      val targetIdentifiers = TargetIdentifier.getAll(stackObjectWithState)
       targetIdentifiers.map(targetIdentifier => TargetChoice(
         stackObjectWithState.controller,
         objectId,
         targetIdentifier.getText(stackObjectWithState.characteristics.name),
-        getValidTargets(targetIdentifier, currentGameState, stackObjectWithState, targetPreventionEffects)))
+        targetIdentifier.getValidChoices(stackObjectWithState, currentGameState, EffectCreationContext(stackObjectWithState.controller))))
     }
-  }
-
-  def getValidTargets(targetIdentifier: TargetIdentifier[_], gameState: GameState, source: StackObjectWithState, targetPreventionEffects: Seq[TargetPreventionEffect]): Seq[ObjectOrPlayer] = {
-    targetIdentifier.getValidChoices(gameState, EffectCreationContext(source.controller))
-      .filter(choice => !targetPreventionEffects.exists(_.preventsTarget(source, choice, gameState)))
   }
 }
 

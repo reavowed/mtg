@@ -19,6 +19,6 @@ case class ResolveInstantOrSorcerySpell(spell: StackObjectWithState) extends Int
 
 case class FinishResolvingInstantOrSorcerySpell(spell: StackObjectWithState) extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
-    (MoveObjectEvent(spell.controller, spell.gameObject, Zone.Graveyard(spell.controller)), LogEvent.ResolveSpell(spell.controller, spell.characteristics.name))
+    (MoveObjectEvent(spell.controller, spell.gameObject, Zone.Graveyard(spell.gameObject.owner)), LogEvent.ResolveSpell(spell.controller, spell.characteristics.name))
   }
 }

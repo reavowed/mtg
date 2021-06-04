@@ -1,11 +1,13 @@
 package mtg.game.turns.priority
 
+import mtg.effects.EffectCreationContext
+import mtg.effects.targets.TargetIdentifier
 import mtg.events.MoveObjectEvent
 import mtg.game.Zone
 import mtg.game.actions.ResolveInstantOrSorcerySpell
 import mtg.game.objects.StackObject
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class ResolveStackObject(stackObject: StackObject) extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
@@ -20,9 +22,19 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
         Seq(MoveObjectEvent(controller, stackObject, Zone.Battlefield)),
         Some(LogEvent.ResolvePermanent(controller, stackObjectWithState.characteristics.name))
       )
-    } else if (stackObjectWithState.characteristics.types.exists(_.isSpell)) {
-      // TODO: Full implementation of 608.2
-      ResolveInstantOrSorcerySpell(stackObjectWithState)
-    } else ???
+    } else {
+      def hasTargets = stackObject.targets.nonEmpty
+      def areAllTargetsInvalid = stackObject.targets.zip(TargetIdentifier.getAll(stackObjectWithState)).forall { case (target, identifier) =>
+        !identifier.isValidTarget(stackObjectWithState, target, currentGameState, EffectCreationContext(stackObjectWithState.controller))
+      }
+      if (hasTargets && areAllTargetsInvalid) {
+        (
+          MoveObjectEvent(stackObjectWithState.controller, stackObject, Zone.Graveyard(stackObjectWithState.gameObject.owner)),
+          LogEvent.SpellFailedToResolve(stackObjectWithState.characteristics.name)
+        )
+      } else {
+        ResolveInstantOrSorcerySpell(stackObjectWithState)
+      }
+    }
   }
 }

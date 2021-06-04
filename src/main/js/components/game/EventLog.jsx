@@ -29,6 +29,8 @@ function EventLogMessage({entry}) {
             return "Player " + entry.details.player + " puts " + entry.details.permanentName + " onto the battlefield.";
         case "ResolveSpell":
             return "Player " + entry.details.player + " resolves " + entry.details.spellName + ".";
+        case "SpellFailedToResolve":
+            return entry.details.spellName + " fails to resolve and is put into its owner's graveyard.";
         case "DeclareAttackers":
             return "Player " + entry.details.player + " attacks with " + commaList(entry.details.attackerNames) + ".";
         case "DeclareBlockers":

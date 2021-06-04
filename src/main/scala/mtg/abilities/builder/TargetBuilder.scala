@@ -1,10 +1,10 @@
 package mtg.abilities.builder
 
 import mtg.effects.filters.Filter
-import mtg.effects.targets.{AnyTarget, ObjectOrPlayerTargetIdentifier, ObjectTargetIdentifier}
-import mtg.game.ObjectId
+import mtg.effects.targets.{AnyTarget, TargetIdentifier}
+import mtg.game.{ObjectId, ObjectOrPlayer}
 
 trait TargetBuilder {
-  def anyTarget: ObjectOrPlayerTargetIdentifier = AnyTarget
-  def target(filter: Filter[ObjectId]): ObjectTargetIdentifier = new ObjectTargetIdentifier(filter)
+  def anyTarget: TargetIdentifier[ObjectOrPlayer] = AnyTarget
+  def target(filter: Filter[ObjectId]): TargetIdentifier[ObjectId] = new TargetIdentifier(filter)
 }

@@ -16,6 +16,7 @@ object LogEvent {
   case class CastSpell(player: PlayerId, spellName: String, targetNames: Seq[String]) extends LogEvent
   case class ResolvePermanent(player: PlayerId, permanentName: String) extends LogEvent
   case class ResolveSpell(player: PlayerId, spellName: String) extends LogEvent
+  case class SpellFailedToResolve(spellName: String) extends LogEvent
   case class DeclareAttackers(player: PlayerId, attackerNames: Seq[String]) extends LogEvent
   case class DeclareBlockers(player: PlayerId, blockerAssignments: Map[String, Seq[String]]) extends LogEvent
   case class OrderBlockers(player: PlayerId, attackerName: String, blockerNames: Seq[String]) extends LogEvent
