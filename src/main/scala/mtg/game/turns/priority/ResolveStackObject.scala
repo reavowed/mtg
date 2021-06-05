@@ -1,6 +1,6 @@
 package mtg.game.turns.priority
 
-import mtg.effects.EffectCreationContext
+import mtg.effects.AbilityContext
 import mtg.effects.targets.TargetIdentifier
 import mtg.events.MoveObjectEvent
 import mtg.game.Zone
@@ -25,7 +25,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
     } else {
       def hasTargets = stackObject.targets.nonEmpty
       def areAllTargetsInvalid = stackObject.targets.zip(TargetIdentifier.getAll(stackObjectWithState)).forall { case (target, identifier) =>
-        !identifier.isValidTarget(stackObjectWithState, target, currentGameState, EffectCreationContext(stackObjectWithState.controller))
+        !identifier.isValidTarget(stackObjectWithState, target, currentGameState, AbilityContext(stackObjectWithState.controller))
       }
       if (hasTargets && areAllTargetsInvalid) {
         (

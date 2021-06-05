@@ -1,6 +1,6 @@
 package mtg.game.actions.spellsAndAbilities
 
-import mtg.effects.EffectCreationContext
+import mtg.effects.AbilityContext
 import mtg.effects.continuous.TargetPreventionEffect
 import mtg.effects.targets.TargetIdentifier
 import mtg.events.targets.AddTarget
@@ -15,7 +15,7 @@ case class ChooseTargets(objectId: ObjectId, backupAction: BackupAction) extends
         stackObjectWithState.controller,
         objectId,
         targetIdentifier.getText(stackObjectWithState.characteristics.name),
-        targetIdentifier.getValidChoices(stackObjectWithState, currentGameState, EffectCreationContext(stackObjectWithState.controller))))
+        targetIdentifier.getValidChoices(stackObjectWithState, currentGameState, AbilityContext(stackObjectWithState.controller))))
     }
   }
 }

@@ -57,7 +57,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       val objectExists = gameStateAfterEvent.gameObjectState.allObjects.exists(_.objectId == activeEffect.effect.affectedObject)
       val matchesCondition = activeEffect.endCondition match {
         case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(gameEvent)
+          eventCondition.matchesEvent(gameEvent, gameStateAfterEvent)
       }
       objectExists && !matchesCondition
     })))

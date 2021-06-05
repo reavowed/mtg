@@ -2,7 +2,7 @@ package mtg.data.sets
 
 import mtg.cards.{CardInSetData, Set}
 import mtg.data.cards._
-import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
+import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, CombatProfessor, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
 
 import java.time.{LocalDate, Month}
 
@@ -17,6 +17,7 @@ object Strixhaven extends Set(
     CardInSetData(IntroductionToProphecy, 4),
     CardInSetData(AgelessGuardian, 8),
     CardInSetData(BeamingDefiance, 9),
+    CardInSetData(CombatProfessor, 11),
     CardInSetData(SpinedKarok, 143),
     CardInSetData(Plains, 366),
     CardInSetData(Plains, 367),

@@ -6,6 +6,3 @@ case class KeywordAbilityParagraph(abilities: Seq[KeywordAbility]) extends TextP
   override def getText(cardName: String): String = (abilities.head.getText(cardName).capitalize +: abilities.tail.map(_.getText(cardName))).mkString(", ")
   override def abilityDefinitions: Seq[AbilityDefinition] = abilities
 }
-object KeywordAbilityParagraph {
-  implicit def singleKeywordAbilityAsParagraphSeq(keywordAbility: KeywordAbility): Seq[TextParagraph] = KeywordAbilityParagraph(Seq(keywordAbility))
-}

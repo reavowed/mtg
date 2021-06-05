@@ -12,6 +12,9 @@ object TextUtils {
     def withArticle: String = {
       getArticle(str) + " " + str
     }
+    def uncapitalize: String = {
+      str.head.toLower + str.tail
+    }
   }
   def getArticle(word: String): String = {
       if ("aeiou".contains(word.head)) "an" else "a"

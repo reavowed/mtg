@@ -20,6 +20,8 @@ object EffectBuilder
     with TargetBuilder
     with ConditionBuilder
     with ContinuousEffectBuilder
+    with TriggeredAbilityBuilder
+    with ParagraphBuilder
 {
 
   abstract class EffectsSeqExtension(effects: Seq[OneShotEffect]) {

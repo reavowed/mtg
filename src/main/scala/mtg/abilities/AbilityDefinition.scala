@@ -1,12 +1,14 @@
 package mtg.abilities
 
-import mtg.cards.text.SpellEffectParagraph
+import mtg.cards.text.{SpellEffectParagraph, TextParagraph}
 import mtg.characteristics.types.Type.{Instant, Sorcery}
+import mtg.effects.condition.ConditionDefinition
 import mtg.effects.{ContinuousEffect, OneShotEffect}
 import mtg.game.ZoneType
 import mtg.game.state.ObjectWithState
 import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
+import mtg.utils.TextUtils._
 
 sealed abstract class AbilityDefinition {
   def functionalZones: Set[ZoneType] = Set(ZoneType.Battlefield)
@@ -29,6 +31,14 @@ case class ActivatedAbilityDefinition(
   extends AbilityDefinition
 {
   override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + effectParagraph.getText(cardName)
+}
+
+case class TriggeredAbilityDefinition(
+    condition: ConditionDefinition,
+    effectParagraph: SpellEffectParagraph)
+  extends AbilityDefinition with TextParagraph {
+  override def getText(cardName: String): String = "At " + condition.getText(cardName) + ", " + effectParagraph.getText(cardName).uncapitalize
+  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 }
 
 trait KeywordAbility extends AbilityDefinition with CaseObjectWithName {

@@ -58,7 +58,9 @@ object BasicLandType {
 
 sealed class CreatureType extends Subtype
 object CreatureType {
+  object Bird extends CreatureType
   object Cat extends CreatureType
+  object Cleric extends CreatureType
   object Dog extends CreatureType
   object Crocodile extends CreatureType
   object Elemental extends CreatureType
