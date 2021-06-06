@@ -1,6 +1,7 @@
 package mtg.effects.targets
 
 import mtg.characteristics.types.Type.{Creature, Planeswalker}
+import mtg.effects.EffectContext
 import mtg.effects.filters.AnyPlayerFilter
 import mtg.effects.filters.combination.{DisjunctiveFilter, ImplicitPermanentFilter}
 import mtg.game.ObjectOrPlayer

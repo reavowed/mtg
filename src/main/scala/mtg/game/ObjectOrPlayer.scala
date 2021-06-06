@@ -18,7 +18,7 @@ case class ObjectId(sequentialId: Int) extends ObjectOrPlayer {
 
   def findPermanent(gameState: GameState): Option[PermanentObject] = gameState.gameObjectState.battlefield.find(_.objectId == this)
 
-  def getName(gameState: GameState): String = currentCharacteristics(gameState).name
+  def getName(gameState: GameState): String = currentCharacteristics(gameState).name.get
   def getPower(gameState: GameState): Int = currentCharacteristics(gameState).power.getOrElse(0)
   def getToughness(gameState: GameState): Int = currentCharacteristics(gameState).toughness.getOrElse(0)
   def getMarkedDamage(gameState: GameState): Int = gameState.gameObjectState.derivedState.permanentStates(this).gameObject.markedDamage

@@ -1,9 +1,8 @@
 package mtg
 
-import mtg.cards.CardDefinition
-import mtg.game.objects.{Card, GameObject, GameObjectState}
-import mtg.game.state.history.GameHistory
+import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state._
+import mtg.game.state.history.GameHistory
 import mtg.game.turns.TurnPhase
 import mtg.helpers.{GameActionHelpers, GameStateManagerHelpers}
 import org.specs2.matcher.Matcher
@@ -15,12 +14,6 @@ abstract class SpecWithGameStateManager
     with GameStateManagerHelpers
     with GameActionHelpers
 {
-  def beCardObject(card: Card): Matcher[GameObject] = { (gameObject: GameObject) =>
-    (gameObject.card == card, "", "")
-  }
-  def beCardObject(cardDefinition: CardDefinition): Matcher[GameObject] = { (gameObject: GameObject) =>
-    (gameObject.card.printing.cardDefinition == cardDefinition, "", "")
-  }
   def beObjectWithState(gameObject: GameObject): Matcher[ObjectWithState] = {(objectWithState: ObjectWithState) =>
     (objectWithState.gameObject == gameObject, "", "")
   }

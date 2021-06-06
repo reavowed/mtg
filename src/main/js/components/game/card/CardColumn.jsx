@@ -6,13 +6,13 @@ import {useRefWithEventHandler} from "../../../utils/hook-utils";
 import VerticalCenter from "../../layout/VerticalCenter";
 import CardWithActions from "./CardWithActions";
 
-function CardWrapper({card, as}) {
+function CardWrapper({as, ...props}) {
     return <div className="cardWrapper">
-        {createElement(as, {card})}
+        {createElement(as, props)}
     </div>
 }
 
-export default function CardColumn({className, cards, as}) {
+export default function CardColumn({className, cards, as, cardProps}) {
     as = as || CardWithActions;
 
     const overlapCards = useCallback((ref) => {
@@ -22,6 +22,6 @@ export default function CardColumn({className, cards, as}) {
     const ref = useRefWithEventHandler(overlapCards, null, [cards]);
 
     return <VerticalCenter className={addClass(className, "cardColumn py-2")} ref={ref}>
-            {_.map(cards, card => <CardWrapper key={card.objectId} card={card} as={as} /> )}
+            {_.map(cards, card => <CardWrapper key={card.objectId} card={card} as={as} {...cardProps} /> )}
         </VerticalCenter>;
 }

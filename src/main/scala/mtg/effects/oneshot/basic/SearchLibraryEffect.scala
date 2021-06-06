@@ -1,6 +1,6 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
+import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.filters.Filter
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.game.state.{GameActionResult, GameObjectEvent, GameState}

@@ -1,6 +1,7 @@
 package mtg.game.state
 
 import mtg.abilities.AbilityDefinition
+import mtg.effects.EffectContext
 import mtg.game.PlayerId
 import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
 
@@ -45,6 +46,7 @@ case class StackObjectWithState(
 {
   override def controllerOrOwner: PlayerId = controller
   override def updateCharacteristics(f: Characteristics => Characteristics): StackObjectWithState = copy(characteristics = f(characteristics))
+  def getEffectContext(gameState: GameState): EffectContext = new EffectContext(controller, gameObject.underlyingObject.getSourceName(gameState))
 }
 
 object ObjectWithState {

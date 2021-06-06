@@ -42,7 +42,7 @@ object Zone {
 
   trait BasicZone extends TypedZone[BasicGameObject] {
     override def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): BasicGameObject = {
-      BasicGameObject(previousObjectState.gameObject.card, newObjectId, this)
+      BasicGameObject(previousObjectState.gameObject.underlyingObject, newObjectId, this)
     }
   }
 
@@ -56,7 +56,7 @@ object Zone {
   case object Battlefield extends Shared[PermanentObject](ZoneType.Battlefield) {
     override def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): PermanentObject = {
       val controller = previousObjectState.asOptionalInstanceOf[StackObjectWithState].map(_.controller).getOrElse(playerMoving)
-      PermanentObject(previousObjectState.gameObject.card, newObjectId, controller)
+      PermanentObject(previousObjectState.gameObject.underlyingObject, newObjectId, controller)
     }
     override def stateLens: Lens[GameObjectState, Seq[PermanentObject]] = Focus[GameObjectState](_.battlefield)
   }
@@ -65,7 +65,7 @@ object Zone {
   }
   case object Stack extends Shared[StackObject](ZoneType.Stack) {
     override def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): StackObject = {
-      StackObject(previousObjectState.gameObject.card, newObjectId, playerMoving)
+      StackObject(previousObjectState.gameObject.underlyingObject, newObjectId, playerMoving)
     }
     override def stateLens: Lens[GameObjectState, Seq[StackObject]] = Focus[GameObjectState](_.stack)
   }

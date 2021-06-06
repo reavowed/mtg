@@ -1,6 +1,6 @@
 package mtg.effects.oneshot
 
-import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
+import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.identifiers.Identifier
 import mtg.effects.oneshot.descriptions.ContinuousEffectDescription

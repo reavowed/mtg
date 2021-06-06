@@ -4,12 +4,13 @@ import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.m21.{AlpineWatchdog, ConcordiaPegasus}
-import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
+import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, CombatProfessor, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
 import mtg.data.cards.{Forest, Mountain, Plains}
 import mtg.data.sets.Strixhaven
 import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject, StackObject}
 import mtg.game.state.{GameState, GameStateManager}
+import mtg.game.turns.StartNextTurnAction
 import mtg.game.{GameStartingData, PlayerId, PlayerStartingData, Zone}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,11 +47,11 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialGameState = initialManager.currentGameState
 
     val cardsToAdd = Seq(
-      (ConcordiaPegasus, Zone.Battlefield, playerOne),
-      (AgelessGuardian, Zone.Battlefield, playerOne),
-      (Mountain, Zone.Battlefield, playerOne),
-      (Mountain, Zone.Battlefield, playerOne),
-      (Mountain, Zone.Battlefield, playerOne),
+      (CombatProfessor, Zone.Battlefield, playerOne),
+      (SavannahLions, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
       (ConcordiaPegasus, Zone.Battlefield, playerTwo),
       (AgelessGuardian, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
@@ -61,6 +62,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     )
 
     val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}
+      .copy(pendingActions = Seq(StartNextTurnAction(playerOne)))
     new GameStateManager(updatedState, onStateUpdate, initialManager.stops)
   }
 

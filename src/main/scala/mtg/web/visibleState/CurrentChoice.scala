@@ -1,6 +1,6 @@
 package mtg.web.visibleState
 
-import mtg.game.actions.ResolveEffectChoice
+import mtg.game.stack.ResolveEffectChoice
 import mtg.game.state.PlayerChoice
 
 case class CurrentChoice(`type`: String, playerToAct: String, details: Any)

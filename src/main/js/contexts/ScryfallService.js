@@ -7,10 +7,10 @@ class ScryfallService {
     requests = [];
     timeoutId = 0;
     requestInProgress = false;
-    requestCard(cardDefinition, callback) {
+    requestArtUrl(cardDefinition, callback) {
         const knownCard = this.getFromMemory(cardDefinition) || this.getFromLocalStorage(cardDefinition);
         if (knownCard) {
-            callback(knownCard);
+            callback(knownCard.image_uris.art_crop);
         } else {
             const {set, collectorNumber} = cardDefinition;
             const existingRequest = _.find(this.requests, r => r.card.set === set.toLowerCase() && r.collector_number === collectorNumber.toString());
@@ -49,7 +49,7 @@ class ScryfallService {
     addCardFromScryfall(card) {
         const existingRequest = _.find(this.requests, r => r.card.set === card.set && r.card.collector_number === card.collector_number);
         if (existingRequest) {
-            _.forEach(existingRequest.callbacks, callback => callback(card));
+            _.forEach(existingRequest.callbacks, callback => callback(card.image_uris.art_crop));
         }
         this.addCardToLocalStorage(card);
         this.addCardToMemory(card);

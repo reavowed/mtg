@@ -15,7 +15,7 @@ case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends Prior
     val eventOption = if (preventEvent) None else Some(PlayLandEvent(player, land.gameObject))
     GameActionResult(
       eventOption.toSeq,
-      Some(LogEvent.PlayedLand(player, land.characteristics.name))
+      Some(LogEvent.PlayedLand(player, land.characteristics.name.get))
     )
   }
 

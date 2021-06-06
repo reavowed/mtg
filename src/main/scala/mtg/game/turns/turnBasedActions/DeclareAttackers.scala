@@ -75,7 +75,7 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
         attackDeclarations.map(_.attacker).map(TapAttacker),
         LogEvent.DeclareAttackers(
           playerToAct,
-          attackDeclarations.map(_.attacker.currentCharacteristics(currentGameState).name)
+          attackDeclarations.map(_.attacker.currentCharacteristics(currentGameState).name.get)
         )
       )
     } else {

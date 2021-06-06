@@ -1,11 +1,12 @@
 package mtg.game.objects
 
 import monocle.Focus
+import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
 import mtg.game.state.{DerivedState, ObjectWithState}
-import mtg.game.{GameData, GameStartingData, ObjectId, PlayerId, TypedZone, Zone}
+import mtg.game._
 import mtg.utils.AtGuaranteed
 
 import scala.collection.View
@@ -13,6 +14,7 @@ import scala.util.Random
 
 case class GameObjectState(
     nextObjectId: Int,
+    nextAbilityId: Int,
     lifeTotals: Map[PlayerId, Int],
     libraries: Map[PlayerId, Seq[BasicGameObject]],
     hands: Map[PlayerId, Seq[BasicGameObject]],
@@ -23,10 +25,12 @@ case class GameObjectState(
     sideboards: Map[PlayerId, Seq[BasicGameObject]],
     manaPools: Map[PlayerId, Seq[ManaObject]],
     lastKnownInformation: Map[ObjectId, ObjectWithState],
-    floatingActiveContinuousEffects: Seq[FloatingActiveContinuousEffect])
+    floatingActiveContinuousEffects: Seq[FloatingActiveContinuousEffect],
+    triggeredAbilitiesWaitingToBePutOnStack: Seq[PendingTriggeredAbility])
 {
   lazy val derivedState: DerivedState = DerivedState.calculateFromGameObjectState(this)
   def activeContinuousEffects: View[ContinuousEffect] = floatingActiveContinuousEffects.view.map(_.effect) ++ DerivedState.getActiveContinuousEffectsFromStaticAbilities(derivedState.allObjectStates.values.view)
+  def activeTriggeredAbilities: View[TriggeredAbility] = DerivedState.getActiveTriggeredAbilities(derivedState.allObjectStates.values.view)
 
   def updateManaPool(player: PlayerId, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
@@ -63,14 +67,22 @@ case class GameObjectState(
   def updateEffects(f: Seq[FloatingActiveContinuousEffect] => Seq[FloatingActiveContinuousEffect]): GameObjectState = {
     copy(floatingActiveContinuousEffects = f(floatingActiveContinuousEffects))
   }
+  def addWaitingTriggeredAbilities(abilities: Seq[TriggeredAbility]): GameObjectState = {
+    copy(
+      triggeredAbilitiesWaitingToBePutOnStack = triggeredAbilitiesWaitingToBePutOnStack ++ abilities.mapWithIndex { case (ability, index) =>  PendingTriggeredAbility(nextAbilityId + index, ability) },
+      nextAbilityId = nextAbilityId + abilities.length)
+  }
+  def removeTriggeredAbility(ability: PendingTriggeredAbility): GameObjectState = {
+    copy(triggeredAbilitiesWaitingToBePutOnStack = triggeredAbilitiesWaitingToBePutOnStack.filter(_ != ability))
+  }
 
-  def getCurrentOrLastKnownState(objectId: ObjectId): Option[ObjectWithState] = {
-    derivedState.allObjectStates.get(objectId) orElse lastKnownInformation.get(objectId)
+  def getCurrentOrLastKnownState(objectId: ObjectId): ObjectWithState = {
+    derivedState.allObjectStates.get(objectId) orElse lastKnownInformation.get(objectId) getOrElse { throw new Exception(s"No state found for object $objectId")}
   }
 }
 
 object GameObjectState {
-  def initial(gameStartingData: GameStartingData, gameData: GameData) = {
+  def initial(gameStartingData: GameStartingData, gameData: GameData): GameObjectState = {
     var nextObjectId = 1
     def getNextObjectId = {
       val objectId = ObjectId(nextObjectId)
@@ -96,6 +108,7 @@ object GameObjectState {
 
     GameObjectState(
       nextObjectId,
+      1,
       lifeTotals,
       libraries,
       emptyMap,
@@ -106,6 +119,7 @@ object GameObjectState {
       sideboards,
       emptyMap,
       Map.empty,
+      Nil,
       Nil)
   }
 }

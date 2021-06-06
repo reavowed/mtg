@@ -5,7 +5,7 @@ import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences}
 import mtg.data.cards.{Forest, Island, Plains}
 import mtg.effects.oneshot.basic.SearchChoice
 import mtg.game.Zone
-import mtg.game.actions.ResolveEffectChoice
+import mtg.game.stack.ResolveEffectChoice
 import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 

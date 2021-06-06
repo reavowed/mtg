@@ -2,8 +2,9 @@ package mtg.game.actions.cast
 
 import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
-import mtg.game.actions.spellsAndAbilities.{CastSpellAndActivateAbilitySteps, FinishCasting}
 import mtg.game.actions.{PriorityAction, TimingChecks}
+import mtg.game.stack.steps
+import mtg.game.stack.steps.FinishCasting
 import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
 
@@ -15,7 +16,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, back
   override def execute(currentGameState: GameState): GameActionResult = {
     Seq(
       MoveObjectEvent(player, objectId, Zone.Stack),
-      CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))
+      steps.CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))
   }
 }
 

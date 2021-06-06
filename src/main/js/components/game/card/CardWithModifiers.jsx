@@ -14,7 +14,7 @@ export default forwardRef(function CardWithModifiers({card, containerClasses, ..
         containerClasses.push("blocking");
     }
 
-    return <CardImage ref={ref} card={card} className={containerClasses.join(" ")}>
+    return <CardImage ref={ref} card={card} className={containerClasses.join(" ")} {...props}>
         <span className="cardMarkers">
             {card.markedDamage > 0 && <span className="damageMarker">{card.markedDamage}</span>}
             {card.counters["+1/+1"] > 0 && <span className="plusOnePlusOneCounters">{card.counters["+1/+1"]}</span>}

@@ -9,5 +9,4 @@ object YouIdentifier extends StaticIdentifier[PlayerId] {
 
   override def getText(cardName: String): String = "you"
   override def getPossessiveText(cardName: String): String = "your"
-
 }

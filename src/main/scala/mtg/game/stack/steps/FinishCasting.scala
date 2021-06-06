@@ -1,4 +1,4 @@
-package mtg.game.actions.spellsAndAbilities
+package mtg.game.stack.steps
 
 import mtg.game.ObjectId
 import mtg.game.actions.cast
@@ -11,7 +11,7 @@ case class FinishCasting(stackObjectId: ObjectId) extends InternalGameAction {
     currentGameState.gameObjectState.derivedState.spellStates.get(stackObjectId).map[GameActionResult] { stackObjectWithState =>
       (
         Seq(cast.SpellCastEvent(stackObjectId), priority.PriorityFromPlayerAction(stackObjectWithState.controller)),
-        LogEvent.CastSpell(stackObjectWithState.controller, stackObjectWithState.characteristics.name, stackObjectWithState.gameObject.targets.map(_.getName(currentGameState)))
+        LogEvent.CastSpell(stackObjectWithState.controller, stackObjectWithState.characteristics.name.get, stackObjectWithState.gameObject.targets.map(_.getName(currentGameState)))
       )
     }.getOrElse(())
   }

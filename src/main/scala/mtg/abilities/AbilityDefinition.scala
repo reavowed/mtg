@@ -25,10 +25,14 @@ sealed abstract class AbilityDefinition {
   def getQuotedDescription(cardName: String): String = "\"" + getText(cardName) + "\""
 }
 
+sealed trait ActivatedOrTriggeredAbilityDefinition extends AbilityDefinition {
+  def effectParagraph: SpellEffectParagraph
+}
+
 case class ActivatedAbilityDefinition(
     costs: Seq[Cost],
     effectParagraph: SpellEffectParagraph)
-  extends AbilityDefinition
+  extends ActivatedOrTriggeredAbilityDefinition
 {
   override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + effectParagraph.getText(cardName)
 }
@@ -36,7 +40,7 @@ case class ActivatedAbilityDefinition(
 case class TriggeredAbilityDefinition(
     condition: ConditionDefinition,
     effectParagraph: SpellEffectParagraph)
-  extends AbilityDefinition with TextParagraph {
+  extends ActivatedOrTriggeredAbilityDefinition with TextParagraph {
   override def getText(cardName: String): String = "At " + condition.getText(cardName) + ", " + effectParagraph.getText(cardName).uncapitalize
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 }

@@ -1,7 +1,7 @@
 package mtg.effects.oneshot.descriptions
 
 import mtg.abilities.AbilityDefinition
-import mtg.effects.ContinuousEffect
+import mtg.effects.{ContinuousEffect, EffectContext}
 import mtg.effects.continuous.AddAbilityEffect
 import mtg.game.ObjectId
 

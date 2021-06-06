@@ -1,13 +1,13 @@
 package mtg.game.state
 
 import mtg._
-import mtg.abilities.StaticAbility
+import mtg.abilities.{AbilityDefinition, StaticAbility, TriggeredAbility, TriggeredAbilityDefinition}
 import mtg.characteristics.types.BasicLandType
 import mtg.characteristics.types.Type.Creature
 import mtg.effects.ContinuousEffect
 import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
 import mtg.game.ObjectId
-import mtg.game.objects.{FloatingActiveContinuousEffect, GameObjectState}
+import mtg.game.objects.{AbilityOnTheStack, GameObjectState}
 import mtg.parts.counters.PowerToughnessModifyingCounter
 
 import scala.collection.View
@@ -22,8 +22,16 @@ case class DerivedState(
 }
 
 object DerivedState {
+  private def getActiveAbilitiesOfType[T <: AbilityDefinition : ClassTag](objectsWithState: View[ObjectWithState]): View[(T, ObjectWithState)] = {
+    objectsWithState.flatMap(objectWithState => objectWithState.characteristics.abilities.ofType[T].filter(_.isFunctional(objectWithState)).map(_ -> objectWithState))
+  }
+  def getActiveTriggeredAbilities(objectsWithState: View[ObjectWithState]): View[TriggeredAbility] = {
+    getActiveAbilitiesOfType[TriggeredAbilityDefinition](objectsWithState)
+      .map { case (abilityDefinition, objectWithState) => TriggeredAbility(abilityDefinition, objectWithState.gameObject.objectId, objectWithState.controllerOrOwner) }
+  }
   def getActiveContinuousEffectsFromStaticAbilities(objectsWithState: View[ObjectWithState]): View[ContinuousEffect] = {
-    objectsWithState.flatMap(objectWithState => objectWithState.characteristics.abilities.ofType[StaticAbility].filter(_.isFunctional(objectWithState)).flatMap(_.getEffects(objectWithState)))
+    getActiveAbilitiesOfType[StaticAbility](objectsWithState)
+      .flatMap { case (ability, objectWithState) => ability.getEffects(objectWithState) }
   }
   def getActiveContinuousEffects(
     gameObjectState: GameObjectState,

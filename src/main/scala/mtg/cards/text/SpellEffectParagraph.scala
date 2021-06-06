@@ -1,7 +1,7 @@
 package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, SpellAbility}
-import mtg.effects.OneShotEffect
+import mtg.effects.{EffectContext, OneShotEffect}
 import mtg.effects.identifiers.Identifier
 
 case class SpellEffectParagraph(sentences: SpellEffectSentence*) extends TextParagraph {

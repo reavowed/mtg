@@ -14,7 +14,7 @@ class MulliganSpec extends SpecWithGameStateManager {
   }
 
   def checkCardsAreDifferent(firstGameObjects: Seq[GameObject], secondGameObjects: Seq[GameObject]): MatchResult[_] = {
-    firstGameObjects.map(_.card) must not(contain(eachOf(secondGameObjects.map(_.card): _*)))
+    firstGameObjects.map(_.underlyingObject) must not(contain(eachOf(secondGameObjects.map(_.underlyingObject): _*)))
   }
 
   def checkLibraryAndHandAreTheSame(beforeState: GameObjectState, afterState: GameObjectState, player: PlayerId) = {
@@ -41,8 +41,8 @@ class MulliganSpec extends SpecWithGameStateManager {
       val pregameState = gameObjectStateWithInitialLibrariesOnly
       val finalGameState = runAction(StartGameAction, pregameState)
 
-      finalGameState.gameObjectState.hands(playerOne).map(_.card) must contain(exactly(pregameState.libraries(playerOne).take(7).map(_.card): _*))
-      finalGameState.gameObjectState.hands(playerTwo).map(_.card) must contain(exactly(pregameState.libraries(playerTwo).take(7).map(_.card): _*))
+      finalGameState.gameObjectState.hands(playerOne).map(_.underlyingObject) must contain(exactly(pregameState.libraries(playerOne).take(7).map(_.underlyingObject): _*))
+      finalGameState.gameObjectState.hands(playerTwo).map(_.underlyingObject) must contain(exactly(pregameState.libraries(playerTwo).take(7).map(_.underlyingObject): _*))
     }
 
     "begin the game if both players keep" in {

@@ -4,6 +4,10 @@ import _ from "lodash";
 import format from "date-fns/format"
 import {commaList, getPlural} from "../../utils/word-helpers";
 
+function getTargetDetails(targetNames) {
+    return targetNames.length > 0 ? " targeting " + commaList(targetNames) : "";
+}
+
 function EventLogMessage({entry}) {
     switch (entry.type) {
         case "Start":
@@ -23,12 +27,15 @@ function EventLogMessage({entry}) {
         case "PlayedLand":
             return "Player " + entry.details.player + " plays " + entry.details.landName + ".";
         case "CastSpell":
-            const targetDetails = entry.details.targetNames.length > 0 ? " targeting " + commaList(entry.details.targetNames) : "";
-            return "Player " + entry.details.player + " casts " + entry.details.spellName + targetDetails + ".";
+            return "Player " + entry.details.player + " casts " + entry.details.spellName + getTargetDetails(entry.details.targetNames) + ".";
+        case "PutTriggeredAbilityOnStack":
+            return "Player " + entry.details.player + " puts triggered ability of " + entry.details.sourceName + " on the stack" + getTargetDetails(entry.details.targetNames) + ". (" + entry.details.text + ")";
         case "ResolvePermanent":
             return "Player " + entry.details.player + " puts " + entry.details.permanentName + " onto the battlefield.";
         case "ResolveSpell":
             return "Player " + entry.details.player + " resolves " + entry.details.spellName + ".";
+        case "ResolveAbility":
+            return "Player " + entry.details.player + " resolves " + entry.details.typeDescription + " ability of " + entry.details.sourceName + ". (" + entry.details.text + ")";
         case "SpellFailedToResolve":
             return entry.details.spellName + " fails to resolve and is put into its owner's graveyard.";
         case "DeclareAttackers":
@@ -52,7 +59,7 @@ function EventLogEntry({entry}) {
     date.setUTCSeconds(entry.timestamp);
 
     return <div className="mb-2">
-        <strong>{format(date, "hh:mm")}</strong>: <EventLogMessage entry={entry} />
+        <strong>{format(date, "HH:mm")}</strong>: <EventLogMessage entry={entry} />
     </div>
 }
 

@@ -84,22 +84,22 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
 
     def playLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
-        .filter(_.land.gameObject.card.printing.cardDefinition == cardDefinition).single
+        .filter(_.land.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(landAction.optionText, player)
     }
     def playFirstLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
-        .filter(_.land.gameObject.card.printing.cardDefinition == cardDefinition).head
+        .filter(_.land.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(landAction.optionText, player)
     }
     def activateAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
-        .filter(_.objectWithAbility.gameObject.card.printing.cardDefinition == cardDefinition).single
+        .filter(_.objectWithAbility.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def activateFirstAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
-        .filter(_.objectWithAbility.gameObject.card.printing.cardDefinition == cardDefinition).head
+        .filter(_.objectWithAbility.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def activateAbilities(player: PlayerId, cardDefinition: CardDefinition, number: Int): Unit = {
@@ -109,12 +109,12 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
 
     def castSpell(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
-        .filter(_.objectToCast.gameObject.card.printing.cardDefinition == cardDefinition).single
+        .filter(_.objectToCast.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def castFirstSpell(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
-        .filter(_.objectToCast.gameObject.card.printing.cardDefinition == cardDefinition).head
+        .filter(_.objectToCast.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def attackWith(player: PlayerId, cardDefinitions: CardDefinition*): Unit = {

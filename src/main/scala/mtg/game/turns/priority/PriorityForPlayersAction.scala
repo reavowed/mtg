@@ -2,8 +2,7 @@ package mtg.game.turns.priority
 
 import mtg.game.PlayerId
 import mtg.game.actions.PriorityAction
-import mtg.game.state.{BackupAction, GameState, InternalGameAction, GameActionResult}
-import mtg.sbas.StateBasedActionCheck
+import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction}
 
 case class PriorityForPlayersAction(players: Seq[PlayerId]) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
@@ -14,7 +13,7 @@ case class PriorityForPlayersAction(players: Seq[PlayerId]) extends InternalGame
           playerToAct,
           remainingPlayers,
           PriorityAction.getAll(playerToAct, gameState, backupAction))
-        Seq(StateBasedActionCheck, priorityChoice)
+        Seq(StateBasedActionCheck, TriggeredAbilityCheck, priorityChoice)
       case Nil =>
         ()
     }

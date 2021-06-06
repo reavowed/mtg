@@ -1,18 +1,19 @@
 package mtg.web.visibleState
 
-import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
-import mtg.game.state.{Characteristics, GameState, ObjectWithState, PermanentStatus}
+import mtg.game.objects._
+import mtg.game.state.{Characteristics, GameState, PermanentStatus}
 import mtg.game.turns.turnBasedActions.{DeclareAttackers, DeclareBlockers}
 import mtg.game.{ObjectId, PlayerId}
+
+import scala.annotation.tailrec
 
 sealed trait PossiblyHiddenGameObject
 
 case object HiddenGameObject extends PossiblyHiddenGameObject
 
 case class VisibleGameObject(
-    name: String,
-    set: String,
-    collectorNumber: Int,
+    name: Option[String],
+    artDetails: Option[ArtDetails],
     objectId: ObjectId,
     characteristics: Characteristics,
     text: String,
@@ -37,17 +38,25 @@ object VisibleGameObject {
   private def getCounters(gameObject: GameObject): Map[String, Int] = {
     gameObject.counters.map(_.mapLeft(_.description))
   }
+  @tailrec
+  private def getArtDetails(underlyingObject: UnderlyingObject, gameState: GameState): Option[ArtDetails] = underlyingObject match {
+    case card: Card =>
+      Some(ArtDetails(card.printing.set.code, card.printing.collectorNumber))
+    case abilityOnTheStack: AbilityOnTheStack =>
+      getArtDetails(gameState.gameObjectState.getCurrentOrLastKnownState(abilityOnTheStack.source).gameObject.underlyingObject, gameState)
+    case _ =>
+      None
+  }
 
   def apply(gameObject: GameObject, gameState: GameState): VisibleGameObject = gameObject match {
     case gameObject: BasicGameObject =>
       val objectState = gameState.gameObjectState.derivedState.basicStates(gameObject.objectId)
       VisibleGameObject(
-        gameObject.card.printing.cardDefinition.name,
-        gameObject.card.printing.set.code,
-        gameObject.card.printing.collectorNumber,
+        objectState.characteristics.name,
+        getArtDetails(gameObject.underlyingObject, gameState),
         gameObject.objectId,
         objectState.characteristics,
-        gameObject.card.printing.cardDefinition.text,
+        objectState.characteristics.getText,
         None,
         None,
         None,
@@ -56,12 +65,11 @@ object VisibleGameObject {
     case gameObject: StackObject =>
       val objectState = gameState.gameObjectState.derivedState.spellStates(gameObject.objectId)
       VisibleGameObject(
-        gameObject.card.printing.cardDefinition.name,
-        gameObject.card.printing.set.code,
-        gameObject.card.printing.collectorNumber,
+        objectState.characteristics.name,
+        getArtDetails(gameObject.underlyingObject, gameState),
         gameObject.objectId,
         objectState.characteristics,
-        gameObject.card.printing.cardDefinition.text,
+        objectState.characteristics.getText,
         Some(objectState.controller),
         None,
         None,
@@ -70,12 +78,11 @@ object VisibleGameObject {
     case gameObject: PermanentObject =>
       val objectState = gameState.gameObjectState.derivedState.permanentStates(gameObject.objectId)
       VisibleGameObject(
-        gameObject.card.printing.cardDefinition.name,
-        gameObject.card.printing.set.code,
-        gameObject.card.printing.collectorNumber,
+        objectState.characteristics.name,
+        getArtDetails(gameObject.underlyingObject, gameState),
         gameObject.objectId,
         objectState.characteristics,
-        gameObject.card.printing.cardDefinition.text,
+        objectState.characteristics.getText,
         Some(objectState.controller),
         Some(gameObject.status),
         Some(gameObject.markedDamage),

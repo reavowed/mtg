@@ -1,4 +1,4 @@
-package mtg.game.actions.spellsAndAbilities
+package mtg.game.stack.steps
 
 import mtg.game.ObjectId
 import mtg.game.actions.SpendManaAutomaticallyEvent

@@ -3,12 +3,13 @@ package mtg.helpers
 import mtg.cards.CardDefinition
 import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.actions.cast.CastSpellAction
-import mtg.game.actions.spellsAndAbilities.TargetChoice
-import mtg.game.{ObjectOrPlayer, PlayerId}
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, ResolveEffectChoice}
-import mtg.game.objects.{GameObject, GameObjectState}
-import mtg.game.state.{GameAction, GameStateManager}
+import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
+import mtg.game.objects.{Card, GameObject, GameObjectState}
+import mtg.game.stack.ResolveEffectChoice
+import mtg.game.stack.steps.TargetChoice
+import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityChoice
+import mtg.game.{ObjectOrPlayer, PlayerId}
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 import org.specs2.mutable.SpecificationLike
 
@@ -16,9 +17,7 @@ import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 
 trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
-  def beCastSpellAction(cardDefinition: CardDefinition): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
-    (castSpellAction.objectToCast.gameObject.cardDefinition == cardDefinition, s"was '${cardDefinition.name}'", s"was not '${cardDefinition.name}'")
-  }
+  def beCastSpellAction(cardDefinition: CardDefinition): Matcher[CastSpellAction] = beCardObject(cardDefinition) ^^ ((_: CastSpellAction).objectToCast.gameObject)
   def beCastSpellAction(gameObject: GameObject): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
     (castSpellAction.objectToCast.gameObject == gameObject, "was given object", "was not given object")
   }

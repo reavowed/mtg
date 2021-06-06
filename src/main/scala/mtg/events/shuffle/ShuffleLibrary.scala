@@ -13,6 +13,6 @@ case class ShuffleLibrary(playerIdentifier: PlayerId) extends GameObjectEvent {
     val shuffledLibraryContents = Random.shuffle(library.getState(currentGameState))
     shuffledLibraryContents.foldLeft(
       library.updateState(currentGameState.gameObjectState, _ => Nil))(
-      (gameState, oldObject) => gameState.addNewObject(BasicGameObject(oldObject.card, _, library), _ => 0))
+      (gameState, oldObject) => gameState.addNewObject(BasicGameObject(oldObject.underlyingObject, _, library), _ => 0))
   }
 }

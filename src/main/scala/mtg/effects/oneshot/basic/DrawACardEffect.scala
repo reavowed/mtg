@@ -1,6 +1,6 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
+import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.identifiers.Identifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.events.DrawCardEvent

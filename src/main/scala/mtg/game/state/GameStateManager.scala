@@ -46,21 +46,29 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     gameState.handleActionResult(internalGameAction.execute(gameState))
   }
 
-  private def executeGameEvent(gameEvent: GameEvent, gameState: GameState): GameState = {
-    val gameStateAfterEvent = gameEvent match {
+  private def executeGameEvent(gameEvent: GameEvent, initialGameState: GameState): GameState = {
+    def actuallyExecuteEvent = gameEvent match {
       case gameObjectEvent: GameObjectEvent =>
-        executeGameObjectEvent(gameObjectEvent, gameState)
+        executeGameObjectEvent(gameObjectEvent, _)
       case turnCycleEvent: TurnCycleEvent =>
-        executeTurnCycleEvent(turnCycleEvent, gameState)
+        executeTurnCycleEvent(turnCycleEvent, _)
     }
-    gameStateAfterEvent.updateGameObjectState(_.updateEffects(_.filter(activeEffect => {
-      val objectExists = gameStateAfterEvent.gameObjectState.allObjects.exists(_.objectId == activeEffect.effect.affectedObject)
+    def createTriggeredAbilities = (gameState: GameState) => {
+      val triggeredAbilities = gameState.gameObjectState.activeTriggeredAbilities.filter { _.getCondition(gameState) match {
+        case eventCondition: EventCondition =>
+          eventCondition.matchesEvent(gameEvent, gameState)
+      }}.toSeq
+      gameState.updateGameObjectState(_.addWaitingTriggeredAbilities(triggeredAbilities))
+    }
+    def removeEndedEffects = (gameState: GameState) => gameState.updateGameObjectState(_.updateEffects(_.filter(activeEffect => {
+      val objectExists = gameState.gameObjectState.allObjects.exists(_.objectId == activeEffect.effect.affectedObject)
       val matchesCondition = activeEffect.endCondition match {
         case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(gameEvent, gameStateAfterEvent)
+          eventCondition.matchesEvent(gameEvent, gameState)
       }
       objectExists && !matchesCondition
     })))
+    Seq(actuallyExecuteEvent, createTriggeredAbilities, removeEndedEffects).foldLeft(initialGameState)((gs, f) => f(gs))
   }
 
   private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {

@@ -9,14 +9,10 @@ import mtg.game.{PlayerId, TypedZone, Zone}
 trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
   implicit class GameObjectStateExtensions(gameObjectState: GameObjectState) {
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
-      gameObjectState.battlefield.view
-        .filter(_.card.printing.cardDefinition == cardDefinition)
-        .single
+      gameObjectState.battlefield.getCard(cardDefinition)
     }
     def getCard(cardDefinition: CardDefinition): GameObject = {
-      gameObjectState.allObjects.view
-        .filter(_.card.printing.cardDefinition == cardDefinition)
-        .single
+      gameObjectState.allObjects.getCard(cardDefinition)
     }
     def getCards(cardDefinitions: CardDefinition*): Seq[GameObject] = {
       cardDefinitions.map(getCard)

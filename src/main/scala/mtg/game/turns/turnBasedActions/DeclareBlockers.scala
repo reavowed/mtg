@@ -97,7 +97,7 @@ case class DeclareBlockersChoice(
     possibleBlockers.get(blockDeclaration.blocker).exists(_.contains(blockDeclaration.attacker))
   }
   override def handleDecision(chosenBlocks: DeclaredBlockers, currentGameState: GameState): GameActionResult = {
-    def getName(objectId: ObjectId): String = currentGameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name
+    def getName(objectId: ObjectId): String = currentGameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name.get
     val assignments = chosenBlocks.blockDeclarations.groupBy(_.attacker)
       .map { case (id, details) => (getName(id), details.map(_.blocker).map(getName)) }
     (Seq(OrderBlockers(chosenBlocks.blockDeclarations)), LogEvent.DeclareBlockers(playerToAct, assignments))
@@ -128,7 +128,7 @@ case class OrderBlockersChoice(playerToAct: PlayerId, attacker: ObjectId, blocke
   }
 
   override def handleDecision(chosenOption: BlockerOrdering, currentGameState: GameState): GameActionResult = {
-    def getName(objectId: ObjectId): String = currentGameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name
+    def getName(objectId: ObjectId): String = currentGameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name.get
     LogEvent.OrderBlockers(
       playerToAct,
       getName(chosenOption.attacker),

@@ -83,7 +83,7 @@ export default function ZoneLayout() {
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className="flex-shrink-0">
                     <Stack />
                 </div>
             </div>
