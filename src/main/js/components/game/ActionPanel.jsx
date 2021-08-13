@@ -9,6 +9,7 @@ import PriorityChoice from "./choices/PriorityChoice";
 import ScryChoice from "./choices/ScryChoice";
 import SearchChoice from "./choices/SearchChoice";
 import TargetChoice from "./choices/TargetChoice";
+import TriggeredAbilityChoice from "./choices/TriggeredAbilityChoice";
 import ManaPool from "./ManaPool";
 
 function getChoiceDisplay(choiceType) {
@@ -29,6 +30,8 @@ function getChoiceDisplay(choiceType) {
             return <TargetChoice />
         case "ScryChoice":
             return <ScryChoice />
+        case "TriggeredAbilityChoice":
+            return <TriggeredAbilityChoice />
     }
 }
 

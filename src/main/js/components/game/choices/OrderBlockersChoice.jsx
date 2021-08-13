@@ -1,12 +1,12 @@
 import _ from "lodash";
 import {useCallback, useContext, useState} from "preact/hooks";
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
-import {Button, Modal} from "react-bootstrap";
 import GameState from "../../../contexts/GameState";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import CardImage from "../card/CardImage";
 import DecisionButton from "../DecisionButton";
+import ModalChoice from "./ModalChoice";
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -18,7 +18,6 @@ const reorder = (list, startIndex, endIndex) => {
 
 export default function OrderBlockersChoice() {
     const gameState = useContext(GameState);
-    const [showModal, setShowModal] = useState(true);
     const [orderedBlockerIds, setOrderedBlockerIds] = useState(gameState.currentChoice.details.blockers);
 
     const player = gameState.player;
@@ -39,49 +38,41 @@ export default function OrderBlockersChoice() {
         setOrderedBlockerIds(newBlockerIds);
     }, [orderedBlockerIds]);
 
-    return <div>
-        <BannerText as="p">Order Blockers</BannerText>
+    return <ModalChoice text="Order Blockers">
+        <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="horizontal">
+                {(provided) => (
+                    <HorizontalCenter ref={provided.innerRef}{...provided.droppableProps}>
+                        {blockers.map((blocker, index) => (
+                            <Draggable key={blocker.objectId} draggableId={blocker.objectId.toString()} index={index}>
+                                {(provided) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        style={{
+                                            display: "inline-block",
+                                            marginLeft: index > 0 && "-100px",
+                                            ...provided.draggableProps.style,
+                                            zIndex: blockers.length - index
+                                        }}
+                                    >
+                                        <CardImage card={blocker}/>
+                                    </div>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </HorizontalCenter>
+                )}
+            </Droppable>
+        </DragDropContext>
         <HorizontalCenter>
-            {!showModal && <Button onClick={() => setShowModal(true)}>Show</Button>}
+            <CardImage card={attacker}/>
         </HorizontalCenter>
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-            <Modal.Body>
-                <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="droppable" direction="horizontal">
-                        {(provided) => (
-                            <HorizontalCenter ref={provided.innerRef}{...provided.droppableProps}>
-                                {blockers.map((blocker, index) => (
-                                    <Draggable key={blocker.objectId} draggableId={blocker.objectId.toString()} index={index}>
-                                        {(provided) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={{
-                                                    display: "inline-block",
-                                                    marginLeft: index > 0 && "-100px",
-                                                    ...provided.draggableProps.style,
-                                                    zIndex: blockers.length - index
-                                                }}
-                                            >
-                                                <CardImage card={blocker}/>
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </HorizontalCenter>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-                <HorizontalCenter>
-                    <CardImage card={attacker}/>
-                </HorizontalCenter>
-                <BannerText>Order Blockers</BannerText>
-                <HorizontalCenter>
-                    <DecisionButton optionToChoose={orderedBlockerIds.join(" ")}>Submit</DecisionButton>
-                </HorizontalCenter>
-            </Modal.Body>
-        </Modal>
-    </div>;
+        <BannerText>Order Blockers</BannerText>
+        <HorizontalCenter>
+            <DecisionButton optionToChoose={orderedBlockerIds.join(" ")}>Submit</DecisionButton>
+        </HorizontalCenter>
+    </ModalChoice>;
 }

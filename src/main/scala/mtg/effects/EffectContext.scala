@@ -10,7 +10,7 @@ object EffectContext {
   def apply(triggeredAbility: TriggeredAbility, gameState: GameState): EffectContext = {
     new EffectContext(
       triggeredAbility.ownerId,
-      gameState.gameObjectState.getCurrentOrLastKnownState(triggeredAbility.sourceId).gameObject.underlyingObject.getSourceName(gameState))
+      triggeredAbility.getSourceName(gameState).get)
   }
   def apply(stackObjectWithState: StackObjectWithState, gameState: GameState): EffectContext = {
     new EffectContext(

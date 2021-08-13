@@ -1,26 +1,18 @@
 import {useContext, useState} from "preact/hooks";
-import {Button, Modal} from "react-bootstrap";
 import GameState from "../../../contexts/GameState";
 import {addClass} from "../../../utils/element-utils";
-import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import _ from "lodash";
 import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
+import ModalChoice from "./ModalChoice";
 
 export default function SearchChoice() {
     const gameState = useContext(GameState);
-    const [showModal, setShowModal] = useState(true);
     const [chosenOption, setChosenOption] = useState(null);
     const options = gameState.currentChoice.details.possibleChoices;
 
-    return <div>
-        <BannerText as="p">Choose a Card</BannerText>
-        <HorizontalCenter>
-            {!showModal && <Button onClick={() => setShowModal(true)}>Choose</Button>}
-        </HorizontalCenter>
-        <Modal show={showModal} onHide={() => setShowModal(false)} dialogClassName="search-dialog">
-            <Modal.Body>
+    return <ModalChoice text="Choose a Card">
                 <div style={{overflowX: "scroll"}}>
                     <HorizontalCenter>
                         {_.map(gameState.libraries[gameState.player], (card, index) => {
@@ -44,7 +36,5 @@ export default function SearchChoice() {
                 <HorizontalCenter>
                     <DecisionButton optionToChoose={chosenOption && chosenOption.toString()} disabled={!chosenOption}>Submit</DecisionButton>
                 </HorizontalCenter>
-            </Modal.Body>
-        </Modal>
-    </div>
+    </ModalChoice>;
 }

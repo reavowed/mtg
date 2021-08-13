@@ -5,15 +5,13 @@ import mtg.game.state.{Characteristics, GameState, PermanentStatus}
 import mtg.game.turns.turnBasedActions.{DeclareAttackers, DeclareBlockers}
 import mtg.game.{ObjectId, PlayerId}
 
-import scala.annotation.tailrec
-
 sealed trait PossiblyHiddenGameObject
 
 case object HiddenGameObject extends PossiblyHiddenGameObject
 
 case class VisibleGameObject(
     name: Option[String],
-    artDetails: Option[ArtDetails],
+    artDetails: ArtDetails,
     objectId: ObjectId,
     characteristics: Characteristics,
     text: String,
@@ -38,22 +36,13 @@ object VisibleGameObject {
   private def getCounters(gameObject: GameObject): Map[String, Int] = {
     gameObject.counters.map(_.mapLeft(_.description))
   }
-  @tailrec
-  private def getArtDetails(underlyingObject: UnderlyingObject, gameState: GameState): Option[ArtDetails] = underlyingObject match {
-    case card: Card =>
-      Some(ArtDetails(card.printing.set.code, card.printing.collectorNumber))
-    case abilityOnTheStack: AbilityOnTheStack =>
-      getArtDetails(gameState.gameObjectState.getCurrentOrLastKnownState(abilityOnTheStack.source).gameObject.underlyingObject, gameState)
-    case _ =>
-      None
-  }
 
   def apply(gameObject: GameObject, gameState: GameState): VisibleGameObject = gameObject match {
     case gameObject: BasicGameObject =>
       val objectState = gameState.gameObjectState.derivedState.basicStates(gameObject.objectId)
       VisibleGameObject(
         objectState.characteristics.name,
-        getArtDetails(gameObject.underlyingObject, gameState),
+        ArtDetails.get(gameObject.underlyingObject, gameState),
         gameObject.objectId,
         objectState.characteristics,
         objectState.characteristics.getText,
@@ -66,7 +55,7 @@ object VisibleGameObject {
       val objectState = gameState.gameObjectState.derivedState.spellStates(gameObject.objectId)
       VisibleGameObject(
         objectState.characteristics.name,
-        getArtDetails(gameObject.underlyingObject, gameState),
+        ArtDetails.get(gameObject.underlyingObject, gameState),
         gameObject.objectId,
         objectState.characteristics,
         objectState.characteristics.getText,
@@ -79,7 +68,7 @@ object VisibleGameObject {
       val objectState = gameState.gameObjectState.derivedState.permanentStates(gameObject.objectId)
       VisibleGameObject(
         objectState.characteristics.name,
-        getArtDetails(gameObject.underlyingObject, gameState),
+        ArtDetails.get(gameObject.underlyingObject, gameState),
         gameObject.objectId,
         objectState.characteristics,
         objectState.characteristics.getText,

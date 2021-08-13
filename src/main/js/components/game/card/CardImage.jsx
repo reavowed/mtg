@@ -21,7 +21,7 @@ export default forwardRef(function CardImage({card, className, children, showTex
                     </div>
                     <img className="cardImage" src={artUrl} />
                     {showText && <div className="cardText">{card.text}</div>}
-                    {(card.characteristics.power || card.characteristics.toughness) &&
+                    {(card.characteristics && (card.characteristics.power || card.characteristics.toughness)) &&
                         <div className="powerToughnessLozenge">{card.characteristics.power}/{card.characteristics.toughness}</div>
                     }
                     {children}

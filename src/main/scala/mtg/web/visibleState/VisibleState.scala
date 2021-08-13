@@ -30,10 +30,6 @@ object VisibleState {
   def forPlayer(playerIdentifier: PlayerId, gameState: GameState): VisibleState = {
     def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState)
     def currentChoice = gameState.pendingActions.head.asOptionalInstanceOf[PlayerChoice]
-    def currentlySearchingZone = currentChoice.flatMap(_.asOptionalInstanceOf[ResolveEffectChoice])
-      .flatMap(_.effectChoice.asOptionalInstanceOf[SearchChoice])
-      .filter(_.playerChoosing == playerIdentifier)
-      .map(_.zone)
     def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): Seq[PossiblyHiddenGameObject] = {
       val canSeeZone = zone == Zone.Hand(playerIdentifier) || currentChoice.exists(_.temporarilyVisibleZones.contains(zone))
       def canSeeObject(gameObject: GameObject): Boolean = canSeeZone || currentChoice.exists(_.temporarilyVisibleObjects.contains(gameObject.objectId))
@@ -53,7 +49,7 @@ object VisibleState {
       gameState.gameObjectState.stack.map(getObject),
       gameState.gameObjectState.manaPools.view.mapValues(_.map(_.manaType)).toMap,
       MulliganState.forAllPlayers(gameState),
-      currentChoice.map(CurrentChoice(_)),
+      currentChoice.map(CurrentChoice(_, gameState)),
       gameState.gameHistory.logEvents.map(LogEventWrapper.apply))
   }
 }

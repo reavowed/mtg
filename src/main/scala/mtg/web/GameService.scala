@@ -48,17 +48,13 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
 
     val cardsToAdd = Seq(
       (CombatProfessor, Zone.Battlefield, playerOne),
-      (SavannahLions, Zone.Battlefield, playerOne),
-      (Plains, Zone.Battlefield, playerOne),
+      (CombatProfessor, Zone.Battlefield, playerOne),
       (Plains, Zone.Battlefield, playerOne),
       (Plains, Zone.Battlefield, playerOne),
       (ConcordiaPegasus, Zone.Battlefield, playerTwo),
       (AgelessGuardian, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
-      (Plains, Zone.Battlefield, playerTwo),
-      (Plains, Zone.Battlefield, playerTwo),
-      (Plains, Zone.Battlefield, playerTwo)
     )
 
     val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}
