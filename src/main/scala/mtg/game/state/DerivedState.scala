@@ -4,7 +4,7 @@ import mtg._
 import mtg.abilities.{AbilityDefinition, StaticAbility, TriggeredAbility, TriggeredAbilityDefinition}
 import mtg.characteristics.types.BasicLandType
 import mtg.characteristics.types.Type.Creature
-import mtg.effects.ContinuousEffect
+import mtg.effects.ContinuousObjectEffect
 import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
 import mtg.game.ObjectId
 import mtg.game.objects.{AbilityOnTheStack, GameObjectState}
@@ -29,14 +29,14 @@ object DerivedState {
     getActiveAbilitiesOfType[TriggeredAbilityDefinition](objectsWithState)
       .map { case (abilityDefinition, objectWithState) => TriggeredAbility(abilityDefinition, objectWithState.gameObject.objectId, objectWithState.controllerOrOwner) }
   }
-  def getActiveContinuousEffectsFromStaticAbilities(objectsWithState: View[ObjectWithState]): View[ContinuousEffect] = {
+  def getActiveContinuousEffectsFromStaticAbilities(objectsWithState: View[ObjectWithState]): View[ContinuousObjectEffect] = {
     getActiveAbilitiesOfType[StaticAbility](objectsWithState)
       .flatMap { case (ability, objectWithState) => ability.getEffects(objectWithState) }
   }
   def getActiveContinuousEffects(
     gameObjectState: GameObjectState,
     objectsWithState: View[ObjectWithState]
-  ): View[ContinuousEffect] = {
+  ): View[ContinuousObjectEffect] = {
     gameObjectState.floatingActiveContinuousEffects.view.map(_.effect) ++ getActiveContinuousEffectsFromStaticAbilities(objectsWithState)
   }
 

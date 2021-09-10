@@ -1,14 +1,13 @@
 package mtg.game.turns
 
-import mtg.game.state.history.GameEvent.ResolvedEvent
 import mtg.game.state.{GameAction, GameState}
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
-import mtg.game.turns.turnEvents.{BeginStepAction, EndPhaseAction}
+import mtg.game.turns.turnEvents.BeginStepAction
 import mtg.utils.CaseObjectWithName
 
 sealed abstract class TurnPhase(val actions: Seq[GameAction]) extends CaseObjectWithName {
   def hasFinished(gameState: GameState): Boolean = {
-    gameState.eventsThisTurn.ofType[ResolvedEvent].exists(_.event == EndPhaseAction(this))
+    !gameState.currentPhase.contains(this)
   }
 }
 

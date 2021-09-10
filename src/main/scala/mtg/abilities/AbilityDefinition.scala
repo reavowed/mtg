@@ -3,7 +3,7 @@ package mtg.abilities
 import mtg.cards.text.{SpellEffectParagraph, TextParagraph}
 import mtg.characteristics.types.Type.{Instant, Sorcery}
 import mtg.effects.condition.ConditionDefinition
-import mtg.effects.{ContinuousEffect, OneShotEffect}
+import mtg.effects.{ContinuousObjectEffect, OneShotEffect}
 import mtg.game.ZoneType
 import mtg.game.state.ObjectWithState
 import mtg.parts.costs.Cost
@@ -56,5 +56,5 @@ case class SpellAbility(effectParagraph: SpellEffectParagraph) extends AbilityDe
 }
 
 abstract class StaticAbility extends AbilityDefinition {
-  def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect]
+  def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousObjectEffect]
 }

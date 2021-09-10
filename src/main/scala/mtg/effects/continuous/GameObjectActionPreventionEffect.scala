@@ -1,8 +1,8 @@
 package mtg.effects.continuous
 
-import mtg.effects.ContinuousEffect
+import mtg.effects.ContinuousObjectEffect
 import mtg.game.state.{GameObjectAction, GameState}
 
-trait EventPreventionEffect extends ContinuousEffect {
+trait GameObjectActionPreventionEffect extends ContinuousObjectEffect {
   def preventsEvent(gameObjectEvent: GameObjectAction, gameState: GameState): Boolean
 }

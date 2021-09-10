@@ -6,7 +6,7 @@ import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameAc
 
 case class ExecuteMulligansAction(mulligansSoFar: Int) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
-    val playersWhoHaveTakenMulligans = currentGameState.eventsSinceEvent[DrawStartingHandsAction].collect {
+    val playersWhoHaveTakenMulligans = currentGameState.eventsSinceEvent[DrawStartingHandsEvent.type].collect {
       case GameEvent.Decision(MulliganOption.Mulligan, player) => player
     }.toSet
     val playersToDraw = currentGameState.gameData.playersInTurnOrder.filter(playersWhoHaveTakenMulligans.contains)

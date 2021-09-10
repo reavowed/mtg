@@ -3,10 +3,11 @@ package mtg.game.objects
 import monocle.Focus
 import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
-import mtg.effects.ContinuousEffect
+import mtg.effects.ContinuousObjectEffect
 import mtg.effects.condition.Condition
 import mtg.game.state.{DerivedState, ObjectWithState}
 import mtg.game._
+import mtg.game.turns.GameActionPreventionEffect
 import mtg.utils.AtGuaranteed
 
 import scala.collection.View
@@ -29,8 +30,9 @@ case class GameObjectState(
     triggeredAbilitiesWaitingToBePutOnStack: Seq[PendingTriggeredAbility])
 {
   lazy val derivedState: DerivedState = DerivedState.calculateFromGameObjectState(this)
-  def activeContinuousEffects: View[ContinuousEffect] = floatingActiveContinuousEffects.view.map(_.effect) ++ DerivedState.getActiveContinuousEffectsFromStaticAbilities(derivedState.allObjectStates.values.view)
+  def activeContinuousEffects: View[ContinuousObjectEffect] = floatingActiveContinuousEffects.view.map(_.effect) ++ DerivedState.getActiveContinuousEffectsFromStaticAbilities(derivedState.allObjectStates.values.view)
   def activeTriggeredAbilities: View[TriggeredAbility] = DerivedState.getActiveTriggeredAbilities(derivedState.allObjectStates.values.view)
+  def activePreventionEffects: View[GameActionPreventionEffect] = GameActionPreventionEffect.fromRules.view ++ activeContinuousEffects.ofType[GameActionPreventionEffect]
 
   def updateManaPool(player: PlayerId, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
@@ -61,7 +63,7 @@ case class GameObjectState(
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)
   }
 
-  def addEffects(continuousEffects: Seq[ContinuousEffect], endCondition: Condition): GameObjectState = {
+  def addEffects(continuousEffects: Seq[ContinuousObjectEffect], endCondition: Condition): GameObjectState = {
     updateEffects(_ ++ continuousEffects.map(FloatingActiveContinuousEffect(_, endCondition)))
   }
   def updateEffects(f: Seq[FloatingActiveContinuousEffect] => Seq[FloatingActiveContinuousEffect]): GameObjectState = {

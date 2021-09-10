@@ -3,11 +3,11 @@ package mtg.game.turns.turnBasedActions
 import mtg._
 import mtg.characteristics.types.Type
 import mtg.events.TapObjectAction
-import mtg.game.{ObjectId, PlayerId}
-import mtg.game.state.history.GameEvent.{Decision, ResolvedEvent}
-import mtg.game.state.history.LogEvent
 import mtg.game.state._
+import mtg.game.state.history.GameEvent.{Decision, StateChange}
+import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
+import mtg.game.{ObjectId, PlayerId}
 
 object DeclareAttackers extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
@@ -21,8 +21,8 @@ object DeclareAttackers extends InternalGameAction {
       ()
   }
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
-    gameState.eventsThisTurn.ofType[ResolvedEvent].forall(
-      _.stateAfterwards.permanentStates.get(objectId)
+    gameState.eventsThisTurn.ofType[StateChange].forall(
+      _.previousState.permanentStates.get(objectId)
         .exists(_.controller == gameState.activePlayer))
   }
   private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {

@@ -9,7 +9,7 @@ import scala.reflect.{ClassTag, classTag}
 trait GameEvent
 object GameEvent {
   case class Decision(chosenOption: AnyRef, playerIdentifier: PlayerId) extends GameEvent
-  case class ResolvedEvent(event: GameObjectAction, stateAfterwards: DerivedState) extends GameEvent
+  case class StateChange(previousState: DerivedState) extends GameEvent
 
   implicit class GameEventIterableOps(events: Iterable[GameEvent]) {
     def getDecisions[T : ClassTag]: Iterable[T] = {

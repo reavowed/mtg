@@ -4,9 +4,10 @@ import mtg.effects.EffectContext
 import mtg.effects.condition.{Condition, ConditionDefinition, EventCondition}
 import mtg.effects.identifiers.StaticIdentifier
 import mtg.game.PlayerId
-import mtg.game.state.{GameEvent, GameState}
+import mtg.game.state.GameState
+import mtg.game.state.history.GameEvent
 import mtg.game.turns.TurnStep
-import mtg.game.turns.turnEvents.BeginStepAction
+import mtg.game.turns.turnEvents.BeginStepEvent
 
 case class BeginningOfCombatConditionDefinition(playerIdentifier: StaticIdentifier[PlayerId]) extends ConditionDefinition {
   override def getText(cardName: String): String = "the beginning of combat on " + playerIdentifier.getPossessiveText(cardName) + " turn"
@@ -15,6 +16,6 @@ case class BeginningOfCombatConditionDefinition(playerIdentifier: StaticIdentifi
 
 case class BeginningOfCombatCondition(player: PlayerId) extends EventCondition {
   override def matchesEvent(eventToMatch: GameEvent, gameState: GameState): Boolean = {
-    eventToMatch == BeginStepAction(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == player
+    eventToMatch == BeginStepEvent(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == player
   }
 }

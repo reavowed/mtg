@@ -1,6 +1,7 @@
 package mtg.effects.condition
 
-import mtg.game.state.{GameEvent, GameState}
+import mtg.game.state.GameState
+import mtg.game.state.history.GameEvent
 
 sealed trait Condition
 
