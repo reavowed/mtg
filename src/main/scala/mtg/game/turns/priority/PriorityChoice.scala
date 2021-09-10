@@ -45,7 +45,7 @@ case class PriorityChoice(
       Some(PriorityOption.TakeAction(action))
     case _ => None
   }
-  override def handleDecision(chosenOption: PriorityOption, currentGameState: GameState): GameActionResult = {
+  override def handleDecision(chosenOption: PriorityOption, currentGameState: GameState): InternalGameActionResult = {
     chosenOption match {
       case PriorityOption.PassPriority =>
         if (remainingPlayers.nonEmpty)

@@ -8,7 +8,7 @@ import mtg.game.state.history.GameEvent
 import mtg.game.{ObjectId, PlayerId, Zone}
 
 case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
+  override def execute(gameState: GameState): InternalGameActionResult = {
     val resolutionContext = StackObjectResolutionContext.forManaAbility(ManaAbility(objectWithAbility.gameObject.objectId, player), gameState)
     ResolveEffects(ability.effectParagraph.effects, resolutionContext)
   }

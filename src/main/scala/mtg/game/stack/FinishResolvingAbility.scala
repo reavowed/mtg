@@ -4,10 +4,10 @@ import mtg.abilities.TriggeredAbilityDefinition
 import mtg.events.RemoveObjectFromExistenceAction
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
+import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction, StackObjectWithState}
 
 case class FinishResolvingAbility(ability: StackObjectWithState) extends InternalGameAction {
-  override def execute(currentGameState: GameState): GameActionResult = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     val abilityDefinition = ability.gameObject.underlyingObject.asInstanceOf[AbilityOnTheStack].abilityDefinition
     val description = if (abilityDefinition.isInstanceOf[TriggeredAbilityDefinition]) "triggered" else "activated"
     val sourceName = ability.gameObject.underlyingObject.getSourceName(currentGameState)

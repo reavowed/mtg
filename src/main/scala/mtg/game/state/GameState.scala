@@ -19,7 +19,7 @@ case class GameState(
   def activePlayer: PlayerId = turnState.currentTurn.get.activePlayer
   def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
 
-  def handleActionResult(actionResult: GameActionResult): GameState = {
+  def handleActionResult(actionResult: InternalGameActionResult): GameState = {
     addActions(actionResult.childActions).recordGameEvent(actionResult.gameEvent).recordLogEvent(actionResult.logEvent)
   }
   def handleActionResult(gameObjectAction: GameObjectAction, actionResult: GameObjectActionResult): GameState = {

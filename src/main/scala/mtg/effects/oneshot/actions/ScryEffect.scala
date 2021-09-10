@@ -3,7 +3,7 @@ package mtg.effects.oneshot.actions
 import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameActionResult, GameObjectAction, GameObjectActionResult, GameState}
+import mtg.game.state.{InternalGameActionResult, GameObjectAction, GameObjectActionResult, GameState}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.ParsingUtils
 
@@ -24,7 +24,7 @@ case class ScryChoice(
     resolutionContext: StackObjectResolutionContext)
   extends OneShotEffectChoice
 {
-  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, GameActionResult, StackObjectResolutionContext)] = {
+  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, InternalGameActionResult, StackObjectResolutionContext)] = {
     for {
       (serializedCardsOnTop, serializedCardsOnBottom) <- serializedDecision.split("\\|", -1).toSeq match {
         case Seq(a, b) => Some(a, b)

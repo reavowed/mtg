@@ -2,10 +2,10 @@ package mtg.game.turns.priority
 
 import mtg.game.PlayerId
 import mtg.game.actions.PriorityAction
-import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{BackupAction, InternalGameActionResult, GameState, InternalGameAction}
 
 case class PriorityForPlayersAction(players: Seq[PlayerId]) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
+  override def execute(gameState: GameState): InternalGameActionResult = {
     players match {
       case playerToAct +: remainingPlayers =>
         val backupAction = BackupAction(gameState.addActions(Seq(this)))

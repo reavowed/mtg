@@ -4,12 +4,12 @@ import mtg.characteristics.types.Type
 import mtg.effects.continuous.BlockerRestriction
 import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameActionResult, GameState, InternalGameAction, TypedPlayerChoice}
+import mtg.game.state.{GameAction, InternalGameActionResult, GameState, InternalGameAction, TypedPlayerChoice}
 import mtg.game.turns.TurnPhase
 import mtg.utils.ParsingUtils
 
 object DeclareBlockers extends InternalGameAction {
-  override def execute(currentGameState: GameState): GameActionResult = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     val defendingPlayer = DeclareAttackers.getDefendingPlayer(currentGameState)
     val attackers = DeclareAttackers.getAttackDeclarations(currentGameState).map(_.attacker)
     val possibleBlockers = getPossibleBlockers(defendingPlayer, attackers, currentGameState)
@@ -95,7 +95,7 @@ case class DeclareBlockersChoice(
   private def isValidBlock(blockDeclaration: BlockDeclaration): Boolean = {
     possibleBlockers.get(blockDeclaration.blocker).exists(_.contains(blockDeclaration.attacker))
   }
-  override def handleDecision(chosenBlocks: DeclaredBlockers, currentGameState: GameState): GameActionResult = {
+  override def handleDecision(chosenBlocks: DeclaredBlockers, currentGameState: GameState): InternalGameActionResult = {
     def getName(objectId: ObjectId): String = currentGameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name.get
     val assignments = chosenBlocks.blockDeclarations.groupBy(_.attacker)
       .map { case (id, details) => (getName(id), details.map(_.blocker).map(getName)) }
@@ -104,7 +104,7 @@ case class DeclareBlockersChoice(
 }
 
 case class OrderBlockers(blockDeclarations: Seq[BlockDeclaration]) extends InternalGameAction {
-  override def execute(currentGameState: GameState): GameActionResult = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     blockDeclarations
       .groupBy(_.attacker)
       .filter(_._2.length > 1)
@@ -126,7 +126,7 @@ case class OrderBlockersChoice(playerToAct: PlayerId, attacker: ObjectId, blocke
     }
   }
 
-  override def handleDecision(chosenOption: BlockerOrdering, currentGameState: GameState): GameActionResult = {
+  override def handleDecision(chosenOption: BlockerOrdering, currentGameState: GameState): InternalGameActionResult = {
     def getName(objectId: ObjectId): String = currentGameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name.get
     LogEvent.OrderBlockers(
       playerToAct,

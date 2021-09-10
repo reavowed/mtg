@@ -3,7 +3,7 @@ package mtg.effects.oneshot.basic
 import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.filters.Filter
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
-import mtg.game.state.{GameActionResult, GameObjectAction, GameState}
+import mtg.game.state.{InternalGameActionResult, GameObjectAction, GameState}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.TextUtils._
 
@@ -28,7 +28,7 @@ case class SearchChoice(
     resolutionContext: StackObjectResolutionContext)
   extends OneShotEffectChoice
 {
-  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, GameActionResult, StackObjectResolutionContext)] = {
+  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, InternalGameActionResult, StackObjectResolutionContext)] = {
     for {
       id <- serializedDecision.toIntOption
       chosenObjectId <- possibleChoices.find(_.sequentialId == id)
