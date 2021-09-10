@@ -10,5 +10,6 @@ object InternalGameActionResult {
   implicit def childrenAndGameEvent(tuple: (Seq[GameAction], GameEvent)): InternalGameActionResult = InternalGameActionResult(tuple._1, Some(tuple._2), None)
   implicit def childAndLogEvent(tuple: (GameAction, LogEvent)): InternalGameActionResult = InternalGameActionResult(Seq(tuple._1), None, Some(tuple._2))
   implicit def childrenAndLogEvent(tuple: (Seq[GameAction], LogEvent)): InternalGameActionResult = InternalGameActionResult(tuple._1, None, Some(tuple._2))
+  implicit def all(tuple: (Seq[GameAction], GameEvent, LogEvent)): InternalGameActionResult = InternalGameActionResult(tuple._1, Some(tuple._2), Some(tuple._3))
   implicit def nothing(unit: Unit): InternalGameActionResult = InternalGameActionResult(Nil, None, None)
 }

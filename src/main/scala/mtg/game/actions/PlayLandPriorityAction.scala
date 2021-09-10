@@ -5,13 +5,13 @@ import mtg.game.state.history.{GameEvent, LogEvent}
 import mtg.game.state.{GameState, InternalGameActionResult, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, Zone}
 
-case class PlayLandSpecialAction(player: PlayerId, land: ObjectWithState) extends PriorityAction {
+case class PlayLandPriorityAction(player: PlayerId, land: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = land.gameObject.objectId
   override def displayText: String = "Play"
   override def optionText: String = "Play " + land.gameObject.objectId
 
   override def execute(currentGameState: GameState): InternalGameActionResult = {
-    val preventEvent = PlayLandSpecialAction.cannotPlayLands(player, currentGameState) || PlayLandSpecialAction.cannotPlayLand(land, player, currentGameState)
+    val preventEvent = PlayLandPriorityAction.cannotPlayLands(player, currentGameState) || PlayLandPriorityAction.cannotPlayLand(land, player, currentGameState)
     val eventOption = if (preventEvent) None else Some(PlayLandAction(player, land.gameObject))
     (
       eventOption.toSeq,
@@ -20,8 +20,8 @@ case class PlayLandSpecialAction(player: PlayerId, land: ObjectWithState) extend
   }
 }
 
-object PlayLandSpecialAction {
-  def getPlayableLands(player: PlayerId, gameState: GameState): Seq[PlayLandSpecialAction] = {
+object PlayLandPriorityAction {
+  def getPlayableLands(player: PlayerId, gameState: GameState): Seq[PlayLandPriorityAction] = {
     if (cannotPlayLands(player, gameState) || !canPlayLandsAsSpecialAction(player, gameState))
       Nil
     else
@@ -29,7 +29,7 @@ object PlayLandSpecialAction {
         .filter(_.characteristics.types.contains(Type.Land))
         .filter(!cannotPlayLand(_, player, gameState))
         .filter(canPlayLandAsSpecialAction(_, player, gameState))
-        .map(PlayLandSpecialAction(player, _))
+        .map(PlayLandPriorityAction(player, _))
         .toSeq
   }
   private def getNumberOfLandsPlayedThisTurn(gameState: GameState): Int = {

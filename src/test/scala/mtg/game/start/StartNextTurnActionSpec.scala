@@ -12,7 +12,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
   def beBeginTurnAction(player: PlayerId): Matcher[GameAction] = {
     beAnInstanceOf[BeginTurnAction].and({ (action: GameAction) =>
-      action.asInstanceOf[BeginTurnAction].turn.activePlayer
+      action.asInstanceOf[BeginTurnAction].player
     } ^^ beEqualTo(player))
   }
 

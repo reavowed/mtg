@@ -18,7 +18,7 @@ object PriorityAction {
   def getAll(player: PlayerId, gameState: GameState, backupAction: BackupAction): Seq[PriorityAction] = {
     CastSpellAction.getCastableSpells(player, gameState, backupAction) ++
     ActivateAbilityAction.getActivatableAbilities(player, gameState) ++
-      PlayLandSpecialAction.getPlayableLands(player, gameState)
+      PlayLandPriorityAction.getPlayableLands(player, gameState)
   }
 
   case class Wrapper(objectId: ObjectId, displayText: String, optionText: String)

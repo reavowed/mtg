@@ -3,7 +3,7 @@ package mtg.helpers
 import mtg.cards.CardDefinition
 import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.actions.cast.CastSpellAction
-import mtg.game.actions.{ActivateAbilityAction, PlayLandSpecialAction}
+import mtg.game.actions.{ActivateAbilityAction, PlayLandPriorityAction}
 import mtg.game.objects.{Card, GameObject, GameObjectState}
 import mtg.game.stack.ResolveEffectChoice
 import mtg.game.stack.steps.TargetChoice
@@ -50,8 +50,8 @@ trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
       this
     }
 
-    def withAvailableLands(landMatcher: Matcher[Seq[PlayLandSpecialAction]]): PriorityChoiceMatcher = {
-      otherMatchers.addOne(((_: PriorityChoice).availableActions.ofType[PlayLandSpecialAction]) ^^ landMatcher)
+    def withAvailableLands(landMatcher: Matcher[Seq[PlayLandPriorityAction]]): PriorityChoiceMatcher = {
+      otherMatchers.addOne(((_: PriorityChoice).availableActions.ofType[PlayLandPriorityAction]) ^^ landMatcher)
       this
     }
   }

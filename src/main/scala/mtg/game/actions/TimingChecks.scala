@@ -9,7 +9,7 @@ object TimingChecks {
     player == gameState.activePlayer
   }
   def isMainPhase(gameState: GameState): Boolean = {
-    gameState.turnState.currentPhase.exists(_.isInstanceOf[MainPhase])
+    gameState.currentPhase.exists(_.isInstanceOf[MainPhase])
   }
   def isStackEmpty(gameState: GameState): Boolean = {
     gameState.gameObjectState.stack.isEmpty

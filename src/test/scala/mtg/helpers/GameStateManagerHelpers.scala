@@ -1,7 +1,7 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
-import mtg.game.actions.{ActivateAbilityAction, PlayLandSpecialAction}
+import mtg.game.actions.{ActivateAbilityAction, PlayLandPriorityAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
 import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
@@ -58,13 +58,13 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       }
     }
     def passUntilTurn(turnNumber: Int): Unit = {
-      passUntil(_.turnState.currentTurnNumber == turnNumber)
+      passUntil(_.currentTurnNumber == turnNumber)
     }
     def passUntilPhase(turnPhase: TurnPhase): Unit = {
-      passUntil(_.turnState.currentPhase.contains(turnPhase))
+      passUntil(_.currentPhase.contains(turnPhase))
     }
     def passUntilStep(turnStep: TurnStep): Unit = {
-      passUntil(_.turnState.currentStep.contains(turnStep))
+      passUntil(_.currentStep.contains(turnStep))
     }
     def passUntilTurnAndPhase(turnNumber: Int, turnPhase: TurnPhase): Unit = {
       passUntilTurn(turnNumber)
@@ -83,12 +83,12 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     }
 
     def playLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandSpecialAction]
+      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandPriorityAction]
         .filter(_.land.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(landAction.optionText, player)
     }
     def playFirstLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandSpecialAction]
+      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandPriorityAction]
         .filter(_.land.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(landAction.optionText, player)
     }

@@ -18,7 +18,7 @@ object MulliganState {
     MulliganState(hasKept, mulligansTaken)
   }
   def forAllPlayers(gameState: GameState): Option[Map[PlayerId, MulliganState]] = {
-    if (gameState.turnState.currentTurnNumber == 0)
+    if (gameState.currentTurnNumber == 0)
       Some(gameState.gameData.playersInTurnOrder.map(p => p -> forPlayer(p, gameState)).toMap)
     else
       None
