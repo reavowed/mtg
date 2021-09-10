@@ -1,25 +1,16 @@
 package mtg.game.state
 
 import mtg.game.objects.GameObjectState
+import mtg.game.state.history.GameEvent
 
-sealed abstract class GameObjectActionResult {
-  def updateGameState(gameState: GameState): GameState
-}
+case class GameObjectActionResult(gameObjectState: Option[GameObjectState], childActions: Seq[GameObjectAction], gameEvent: Option[GameEvent])
+
 object GameObjectActionResult {
-  case class UpdatedGameObjectState(gameObjectState: GameObjectState) extends GameObjectActionResult {
-    override def updateGameState(gameState: GameState): GameState = gameState.updateGameObjectState(gameObjectState)
-  }
-  case class SubEvents(events: Seq[GameObjectAction]) extends GameObjectActionResult {
-    override def updateGameState(gameState: GameState): GameState = gameState.addActions(events)
-  }
-  case object Nothing extends GameObjectActionResult {
-    override def updateGameState(gameState: GameState): GameState = gameState
-  }
-
-  implicit def updatedGameObjectState(gameObjectState: GameObjectState): GameObjectActionResult = UpdatedGameObjectState(gameObjectState)
-  implicit def optionalUpdatedGameObjectState(gameObjectStateOption: Option[GameObjectState]): GameObjectActionResult = gameObjectStateOption.map(UpdatedGameObjectState).getOrElse(Nothing)
-  implicit def subEvent(event: GameObjectAction): GameObjectActionResult = SubEvents(Seq(event))
-  implicit def optionalSubEvent(eventOption: Option[GameObjectAction]): GameObjectActionResult = eventOption.map(subEvent).getOrElse(Nothing)
-  implicit def subEvents(events: Seq[GameObjectAction]): GameObjectActionResult = SubEvents(events)
-  implicit def nothing(unit: Unit): GameObjectActionResult = Nothing
+  implicit def updatedGameObjectState(gameObjectState: GameObjectState): GameObjectActionResult = optionalUpdatedGameObjectState(Some(gameObjectState))
+  implicit def optionalUpdatedGameObjectState(gameObjectStateOption: Option[GameObjectState]): GameObjectActionResult = GameObjectActionResult(gameObjectStateOption, Nil, None)
+  implicit def childAction(action: GameObjectAction): GameObjectActionResult = childActions(Seq(action))
+  implicit def optionalChildAction(actionOption: Option[GameObjectAction]): GameObjectActionResult = childActions(actionOption.toSeq)
+  implicit def childActions(actions: Seq[GameObjectAction]): GameObjectActionResult = GameObjectActionResult(None, actions, None)
+  implicit def childActionAndEvent(tuple: (GameObjectAction, GameEvent)) = GameObjectActionResult(None, Seq(tuple._1), Some(tuple._2))
+  implicit def nothing(unit: Unit): GameObjectActionResult = GameObjectActionResult(None, Nil, None)
 }

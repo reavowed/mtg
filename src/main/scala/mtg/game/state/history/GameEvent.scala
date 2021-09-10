@@ -12,10 +12,6 @@ object GameEvent {
   case class ResolvedEvent(event: GameObjectAction, stateAfterwards: DerivedState) extends GameEvent
 
   implicit class GameEventIterableOps(events: Iterable[GameEvent]) {
-    def sinceEvent[T <: GameObjectAction : ClassTag]: Iterable[GameEvent] = events.takeWhile {
-      case ResolvedEvent(e, _) if classTag[T].runtimeClass.isInstance(e) => true
-      case _ => false
-    }
     def getDecisions[T : ClassTag]: Iterable[T] = {
       events.ofType[Decision]
         .map(_.chosenOption)

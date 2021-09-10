@@ -33,9 +33,7 @@ object PlayLandSpecialAction {
         .toSeq
   }
   private def getNumberOfLandsPlayedThisTurn(gameState: GameState): Int = {
-    gameState.eventsThisTurn
-      .ofType[GameEvent.ResolvedEvent].map(_.event)
-      .count(_.isInstanceOf[PlayLandAction])
+    gameState.eventsThisTurn.ofType[PlayLandEvent.type].size
   }
   private def getNumberOfLandPlaysAvailable(gameState: GameState): Int = {
     // TODO: effects such as Explore / Azusa

@@ -75,9 +75,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     if (shouldPreventGameObjectEvent(gameObjectEvent, gameState)) {
       gameState
     } else {
-      gameObjectEvent.execute(gameState)
-        .updateGameState(gameState)
-        .recordGameEvent(gameObjectEvent)
+      gameState.handleActionResult(gameObjectEvent, gameObjectEvent.execute(gameState))
     }
   }
 
