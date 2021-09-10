@@ -13,4 +13,4 @@ object IntroductionToProphecy extends Spell(
   ManaCost(3),
   Type.Sorcery,
   Seq(Lesson),
-  scry(2).`then`(drawACard))
+  scry(2).`then`(draw(1).card))

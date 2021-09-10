@@ -11,10 +11,7 @@ import mtg.utils.TextUtils
 
 case class PutCountersEffect(number: Int, kind: CounterType, objectIdentifier: Identifier[ObjectId]) extends OneShotEffect {
   override def getText(cardName: String): String = {
-    def counterDescription = kind.description
-    def numberWord = TextUtils.getWord(number, counterDescription)
-    def counterWord = if (number == 1) "counter" else "counters"
-    Seq("put", numberWord, counterDescription, counterWord, "on", objectIdentifier.getText(cardName)).mkString(" ")
+    Seq("put", kind.nounPhrase.withNumber(number), "on", objectIdentifier.getText(cardName)).mkString(" ")
   }
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {

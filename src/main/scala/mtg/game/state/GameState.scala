@@ -22,8 +22,15 @@ case class GameState(
 
   def currentTurnNumber: Int = currentTurn.map(_.number).getOrElse(0)
   def currentTurn: Option[Turn] = gameHistory.gameEventsWithPreviousStates.iterator.map(_.gameEvent).ofType[BeginTurnEvent].headOption.map(_.turn)
-  def currentPhase: Option[TurnPhase] = gameHistory.gameEventsWithPreviousStates.iterator.map(_.gameEvent).ofType[BeginPhaseEvent].headOption.map(_.phase)
-  def currentStep: Option[TurnStep] = gameHistory.gameEventsWithPreviousStates.iterator.map(_.gameEvent).ofType[BeginStepEvent].headOption.map(_.step)
+  def currentPhase: Option[TurnPhase] = gameHistory.gameEventsWithPreviousStates.iterator.map(_.gameEvent).collectOption {
+    case BeginPhaseEvent(phase) => Some(phase)
+    case BeginTurnEvent(_) => None
+  }
+  def currentStep: Option[TurnStep] = gameHistory.gameEventsWithPreviousStates.iterator.map(_.gameEvent).collectOption {
+    case BeginStepEvent(step) => Some(step)
+    case BeginPhaseEvent(_) => None
+    case BeginTurnEvent(_) => None
+  }
 
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
   def updateGameObjectState(newGameObjectState: Option[GameObjectState]): GameState = newGameObjectState.map(updateGameObjectState).getOrElse(this)

@@ -20,9 +20,15 @@ object TextUtils {
       if ("aeiou".contains(word.head)) "an" else "a"
   }
 
-  def getWord(number: Int, followingWord: String): String = number match {
+  def getNumberWord(number: Int, followingWord: String): String = number match {
     case 1 => getArticle(followingWord)
     case 2 => "two"
     case n => n.toString
+  }
+  def getSingularOrPlural(number: Int, singular: String): String = {
+    getSingularOrPlural(number, singular, singular + "s")
+  }
+  def getSingularOrPlural(number: Int, singular: String, plural: String): String = {
+    if (number == 1) singular else plural
   }
 }

@@ -32,7 +32,8 @@ class DataValidationSpec extends Specification {
           element.get("name").textValue() == cardPrinting.cardDefinition.name
         )
         data must beSome
-        (stripReminderText(data.get.get("oracle_text").textValue()) aka cardPrinting.cardDefinition.name) mustEqual cardPrinting.cardDefinition.text
+        val oracleText = stripReminderText(data.get.get("oracle_text").textValue())
+        (oracleText aka cardPrinting.cardDefinition.name) mustEqual cardPrinting.cardDefinition.text
       })
     }
   }

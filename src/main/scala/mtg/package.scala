@@ -28,6 +28,7 @@ package object mtg {
       else
         None
     }
+    def collectOption[B](pf: PartialFunction[A, Option[B]]): Option[B] = iterable.collectFirst(pf).flatten
   }
   implicit class SeqExtensionMethods[T](seq: Seq[T]) {
     def splitByType[S : ClassTag]: (Seq[S], Seq[T]) = seq.foldLeft((Seq.empty[S], Seq.empty[T])) { case ((ss, ts), t) =>

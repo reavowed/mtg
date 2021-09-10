@@ -7,6 +7,7 @@ import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.Identifier
+import mtg.effects.number.NumberIdentifier
 import mtg.effects.oneshot.ContinuousEffectCreationEffect
 import mtg.effects.oneshot.actions._
 import mtg.effects.oneshot.basic._
@@ -60,5 +61,8 @@ object EffectBuilder
   }
   def shuffle: OneShotEffect = ShuffleEffect
   def scry(number: Int): OneShotEffect = ScryEffect(number)
-  def drawACard: OneShotEffect = DrawACardEffect
+  def draw(number: Int) = new {
+    def card: DrawCardsEffect = DrawCardsEffect(number)
+    def cards: DrawCardsEffect = DrawCardsEffect(number)
+  }
 }
