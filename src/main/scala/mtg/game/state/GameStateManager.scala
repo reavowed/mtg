@@ -24,7 +24,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     gameState.popAction() match {
       case (internalGameAction: InternalGameAction, gameState) =>
         executeAutomaticActions(executeInternalGameAction(internalGameAction, gameState))
-      case (gameEvent: GameEvent, gameState) =>
+      case (gameEvent: AutomaticGameAction, gameState) =>
         executeAutomaticActions(executeGameEvent(gameEvent, gameState))
       case (BackupAction(gameStateToRevertTo), _) =>
         executeAutomaticActions(gameStateToRevertTo)
@@ -46,7 +46,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     gameState.handleActionResult(internalGameAction.execute(gameState))
   }
 
-  private def executeGameEvent(gameEvent: GameEvent, initialGameState: GameState): GameState = {
+  private def executeGameEvent(gameEvent: AutomaticGameAction, initialGameState: GameState): GameState = {
     def actuallyExecuteEvent = gameEvent match {
       case gameObjectEvent: GameObjectEvent =>
         executeGameObjectEvent(gameObjectEvent, _)
