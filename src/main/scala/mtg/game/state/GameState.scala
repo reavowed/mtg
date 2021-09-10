@@ -20,12 +20,13 @@ case class GameState(
   def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
 
   def handleActionResult(actionResult: GameActionResult): GameState = {
-    addActions(actionResult.childActions).recordLogEvent(actionResult.logEvent)
+    addActions(actionResult.childActions).recordGameEvent(actionResult.gameEvent).recordLogEvent(actionResult.logEvent)
   }
 
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
   def recordGameEvent(event: GameObjectAction): GameState = recordGameEvent(ResolvedEvent(event, gameObjectState.derivedState))
+  def recordGameEvent(eventOption: Option[GameEvent]): GameState = eventOption.map(recordGameEvent).getOrElse(this)
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event, this))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)

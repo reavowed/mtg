@@ -10,7 +10,7 @@ class StartGameActionSpec extends SpecWithGameStateManager {
   "start game action" should {
     "initialize mulligans and turns" in {
       val pregameState = createGameState(gameObjectStateWithInitialLibrariesOnly, Nil)
-      val GameActionResult(actions, _) = StartGameAction.execute(pregameState)
+      val GameActionResult(actions, _, _) = StartGameAction.execute(pregameState)
 
       actions mustEqual Seq(
         DrawAndMulliganAction(players, 0),
@@ -18,7 +18,7 @@ class StartGameActionSpec extends SpecWithGameStateManager {
     }
     "log event" in {
       val pregameState = createGameState(gameObjectStateWithInitialLibrariesOnly, Nil)
-      val GameActionResult(_, logEvent) = StartGameAction.execute(pregameState)
+      val GameActionResult(_, _, logEvent) = StartGameAction.execute(pregameState)
 
       logEvent must beSome(LogEvent.Start(playerOne))
     }

@@ -6,7 +6,7 @@ import mtg.game.state.{DerivedState, GameObjectAction}
 
 import scala.reflect.{ClassTag, classTag}
 
-sealed trait GameEvent
+trait GameEvent
 object GameEvent {
   case class Decision(chosenOption: AnyRef, playerIdentifier: PlayerId) extends GameEvent
   case class ResolvedEvent(event: GameObjectAction, stateAfterwards: DerivedState) extends GameEvent

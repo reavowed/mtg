@@ -20,7 +20,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
     "pass turn from first to second player" in {
       val gameState = createGameState(emptyGameObjectState, Nil)
 
-      val GameActionResult(gameActions, _) = StartNextTurnAction(playerOne).execute(gameState)
+      val GameActionResult(gameActions, _, _) = StartNextTurnAction(playerOne).execute(gameState)
 
       gameActions must contain(allOf(
         beBeginTurnAction(playerOne),
@@ -31,7 +31,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
     "pass turn from second to first player" in {
       val gameState = createGameState(emptyGameObjectState, Nil)
 
-      val GameActionResult(gameActions, _) = StartNextTurnAction(playerTwo).execute(gameState)
+      val GameActionResult(gameActions, _, _) = StartNextTurnAction(playerTwo).execute(gameState)
 
       gameActions must contain(exactly(
         beBeginTurnAction(playerTwo),

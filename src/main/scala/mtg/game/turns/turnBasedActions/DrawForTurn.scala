@@ -6,6 +6,6 @@ import mtg.game.state.{GameAction, GameState, InternalGameAction, GameActionResu
 
 case object DrawForTurn extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
-    GameActionResult(Seq(DrawCardAction(currentGameState.activePlayer)), Some(LogEvent.DrawForTurn(currentGameState.activePlayer)))
+    (DrawCardAction(currentGameState.activePlayer), LogEvent.DrawForTurn(currentGameState.activePlayer))
   }
 }

@@ -9,10 +9,11 @@ case object StartGameAction extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
     val players = currentGameState.gameData.playersInTurnOrder
     val startingPlayer = players.head
-    GameActionResult(
+    (
       Seq(
         DrawAndMulliganAction(players, 0),
         StartNextTurnAction(startingPlayer)),
-      Some(LogEvent.Start(startingPlayer)))
+      LogEvent.Start(startingPlayer)
+    )
   }
 }
