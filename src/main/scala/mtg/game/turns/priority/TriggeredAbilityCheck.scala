@@ -48,14 +48,14 @@ case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredA
   }
 }
 
-case class RemovePendingTriggeredAbility(pendingTriggeredAbility: PendingTriggeredAbility) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
+case class RemovePendingTriggeredAbility(pendingTriggeredAbility: PendingTriggeredAbility) extends GameObjectAction {
+  override def execute(currentGameState: GameState): GameObjectActionResult = {
     currentGameState.gameObjectState.removeTriggeredAbility(pendingTriggeredAbility)
   }
 
 }
-case class CreateAbilityOnStack(abilityOnTheStack: AbilityOnTheStack) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
+case class CreateAbilityOnStack(abilityOnTheStack: AbilityOnTheStack) extends GameObjectAction {
+  override def execute(currentGameState: GameState): GameObjectActionResult = {
     currentGameState.gameObjectState.addNewObject(StackObject(abilityOnTheStack, _, abilityOnTheStack.owner), _.length)
   }
 }

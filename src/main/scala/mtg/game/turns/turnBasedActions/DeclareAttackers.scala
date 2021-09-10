@@ -2,7 +2,7 @@ package mtg.game.turns.turnBasedActions
 
 import mtg._
 import mtg.characteristics.types.Type
-import mtg.events.TapObjectEvent
+import mtg.events.TapObjectAction
 import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.GameEvent.{Decision, ResolvedEvent}
 import mtg.game.state.history.LogEvent
@@ -81,8 +81,8 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
   }
 }
 
-case class TapAttacker(attacker: ObjectId) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
-    TapObjectEvent(attacker)
+case class TapAttacker(attacker: ObjectId) extends GameObjectAction {
+  override def execute(currentGameState: GameState): GameObjectActionResult = {
+    TapObjectAction(attacker)
   }
 }

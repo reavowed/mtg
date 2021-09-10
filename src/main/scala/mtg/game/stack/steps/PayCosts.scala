@@ -1,7 +1,7 @@
 package mtg.game.stack.steps
 
 import mtg.game.ObjectId
-import mtg.game.actions.SpendManaAutomaticallyEvent
+import mtg.game.actions.SpendManaAutomaticallyAction
 import mtg.game.objects.ManaObject
 import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
@@ -50,7 +50,7 @@ case class PayCosts(stackObjectId: ObjectId, backupAction: BackupAction) extends
           val finalManaInPool = payManaAutomatically(cost.symbols, initialManaInPool)
           finalManaInPool match {
             case Some(finalManaInPool) =>
-              SpendManaAutomaticallyEvent(stackObjectWithState.controller, finalManaInPool)
+              SpendManaAutomaticallyAction(stackObjectWithState.controller, finalManaInPool)
             case None =>
               backupAction
           }

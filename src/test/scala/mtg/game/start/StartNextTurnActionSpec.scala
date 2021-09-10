@@ -5,14 +5,14 @@ import mtg.game.state.history.GameHistory
 import mtg.game.{GameData, PlayerId}
 import mtg.game.state.{GameAction, GameState, GameActionResult}
 import mtg.game.turns.StartNextTurnAction
-import mtg.game.turns.turnEvents.BeginTurnEvent
+import mtg.game.turns.turnEvents.BeginTurnAction
 import org.specs2.matcher.Matcher
 
 class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
   def beBeginTurnAction(player: PlayerId): Matcher[GameAction] = {
-    beAnInstanceOf[BeginTurnEvent].and({ (action: GameAction) =>
-      action.asInstanceOf[BeginTurnEvent].turn.activePlayer
+    beAnInstanceOf[BeginTurnAction].and({ (action: GameAction) =>
+      action.asInstanceOf[BeginTurnAction].turn.activePlayer
     } ^^ beEqualTo(player))
   }
 

@@ -7,7 +7,7 @@ class DrawCardEventSpec extends SpecWithGameStateManager {
 
   "draw card event" should {
     "move the top card of the library to the hand" in {
-      val event = DrawCardEvent(playerOne)
+      val event = DrawCardAction(playerOne)
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
 
       val afterState = runAction(event, beforeState).gameObjectState
@@ -21,7 +21,7 @@ class DrawCardEventSpec extends SpecWithGameStateManager {
 
     "do nothing if library is empty" in {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands.setLibrary(playerOne, Nil)
-      val event = DrawCardEvent(playerOne)
+      val event = DrawCardAction(playerOne)
 
       val afterState = runAction(event, beforeState).gameObjectState
 

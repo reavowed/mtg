@@ -1,7 +1,7 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
+import mtg.game.actions.{ActivateAbilityAction, PlayLandSpecialAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
 import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
@@ -83,12 +83,12 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     }
 
     def playLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
+      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandSpecialAction]
         .filter(_.land.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(landAction.optionText, player)
     }
     def playFirstLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
+      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandSpecialAction]
         .filter(_.land.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(landAction.optionText, player)
     }

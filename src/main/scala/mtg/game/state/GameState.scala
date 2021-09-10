@@ -25,7 +25,7 @@ case class GameState(
 
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
-  def recordGameEvent(event: GameObjectEvent): GameState = recordGameEvent(ResolvedEvent(event, gameObjectState.derivedState))
+  def recordGameEvent(event: GameObjectAction): GameState = recordGameEvent(ResolvedEvent(event, gameObjectState.derivedState))
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event, this))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
@@ -34,7 +34,7 @@ case class GameState(
   def popAction(): (GameAction, GameState) = (pendingActions.head, setActions(pendingActions.tail))
 
   def eventsThisTurn: Iterable[GameEvent] = gameHistory.recentEventsWhile(_.stateBefore.turnState.currentTurn == turnState.currentTurn).map(_.gameEvent)
-  def eventsSinceEvent[T <: GameObjectEvent : ClassTag]: Iterable[GameEvent] = gameHistory.recentEventsWhile {
+  def eventsSinceEvent[T <: GameObjectAction : ClassTag]: Iterable[GameEvent] = gameHistory.recentEventsWhile {
       case GameEventWithPreviousState(ResolvedEvent(e, _), _) if classTag[T].runtimeClass.isInstance(e) => false
       case _ => true
   }.map(_.gameEvent)

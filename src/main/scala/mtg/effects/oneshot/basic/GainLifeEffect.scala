@@ -3,7 +3,7 @@ package mtg.effects.oneshot.basic
 import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.identifiers.Identifier
 import mtg.effects.oneshot.OneShotEffectResult
-import mtg.events.GainLifeEvent
+import mtg.events.GainLifeAction
 import mtg.game.PlayerId
 import mtg.game.state.GameState
 
@@ -12,6 +12,6 @@ case class GainLifeEffect(playerIdentifier: Identifier[PlayerId], amount: Int) e
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
     val (player, finalResolutionContext) = playerIdentifier.get(gameState, resolutionContext)
-    (GainLifeEvent(player, amount), finalResolutionContext)
+    (GainLifeAction(player, amount), finalResolutionContext)
   }
 }

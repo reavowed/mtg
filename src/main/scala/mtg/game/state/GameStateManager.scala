@@ -48,9 +48,9 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
 
   private def executeGameEvent(gameEvent: GameEvent, initialGameState: GameState): GameState = {
     def actuallyExecuteEvent = gameEvent match {
-      case gameObjectEvent: GameObjectEvent =>
+      case gameObjectEvent: GameObjectAction =>
         executeGameObjectEvent(gameObjectEvent, _)
-      case turnCycleEvent: TurnCycleEvent =>
+      case turnCycleEvent: TurnCycleAction =>
         executeTurnCycleEvent(turnCycleEvent, _)
     }
     def createTriggeredAbilities = (gameState: GameState) => {
@@ -71,7 +71,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     Seq(actuallyExecuteEvent, createTriggeredAbilities, removeEndedEffects).foldLeft(initialGameState)((gs, f) => f(gs))
   }
 
-  private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {
+  private def executeGameObjectEvent(gameObjectEvent: GameObjectAction, gameState: GameState): GameState = {
     if (shouldPreventGameObjectEvent(gameObjectEvent, gameState)) {
       gameState
     } else {
@@ -81,13 +81,13 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     }
   }
 
-  private def shouldPreventGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): Boolean = {
+  private def shouldPreventGameObjectEvent(gameObjectEvent: GameObjectAction, gameState: GameState): Boolean = {
     gameState.gameObjectState.activeContinuousEffects
       .ofType[EventPreventionEffect]
       .exists(_.preventsEvent(gameObjectEvent, gameState))
   }
 
-  private def executeTurnCycleEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): GameState = {
+  private def executeTurnCycleEvent(turnCycleEvent: TurnCycleAction, gameState: GameState): GameState = {
     val preventResult = TurnCycleEventPreventer.fromRules.collectFirst(Function.unlift(_.checkEvent(turnCycleEvent, gameState).asOptionalInstanceOf[TurnCycleEventPreventer.Result.Prevent]))
     preventResult match {
       case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>

@@ -10,8 +10,8 @@ import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import org.specs2.matcher.Matcher
 
 class PlayLandSpec extends SpecWithGameStateManager {
-  def bePlayLandAction(land: CardDefinition): Matcher[PlayLandAction] = {
-    {(playLandAction: PlayLandAction) => playLandAction.land.gameObject} ^^ beCardObject(land)
+  def bePlayLandAction(land: CardDefinition): Matcher[PlayLandSpecialAction] = {
+    {(playLandAction: PlayLandSpecialAction) => playLandAction.land.gameObject} ^^ beCardObject(land)
   }
 
   "land actions with priority" should {

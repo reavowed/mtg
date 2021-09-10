@@ -1,7 +1,7 @@
 package mtg.game.stack
 
 import mtg.abilities.TriggeredAbilityDefinition
-import mtg.events.RemoveObjectFromExistenceEvent
+import mtg.events.RemoveObjectFromExistenceAction
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
@@ -12,7 +12,7 @@ case class FinishResolvingAbility(ability: StackObjectWithState) extends Interna
     val description = if (abilityDefinition.isInstanceOf[TriggeredAbilityDefinition]) "triggered" else "activated"
     val sourceName = ability.gameObject.underlyingObject.getSourceName(currentGameState)
     (
-      RemoveObjectFromExistenceEvent(ability.gameObject.objectId),
+      RemoveObjectFromExistenceAction(ability.gameObject.objectId),
       LogEvent.ResolveAbility(
         ability.controller,
         description,

@@ -3,7 +3,7 @@ package mtg.effects.oneshot.actions
 import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameActionResult, GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.state.{GameActionResult, GameObjectAction, GameObjectActionResult, GameState}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.ParsingUtils
 
@@ -35,7 +35,7 @@ case class ScryChoice(
       if (cardsOnTop ++ cardsOnBottom).sortBy(_.sequentialId) == cardsBeingScryed.sortBy(_.sequentialId)
     } yield (
       ScryDecision(cardsOnTop, cardsOnBottom),
-      (ScryEvent(playerChoosing, cardsOnTop, cardsOnBottom), LogEvent.Scry(playerChoosing, cardsOnTop.length, cardsOnBottom.length)),
+      (ScryAction(playerChoosing, cardsOnTop, cardsOnBottom), LogEvent.Scry(playerChoosing, cardsOnTop.length, cardsOnBottom.length)),
       resolutionContext
     )
   }
@@ -43,12 +43,12 @@ case class ScryChoice(
   override def temporarilyVisibleObjects: Seq[ObjectId] = cardsBeingScryed
 }
 
-case class ScryEvent(
+case class ScryAction(
   player: PlayerId,
   cardsOnTop: Seq[ObjectId],
   cardsOnBottom: Seq[ObjectId]
-) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
+) extends GameObjectAction {
+  override def execute(currentGameState: GameState): GameObjectActionResult = {
     Zone.Library(player).updateState(currentGameState.gameObjectState, library => {
       val onTop = cardsOnTop.map(id => library.find(_.objectId == id).get)
       val onBottom = cardsOnBottom.map(id => library.find(_.objectId == id).get)

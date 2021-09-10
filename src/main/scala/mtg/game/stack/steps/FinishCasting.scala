@@ -10,7 +10,7 @@ case class FinishCasting(stackObjectId: ObjectId) extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
     currentGameState.gameObjectState.derivedState.spellStates.get(stackObjectId).map[GameActionResult] { stackObjectWithState =>
       (
-        Seq(cast.SpellCastEvent(stackObjectId), priority.PriorityFromPlayerAction(stackObjectWithState.controller)),
+        Seq(cast.SpellCastAction(stackObjectId), priority.PriorityFromPlayerAction(stackObjectWithState.controller)),
         LogEvent.CastSpell(stackObjectWithState.controller, stackObjectWithState.characteristics.name.get, stackObjectWithState.gameObject.targets.map(_.getName(currentGameState)))
       )
     }.getOrElse(())

@@ -1,7 +1,7 @@
 package mtg.game.actions.cast
 
 import mtg.characteristics.types.Type
-import mtg.events.MoveObjectEvent
+import mtg.events.MoveObjectAction
 import mtg.game.actions.{PriorityAction, TimingChecks}
 import mtg.game.stack.steps
 import mtg.game.stack.steps.FinishCasting
@@ -15,7 +15,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, back
 
   override def execute(currentGameState: GameState): GameActionResult = {
     Seq(
-      MoveObjectEvent(player, objectId, Zone.Stack),
+      MoveObjectAction(player, objectId, Zone.Stack),
       steps.CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))
   }
 }

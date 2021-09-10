@@ -1,11 +1,11 @@
 package mtg.sbas
 
 import mtg.characteristics.types.Type
-import mtg.events.DestroyEvent
-import mtg.game.state.{GameObjectEvent, GameState}
+import mtg.events.DestroyAction
+import mtg.game.state.{GameObjectAction, GameState}
 
 object LethalDamageStateBasedAction {
-  def getApplicableEvents(gameState: GameState): Seq[GameObjectEvent] = {
+  def getApplicableEvents(gameState: GameState): Seq[GameObjectAction] = {
     // RULE 704.5g. If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked
     // on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed.
     // Regeneration can replace this event.
@@ -16,7 +16,7 @@ object LethalDamageStateBasedAction {
           gameObject.markedDamage > 0 &&
           gameObject.markedDamage >= characteristics.toughness.getOrElse(0)
       })
-      .map(gameObject => DestroyEvent(gameObject.owner, gameObject.objectId))
+      .map(gameObject => DestroyAction(gameObject.owner, gameObject.objectId))
       .toSeq
   }
 }

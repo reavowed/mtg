@@ -3,7 +3,7 @@ package mtg.game.stack
 import mtg.abilities.SpellAbility
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.targets.TargetIdentifier
-import mtg.events.MoveObjectEvent
+import mtg.events.MoveObjectAction
 import mtg.game.Zone
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
@@ -17,7 +17,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
     // TODO: Handle the exceptions above
     val controller = stackObjectWithState.controller
     (
-      MoveObjectEvent(controller, stackObject, Zone.Battlefield),
+      MoveObjectAction(controller, stackObject, Zone.Battlefield),
       LogEvent.ResolvePermanent(controller, stackObjectWithState.characteristics.name.get)
     )
   }
@@ -52,7 +52,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
       resolvePermanent(stackObjectWithState)
     } else if (shouldFizzleDueToInvalidTargets(stackObjectWithState, currentGameState)) {
       (
-        MoveObjectEvent(stackObjectWithState.controller, stackObject, Zone.Graveyard(stackObjectWithState.gameObject.owner)),
+        MoveObjectAction(stackObjectWithState.controller, stackObject, Zone.Graveyard(stackObjectWithState.gameObject.owner)),
         LogEvent.SpellFailedToResolve(stackObjectWithState.characteristics.name.get)
       )
     } else if (stackObject.underlyingObject.isInstanceOf[AbilityOnTheStack]) {

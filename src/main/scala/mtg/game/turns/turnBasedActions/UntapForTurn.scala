@@ -1,6 +1,6 @@
 package mtg.game.turns.turnBasedActions
 
-import mtg.events.UntapObjectEvent
+import mtg.events.UntapObjectAction
 import mtg.game.Zone
 import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
 
@@ -10,6 +10,6 @@ case object UntapForTurn extends InternalGameAction {
       .filter(o => o.gameObject.zone == Zone.Battlefield && o.controller == currentGameState.activePlayer)
       .map(_.gameObject.objectId)
       .toSeq
-    tappedPermanents.map(UntapObjectEvent)
+    tappedPermanents.map(UntapObjectAction)
   }
 }

@@ -1,7 +1,7 @@
 package mtg.game.start.mulligans
 
 import mtg._
-import mtg.events.MoveObjectEvent
+import mtg.events.MoveObjectAction
 import mtg.game.objects.GameObject
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameAction, GameState, GameActionResult, TypedPlayerChoice}
@@ -18,7 +18,7 @@ case class ReturnCardsToLibraryChoice(playerToAct: PlayerId, numberOfCardsToRetu
   }
   override def handleDecision(chosenOption: ReturnCardsToLibraryOption, currentGameState: GameState): GameActionResult  = {
     (
-      chosenOption.cardsToReturn.map(MoveObjectEvent(playerToAct, _, Zone.Library(playerToAct))),
+      chosenOption.cardsToReturn.map(MoveObjectAction(playerToAct, _, Zone.Library(playerToAct))),
       LogEvent.ReturnCardsToLibrary(playerToAct, numberOfCardsToReturn)
     )
   }

@@ -1,11 +1,11 @@
 package mtg.game.turns
 
-import mtg.game.state.{GameState, TurnCycleEvent}
+import mtg.game.state.{GameState, TurnCycleAction}
 import mtg.game.state.history.LogEvent
-import mtg.game.turns.turnEvents.BeginStepEvent
+import mtg.game.turns.turnEvents.BeginStepAction
 
 abstract class TurnCycleEventPreventer {
-  def checkEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): TurnCycleEventPreventer.Result
+  def checkEvent(turnCycleEvent: TurnCycleAction, gameState: GameState): TurnCycleEventPreventer.Result
 }
 
 object TurnCycleEventPreventer {
@@ -16,8 +16,8 @@ object TurnCycleEventPreventer {
   }
 
   object PreventFirstDrawStep extends TurnCycleEventPreventer {
-    override def checkEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): Result = {
-      if (gameState.turnState.currentTurnNumber == 1 && turnCycleEvent == BeginStepEvent(TurnStep.DrawStep)) {
+    override def checkEvent(turnCycleEvent: TurnCycleAction, gameState: GameState): Result = {
+      if (gameState.turnState.currentTurnNumber == 1 && turnCycleEvent == BeginStepAction(TurnStep.DrawStep)) {
         Result.Prevent(Some(LogEvent.SkipFirstDrawStep(gameState.activePlayer)))
       } else {
         Result.Allow

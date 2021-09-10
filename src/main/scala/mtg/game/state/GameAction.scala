@@ -8,11 +8,11 @@ sealed abstract class GameAction
 
 sealed abstract class GameEvent extends GameAction
 
-abstract class GameObjectEvent extends GameEvent {
-  def execute(currentGameState: GameState): GameObjectEventResult
+abstract class GameObjectAction extends GameEvent {
+  def execute(currentGameState: GameState): GameObjectActionResult
 }
 
-abstract class TurnCycleEvent extends GameEvent {
+abstract class TurnCycleAction extends GameEvent {
   def execute(currentGameState: GameState): (TurnState, GameActionResult)
 }
 
