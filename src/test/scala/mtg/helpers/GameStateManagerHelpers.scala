@@ -58,13 +58,13 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       }
     }
     def passUntilTurn(turnNumber: Int): Unit = {
-      passUntil(_.currentTurnNumber == turnNumber)
+      passUntil(_.turnState.currentTurnNumber == turnNumber)
     }
     def passUntilPhase(turnPhase: TurnPhase): Unit = {
-      passUntil(_.currentPhase.contains(turnPhase))
+      passUntil(_.turnState.currentPhase.contains(turnPhase))
     }
     def passUntilStep(turnStep: TurnStep): Unit = {
-      passUntil(_.currentStep.contains(turnStep))
+      passUntil(_.turnState.currentStep.contains(turnStep))
     }
     def passUntilTurnAndPhase(turnNumber: Int, turnPhase: TurnPhase): Unit = {
       passUntilTurn(turnNumber)

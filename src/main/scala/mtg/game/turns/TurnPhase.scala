@@ -8,9 +8,7 @@ import mtg.utils.CaseObjectWithName
 
 sealed abstract class TurnPhase(val actions: Seq[GameAction]) extends CaseObjectWithName {
   def hasFinished(gameState: GameState): Boolean = {
-    gameState.gameHistory.forCurrentTurn.exists(
-      _.gameEvents.ofType[ResolvedEvent].exists(
-        _.event == EndPhaseEvent(this)))
+    gameState.eventsThisTurn.ofType[ResolvedEvent].exists(_.event == EndPhaseEvent(this))
   }
 }
 

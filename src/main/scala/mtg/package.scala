@@ -5,16 +5,25 @@ import cats.syntax.flatMap._
 import cats.syntax.functor._
 
 import scala.annotation.tailrec
-import scala.collection.{SeqView, View}
+import scala.collection.{IterableOps, SeqView, View}
 
 package object mtg {
   implicit class AnyExtensionMethods[T](t: T) {
     def asOptionalInstanceOf[S : ClassTag]: Option[S] = if(classTag[S].runtimeClass.isInstance(t)) Some(t.asInstanceOf[S]) else None
   }
-  implicit class SeqExtensionMethods[T](seq: Seq[T]) {
-    def ofType[S : ClassTag]: Seq[S] = seq.collect {
-      case s: S => s
+  implicit class IterableExtensionMethods[A, CC[_], C](iterable: IterableOps[A, CC, C]) {
+    def ofType[B : ClassTag]: CC[B] = iterable.collect {
+      case a if classTag[B].runtimeClass.isInstance(a) => a.asInstanceOf[B]
     }
+    def mapCollect[B](f: A => Option[B]): CC[B] = {
+      iterable.collect(Function.unlift(f))
+    }
+    def mapFind[B](f: A => Option[B]): Option[B] = {
+      iterable.iterator.map(f).find(_.isDefined).flatten
+    }
+    def contains(a: A): Boolean = iterable.exists(_ == a)
+  }
+  implicit class SeqExtensionMethods[T](seq: Seq[T]) {
     def splitByType[S : ClassTag]: (Seq[S], Seq[T]) = seq.foldLeft((Seq.empty[S], Seq.empty[T])) { case ((ss, ts), t) =>
       t.asOptionalInstanceOf[S].map(s => (ss :+ s, ts)).getOrElse((ss, ts :+ t))
     }
@@ -48,9 +57,6 @@ package object mtg {
     }
     def mapFind[S](f: T => Option[S]): Option[S] = {
       view.map(f).find(_.isDefined).flatten
-    }
-    def mapCollect[S](f: T => Option[S]): View[S] = {
-      view.collect(Function.unlift(f))
     }
     def single: T = {
       val iterator = view.iterator

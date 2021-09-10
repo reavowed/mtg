@@ -34,7 +34,7 @@ object PlayLandAction {
         .toSeq
   }
   private def getNumberOfLandsPlayedThisTurn(gameState: GameState): Int = {
-    gameState.gameHistory.forCurrentTurn.toSeq.flatMap(_.gameEvents)
+    gameState.eventsThisTurn
       .ofType[GameEvent.ResolvedEvent].map(_.event)
       .count(_.isInstanceOf[PlayLandEvent])
   }

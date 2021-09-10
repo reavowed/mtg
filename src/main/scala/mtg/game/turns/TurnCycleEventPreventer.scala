@@ -17,7 +17,7 @@ object TurnCycleEventPreventer {
 
   object PreventFirstDrawStep extends TurnCycleEventPreventer {
     override def checkEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): Result = {
-      if (gameState.currentTurnNumber == 1 && turnCycleEvent == BeginStepEvent(TurnStep.DrawStep)) {
+      if (gameState.turnState.currentTurnNumber == 1 && turnCycleEvent == BeginStepEvent(TurnStep.DrawStep)) {
         Result.Prevent(Some(LogEvent.SkipFirstDrawStep(gameState.activePlayer)))
       } else {
         Result.Allow

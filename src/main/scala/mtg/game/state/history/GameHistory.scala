@@ -1,32 +1,26 @@
 package mtg.game.state.history
 
-import mtg.game.turns.{Turn, TurnPhase, TurnStep}
+import mtg.game.state.GameState
 
-case class GameHistory(preGameEvents: Seq[GameEvent], turns: Seq[TurnHistory], logEvents: Seq[TimestampedLogEvent]) {
-  def startTurn(turn: Turn): GameHistory = {
-    copy(turns = turns :+ TurnHistory.forTurn(turn))
-  }
-  def startPhase(phase: TurnPhase): GameHistory = {
-    copy(turns = turns.init :+ turns.last.startPhase(phase))
-  }
-  def startStep(step: TurnStep): GameHistory = {
-    copy(turns = turns.init :+ turns.last.startStep(step))
+case class GameEventWithPreviousState(gameEvent: GameEvent, stateBefore: GameState)
+
+case class GameHistory(gameEventsWithPreviousStates: List[GameEventWithPreviousState], logEvents: Seq[TimestampedLogEvent]) {
+  def addGameEvent(event: GameEvent, state: GameState): GameHistory = {
+    copy(gameEventsWithPreviousStates = GameEventWithPreviousState(event, state) :: gameEventsWithPreviousStates)
   }
 
-  def addGameEvent(event: GameEvent): GameHistory = turns match {
-    case init :+ last =>
-      copy(turns = init :+ last.addGameEvent(event))
-    case Nil =>
-      copy(preGameEvents = preGameEvents :+ event)
-  }
   def addLogEvent(event: LogEvent): GameHistory = {
     copy(logEvents = logEvents :+ TimestampedLogEvent(event))
   }
 
-  def forCurrentTurn: Option[TurnHistory] = turns.lastOption
+  def recentEventsWhile(predicate: GameEventWithPreviousState => Boolean): Iterable[GameEventWithPreviousState] = new Iterable[GameEventWithPreviousState] {
+    override def iterator: Iterator[GameEventWithPreviousState] = {
+      gameEventsWithPreviousStates.iterator.takeWhile(predicate)
+    }
+  }
 }
 object GameHistory {
-  val empty = GameHistory(Nil, Nil, Nil)
+  val empty = GameHistory(Nil, Nil)
 }
 
 

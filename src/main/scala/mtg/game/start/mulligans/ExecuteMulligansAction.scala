@@ -6,11 +6,12 @@ import mtg.game.state.{GameAction, GameState, InternalGameAction, GameActionResu
 
 case class ExecuteMulligansAction(mulligansSoFar: Int) extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
-    val playersMulliganing = currentGameState.gameHistory.preGameEvents.sinceEvent[DrawStartingHandsEvent].collect {
+    val playersWhoHaveTakenMulligans = currentGameState.eventsSinceEvent[DrawStartingHandsEvent].collect {
       case GameEvent.Decision(MulliganOption.Mulligan, player) => player
-    }
-    if (playersMulliganing.nonEmpty) {
-      playersMulliganing.map(ShuffleHandIntoLibrary) :+ DrawAndMulliganAction(playersMulliganing, mulligansSoFar + 1)
+    }.toSet
+    val playersToDraw = currentGameState.gameData.playersInTurnOrder.filter(playersWhoHaveTakenMulligans.contains)
+    if (playersWhoHaveTakenMulligans.nonEmpty) {
+      playersToDraw.map(ShuffleHandIntoLibrary) :+ DrawAndMulliganAction(playersToDraw, mulligansSoFar + 1)
     } else {
       ()
     }

@@ -2,7 +2,8 @@ package mtg
 
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
-import mtg.game.state.GameState
+import mtg.game.state.{GameAction, GameState, TurnState}
+import mtg.game.state.history.GameHistory
 import mtg.game.{GameData, GameStartingData, PlayerId, PlayerStartingData, Zone}
 import mtg.helpers.{GameObjectHelpers, GameObjectStateHelpers}
 import org.specs2.matcher.Matcher
@@ -36,6 +37,10 @@ trait SpecWithGameObjectState
 
   val gameObjectStateWithInitialLibrariesOnly = emptyGameObjectState.setLibrary(playerOne, playerOneAllCards).setLibrary(playerTwo, playerTwoAllCards)
   val gameObjectStateWithInitialLibrariesAndHands = setInitialHandAndLibrary(emptyGameObjectState)
+
+  def createGameState(gameObjectState: GameObjectState, actions: Seq[GameAction]): GameState = {
+    GameState(gameData, gameObjectState, TurnState.initial, GameHistory.empty, actions)
+  }
 
   implicit class PlayerOps(playerIdentifier: PlayerId) {
     def library = Zone.Library(playerIdentifier)

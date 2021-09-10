@@ -30,9 +30,9 @@ class MulliganSpec extends SpecWithGameStateManager {
   }
 
   def checkGameStarted(gameState: GameState) = {
-    gameState.currentTurnNumber mustEqual 1
-    gameState.currentPhase must beSome[TurnPhase](TurnPhase.BeginningPhase)
-    gameState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
+    gameState.turnState.currentTurnNumber mustEqual 1
+    gameState.turnState.currentPhase must beSome[TurnPhase](TurnPhase.BeginningPhase)
+    gameState.turnState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
     gameState.pendingActions.head must bePriorityChoice.forPlayer(playerOne)
   }
 

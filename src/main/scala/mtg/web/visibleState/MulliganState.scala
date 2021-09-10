@@ -9,7 +9,7 @@ import mtg.game.state.history.GameEvent.Decision
 case class MulliganState(hasKept: Boolean, mulligansTaken: Int)
 object MulliganState {
   def forPlayer(playerIdentifier: PlayerId, gameState: GameState): MulliganState = {
-    val decisions = gameState.gameHistory.preGameEvents.ofType[Decision]
+    val decisions = gameState.eventsThisTurn.ofType[Decision]
       .filter(_.playerIdentifier == playerIdentifier)
       .map(_.chosenOption)
       .ofType[MulliganOption]
@@ -18,7 +18,7 @@ object MulliganState {
     MulliganState(hasKept, mulligansTaken)
   }
   def forAllPlayers(gameState: GameState): Option[Map[PlayerId, MulliganState]] = {
-    if (gameState.currentTurnNumber == 0)
+    if (gameState.turnState.currentTurnNumber == 0)
       Some(gameState.gameData.playersInTurnOrder.map(p => p -> forPlayer(p, gameState)).toMap)
     else
       None

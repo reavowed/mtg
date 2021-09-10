@@ -21,10 +21,9 @@ object DeclareAttackers extends InternalGameAction {
       ()
   }
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
-    gameState.gameHistory.forCurrentTurn.exists(
-      _.gameEvents.ofType[ResolvedEvent].forall(
-        _.stateAfterwards.permanentStates.get(objectId)
-          .exists(_.controller == gameState.activePlayer)))
+    gameState.eventsThisTurn.ofType[ResolvedEvent].forall(
+      _.stateAfterwards.permanentStates.get(objectId)
+        .exists(_.controller == gameState.activePlayer))
   }
   private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
     gameState.gameObjectState.derivedState.permanentStates.values.view
@@ -40,11 +39,9 @@ object DeclareAttackers extends InternalGameAction {
     gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
   }
   def getAttackDeclarations(gameState: GameState): Seq[AttackDeclaration] = {
-    gameState.gameHistory.forCurrentTurn
-      .flatMap(
-        _.gameEvents.view.ofType[Decision]
-          .map(_.chosenOption)
-          .mapFind(_.asOptionalInstanceOf[DeclaredAttackers]))
+    gameState.eventsThisTurn.ofType[Decision]
+      .map(_.chosenOption)
+      .mapFind(_.asOptionalInstanceOf[DeclaredAttackers])
       .toSeq
       .flatMap(_.attackDeclarations)
   }

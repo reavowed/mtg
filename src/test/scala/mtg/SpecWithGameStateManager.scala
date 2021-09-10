@@ -18,10 +18,6 @@ abstract class SpecWithGameStateManager
     (objectWithState.gameObject == gameObject, "", "")
   }
 
-  def createGameState(gameObjectState: GameObjectState, actions: Seq[GameAction]): GameState = {
-    GameState(gameData, gameObjectState, GameHistory.empty, actions)
-  }
-
   def createGameStateManager(gameObjectState: GameObjectState, actions: Seq[GameAction]): GameStateManager = {
     new GameStateManager(createGameState(gameObjectState, actions), _ => {}, mutable.Map(players.map(_ -> players.map(_ -> TurnPhase.AllPhasesAndSteps).toMap): _*))
   }

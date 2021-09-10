@@ -5,7 +5,7 @@ import mtg.game.turns.Turn
 
 object CleanupAction extends InternalGameAction {
   override def execute(currentGameState: GameState): GameActionResult = {
-    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd(currentGameState.currentTurn.get))
+    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd(currentGameState.turnState.currentTurn.get))
   }
 }
 

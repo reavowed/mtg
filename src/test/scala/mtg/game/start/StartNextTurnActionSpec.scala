@@ -18,7 +18,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
   "start next turn action" should {
     "pass turn from first to second player" in {
-      val gameState = GameState(GameData.initial(Seq(playerOne, playerTwo)), emptyGameObjectState, GameHistory.empty, Nil)
+      val gameState = createGameState(emptyGameObjectState, Nil)
 
       val GameActionResult(gameActions, _) = StartNextTurnAction(playerOne).execute(gameState)
 
@@ -29,7 +29,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
     }
 
     "pass turn from second to first player" in {
-      val gameState = GameState(GameData.initial(Seq(playerOne, playerTwo)), emptyGameObjectState, GameHistory.empty, Nil)
+      val gameState = createGameState(emptyGameObjectState, Nil)
 
       val GameActionResult(gameActions, _) = StartNextTurnAction(playerTwo).execute(gameState)
 

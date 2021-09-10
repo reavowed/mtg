@@ -13,7 +13,7 @@ abstract class GameObjectEvent extends GameEvent {
 }
 
 abstract class TurnCycleEvent extends GameEvent {
-  def execute(currentGameState: GameState): (GameHistory => GameHistory, GameActionResult)
+  def execute(currentGameState: GameState): (TurnState, GameActionResult)
 }
 
 abstract class InternalGameAction extends GameAction {

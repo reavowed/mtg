@@ -29,7 +29,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       case (BackupAction(gameStateToRevertTo), _) =>
         executeAutomaticActions(gameStateToRevertTo)
       case (priorityChoice: PriorityChoice, gameState)
-        if !stops(priorityChoice.playerToAct)(gameState.activePlayer).exists(gameState.currentStep.orElse(gameState.currentPhase).contains)
+        if !stops(priorityChoice.playerToAct)(gameState.activePlayer).exists(gameState.turnState.currentStep.orElse(gameState.turnState.currentPhase).contains)
       =>
         executeDecision(priorityChoice, "Pass", gameState) match {
           case Some(gameState) =>
@@ -93,8 +93,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>
         logEvent.map(gameState.recordLogEvent).getOrElse(gameState)
       case _ =>
-        val (historyUpdater, actionResult) = turnCycleEvent.execute(gameState)
-        gameState.updateHistory(historyUpdater).handleActionResult(actionResult)
+        val (newTurnState, actionResult) = turnCycleEvent.execute(gameState)
+        gameState.copy(turnState = newTurnState).handleActionResult(actionResult)
     }
   }
 

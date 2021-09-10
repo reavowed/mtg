@@ -1,13 +1,12 @@
 package mtg.game.turns.turnEvents
 
-import mtg.game.state.history.{GameHistory, LogEvent}
-import mtg.game.state.{GameAction, GameState, GameActionResult, TurnCycleEvent}
+import mtg.game.state.{GameActionResult, GameState, TurnCycleEvent, TurnState}
 import mtg.game.turns.TurnStep
 
 case class BeginStepEvent(step: TurnStep) extends TurnCycleEvent {
-  override def execute(currentGameState: GameState): (GameHistory => GameHistory, GameActionResult) = {
+  override def execute(currentGameState: GameState): (TurnState, GameActionResult) = {
     (
-      _.startStep(step),
+      currentGameState.turnState.startStep(step),
       step.actions :+ EndStepEvent(step)
     )
   }

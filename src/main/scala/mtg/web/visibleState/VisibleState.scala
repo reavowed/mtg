@@ -38,9 +38,9 @@ object VisibleState {
     VisibleState(
       playerIdentifier,
       gameState.gameData,
-      gameState.currentTurnNumber,
-      gameState.currentPhase,
-      gameState.currentStep,
+      gameState.turnState.currentTurnNumber,
+      gameState.turnState.currentPhase,
+      gameState.turnState.currentStep,
       gameState.gameObjectState.lifeTotals,
       gameState.gameObjectState.hands.map { case (player, contents) => player -> getHiddenZoneContents(Zone.Hand(player), contents) },
       gameState.gameObjectState.libraries.map { case (player, contents) => player -> getHiddenZoneContents(Zone.Library(player), contents) },
