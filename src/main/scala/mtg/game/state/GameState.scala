@@ -26,12 +26,13 @@ case class GameState(
   private def currentStepHistory: Option[StepHistory] = currentPhaseHistory.flatMap(_.asOptionalInstanceOf[PhaseHistoryWithSteps]).flatMap(_.steps.lastOption)
   def currentStep: Option[TurnStep] = currentStepHistory.map(_.step)
 
-  def handleActionResult(actionResult: GameActionResult): GameState = {
+  def handleActionResult(actionResult: InternalGameActionResult): GameState = {
     addActions(actionResult.childActions).recordLogEvent(actionResult.logEvent)
   }
 
   def updateHistory(f: GameHistory => GameHistory): GameState = copy(gameHistory = f(gameHistory))
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
+  def updateGameObjectState(newGameObjectState: Option[GameObjectState]): GameState = newGameObjectState.map(updateGameObjectState).getOrElse(this)
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
   def recordGameEvent(event: GameObjectEvent): GameState = recordGameEvent(ResolvedEvent(event, gameObjectState.derivedState))
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))

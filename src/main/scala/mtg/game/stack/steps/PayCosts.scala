@@ -3,7 +3,7 @@ package mtg.game.stack.steps
 import mtg.game.ObjectId
 import mtg.game.actions.SpendManaAutomaticallyEvent
 import mtg.game.objects.ManaObject
-import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{BackupAction, InternalGameActionResult, GameState, InternalGameAction}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
@@ -42,7 +42,7 @@ case class PayCosts(stackObjectId: ObjectId, backupAction: BackupAction) extends
     } yield manaAfterGeneric
   }
 
-  override def execute(currentGameState: GameState): GameActionResult = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     currentGameState.gameObjectState.derivedState.spellStates.get(stackObjectId).toSeq.map { stackObjectWithState =>
       stackObjectWithState.characteristics.manaCost match {
         case Some(cost) =>

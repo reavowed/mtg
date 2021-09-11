@@ -10,7 +10,7 @@ import mtg.game.state._
 import mtg.game.turns.TurnPhase
 
 object DeclareAttackers extends InternalGameAction {
-  override def execute(currentGameState: GameState): GameActionResult = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     val possibleAttackers = getPossibleAttackers(currentGameState)
     if (possibleAttackers.nonEmpty)
       DeclareAttackersChoice(
@@ -68,7 +68,7 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
       .map(DeclaredAttackers)
   }
 
-  override def handleDecision(chosenOption: DeclaredAttackers, currentGameState: GameState): GameActionResult = {
+  override def handleDecision(chosenOption: DeclaredAttackers, currentGameState: GameState): InternalGameActionResult = {
     import chosenOption._
     if (attackDeclarations.nonEmpty) {
       (

@@ -4,14 +4,14 @@ import mtg.abilities.ActivatedAbilityDefinition
 import mtg.game.stack.ResolveManaAbility
 import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameActionResult, GameState, ObjectWithState}
+import mtg.game.state.{GameAction, InternalGameActionResult, GameState, ObjectWithState}
 
 case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
   override def objectId: ObjectId = objectWithAbility.gameObject.objectId
   override def displayText: String = ability.getText(objectWithAbility.characteristics.name.getOrElse("this object"))
   override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + objectWithAbility.characteristics.abilities.indexOf(ability)
 
-  override def execute(currentGameState: GameState): GameActionResult = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     ability.costs.flatMap(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
   }
 }

@@ -7,10 +7,10 @@ import mtg.events.MoveObjectEvent
 import mtg.game.Zone
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
+import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction, StackObjectWithState}
 
 case class ResolveStackObject(stackObject: StackObject) extends InternalGameAction {
-  private def resolvePermanent(stackObjectWithState: StackObjectWithState): GameActionResult = {
+  private def resolvePermanent(stackObjectWithState: StackObjectWithState): InternalGameActionResult = {
     // RULE 608.3 / Apr 22 2021 : If the object that's resolving is a permanent spell, its resolution involves a single
     // step (unless it's an Aura, a copy of a permanent spell, or a mutating creature spell). The spell card becomes a
     // permanent and is put onto the battlefield under the control of the spell's controller.
@@ -30,7 +30,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
       }
   }
 
-  private def resolveInstantOrSorcerySpell(spell: StackObjectWithState, currentGameState: GameState): GameActionResult = {
+  private def resolveInstantOrSorcerySpell(spell: StackObjectWithState, currentGameState: GameState): InternalGameActionResult = {
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell, currentGameState)
     Seq(
       ResolveEffects(spell.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects), resolutionContext),
@@ -38,7 +38,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
     )
   }
 
-  private def resolveAbility(ability: StackObjectWithState, currentGameState: GameState): GameActionResult = {
+  private def resolveAbility(ability: StackObjectWithState, currentGameState: GameState): InternalGameActionResult = {
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability, currentGameState)
     Seq(
       ResolveEffects(ability.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects), resolutionContext),
@@ -46,7 +46,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
     )
   }
 
-  override def execute(currentGameState: GameState): GameActionResult = {
+  override def execute(currentGameState: GameState): InternalGameActionResult = {
     val stackObjectWithState = stackObject.currentState(currentGameState)
     if (stackObjectWithState.characteristics.types.exists(_.isPermanent)) {
       resolvePermanent(stackObjectWithState)

@@ -4,27 +4,27 @@ import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.state.history.GameEvent.Decision
 import mtg.game.state.history.{GameHistory, LogEvent}
 
-sealed abstract class GameAction
+sealed trait GameAction
 
-sealed abstract class AutomaticGameAction extends GameAction
+sealed trait AutomaticGameAction extends GameAction
 
-abstract class GameObjectEvent extends AutomaticGameAction {
+trait GameObjectEvent extends AutomaticGameAction {
   def execute(currentGameState: GameState): GameObjectEventResult
 }
 
-abstract class TurnCycleEvent extends AutomaticGameAction {
-  def execute(currentGameState: GameState): (GameHistory => GameHistory, GameActionResult)
+trait TurnCycleEvent extends AutomaticGameAction {
+  def execute(currentGameState: GameState): (GameHistory => GameHistory, InternalGameActionResult)
 }
 
-abstract class InternalGameAction extends GameAction {
-  def execute(currentGameState: GameState): GameActionResult
+trait InternalGameAction extends AutomaticGameAction {
+  def execute(currentGameState: GameState): InternalGameActionResult
 }
 
 case class BackupAction(gameStateToRevertTo: GameState) extends GameAction
 
 abstract class PlayerChoice extends GameAction {
   def playerToAct: PlayerId
-  def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, GameActionResult)]
+  def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(Decision, InternalGameActionResult)]
   def temporarilyVisibleZones: Seq[Zone] = Nil
   def temporarilyVisibleObjects: Seq[ObjectId] = Nil
 }
