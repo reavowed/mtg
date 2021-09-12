@@ -8,6 +8,7 @@ sealed trait GameAction
 
 sealed trait AutomaticGameAction extends GameAction {
   def execute(currentGameState: GameState): GameActionResult
+  def canBeReverted: Boolean
 }
 
 trait GameObjectEvent extends AutomaticGameAction {

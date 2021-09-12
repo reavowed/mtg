@@ -9,4 +9,5 @@ case class ShuffleHandIntoLibrary(player: PlayerId) extends GameObjectEvent {
     currentGameState.gameObjectState.hands(player)
       .map(MoveObjectEvent(player, _, Zone.Library(player))) :+ ShuffleLibrary(player)
   }
+  override def canBeReverted: Boolean = true
 }

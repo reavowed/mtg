@@ -9,4 +9,5 @@ case class RemoveObjectFromExistenceEvent(objectId: ObjectId) extends GameObject
       currentGameState.gameObjectState.deleteObject(gameObjectWithState.gameObject)
     })
   }
+  override def canBeReverted: Boolean = true
 }

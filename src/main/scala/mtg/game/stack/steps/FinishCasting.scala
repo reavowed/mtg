@@ -15,4 +15,5 @@ case class FinishCasting(stackObjectId: ObjectId) extends InternalGameAction {
       )
     }.getOrElse(())
   }
+  override def canBeReverted: Boolean = true
 }

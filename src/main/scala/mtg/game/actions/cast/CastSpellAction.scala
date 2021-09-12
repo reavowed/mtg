@@ -18,6 +18,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, back
       MoveObjectEvent(player, objectId, Zone.Stack),
       steps.CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))
   }
+  override def canBeReverted: Boolean = true
 }
 
 object CastSpellAction {

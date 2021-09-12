@@ -8,4 +8,5 @@ object EmptyManaPoolsEvent extends GameObjectEvent {
       gameObjectState.updateManaPool(player, _ => Nil)
     }
   }
+  override def canBeReverted: Boolean = true
 }

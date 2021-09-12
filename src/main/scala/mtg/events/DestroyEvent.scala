@@ -9,4 +9,5 @@ case class DestroyEvent(player: PlayerId, objectId: ObjectId) extends GameObject
       MoveObjectEvent(player, objectId, Zone.Graveyard(gameObject.owner))
     })
   }
+  override def canBeReverted: Boolean = true
 }

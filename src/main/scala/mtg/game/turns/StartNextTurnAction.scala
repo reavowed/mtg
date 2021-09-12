@@ -13,4 +13,5 @@ case class StartNextTurnAction(playerWithNextTurn: PlayerId) extends InternalGam
       BeginTurnEvent(Turn(turnNumber, playerWithNextTurn)),
       StartNextTurnAction(nextPlayer))
   }
+  override def canBeReverted: Boolean = false
 }

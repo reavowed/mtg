@@ -8,4 +8,5 @@ case object DrawForTurn extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     InternalGameActionResult(Seq(DrawCardEvent(currentGameState.activePlayer)), Some(LogEvent.DrawForTurn(currentGameState.activePlayer)))
   }
+  override def canBeReverted: Boolean = false
 }

@@ -15,4 +15,5 @@ case class ExecuteMulligansAction(mulligansSoFar: Int) extends InternalGameActio
       ()
     }
   }
+  override def canBeReverted: Boolean = false
 }

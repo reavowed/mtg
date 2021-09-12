@@ -21,6 +21,8 @@ object DeclareBlockers extends InternalGameAction {
     else
       ()
   }
+  override def canBeReverted: Boolean = true
+
   private def getPossibleBlockers(defendingPlayer: PlayerId, attackers: Seq[ObjectId], gameState: GameState): Map[ObjectId, Seq[ObjectId]] = {
     val attackerStates = attackers.map(gameState.gameObjectState.derivedState.permanentStates)
     val allPossibleBlockers = gameState.gameObjectState.derivedState.permanentStates.values.view
@@ -110,6 +112,7 @@ case class OrderBlockers(blockDeclarations: Seq[BlockDeclaration]) extends Inter
         OrderBlockersChoice(currentGameState.activePlayer, attacker, blockDeclarations.map(_.blocker).toSet)
       }.toSeq
   }
+  override def canBeReverted: Boolean = true
 }
 
 case class BlockerOrdering(attacker: ObjectId, blockersInOrder: Seq[ObjectId])

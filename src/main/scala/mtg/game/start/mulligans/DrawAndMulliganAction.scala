@@ -15,4 +15,5 @@ case class DrawAndMulliganAction(playersToDrawAndMulligan: Seq[PlayerId], mullig
       drawActions ++ playersToDrawAndMulligan.map(ReturnCardsToLibraryChoice(_, currentGameState.gameData.startingHandSize))
     }
   }
+  override def canBeReverted: Boolean = false
 }

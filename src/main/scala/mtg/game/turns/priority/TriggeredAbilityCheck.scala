@@ -14,6 +14,7 @@ object TriggeredAbilityCheck extends InternalGameAction {
       ()
     }
   }
+  override def canBeReverted: Boolean = true
 }
 
 case class PutTriggeredAbilitiesOnStack(triggeredAbilities: Seq[PendingTriggeredAbility]) extends InternalGameAction {
@@ -27,6 +28,7 @@ case class PutTriggeredAbilitiesOnStack(triggeredAbilities: Seq[PendingTriggered
         }
       }.toSeq
   }
+  override def canBeReverted: Boolean = true
 }
 
 case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingTriggeredAbility]) extends TypedPlayerChoice[PendingTriggeredAbility] {
@@ -41,23 +43,20 @@ case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingT
 case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     Seq(
-      RemovePendingTriggeredAbility(pendingTriggeredAbility),
-      CreateAbilityOnStack(pendingTriggeredAbility.triggeredAbility.toAbilityOnTheStack),
+      CreateAbilityOnStack(pendingTriggeredAbility),
       TriggeredAbilitySteps(BackupAction(currentGameState))
     )
   }
+  override def canBeReverted: Boolean = true
 }
 
-case class RemovePendingTriggeredAbility(pendingTriggeredAbility: PendingTriggeredAbility) extends GameObjectEvent {
+case class CreateAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {
-    currentGameState.gameObjectState.removeTriggeredAbility(pendingTriggeredAbility)
+    currentGameState.gameObjectState
+      .removeTriggeredAbility(pendingTriggeredAbility)
+      .addNewObject(StackObject(pendingTriggeredAbility.triggeredAbility.toAbilityOnTheStack, _, pendingTriggeredAbility.triggeredAbility.ownerId), _.length)
   }
-
-}
-case class CreateAbilityOnStack(abilityOnTheStack: AbilityOnTheStack) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
-    currentGameState.gameObjectState.addNewObject(StackObject(abilityOnTheStack, _, abilityOnTheStack.owner), _.length)
-  }
+  override def canBeReverted: Boolean = true
 }
 
 case class TriggeredAbilitySteps(backupAction: BackupAction) extends InternalGameAction  {
@@ -67,4 +66,5 @@ case class TriggeredAbilitySteps(backupAction: BackupAction) extends InternalGam
       ChooseTargets(stackObjectId, backupAction),
       FinishTriggering(stackObjectId))
   }
+  override def canBeReverted: Boolean = true
 }

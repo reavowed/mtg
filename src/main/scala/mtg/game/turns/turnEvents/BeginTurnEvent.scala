@@ -8,4 +8,5 @@ case class BeginTurnEvent(turn: Turn) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     (TurnPhase.All.map(BeginPhaseEvent), LogEvent.NewTurn(turn))
   }
+  override def canBeReverted: Boolean = false
 }

@@ -9,4 +9,5 @@ case class UntapObjectEvent(objectId: ObjectId) extends GameObjectEvent {
       objectId,
       _.updatePermanentStatus(_.untap()))
   }
+  override def canBeReverted: Boolean = true
 }

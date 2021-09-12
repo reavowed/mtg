@@ -12,4 +12,5 @@ object ResolveTopStackObject extends InternalGameAction {
         ()
     }
   }
+  override def canBeReverted: Boolean = false
 }

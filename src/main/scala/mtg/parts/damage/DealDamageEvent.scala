@@ -21,4 +21,5 @@ case class DealDamageEvent(source: ObjectId, recipient: ObjectOrPlayer, amount: 
         LoseLifeEvent(playerIdentifier, amount)
     }
   }
+  override def canBeReverted: Boolean = true
 }

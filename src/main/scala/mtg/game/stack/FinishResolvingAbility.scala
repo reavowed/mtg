@@ -20,4 +20,5 @@ case class FinishResolvingAbility(ability: StackObjectWithState) extends Interna
         abilityDefinition.effectParagraph.getText(sourceName))
     )
   }
+  override def canBeReverted: Boolean = false
 }

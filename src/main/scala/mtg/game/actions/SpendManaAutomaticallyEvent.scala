@@ -8,4 +8,5 @@ case class SpendManaAutomaticallyEvent(player: PlayerId, remainingMana: Seq[Mana
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.updateManaPool(player, _ => remainingMana)
   }
+  override def canBeReverted: Boolean = true
 }

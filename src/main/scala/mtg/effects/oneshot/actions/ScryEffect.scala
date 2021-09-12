@@ -55,4 +55,6 @@ case class ScryEvent(
       onTop ++ library.filter(c => !(cardsOnTop ++ cardsOnBottom).contains(c.objectId)) ++ onBottom
     })
   }
+  // TODO: Theoretically possible to revert if scrying player already knew the identity of the scryed cards
+  override def canBeReverted: Boolean = false
 }

@@ -17,6 +17,7 @@ case class ChooseTargets(objectId: ObjectId, backupAction: BackupAction) extends
         targetIdentifier.getValidChoices(stackObjectWithState, currentGameState, EffectContext(stackObjectWithState, currentGameState))))
     }
   }
+  override def canBeReverted: Boolean = true
 }
 
 case class ChosenTarget(objectOrPlayer: ObjectOrPlayer)

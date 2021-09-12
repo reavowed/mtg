@@ -12,6 +12,8 @@ case class MoveObjectEvent(player: PlayerId, objectId: ObjectId, destination: Zo
         .addNewObject(destination.newObjectForZone(gameObjectWithState, player, _), _.length)
     })
   }
+  // TODO: figure out how to make this revertible if the previous card was not hidden
+  override def canBeReverted: Boolean = false
 }
 
 object MoveObjectEvent {

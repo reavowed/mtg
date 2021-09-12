@@ -9,4 +9,5 @@ case class PutCountersEvent(number: Int, kind: CounterType, objectId: ObjectId) 
     currentGameState.gameObjectState.allObjects.find(_.objectId == objectId)
       .map(_.updateCounters(currentGameState.gameObjectState, counters => counters.updatedWith(kind)(_.map(_ + number).orElse(Some(number)))))
   }
+  override def canBeReverted: Boolean = true
 }

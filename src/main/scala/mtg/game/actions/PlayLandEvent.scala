@@ -9,4 +9,5 @@ case class PlayLandEvent(player: PlayerId, landCard: GameObject) extends GameObj
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     MoveObjectEvent(player, landCard, Zone.Battlefield)
   }
+  override def canBeReverted: Boolean = true
 }

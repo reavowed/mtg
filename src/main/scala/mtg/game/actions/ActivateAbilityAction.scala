@@ -14,6 +14,7 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     ability.costs.flatMap(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
   }
+  override def canBeReverted: Boolean = true
 }
 
 object ActivateAbilityAction {

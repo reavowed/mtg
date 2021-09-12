@@ -17,4 +17,5 @@ case class FinishTriggering(abilityId: ObjectId) extends InternalGameAction {
         ability.gameObject.targets.map(_.getName(currentGameState)))
     }.getOrElse(())
   }
+  override def canBeReverted: Boolean = true
 }

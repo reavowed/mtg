@@ -61,4 +61,6 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
       resolveInstantOrSorcerySpell(stackObjectWithState, currentGameState)
     }
   }
+
+  override def canBeReverted: Boolean = false
 }

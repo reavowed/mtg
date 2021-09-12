@@ -20,6 +20,8 @@ object DeclareAttackers extends InternalGameAction {
     else
       ()
   }
+  override def canBeReverted: Boolean = true
+
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
     gameState.gameHistory.gameEventsThisTurn.ofType[ResolvedAction]
       .forall(_.stateBefore.permanentStates.get(objectId).exists(_.controller == gameState.activePlayer))
@@ -82,4 +84,5 @@ case class TapAttacker(attacker: ObjectId) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     TapObjectEvent(attacker)
   }
+  override def canBeReverted: Boolean = true
 }

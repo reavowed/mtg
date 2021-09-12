@@ -11,4 +11,5 @@ case class CastSpellAndActivateAbilitySteps(getFinalAction: ObjectId => GameActi
       PayCosts(stackObjectId, backupAction),
       getFinalAction(stackObjectId))
   }
+  override def canBeReverted: Boolean = true
 }

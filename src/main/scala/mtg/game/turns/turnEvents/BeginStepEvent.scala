@@ -7,4 +7,5 @@ case class BeginStepEvent(step: TurnStep) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     step.actions :+ EndStepEvent(step)
   }
+  override def canBeReverted: Boolean = false
 }

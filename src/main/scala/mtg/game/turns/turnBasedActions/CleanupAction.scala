@@ -7,6 +7,7 @@ object CleanupAction extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd(currentGameState.currentTurn.get))
   }
+  override def canBeReverted: Boolean = true
 }
 
 object DamageWearsOffEvent extends GameObjectEvent {
@@ -15,8 +16,10 @@ object DamageWearsOffEvent extends GameObjectEvent {
       state.updatePermanentObject(obj.objectId, _.updateMarkedDamage(_ => 0))
     }
   }
+  override def canBeReverted: Boolean = true
 }
 
-case class UntilEndOfTurnEffectsEnd(turn: Turn) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = ()
+case class UntilEndOfTurnEffectsEnd(turn: Turn) extends InternalGameAction {
+  override def execute(currentGameState: GameState): InternalGameActionResult = ()
+  override def canBeReverted: Boolean = true
 }

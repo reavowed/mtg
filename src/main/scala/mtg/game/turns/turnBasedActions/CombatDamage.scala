@@ -17,6 +17,7 @@ object CombatDamage extends InternalGameAction {
     else
       ()
   }
+  override def canBeReverted: Boolean = true
 }
 
 case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration], blockDeclarations: Seq[BlockDeclaration], damageEvents: Seq[DealCombatDamageEvent]) extends InternalGameAction {
@@ -68,6 +69,7 @@ case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration]
         damageEvents ++ blockerDamageEvents
     }
   }
+  override def canBeReverted: Boolean = true
 }
 
 case class CombatDamageAssignment(blockerDamage: Map[ObjectId, Int])
@@ -118,4 +120,5 @@ case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayer, am
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     Seq(DealDamageEvent(source, recipient, amount))
   }
+  override def canBeReverted: Boolean = true
 }

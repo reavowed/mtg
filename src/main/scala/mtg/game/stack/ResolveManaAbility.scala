@@ -12,4 +12,5 @@ case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithSta
     val resolutionContext = StackObjectResolutionContext.forManaAbility(ManaAbility(objectWithAbility.gameObject.objectId, player), gameState)
     ResolveEffects(ability.effectParagraph.effects, resolutionContext)
   }
+  override def canBeReverted: Boolean = true
 }

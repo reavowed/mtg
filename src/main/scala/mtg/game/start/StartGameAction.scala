@@ -15,4 +15,5 @@ case object StartGameAction extends InternalGameAction {
         StartNextTurnAction(startingPlayer)),
       Some(LogEvent.Start(startingPlayer)))
   }
+  override def canBeReverted: Boolean = false
 }

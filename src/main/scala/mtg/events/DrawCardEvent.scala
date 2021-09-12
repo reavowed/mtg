@@ -13,4 +13,5 @@ case class DrawCardEvent(player: PlayerId) extends GameObjectEvent {
         ()
     }
   }
+  override def canBeReverted: Boolean = false
 }

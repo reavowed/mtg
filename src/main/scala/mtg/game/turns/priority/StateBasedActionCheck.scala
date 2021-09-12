@@ -14,4 +14,5 @@ object StateBasedActionCheck extends InternalGameAction {
       Nil
     }
   }
+  override def canBeReverted: Boolean = true
 }

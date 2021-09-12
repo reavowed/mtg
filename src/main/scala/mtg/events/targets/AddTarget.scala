@@ -7,4 +7,5 @@ case class AddTarget(stackObjectId: ObjectId, target: ObjectOrPlayer) extends Ga
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.updateStackObject(stackObjectId, _.addTarget(target))
   }
+  override def canBeReverted: Boolean = true
 }

@@ -59,4 +59,5 @@ case class PayCosts(stackObjectId: ObjectId, backupAction: BackupAction) extends
       }
     }
   }
+  override def canBeReverted: Boolean = true
 }

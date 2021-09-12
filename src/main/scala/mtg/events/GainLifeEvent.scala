@@ -7,4 +7,5 @@ case class GainLifeEvent(player: PlayerId, amount: Int) extends GameObjectEvent 
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.updateLifeTotal(player, _ + amount)
   }
+  override def canBeReverted: Boolean = true
 }

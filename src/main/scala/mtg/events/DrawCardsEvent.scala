@@ -7,4 +7,5 @@ case class DrawCardsEvent(playerIdentifier: PlayerId, numberOfCards: Int) extend
   def execute(currentGameState: GameState): GameObjectEventResult = {
     Seq.fill(numberOfCards)(DrawCardEvent(playerIdentifier))
   }
+  override def canBeReverted: Boolean = false
 }

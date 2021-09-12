@@ -18,6 +18,7 @@ case class PriorityForPlayersAction(players: Seq[PlayerId]) extends InternalGame
         ()
     }
   }
+  override def canBeReverted: Boolean = true
 }
 
 object PriorityForPlayersAction {

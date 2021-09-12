@@ -9,4 +9,5 @@ case class AddManaEvent(player: PlayerId, manaTypes: Seq[ManaType]) extends Game
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.updateManaPool(player, _ ++ manaTypes.map(ManaObject))
   }
+  override def canBeReverted: Boolean = true
 }

@@ -15,4 +15,5 @@ case class ShuffleLibrary(playerIdentifier: PlayerId) extends GameObjectEvent {
       library.updateState(currentGameState.gameObjectState, _ => Nil))(
       (gameState, oldObject) => gameState.addNewObject(BasicGameObject(oldObject.underlyingObject, _, library), _ => 0))
   }
+  override def canBeReverted: Boolean = true
 }

@@ -18,7 +18,7 @@ case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends Prior
       LogEvent.PlayedLand(player, land.characteristics.name.get)
     )
   }
-
+  override def canBeReverted: Boolean = true
 }
 
 object PlayLandAction {

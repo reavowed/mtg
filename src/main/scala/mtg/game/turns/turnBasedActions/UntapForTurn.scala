@@ -12,4 +12,5 @@ case object UntapForTurn extends InternalGameAction {
       .toSeq
     tappedPermanents.map(UntapObjectEvent)
   }
+  override def canBeReverted: Boolean = true
 }

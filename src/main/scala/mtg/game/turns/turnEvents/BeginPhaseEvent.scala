@@ -7,4 +7,5 @@ case class BeginPhaseEvent(phase: TurnPhase) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     phase.actions :+ EndPhaseEvent(phase)
   }
+  override def canBeReverted: Boolean = false
 }

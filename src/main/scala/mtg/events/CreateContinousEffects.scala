@@ -8,4 +8,5 @@ case class CreateContinousEffects(effects: Seq[ContinuousEffect], endCondition: 
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.addEffects(effects, endCondition)
   }
+  override def canBeReverted: Boolean = true
 }

@@ -9,4 +9,5 @@ case class EndStepEvent(step: TurnStep) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     EmptyManaPoolsEvent
   }
+  override def canBeReverted: Boolean = true
 }

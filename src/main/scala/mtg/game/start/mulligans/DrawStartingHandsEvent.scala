@@ -8,4 +8,5 @@ case class DrawStartingHandsEvent(playersToDraw: Seq[PlayerId]) extends GameObje
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     playersToDraw.map(DrawCardsEvent(_, currentGameState.gameData.startingHandSize))
   }
+  override def canBeReverted: Boolean = false
 }

@@ -9,4 +9,5 @@ case class FinishResolvingInstantOrSorcerySpell(spell: StackObjectWithState) ext
   override def execute(currentGameState: GameState): InternalGameActionResult = {
     (MoveObjectEvent(spell.controller, spell.gameObject, Zone.Graveyard(spell.gameObject.owner)), LogEvent.ResolveSpell(spell.controller, spell.characteristics.name.get))
   }
+  override def canBeReverted: Boolean = false
 }

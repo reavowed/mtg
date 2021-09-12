@@ -20,4 +20,5 @@ case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: StackO
         ()
     }
   }
+  override def canBeReverted: Boolean = false
 }

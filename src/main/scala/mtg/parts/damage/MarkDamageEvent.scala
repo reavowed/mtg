@@ -7,4 +7,5 @@ case class MarkDamageEvent(sourceId: ObjectId, creatureId: ObjectId, amount: Int
   override def execute(currentGameState: GameState): GameObjectEventResult = {
     currentGameState.gameObjectState.updatePermanentObject(creatureId, _.updateMarkedDamage(_ + amount))
   }
+  override def canBeReverted: Boolean = true
 }

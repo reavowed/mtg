@@ -9,4 +9,5 @@ case class TapObjectEvent(objectId: ObjectId) extends GameObjectEvent {
       objectId,
       _.updatePermanentStatus(_.tap()))
   }
+  override def canBeReverted: Boolean = true
 }
