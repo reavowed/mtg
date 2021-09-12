@@ -6,6 +6,6 @@ import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameAc
 
 case class PriorityFromPlayerAction(player: PlayerId) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
-    PriorityForPlayersAction(currentGameState.gameData.getPlayersInApNapOrder(player)).execute(currentGameState)
+    PriorityForPlayersAction(currentGameState.gameData.getPlayersInApNapOrder(player))
   }
 }

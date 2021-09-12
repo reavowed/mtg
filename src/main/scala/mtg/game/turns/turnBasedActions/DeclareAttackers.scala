@@ -3,11 +3,11 @@ package mtg.game.turns.turnBasedActions
 import mtg._
 import mtg.characteristics.types.Type
 import mtg.events.TapObjectEvent
-import mtg.game.{ObjectId, PlayerId}
-import mtg.game.state.history.GameEvent.{Decision, ResolvedEvent}
-import mtg.game.state.history.LogEvent
 import mtg.game.state._
+import mtg.game.state.history.GameEvent.ResolvedAction
+import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
+import mtg.game.{ObjectId, PlayerId}
 
 object DeclareAttackers extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
@@ -21,10 +21,8 @@ object DeclareAttackers extends InternalGameAction {
       ()
   }
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
-    gameState.gameHistory.forCurrentTurn.exists(
-      _.gameEvents.ofType[ResolvedEvent].forall(
-        _.stateAfterwards.permanentStates.get(objectId)
-          .exists(_.controller == gameState.activePlayer)))
+    gameState.gameHistory.gameEventsThisTurn.ofType[ResolvedAction]
+      .forall(_.stateBefore.permanentStates.get(objectId).exists(_.controller == gameState.activePlayer))
   }
   private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
     gameState.gameObjectState.derivedState.permanentStates.values.view
@@ -40,18 +38,14 @@ object DeclareAttackers extends InternalGameAction {
     gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
   }
   def getAttackDeclarations(gameState: GameState): Seq[AttackDeclaration] = {
-    gameState.gameHistory.forCurrentTurn
-      .flatMap(
-        _.gameEvents.view.ofType[Decision]
-          .map(_.chosenOption)
-          .mapFind(_.asOptionalInstanceOf[DeclaredAttackers]))
+    gameState.gameHistory.gameEventsThisTurn.getDecision[DeclaredAttackers]
       .toSeq
       .flatMap(_.attackDeclarations)
   }
 
   def isAttacking(objectId: ObjectId, gameState: GameState): Boolean = {
     def wasDeclaredAttacker = getAttackDeclarations(gameState).exists(_.attacker == objectId)
-    wasDeclaredAttacker && !TurnPhase.CombatPhase.hasFinished(gameState)
+    wasDeclaredAttacker && gameState.currentPhase.contains(TurnPhase.CombatPhase)
   }
 }
 

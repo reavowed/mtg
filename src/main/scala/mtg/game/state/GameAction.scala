@@ -6,14 +6,12 @@ import mtg.game.state.history.{GameHistory, LogEvent}
 
 sealed trait GameAction
 
-sealed trait AutomaticGameAction extends GameAction
+sealed trait AutomaticGameAction extends GameAction {
+  def execute(currentGameState: GameState): GameActionResult
+}
 
 trait GameObjectEvent extends AutomaticGameAction {
   def execute(currentGameState: GameState): GameObjectEventResult
-}
-
-trait TurnCycleEvent extends AutomaticGameAction {
-  def execute(currentGameState: GameState): (GameHistory => GameHistory, InternalGameActionResult)
 }
 
 trait InternalGameAction extends AutomaticGameAction {

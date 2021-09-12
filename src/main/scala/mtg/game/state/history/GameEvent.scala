@@ -2,25 +2,25 @@ package mtg.game.state.history
 
 import mtg._
 import mtg.game.PlayerId
-import mtg.game.state.{DerivedState, GameObjectEvent}
+import mtg.game.state.{AutomaticGameAction, DerivedState, GameObjectEvent, InternalGameAction}
 
 import scala.reflect.{ClassTag, classTag}
 
 sealed trait GameEvent
 object GameEvent {
   case class Decision(chosenOption: AnyRef, playerIdentifier: PlayerId) extends GameEvent
-  case class ResolvedEvent(event: GameObjectEvent, stateAfterwards: DerivedState) extends GameEvent
+  case class ResolvedAction(action: AutomaticGameAction, stateBefore: DerivedState) extends GameEvent
 
-  implicit class GameEventSeqOps(seq: Seq[GameEvent]) {
-    def sinceEvent[T <: GameObjectEvent : ClassTag]: Seq[GameEvent] = seq.takeRightUntil {
-      case ResolvedEvent(e, _) if classTag[T].runtimeClass.isInstance(e) => true
-      case _ => false
+  implicit class GameEventSeqOps(seq: Iterable[GameEvent]) {
+    def since[T <: AutomaticGameAction : ClassTag]: Iterable[GameEvent] = seq.takeWhile {
+      case ResolvedAction(e, _) if classTag[T].runtimeClass.isInstance(e) => false
+      case _ => true
     }
-    def getDecisions[T : ClassTag]: Seq[T] = {
+    def actions: Iterable[AutomaticGameAction] = seq.ofType[ResolvedAction].map(_.action)
+    def getDecisions[T : ClassTag]: Iterable[T] = {
       seq.view.ofType[Decision]
         .map(_.chosenOption)
         .mapCollect(_.asOptionalInstanceOf[T])
-        .toSeq
     }
     def getDecision[T : ClassTag]: Option[T] = {
       seq.view.ofType[Decision]

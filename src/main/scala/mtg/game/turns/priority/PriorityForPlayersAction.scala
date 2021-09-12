@@ -19,3 +19,12 @@ case class PriorityForPlayersAction(players: Seq[PlayerId]) extends InternalGame
     }
   }
 }
+
+object PriorityForPlayersAction {
+  def fromActivePlayer(gameState: GameState): PriorityForPlayersAction = {
+    PriorityForPlayersAction(gameState.gameData.playersInTurnOrder)
+  }
+  def fromPlayer(player: PlayerId, gameState: GameState): PriorityForPlayersAction = {
+    PriorityForPlayersAction(gameState.gameData.getPlayersInApNapOrder(player))
+  }
+}

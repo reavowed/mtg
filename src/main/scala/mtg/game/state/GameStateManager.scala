@@ -1,9 +1,10 @@
 package mtg.game.state
 
+import mtg.abilities.TriggeredAbility
 import mtg.effects.condition.EventCondition
-import mtg.effects.continuous.EventPreventionEffect
-import mtg.game.state.GameStateManager.initial
-import mtg.game.turns.TurnCycleEventPreventer
+import mtg.effects.continuous.PreventionEffect
+import mtg.effects.continuous.PreventionEffect.Result.Prevent
+import mtg.game.objects.{FloatingActiveContinuousEffect, GameObjectState}
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice
 import mtg.game.{GameStartingData, PlayerId}
@@ -24,7 +25,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   private def executeAutomaticActions(gameState: GameState): Unit = {
     gameState.popAction() match {
       case (gameEvent: AutomaticGameAction, gameState) =>
-        executeAutomaticActions(executeGameEvent(gameEvent, gameState))
+        executeAutomaticActions(executeAutomaticAction(gameEvent, gameState))
       case (BackupAction(gameStateToRevertTo), _) =>
         executeAutomaticActions(gameStateToRevertTo)
       case (priorityChoice: PriorityChoice, gameState)
@@ -41,67 +42,53 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
     }
   }
 
-  private def executeGameEvent(gameEvent: AutomaticGameAction, initialGameState: GameState): GameState = {
-    def actuallyExecuteEvent = gameEvent match {
-      case gameObjectEvent: GameObjectEvent =>
-        executeGameObjectEvent(gameObjectEvent, _)
-      case turnCycleEvent: TurnCycleEvent =>
-        executeTurnCycleEvent(turnCycleEvent, _)
-      case internalGameAction: InternalGameAction =>
-        executeInternalGameAction(internalGameAction, _)
-    }
-    def createTriggeredAbilities = (gameState: GameState) => {
-      val triggeredAbilities = gameState.gameObjectState.activeTriggeredAbilities.filter { _.getCondition(gameState) match {
-        case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(gameEvent, gameState)
-      }}.toSeq
-      gameState.updateGameObjectState(_.addWaitingTriggeredAbilities(triggeredAbilities))
-    }
-    def removeEndedEffects = (gameState: GameState) => gameState.updateGameObjectState(_.updateEffects(_.filter(activeEffect => {
-      val objectExists = gameState.gameObjectState.allObjects.exists(_.objectId == activeEffect.effect.affectedObject)
-      val matchesCondition = activeEffect.endCondition match {
-        case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(gameEvent, gameState)
-      }
-      objectExists && !matchesCondition
-    })))
-    Seq(actuallyExecuteEvent, createTriggeredAbilities, removeEndedEffects).foldLeft(initialGameState)((gs, f) => f(gs))
-  }
+  private def executeAutomaticAction(action: AutomaticGameAction, initialGameState: GameState): GameState = {
+    val preventResult = initialGameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
+      .findOption(_.checkAction(action, initialGameState).asOptionalInstanceOf[Prevent])
 
-  private def executeGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): GameState = {
-    if (shouldPreventGameObjectEvent(gameObjectEvent, gameState)) {
-      gameState
-    } else {
-      handleGameActionResult(gameObjectEvent.execute(gameState), gameState).recordGameEvent(gameObjectEvent)
-    }
-  }
-
-  private def shouldPreventGameObjectEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): Boolean = {
-    gameState.gameObjectState.activeContinuousEffects
-      .ofType[EventPreventionEffect]
-      .exists(_.preventsEvent(gameObjectEvent, gameState))
-  }
-
-  private def executeTurnCycleEvent(turnCycleEvent: TurnCycleEvent, gameState: GameState): GameState = {
-    val preventResult = TurnCycleEventPreventer.fromRules.collectFirst(Function.unlift(_.checkEvent(turnCycleEvent, gameState).asOptionalInstanceOf[TurnCycleEventPreventer.Result.Prevent]))
     preventResult match {
-      case Some(TurnCycleEventPreventer.Result.Prevent(logEvent)) =>
-        logEvent.map(gameState.recordLogEvent).getOrElse(gameState)
-      case _ =>
-        val (historyUpdater, actionResult) = turnCycleEvent.execute(gameState)
-        handleGameActionResult(actionResult, gameState.updateHistory(historyUpdater))
+      case Some(Prevent(logEvent)) =>
+        logEvent.map(initialGameState.recordLogEvent).getOrElse(initialGameState)
+      case None =>
+        val actionResult = action.execute(initialGameState)
+        val gameObjectStateAfterAction = actionResult.newGameObjectState.getOrElse(initialGameState.gameObjectState)
+        val gameStateAfterAction = initialGameState.updateGameObjectState(gameObjectStateAfterAction)
+        val triggeredAbilities = getTriggeringAbilities(action, gameStateAfterAction)
+        val endedEffects = getEndedEffects(action, gameStateAfterAction)
+
+        val finalGameObjectState = if (actionResult.newGameObjectState.isDefined || triggeredAbilities.nonEmpty || endedEffects.nonEmpty) {
+          gameObjectStateAfterAction
+            .addWaitingTriggeredAbilities(triggeredAbilities)
+            .updateEffects(_.filter(!endedEffects.contains(_)))
+        } else {
+          initialGameState.gameObjectState
+        }
+
+        initialGameState
+          .recordAction(action)
+          .updateGameObjectState(finalGameObjectState)
+          .addActions(actionResult.childActions)
+          .recordLogEvent(actionResult.logEvent)
     }
   }
 
-  private def handleGameActionResult(gameActionResult: GameActionResult, gameState: GameState): GameState = {
-    gameState
-      .updateGameObjectState(gameActionResult.newGameObjectState)
-      .addActions(gameActionResult.childActions)
-      .recordLogEvent(gameActionResult.logEvent)
+  private def getTriggeringAbilities(action: AutomaticGameAction, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
+    gameStateAfterAction.gameObjectState.activeTriggeredAbilities.filter {
+      _.getCondition(gameStateAfterAction) match {
+        case eventCondition: EventCondition =>
+          eventCondition.matchesEvent(action, gameStateAfterAction)
+      }
+    }.toSeq
   }
-
-  private def executeInternalGameAction(internalGameAction: InternalGameAction, gameState: GameState): GameState = {
-    gameState.handleActionResult(internalGameAction.execute(gameState))
+  private def getEndedEffects(action: AutomaticGameAction, gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
+    gameStateAfterAction.gameObjectState.floatingActiveContinuousEffects.filter(effect => {
+      def matchesCondition = effect.endCondition match {
+        case eventCondition: EventCondition =>
+          eventCondition.matchesEvent(action, gameStateAfterAction)
+      }
+      def objectExists = effect.effect.affectedObjects.exists(id => gameStateAfterAction.gameObjectState.allObjects.exists(_.objectId == id))
+      matchesCondition || !objectExists
+    })
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {

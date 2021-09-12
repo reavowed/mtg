@@ -1,6 +1,7 @@
 package mtg.game.state.history
 
 import mtg.game.PlayerId
+import mtg.game.turns.Turn
 
 sealed class LogEvent
 
@@ -9,7 +10,7 @@ object LogEvent {
   case class Mulligan(player: PlayerId, newHandSize: Int) extends LogEvent
   case class KeepHand(player: PlayerId, handSize: Int) extends LogEvent
   case class ReturnCardsToLibrary(player: PlayerId, numberOfCards: Int) extends LogEvent
-  case class NewTurn(player: PlayerId, turnNumber: Int) extends LogEvent
+  case class NewTurn(turn: Turn) extends LogEvent
   case class DrawForTurn(player: PlayerId) extends LogEvent
   case class SkipFirstDrawStep(player: PlayerId) extends LogEvent
   case class PlayedLand(player: PlayerId, landName: String) extends LogEvent

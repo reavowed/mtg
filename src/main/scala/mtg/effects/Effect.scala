@@ -1,19 +1,29 @@
 package mtg.effects
 
 import mtg._
+import mtg.effects.continuous.PreventionEffect
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.targets.TargetIdentifier
 import mtg.game.ObjectId
 import mtg.game.state.GameState
 
-sealed class Effect
+trait Effect
 
-abstract class OneShotEffect extends Effect with Product {
+trait OneShotEffect extends Effect with Product {
   def targetIdentifiers: Seq[TargetIdentifier[_]] = productIterator.toSeq.ofType[TargetIdentifier[_]]
   def getText(cardName: String): String
   def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult
 }
 
-abstract class ContinuousEffect extends Effect {
-  def affectedObject: ObjectId
+trait ContinuousEffect extends Effect {
+  def affectedObjects: Set[ObjectId]
+}
+
+object ContinuousEffect {
+  trait ForSingleObject extends ContinuousEffect {
+    def affectedObject: ObjectId
+    override def affectedObjects: Set[ObjectId] = Set(affectedObject)
+  }
+
+  def fromRules = PreventionEffect.fromRules
 }

@@ -29,7 +29,11 @@ case class GameObjectState(
     triggeredAbilitiesWaitingToBePutOnStack: Seq[PendingTriggeredAbility])
 {
   lazy val derivedState: DerivedState = DerivedState.calculateFromGameObjectState(this)
-  def activeContinuousEffects: View[ContinuousEffect] = floatingActiveContinuousEffects.view.map(_.effect) ++ DerivedState.getActiveContinuousEffectsFromStaticAbilities(derivedState.allObjectStates.values.view)
+  def activeContinuousEffects: View[ContinuousEffect] = {
+    ContinuousEffect.fromRules.view ++
+      floatingActiveContinuousEffects.view.map(_.effect) ++
+      DerivedState.getActiveContinuousEffectsFromStaticAbilities(derivedState.allObjectStates.values.view)
+  }
   def activeTriggeredAbilities: View[TriggeredAbility] = DerivedState.getActiveTriggeredAbilities(derivedState.allObjectStates.values.view)
 
   def updateManaPool(player: PlayerId, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {

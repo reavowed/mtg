@@ -7,10 +7,10 @@ import mtg.game.turns.turnEvents.BeginTurnEvent
 
 case class StartNextTurnAction(playerWithNextTurn: PlayerId) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {
-    val turn = new Turn(playerWithNextTurn)
+    val turnNumber = currentGameState.currentTurnNumber + 1
     val nextPlayer = currentGameState.gameData.getNextPlayerInTurnOrder(playerWithNextTurn)
     Seq(
-      BeginTurnEvent(turn),
+      BeginTurnEvent(Turn(turnNumber, playerWithNextTurn)),
       StartNextTurnAction(nextPlayer))
   }
 }

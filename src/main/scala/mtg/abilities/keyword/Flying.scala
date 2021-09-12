@@ -12,7 +12,7 @@ case object Flying extends StaticAbility with KeywordAbility {
   }
 }
 
-case class FlyingRestriction(affectedObject: ObjectId) extends BlockerRestriction {
+case class FlyingRestriction(affectedObject: ObjectId) extends BlockerRestriction with ContinuousEffect.ForSingleObject {
   override def preventsBlock(attackerState: ObjectWithState, blockerState: ObjectWithState): Boolean = {
     attackerState.gameObject.objectId == affectedObject && !(blockerState.characteristics.abilities.contains(Flying) || blockerState.characteristics.abilities.contains(Reach))
   }

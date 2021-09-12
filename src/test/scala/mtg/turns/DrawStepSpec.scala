@@ -2,6 +2,7 @@ package mtg.turns
 
 import mtg.SpecWithGameStateManager
 import mtg.game.state.history.{LogEvent, PhaseHistory, PhaseHistoryWithSteps, TimestampedLogEvent}
+import mtg.game.turns.turnEvents.BeginStepEvent
 import mtg.game.turns.{StartNextTurnAction, TurnPhase, TurnStep}
 import org.specs2.matcher.Matcher
 
@@ -25,7 +26,7 @@ class DrawStepSpec extends SpecWithGameStateManager {
       val finalState = manager.currentGameState
 
       playerOne.hand(finalState).size mustEqual 7
-      finalState.gameHistory.turns(0).phases(0) must not(haveHistoryForStep(TurnStep.DrawStep))
+      finalState.gameHistory.gameEventsThisTurn.actions must not(contain(BeginStepEvent(TurnStep.DrawStep)))
       finalState.gameHistory.logEvents must not(contain(logEvent(LogEvent.DrawForTurn(playerOne))))
       finalState.gameHistory.logEvents must contain(logEvent(LogEvent.SkipFirstDrawStep(playerOne)))
     }
@@ -39,7 +40,7 @@ class DrawStepSpec extends SpecWithGameStateManager {
       val finalState = manager.currentGameState
 
       playerTwo.hand(finalState).size mustEqual 8
-      finalState.gameHistory.turns(1).phases(0) must haveHistoryForStep(TurnStep.DrawStep)
+      finalState.gameHistory.gameEventsThisTurn.actions must contain(BeginStepEvent(TurnStep.DrawStep))
       finalState.gameHistory.logEvents must contain(logEvent(LogEvent.DrawForTurn(playerTwo)))
       finalState.gameHistory.logEvents must not(contain(logEvent(LogEvent.SkipFirstDrawStep(playerTwo))))
     }

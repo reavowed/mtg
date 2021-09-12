@@ -9,10 +9,11 @@ import mtg.game.state.history.GameEvent.Decision
 case class MulliganState(hasKept: Boolean, mulligansTaken: Int)
 object MulliganState {
   def forPlayer(playerIdentifier: PlayerId, gameState: GameState): MulliganState = {
-    val decisions = gameState.gameHistory.preGameEvents.ofType[Decision]
+    val decisions = gameState.gameHistory.gameEventsThisTurn.ofType[Decision]
       .filter(_.playerIdentifier == playerIdentifier)
       .map(_.chosenOption)
       .ofType[MulliganOption]
+      .toSeq.reverse
     val mulligansTaken = decisions.count(_ == MulliganOption.Mulligan)
     val hasKept = decisions.contains(MulliganOption.Keep) || mulligansTaken == gameState.gameData.startingHandSize;
     MulliganState(hasKept, mulligansTaken)

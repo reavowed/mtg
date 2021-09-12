@@ -2,18 +2,18 @@ package mtg.abilities.keyword
 
 import mtg.abilities.{KeywordAbility, StaticAbility}
 import mtg.effects.ContinuousEffect
-import mtg.effects.continuous.EventPreventionEffect
+import mtg.effects.continuous.PreventionEffect
 import mtg.game.ObjectId
-import mtg.game.state.{GameObjectEvent, GameState, ObjectWithState}
+import mtg.game.state.{AutomaticGameAction, GameObjectEvent, GameState, ObjectWithState}
 import mtg.game.turns.turnBasedActions.TapAttacker
 
 case object Vigilance extends StaticAbility with KeywordAbility {
   override def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect] = Seq(VigilanceEffect(objectWithAbility.gameObject.objectId))
 }
 
-case class VigilanceEffect(affectedObject: ObjectId) extends EventPreventionEffect {
-  override def preventsEvent(gameObjectEvent: GameObjectEvent, gameState: GameState): Boolean = {
-    gameObjectEvent match {
+case class VigilanceEffect(affectedObject: ObjectId) extends PreventionEffect.SimpleCheck with ContinuousEffect.ForSingleObject {
+  override def shouldPreventAction(action: AutomaticGameAction, gameState: GameState): Boolean = {
+    action match {
       case TapAttacker(`affectedObject`) => true
       case _ => false
     }

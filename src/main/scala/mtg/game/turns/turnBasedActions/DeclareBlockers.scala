@@ -34,20 +34,17 @@ object DeclareBlockers extends InternalGameAction {
     }).filter(_._2.nonEmpty).toMap
   }
   def getBlockDeclarations(gameState: GameState): Seq[BlockDeclaration] = {
-    gameState.gameHistory.forCurrentTurn.view
-      .flatMap(_.gameEvents.getDecision[DeclaredBlockers])
-      .flatMap(_.blockDeclarations)
+    gameState.gameHistory.gameEventsThisTurn.getDecision[DeclaredBlockers]
       .toSeq
+      .flatMap(_.blockDeclarations)
   }
   def isBlocking(objectId: ObjectId, gameState: GameState): Boolean = {
     def wasDeclaredBlocker = getBlockDeclarations(gameState).exists(_.blocker == objectId)
-    wasDeclaredBlocker && !TurnPhase.CombatPhase.hasFinished(gameState)
+    wasDeclaredBlocker && gameState.currentPhase.contains(TurnPhase.CombatPhase)
   }
 
   def getBlockerOrderings(gameState: GameState): Seq[BlockerOrdering] = {
-    gameState.gameHistory.forCurrentTurn.view
-      .flatMap(_.gameEvents.getDecisions[BlockerOrdering])
-      .toSeq
+    gameState.gameHistory.gameEventsThisTurn.getDecisions[BlockerOrdering].toSeq
   }
   def getDeclaredBlockersForAttacker(attacker: ObjectId, gameState: GameState): Set[ObjectId] = {
     getBlockDeclarations(gameState).view
