@@ -1,8 +1,8 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.identifiers.Identifier
 import mtg.effects.oneshot.OneShotEffectResult
+import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.MoveObjectEvent
 import mtg.game.state.GameState
 import mtg.game.{ObjectId, Zone}

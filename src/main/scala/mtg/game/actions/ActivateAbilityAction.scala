@@ -2,9 +2,8 @@ package mtg.game.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.game.stack.ResolveManaAbility
+import mtg.game.state.{GameState, InternalGameActionResult, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId}
-import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, InternalGameActionResult, GameState, ObjectWithState}
 
 case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
   override def objectId: ObjectId = objectWithAbility.gameObject.objectId

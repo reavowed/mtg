@@ -1,6 +1,6 @@
 package mtg.game.state.history
 
-import mtg.game.turns.{Turn, TurnPhase, TurnPhaseWithSteps, MainPhase, TurnStep}
+import mtg.game.turns._
 
 sealed abstract class PhaseHistory {
   def turn: Turn

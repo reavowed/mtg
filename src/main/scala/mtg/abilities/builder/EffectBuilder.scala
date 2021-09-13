@@ -1,7 +1,6 @@
 package mtg.abilities.builder
 
 import mtg._
-import mtg.abilities.AbilityDefinition
 import mtg.cards.text.SpellEffectSentence
 import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition

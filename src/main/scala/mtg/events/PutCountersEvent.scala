@@ -1,8 +1,8 @@
 package mtg.events
 
-import mtg.parts.counters.CounterType
 import mtg.game.ObjectId
 import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.parts.counters.CounterType
 
 case class PutCountersEvent(number: Int, kind: CounterType, objectId: ObjectId) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {

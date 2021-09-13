@@ -4,7 +4,7 @@ import mtg.abilities.TriggeredAbility
 import mtg.effects.condition.EventCondition
 import mtg.effects.continuous.PreventionEffect
 import mtg.effects.continuous.PreventionEffect.Result.Prevent
-import mtg.game.objects.{FloatingActiveContinuousEffect, GameObjectState}
+import mtg.game.objects.FloatingActiveContinuousEffect
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice
 import mtg.game.{GameStartingData, PlayerId}
@@ -80,6 +80,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       }
     }.toSeq
   }
+
   private def getEndedEffects(action: AutomaticGameAction, gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
     gameStateAfterAction.gameObjectState.floatingActiveContinuousEffects.filter(effect => {
       def matchesCondition = effect.endCondition match {

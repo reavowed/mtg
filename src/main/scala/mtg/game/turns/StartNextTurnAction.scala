@@ -1,8 +1,7 @@
 package mtg.game.turns
 
 import mtg.game.PlayerId
-import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 import mtg.game.turns.turnEvents.BeginTurnEvent
 
 case class StartNextTurnAction(playerWithNextTurn: PlayerId) extends InternalGameAction {

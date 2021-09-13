@@ -1,8 +1,7 @@
 package mtg.game.state
 
-import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.state.history.GameEvent.Decision
-import mtg.game.state.history.{GameHistory, LogEvent}
+import mtg.game.{ObjectId, PlayerId, Zone}
 
 sealed trait GameAction
 

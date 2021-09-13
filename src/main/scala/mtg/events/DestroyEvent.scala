@@ -1,7 +1,7 @@
 package mtg.events
 
-import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.{ObjectId, PlayerId, Zone}
 
 case class DestroyEvent(player: PlayerId, objectId: ObjectId) extends GameObjectEvent {
   override def execute(currentGameState: GameState): GameObjectEventResult = {

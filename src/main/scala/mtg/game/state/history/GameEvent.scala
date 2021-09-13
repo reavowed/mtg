@@ -2,7 +2,7 @@ package mtg.game.state.history
 
 import mtg._
 import mtg.game.PlayerId
-import mtg.game.state.{AutomaticGameAction, DerivedState, GameObjectEvent, InternalGameAction}
+import mtg.game.state.{AutomaticGameAction, DerivedState}
 
 import scala.reflect.{ClassTag, classTag}
 

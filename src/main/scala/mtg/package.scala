@@ -1,11 +1,10 @@
 import cats.Monad
-
-import scala.reflect.{ClassTag, classTag}
 import cats.syntax.flatMap._
 import cats.syntax.functor._
 
 import scala.annotation.tailrec
-import scala.collection.{IterableOps, SeqView, View}
+import scala.collection.{IterableOps, View}
+import scala.reflect.{ClassTag, classTag}
 
 package object mtg {
   implicit class AnyExtensionMethods[T](t: T) {

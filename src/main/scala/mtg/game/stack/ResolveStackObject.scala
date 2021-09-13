@@ -7,7 +7,7 @@ import mtg.events.MoveObjectEvent
 import mtg.game.Zone
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction, StackObjectWithState}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult, StackObjectWithState}
 
 case class ResolveStackObject(stackObject: StackObject) extends InternalGameAction {
   private def resolvePermanent(stackObjectWithState: StackObjectWithState): InternalGameActionResult = {

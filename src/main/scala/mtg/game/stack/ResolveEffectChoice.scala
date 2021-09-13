@@ -3,7 +3,7 @@ package mtg.game.stack
 import mtg.effects.OneShotEffect
 import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.state.history.GameEvent
-import mtg.game.state.{InternalGameActionResult, GameState, PlayerChoice}
+import mtg.game.state.{GameState, InternalGameActionResult, PlayerChoice}
 import mtg.game.{ObjectId, PlayerId, Zone}
 
 case class ResolveEffectChoice(effectChoice: OneShotEffectChoice, remainingEffects: Seq[OneShotEffect]) extends PlayerChoice {

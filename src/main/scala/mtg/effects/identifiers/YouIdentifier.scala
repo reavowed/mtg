@@ -1,6 +1,6 @@
 package mtg.effects.identifiers
 
-import mtg.effects.{EffectContext, StackObjectResolutionContext}
+import mtg.effects.EffectContext
 import mtg.game.PlayerId
 import mtg.game.state.GameState
 

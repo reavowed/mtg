@@ -2,7 +2,7 @@ package mtg.game.start
 
 import mtg.game.start.mulligans.DrawAndMulliganAction
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 import mtg.game.turns.StartNextTurnAction
 
 case object StartGameAction extends InternalGameAction {

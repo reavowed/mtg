@@ -1,7 +1,7 @@
 package mtg.game.actions
 
 import mtg.characteristics.types.Type
-import mtg.game.state.history.{GameEvent, LogEvent}
+import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameState, InternalGameActionResult, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, Zone}
 

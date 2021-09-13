@@ -1,7 +1,7 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.oneshot.OneShotEffectResult
+import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.AddManaEvent
 import mtg.game.state.GameState
 import mtg.parts.costs.ManaTypeSymbol

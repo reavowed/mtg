@@ -1,6 +1,5 @@
 package mtg.effects.filters.combination
 
-import mtg.effects.EffectContext
 import mtg.effects.filters.base.CharacteristicFilter
 import mtg.game.state.{Characteristics, GameState}
 

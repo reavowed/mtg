@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 import mtg.game.actions.cast.CastSpellAction
-import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.{BackupAction, GameState, InternalGameAction}
+import mtg.game.{ObjectId, PlayerId}
 
 @JsonSerialize(using = classOf[PriorityAction.Serializer])
 abstract class PriorityAction extends InternalGameAction {

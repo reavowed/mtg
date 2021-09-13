@@ -4,7 +4,7 @@ import mtg.abilities.TriggeredAbilityDefinition
 import mtg.events.RemoveObjectFromExistenceEvent
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction, StackObjectWithState}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult, StackObjectWithState}
 
 case class FinishResolvingAbility(ability: StackObjectWithState) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {

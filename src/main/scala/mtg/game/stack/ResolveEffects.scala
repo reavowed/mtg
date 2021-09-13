@@ -2,7 +2,7 @@ package mtg.game.stack
 
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 
 case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: StackObjectResolutionContext) extends InternalGameAction {
   override def execute(gameState: GameState): InternalGameActionResult = {

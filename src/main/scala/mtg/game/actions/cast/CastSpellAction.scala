@@ -5,7 +5,7 @@ import mtg.events.MoveObjectEvent
 import mtg.game.actions.{PriorityAction, TimingChecks}
 import mtg.game.stack.steps
 import mtg.game.stack.steps.FinishCasting
-import mtg.game.state.{BackupAction, InternalGameActionResult, GameState, ObjectWithState}
+import mtg.game.state.{BackupAction, GameState, InternalGameActionResult, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {

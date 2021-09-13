@@ -1,7 +1,6 @@
 package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, KeywordAbility}
-import mtg.effects.EffectContext
 
 trait TextParagraph {
   def getText(cardName: String): String

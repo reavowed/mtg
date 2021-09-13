@@ -1,9 +1,9 @@
 package mtg.effects.oneshot
 
-import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.identifiers.Identifier
 import mtg.effects.oneshot.descriptions.ContinuousEffectDescription
+import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.CreateContinousEffects
 import mtg.game.ObjectId
 import mtg.game.state.GameState

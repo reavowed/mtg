@@ -1,7 +1,7 @@
 package mtg.data.cards.alpha
 
 import mtg.cards.patterns.VanillaCreature
-import mtg.characteristics.Color.{Green, White}
+import mtg.characteristics.Color.White
 import mtg.characteristics.types.CreatureType._
 import mtg.parts.costs.ManaCost
 

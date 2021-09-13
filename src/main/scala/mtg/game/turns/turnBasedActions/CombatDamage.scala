@@ -1,7 +1,6 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.game.state._
-import mtg.game.state.history.LogEvent
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.parts.damage.DealDamageEvent
 import mtg.utils.ParsingUtils

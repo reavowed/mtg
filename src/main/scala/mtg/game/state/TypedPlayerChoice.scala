@@ -1,7 +1,7 @@
 package mtg.game.state
 
+import mtg.game.state.history.GameEvent
 import mtg.game.state.history.GameEvent.Decision
-import mtg.game.state.history.{GameEvent, LogEvent}
 
 abstract class TypedPlayerChoice[TOption <: AnyRef] extends PlayerChoice {
   def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[TOption]

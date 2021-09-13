@@ -5,7 +5,7 @@ import mtg.cards.patterns.Spell
 import mtg.cards.text.SpellEffectParagraph
 import mtg.characteristics.types.SpellType.Lesson
 import mtg.characteristics.types.Type
-import mtg.characteristics.types.Type.{Creature, Land}
+import mtg.characteristics.types.Type.Land
 import mtg.parts.costs.ManaCost
 
 object IntroductionToAnnihilation extends Spell(

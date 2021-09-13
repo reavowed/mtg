@@ -3,10 +3,9 @@ package mtg.game.objects
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
-import mtg.cards.CardDefinition
+import mtg.game.state._
+import mtg.game._
 import mtg.parts.counters.CounterType
-import mtg.game.state.{BasicObjectWithState, Characteristics, GameState, ObjectWithState, PermanentObjectWithState, PermanentStatus, StackObjectWithState}
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId, TypedZone, Zone}
 
 trait GameObject {
   def underlyingObject: UnderlyingObject

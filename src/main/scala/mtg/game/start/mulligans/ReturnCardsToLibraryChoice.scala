@@ -4,7 +4,7 @@ import mtg._
 import mtg.events.MoveObjectEvent
 import mtg.game.objects.GameObject
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameActionResult, TypedPlayerChoice}
+import mtg.game.state.{GameState, InternalGameActionResult, TypedPlayerChoice}
 import mtg.game.{PlayerId, Zone}
 
 case class ReturnCardsToLibraryOption(cardsToReturn: Seq[GameObject])

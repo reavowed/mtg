@@ -1,7 +1,7 @@
 package mtg.effects.oneshot
 
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.state.{InternalGameActionResult, GameObjectEvent, GameState}
+import mtg.game.state.{GameState, InternalGameActionResult}
 import mtg.game.{ObjectId, PlayerId, Zone}
 
 abstract class OneShotEffectChoice {

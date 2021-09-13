@@ -1,8 +1,8 @@
 package mtg.effects.filters
 
 import mtg.effects.EffectContext
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.game.state.GameState
+import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait PartialFilter[T <: ObjectOrPlayer] {
   def matches(t: T, effectContext: EffectContext, gameState: GameState): Boolean

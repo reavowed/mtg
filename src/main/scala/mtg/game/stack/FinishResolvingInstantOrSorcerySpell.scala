@@ -3,7 +3,7 @@ package mtg.game.stack
 import mtg.events.MoveObjectEvent
 import mtg.game.Zone
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction, StackObjectWithState}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult, StackObjectWithState}
 
 case class FinishResolvingInstantOrSorcerySpell(spell: StackObjectWithState) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {

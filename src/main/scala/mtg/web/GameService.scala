@@ -1,14 +1,12 @@
 package mtg.web
 
 import mtg.cards.{CardDefinition, CardPrinting}
-import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
-import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.m21.{AlpineWatchdog, ConcordiaPegasus}
-import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, CombatProfessor, EnvironmentalSciences, ExpandedAnatomy, IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
-import mtg.data.cards.{Forest, Mountain, Plains}
-import mtg.data.sets.Strixhaven
+import mtg.data.cards.alpha.LightningBolt
+import mtg.data.cards.m21.ConcordiaPegasus
+import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, CombatProfessor}
+import mtg.data.cards.{Mountain, Plains}
 import mtg.game.Zone.BasicZone
-import mtg.game.objects.{BasicGameObject, Card, PermanentObject, StackObject}
+import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
 import mtg.game.state.{GameState, GameStateManager}
 import mtg.game.turns.StartNextTurnAction
 import mtg.game.{GameStartingData, PlayerId, PlayerStartingData, Zone}

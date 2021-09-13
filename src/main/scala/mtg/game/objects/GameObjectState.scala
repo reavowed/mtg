@@ -5,8 +5,8 @@ import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
-import mtg.game.state.{DerivedState, ObjectWithState}
 import mtg.game._
+import mtg.game.state.{DerivedState, ObjectWithState}
 import mtg.utils.AtGuaranteed
 
 import scala.collection.View

@@ -1,7 +1,7 @@
 package mtg.effects.oneshot.descriptions
 
 import mtg.effects.continuous.ModifyPowerToughnessEffect
-import mtg.effects.{ContinuousEffect, EffectContext, PowerToughnessModifier}
+import mtg.effects.{ContinuousEffect, PowerToughnessModifier}
 import mtg.game.ObjectId
 
 case class GetsPowerToughnessModifierDescription(powerToughnessModifier: PowerToughnessModifier) extends ContinuousEffectDescription {

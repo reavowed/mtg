@@ -2,10 +2,10 @@ package mtg.game.turns.turnBasedActions
 
 import mtg.characteristics.types.Type
 import mtg.effects.continuous.BlockerRestriction
-import mtg.game.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, InternalGameActionResult, GameState, InternalGameAction, TypedPlayerChoice}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult, TypedPlayerChoice}
 import mtg.game.turns.TurnPhase
+import mtg.game.{ObjectId, PlayerId}
 import mtg.utils.ParsingUtils
 
 object DeclareBlockers extends InternalGameAction {

@@ -1,12 +1,12 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.{EffectContext, OneShotEffect, StackObjectResolutionContext}
-import mtg.parts.counters.CounterType
 import mtg.effects.identifiers.Identifier
 import mtg.effects.oneshot.OneShotEffectResult
+import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.PutCountersEvent
 import mtg.game.ObjectId
 import mtg.game.state.GameState
+import mtg.parts.counters.CounterType
 import mtg.utils.TextUtils
 
 case class PutCountersEffect(number: Int, kind: CounterType, objectIdentifier: Identifier[ObjectId]) extends OneShotEffect {

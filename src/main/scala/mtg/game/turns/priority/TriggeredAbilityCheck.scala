@@ -2,7 +2,7 @@ package mtg.game.turns.priority
 
 import mtg.abilities.PendingTriggeredAbility
 import mtg.game.PlayerId
-import mtg.game.objects.{AbilityOnTheStack, StackObject}
+import mtg.game.objects.StackObject
 import mtg.game.stack.steps.{ChooseTargets, FinishTriggering}
 import mtg.game.state._
 

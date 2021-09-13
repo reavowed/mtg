@@ -1,7 +1,6 @@
 package mtg.effects.filters.base
 
 import mtg.characteristics.types.Type
-import mtg.effects.EffectContext
 import mtg.game.state.{Characteristics, GameState}
 
 case class TypeFilter(`type`: Type) extends CharacteristicFilter {

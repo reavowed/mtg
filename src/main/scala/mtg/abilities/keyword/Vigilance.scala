@@ -4,7 +4,7 @@ import mtg.abilities.{KeywordAbility, StaticAbility}
 import mtg.effects.ContinuousEffect
 import mtg.effects.continuous.PreventionEffect
 import mtg.game.ObjectId
-import mtg.game.state.{AutomaticGameAction, GameObjectEvent, GameState, ObjectWithState}
+import mtg.game.state.{AutomaticGameAction, GameState, ObjectWithState}
 import mtg.game.turns.turnBasedActions.TapAttacker
 
 case object Vigilance extends StaticAbility with KeywordAbility {

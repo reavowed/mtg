@@ -3,7 +3,7 @@ package mtg.game.stack.steps
 import mtg.game.ObjectId
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 
 case class FinishTriggering(abilityId: ObjectId) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {

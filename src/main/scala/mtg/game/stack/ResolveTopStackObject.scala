@@ -1,6 +1,6 @@
 package mtg.game.stack
 
-import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
 
 object ResolveTopStackObject extends InternalGameAction {

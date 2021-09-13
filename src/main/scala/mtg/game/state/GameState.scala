@@ -1,12 +1,12 @@
 package mtg.game.state
 
-import mtg.game.objects.{GameObject, GameObjectState}
+import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
 import mtg.game.state.history.GameEvent.ResolvedAction
 import mtg.game.state.history._
 import mtg.game.turns.turnEvents.{BeginPhaseEvent, BeginStepEvent, BeginTurnEvent}
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
-import mtg.game.{GameData, GameStartingData, ObjectId, PlayerId}
+import mtg.game.{GameData, GameStartingData, PlayerId}
 
 import scala.util.Random
 

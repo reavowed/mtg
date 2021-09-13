@@ -2,7 +2,7 @@ package mtg.game.start.mulligans
 
 import mtg.game.PlayerId
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameActionResult, TypedPlayerChoice}
+import mtg.game.state.{GameState, InternalGameActionResult, TypedPlayerChoice}
 
 case class MulliganChoice(playerToAct: PlayerId, mulligansSoFar: Int)
   extends TypedPlayerChoice[MulliganOption] with TypedPlayerChoice.PartialFunctionParser[MulliganOption]

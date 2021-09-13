@@ -1,6 +1,6 @@
 package mtg.abilities.builder
 
-import mtg.effects.identifiers.{CardNameIdentifier, ControllerIdentifier, Identifier, ItIdentifier, StaticIdentifier, YouIdentifier}
+import mtg.effects.identifiers._
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait IdentifierBuilder {

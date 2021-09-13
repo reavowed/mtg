@@ -3,7 +3,7 @@ package mtg.game.stack.steps
 import mtg.game.ObjectId
 import mtg.game.actions.SpendManaAutomaticallyEvent
 import mtg.game.objects.ManaObject
-import mtg.game.state.{BackupAction, InternalGameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{BackupAction, GameState, InternalGameAction, InternalGameActionResult}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec

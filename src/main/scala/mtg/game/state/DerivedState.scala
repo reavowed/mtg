@@ -7,7 +7,7 @@ import mtg.characteristics.types.Type.Creature
 import mtg.effects.ContinuousEffect
 import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
 import mtg.game.ObjectId
-import mtg.game.objects.{AbilityOnTheStack, GameObjectState}
+import mtg.game.objects.GameObjectState
 import mtg.parts.counters.PowerToughnessModifyingCounter
 
 import scala.collection.View

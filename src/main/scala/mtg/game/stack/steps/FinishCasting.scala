@@ -3,7 +3,7 @@ package mtg.game.stack.steps
 import mtg.game.ObjectId
 import mtg.game.actions.cast
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{InternalGameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 import mtg.game.turns.priority
 
 case class FinishCasting(stackObjectId: ObjectId) extends InternalGameAction {

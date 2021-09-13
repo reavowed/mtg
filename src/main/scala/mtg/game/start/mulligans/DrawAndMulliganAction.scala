@@ -1,8 +1,7 @@
 package mtg.game.start.mulligans
 
 import mtg.game.PlayerId
-import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
 
 case class DrawAndMulliganAction(playersToDrawAndMulligan: Seq[PlayerId], mulligansSoFar: Int) extends InternalGameAction {
   override def execute(currentGameState: GameState): InternalGameActionResult = {

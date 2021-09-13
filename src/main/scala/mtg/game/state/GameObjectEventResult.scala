@@ -1,7 +1,7 @@
 package mtg.game.state
 
 import mtg.game.objects.GameObjectState
-import mtg.game.state.history.{GameEvent, LogEvent}
+import mtg.game.state.history.LogEvent
 
 case class GameObjectEventResult(newGameObjectState: Option[GameObjectState], childActions: Seq[GameObjectEvent]) extends GameActionResult {
   override def logEvent: Option[LogEvent] = None

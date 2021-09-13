@@ -5,7 +5,6 @@ import mtg.game.actions.cast.CastSpellAction
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, PriorityAction}
 import mtg.game.stack.ResolveTopStackObject
 import mtg.game.state._
-import mtg.game.state.history.LogEvent
 
 sealed trait PriorityOption
 object PriorityOption {
