@@ -8,9 +8,9 @@ import mtg.utils.ParsingUtils
 import scala.annotation.tailrec
 
 object CombatDamage extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
-    val attackDeclarations = DeclareAttackers.getAttackDeclarations(currentGameState)
-    val blockDeclarations = DeclareBlockers.getBlockDeclarations(currentGameState)
+  override def execute(gameState: GameState): GameActionResult = {
+    val attackDeclarations = DeclareAttackers.getAttackDeclarations(gameState)
+    val blockDeclarations = DeclareBlockers.getBlockDeclarations(gameState)
     if (attackDeclarations.nonEmpty)
       AssignAttackerCombatDamage(attackDeclarations, blockDeclarations, Nil)
     else
@@ -24,12 +24,12 @@ case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration]
     blocker.getToughness(gameState) - blocker.getMarkedDamage(gameState) - damageEvents.filter(_.recipient == blocker).map(_.amount).sum
   }
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
+  override def execute(gameState: GameState): GameActionResult = {
     attackDeclarations match {
       case attackDeclaration +: remainingAttackDeclarations =>
         import attackDeclaration._
-        val power = attacker.getPower(currentGameState)
-        DeclareBlockers.getOrderingOfBlockersForAttacker(attacker, currentGameState) match {
+        val power = attacker.getPower(gameState)
+        DeclareBlockers.getOrderingOfBlockersForAttacker(attacker, gameState) match {
           case Some(blockers) =>
             blockers match {
               case Nil =>
@@ -39,17 +39,17 @@ case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration]
                   remainingAttackDeclarations,
                   blockDeclarations,
                   damageEvents :+ DealCombatDamageEvent(attacker, blocker, power))
-              case blocker +: _ if requiredDamageForLethal(blocker, currentGameState) >= power =>
+              case blocker +: _ if requiredDamageForLethal(blocker, gameState) >= power =>
                 AssignAttackerCombatDamage(
                   remainingAttackDeclarations,
                   blockDeclarations,
                   damageEvents :+ DealCombatDamageEvent(attacker, blocker, power))
               case blockers =>
                 AssignCombatDamageChoice(
-                  currentGameState.activePlayer,
+                  gameState.activePlayer,
                   attacker,
-                  blockers.map(b => (b, requiredDamageForLethal(b, currentGameState))),
-                  attacker.getPower(currentGameState),
+                  blockers.map(b => (b, requiredDamageForLethal(b, gameState))),
+                  attacker.getPower(gameState),
                   attackedPlayer,
                   remainingAttackDeclarations,
                   blockDeclarations,
@@ -63,15 +63,13 @@ case class AssignAttackerCombatDamage(attackDeclarations: Seq[AttackDeclaration]
         }
       case Nil =>
         val blockerDamageEvents = blockDeclarations.map { blockDeclaration =>
-          DealCombatDamageEvent(blockDeclaration.blocker, blockDeclaration.attacker, blockDeclaration.blocker.getPower(currentGameState))
+          DealCombatDamageEvent(blockDeclaration.blocker, blockDeclaration.attacker, blockDeclaration.blocker.getPower(gameState))
         }
         damageEvents ++ blockerDamageEvents
     }
   }
   override def canBeReverted: Boolean = true
 }
-
-case class CombatDamageAssignment(blockerDamage: Map[ObjectId, Int])
 
 case class AssignCombatDamageChoice(
     playerToAct: PlayerId,
@@ -82,14 +80,14 @@ case class AssignCombatDamageChoice(
     attackDeclarations: Seq[AttackDeclaration],
     blockDeclarations: Seq[BlockDeclaration],
     damageEvents: Seq[DealCombatDamageEvent])
-  extends TypedPlayerChoice[CombatDamageAssignment]
+  extends Choice
 {
-  override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[CombatDamageAssignment] = {
+  override def parseDecision(serializedChosenOption: String): Option[Decision] = {
     @tailrec
-    def matchBlockers(remainingInts: Seq[Int], unmatchedBlockers: Seq[(ObjectId, Int)], assignedBlockerDamage: Map[ObjectId, Int], remainingDamage: Int): Option[CombatDamageAssignment] = {
+    def matchBlockers(remainingIdsAndDamageAmounts: Seq[Int], unmatchedBlockers: Seq[(ObjectId, Int)], assignedBlockerDamage: Map[ObjectId, Int], remainingDamage: Int): Option[Map[ObjectId, Int]] = {
       unmatchedBlockers match {
         case (blocker, requiredDamage) +: otherBlockers =>
-          remainingInts match {
+          remainingIdsAndDamageAmounts match {
             case blocker.sequentialId +: assignedDamage +: otherInts
               if assignedDamage <= remainingDamage && (assignedDamage >= requiredDamage || assignedDamage == remainingDamage)
             =>
@@ -98,25 +96,24 @@ case class AssignCombatDamageChoice(
               None
           }
         case Nil =>
-          remainingInts match {
+          remainingIdsAndDamageAmounts match {
             case Nil =>
-              Some(CombatDamageAssignment(assignedBlockerDamage))
+              Some(assignedBlockerDamage)
             case _ =>
               None
           }
       }
     }
-    ParsingUtils.splitStringAsInts(serializedChosenOption).flatMap(matchBlockers(_, blockers, Map.empty, damageToAssign))
-  }
-
-  override def handleDecision(chosenOption: CombatDamageAssignment, currentGameState: GameState): InternalGameActionResult = {
-    val assignedDamageEvents = chosenOption.blockerDamage.map { case (blocker, amount) => DealCombatDamageEvent(attacker, blocker, amount)}.toSeq
-    AssignAttackerCombatDamage(attackDeclarations, blockDeclarations, damageEvents ++ assignedDamageEvents)
+    for {
+      idsAndDamageAmounts <- ParsingUtils.splitStringAsInts(serializedChosenOption)
+      damageAssignment <- matchBlockers(idsAndDamageAmounts, blockers, Map.empty, damageToAssign)
+      assignedDamageEvents = damageAssignment.map { case (blocker, amount) => DealCombatDamageEvent(attacker, blocker, amount)}.toSeq
+    } yield AssignAttackerCombatDamage(attackDeclarations, blockDeclarations, damageEvents ++ assignedDamageEvents)
   }
 }
 
-case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayer, amount: Int) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
+case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayer, amount: Int) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
     Seq(DealDamageEvent(source, recipient, amount))
   }
   override def canBeReverted: Boolean = true

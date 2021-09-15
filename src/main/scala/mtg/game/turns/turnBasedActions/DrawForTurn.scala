@@ -2,11 +2,11 @@ package mtg.game.turns.turnBasedActions
 
 import mtg.events.DrawCardEvent
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
 
 case object DrawForTurn extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
-    InternalGameActionResult(Seq(DrawCardEvent(currentGameState.activePlayer)), Some(LogEvent.DrawForTurn(currentGameState.activePlayer)))
+  override def execute(gameState: GameState): GameActionResult = {
+    (DrawCardEvent(gameState.activePlayer), LogEvent.DrawForTurn(gameState.activePlayer))
   }
   override def canBeReverted: Boolean = false
 }

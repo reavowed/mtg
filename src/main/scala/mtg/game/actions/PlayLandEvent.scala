@@ -2,11 +2,11 @@ package mtg.game.actions
 
 import mtg.events.MoveObjectEvent
 import mtg.game.objects.GameObject
-import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
 import mtg.game.{PlayerId, Zone}
 
-case class PlayLandEvent(player: PlayerId, landCard: GameObject) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
+case class PlayLandEvent(player: PlayerId, landCard: GameObject) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
     MoveObjectEvent(player, landCard, Zone.Battlefield)
   }
   override def canBeReverted: Boolean = true

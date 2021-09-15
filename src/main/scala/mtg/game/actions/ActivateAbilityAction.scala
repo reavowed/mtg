@@ -2,7 +2,7 @@ package mtg.game.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.game.stack.ResolveManaAbility
-import mtg.game.state.{GameState, InternalGameActionResult, ObjectWithState}
+import mtg.game.state.{GameState, GameActionResult, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId}
 
 case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
@@ -10,7 +10,7 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
   override def displayText: String = ability.getText(objectWithAbility.characteristics.name.getOrElse("this object"))
   override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + objectWithAbility.characteristics.abilities.indexOf(ability)
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
+  override def execute(gameState: GameState): GameActionResult = {
     ability.costs.flatMap(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
   }
   override def canBeReverted: Boolean = true

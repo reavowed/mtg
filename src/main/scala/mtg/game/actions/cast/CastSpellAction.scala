@@ -5,7 +5,7 @@ import mtg.events.MoveObjectEvent
 import mtg.game.actions.{PriorityAction, TimingChecks}
 import mtg.game.stack.steps
 import mtg.game.stack.steps.FinishCasting
-import mtg.game.state.{BackupAction, GameState, InternalGameActionResult, ObjectWithState}
+import mtg.game.state.{BackupAction, GameState, GameActionResult, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {
@@ -13,7 +13,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, back
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
+  override def execute(gameState: GameState): GameActionResult = {
     Seq(
       MoveObjectEvent(player, objectId, Zone.Stack),
       steps.CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))

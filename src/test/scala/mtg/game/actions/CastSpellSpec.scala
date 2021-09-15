@@ -68,12 +68,12 @@ class CastSpellSpec extends SpecWithGameStateManager {
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(PrecombatMainPhase)
 
-      val stateBeforeSpell = manager.currentGameState
+      val stateBeforeSpell = manager.gameState
       manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
-      manager.currentGameState mustEqual stateBeforeSpell
+      manager.gameState mustEqual stateBeforeSpell
     }
 
     "move the card to the stack with correct mana in pool" in {
@@ -86,21 +86,21 @@ class CastSpellSpec extends SpecWithGameStateManager {
 
       // Add necessary mana
       manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
-      manager.currentGameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
+      manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
 
       // Cast spell
       manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
-      manager.currentGameState.gameObjectState.manaPools(playerOne) must beEmpty
-      manager.currentGameState.gameObjectState.hands(playerOne) must beEmpty
-      manager.currentGameState.gameObjectState.stack must contain(exactly(beCardObject(AgelessGuardian)))
+      manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
+      manager.gameState.gameObjectState.hands(playerOne) must beEmpty
+      manager.gameState.gameObjectState.stack must contain(exactly(beCardObject(AgelessGuardian)))
     }
 
     "move the card to the battlefield after all players pass" in {
@@ -113,24 +113,24 @@ class CastSpellSpec extends SpecWithGameStateManager {
 
       // Add necessary mana
       manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
-      manager.currentGameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
+      manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
 
       // Cast spell
       manager.handleDecision(
-        manager.currentGameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
       // Resolve the spell
       manager.passPriority(playerOne)
       manager.passPriority(playerTwo)
 
-      manager.currentGameState.gameObjectState.stack must beEmpty
-      manager.currentGameState.gameObjectState.battlefield must contain(beCardObject(AgelessGuardian))
+      manager.gameState.gameObjectState.stack must beEmpty
+      manager.gameState.gameObjectState.battlefield must contain(beCardObject(AgelessGuardian))
     }
   }
 }

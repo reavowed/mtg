@@ -1,10 +1,10 @@
 package mtg.game.actions.cast
 
 import mtg.game.ObjectId
-import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
 
 case class SpellCastEvent(spellId: ObjectId) extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
+  override def execute(gameState: GameState): GameActionResult = {
     // No actual effect, just marking the spell as cast
     ()
   }

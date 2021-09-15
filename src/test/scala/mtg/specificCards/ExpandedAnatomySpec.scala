@@ -38,7 +38,7 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
       manager.activateAbilities(playerOne, Plains, 3)
       manager.castSpell(playerOne, ExpandedAnatomy)
 
-      implicit val gameObjectState = manager.currentGameState.gameObjectState
+      implicit val gameObjectState = manager.gameState.gameObjectState
       manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions, SpinedKarok)
     }
 

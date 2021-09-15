@@ -3,7 +3,7 @@ package mtg.effects.oneshot.actions
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState, InternalGameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.ParsingUtils
 
@@ -16,15 +16,13 @@ case class ScryEffect(number: Int) extends OneShotEffect {
     ScryChoice(player, cardsBeingScryed, resolutionContext)
   }
 }
-
-case class ScryDecision(cardsOnTop: Seq[ObjectId], cardsOnBottom: Seq[ObjectId])
 case class ScryChoice(
     playerChoosing: PlayerId,
     cardsBeingScryed: Seq[ObjectId],
     resolutionContext: StackObjectResolutionContext)
   extends OneShotEffectChoice
 {
-  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, InternalGameActionResult, StackObjectResolutionContext)] = {
+  override def parseDecision(serializedDecision: String): Option[(Option[InternalGameAction], StackObjectResolutionContext)] = {
     for {
       (serializedCardsOnTop, serializedCardsOnBottom) <- serializedDecision.split("\\|", -1).toSeq match {
         case Seq(a, b) => Some(a, b)
@@ -34,8 +32,7 @@ case class ScryChoice(
       cardsOnBottom <- ParsingUtils.splitStringAsIds(serializedCardsOnBottom)
       if (cardsOnTop ++ cardsOnBottom).sortBy(_.sequentialId) == cardsBeingScryed.sortBy(_.sequentialId)
     } yield (
-      ScryDecision(cardsOnTop, cardsOnBottom),
-      (ScryEvent(playerChoosing, cardsOnTop, cardsOnBottom), LogEvent.Scry(playerChoosing, cardsOnTop.length, cardsOnBottom.length)),
+      Some(ScryEvent(playerChoosing, cardsOnTop, cardsOnBottom)),
       resolutionContext
     )
   }
@@ -47,13 +44,16 @@ case class ScryEvent(
   player: PlayerId,
   cardsOnTop: Seq[ObjectId],
   cardsOnBottom: Seq[ObjectId]
-) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
-    Zone.Library(player).updateState(currentGameState.gameObjectState, library => {
-      val onTop = cardsOnTop.map(id => library.find(_.objectId == id).get)
-      val onBottom = cardsOnBottom.map(id => library.find(_.objectId == id).get)
-      onTop ++ library.filter(c => !(cardsOnTop ++ cardsOnBottom).contains(c.objectId)) ++ onBottom
-    })
+) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+    (
+      Zone.Library(player).updateState(gameState.gameObjectState, library => {
+        val onTop = cardsOnTop.map(id => library.find(_.objectId == id).get)
+        val onBottom = cardsOnBottom.map(id => library.find(_.objectId == id).get)
+        onTop ++ library.filter(c => !(cardsOnTop ++ cardsOnBottom).contains(c.objectId)) ++ onBottom
+      }),
+      LogEvent.Scry(player, cardsOnTop.length, cardsOnBottom.length)
+    )
   }
   // TODO: Theoretically possible to revert if scrying player already knew the identity of the scryed cards
   override def canBeReverted: Boolean = false

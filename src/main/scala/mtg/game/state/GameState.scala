@@ -33,7 +33,7 @@ case class GameState(
     case BeginStepEvent(step) => Some(step)
   }
 
-  def handleActionResult(actionResult: InternalGameActionResult): GameState = {
+  def handleActionResult(actionResult: GameActionResult): GameState = {
     addActions(actionResult.childActions).recordLogEvent(actionResult.logEvent)
   }
 
@@ -41,7 +41,7 @@ case class GameState(
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
   def updateGameObjectState(newGameObjectState: Option[GameObjectState]): GameState = newGameObjectState.map(updateGameObjectState).getOrElse(this)
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
-  def recordAction(action: AutomaticGameAction): GameState = recordGameEvent(ResolvedAction(action, gameObjectState.derivedState))
+  def recordAction(action: InternalGameAction): GameState = recordGameEvent(ResolvedAction(action, gameObjectState.derivedState))
   def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)

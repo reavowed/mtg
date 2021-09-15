@@ -30,7 +30,7 @@ class GameController @Autowired() (gameService: GameService) {
   @GetMapping(Array("/{playerIdentifier}/state"))
   @ResponseBody
   def getState(@PathVariable("playerIdentifier") playerIdentifier: String) = {
-    VisibleState.forPlayer(PlayerId(playerIdentifier), gameService.gameStateManager.currentGameState)
+    VisibleState.forPlayer(PlayerId(playerIdentifier), gameService.gameStateManager.gameState)
   }
 
   @PostMapping(Array("/{playerIdentifier}/decision"))

@@ -3,7 +3,7 @@ package mtg.game.start
 import mtg.SpecWithGameObjectState
 import mtg.game.state.history.GameHistory
 import mtg.game.{GameData, PlayerId}
-import mtg.game.state.{GameAction, GameState, InternalGameActionResult}
+import mtg.game.state.{GameAction, GameState, GameActionResult}
 import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.turnEvents.BeginTurnEvent
 import org.specs2.matcher.Matcher
@@ -20,9 +20,9 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
     "pass turn from first to second player" in {
       val gameState = GameState(GameData.initial(Seq(playerOne, playerTwo)), emptyGameObjectState, GameHistory.empty, Nil)
 
-      val InternalGameActionResult(gameActions, _) = StartNextTurnAction(playerOne).execute(gameState)
+      val result = StartNextTurnAction(playerOne).execute(gameState)
 
-      gameActions must contain(allOf(
+      result.childActions must contain(allOf(
         beBeginTurnAction(playerOne),
         StartNextTurnAction(playerTwo)
       ).inOrder)
@@ -31,9 +31,9 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
     "pass turn from second to first player" in {
       val gameState = GameState(GameData.initial(Seq(playerOne, playerTwo)), emptyGameObjectState, GameHistory.empty, Nil)
 
-      val InternalGameActionResult(gameActions, _) = StartNextTurnAction(playerTwo).execute(gameState)
+      val result = StartNextTurnAction(playerTwo).execute(gameState)
 
-      gameActions must contain(exactly(
+      result.childActions must contain(exactly(
         beBeginTurnAction(playerTwo),
         StartNextTurnAction(playerOne)
       ))

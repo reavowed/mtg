@@ -9,11 +9,11 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
     "put back one card" in {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val cardToPutBack = beforeState.hands(playerOne).head
-      val choice = ReturnCardsToLibraryChoice(playerOne, 1)
+      val choice = ReturnCardsToLibraryChoice(playerOne, 1, playerOne.hand(beforeState))
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
-      val afterState = manager.currentGameState.gameObjectState
+      val afterState = manager.gameState.gameObjectState
 
       val expectedHand = playerOne.hand(beforeState).filter(o => o != cardToPutBack)
       val expectedLibraryMatchers = playerOne.library(beforeState).map(typedEqualTo(_)) :+ beObject(cardToPutBack.underlyingObject)
@@ -25,11 +25,11 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val firstCardToPutBack = beforeState.hands(playerOne)(6)
       val secondCardToPutBack = beforeState.hands(playerOne)(2)
-      val choice = ReturnCardsToLibraryChoice(playerOne, 1)
+      val choice = ReturnCardsToLibraryChoice(playerOne, 2, playerOne.hand(beforeState))
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(Seq(firstCardToPutBack, secondCardToPutBack).map(_.objectId.sequentialId.toString).mkString(" "), playerOne)
-      val afterState = manager.currentGameState.gameObjectState
+      val afterState = manager.gameState.gameObjectState
 
       val expectedHand = playerOne.hand(beforeState).filter(o => o != firstCardToPutBack && o != secondCardToPutBack)
       val expectedLibraryMatchers = playerOne.library(beforeState).map(typedEqualTo(_)) :+ beObject(firstCardToPutBack.underlyingObject) :+ beObject(secondCardToPutBack.underlyingObject)
@@ -40,12 +40,12 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
     "log an event" in {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val cardToPutBack = beforeState.hands(playerOne).head
-      val choice = ReturnCardsToLibraryChoice(playerOne, 1)
+      val choice = ReturnCardsToLibraryChoice(playerOne, 1, playerOne.hand(beforeState))
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
 
-      manager.currentGameState.gameHistory.logEvents.map(_.logEvent) mustEqual Seq(LogEvent.ReturnCardsToLibrary(playerOne, 1))
+      manager.gameState.gameHistory.logEvents.map(_.logEvent) mustEqual Seq(LogEvent.ReturnCardsToLibrary(playerOne, 1))
     }
   }
 

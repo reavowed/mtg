@@ -23,7 +23,7 @@ class DrawStepSpec extends SpecWithGameStateManager {
       manager.passUntilTurn(1)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
 
-      val finalState = manager.currentGameState
+      val finalState = manager.gameState
 
       playerOne.hand(finalState).size mustEqual 7
       finalState.gameHistory.gameEventsThisTurn.actions must not(contain(BeginStepEvent(TurnStep.DrawStep)))
@@ -37,7 +37,7 @@ class DrawStepSpec extends SpecWithGameStateManager {
       manager.passUntilTurn(2)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
 
-      val finalState = manager.currentGameState
+      val finalState = manager.gameState
 
       playerTwo.hand(finalState).size mustEqual 8
       finalState.gameHistory.gameEventsThisTurn.actions must contain(BeginStepEvent(TurnStep.DrawStep))

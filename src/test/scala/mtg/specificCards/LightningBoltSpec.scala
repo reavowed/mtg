@@ -21,8 +21,8 @@ class LightningBoltSpec extends SpecWithGameStateManager {
       manager.chooseCard(playerOne, SavannahLions)
       manager.resolveNext()
 
-      Zone.Battlefield(manager.currentGameState) must not(contain(beCardObject(SavannahLions)))
-      playerTwo.graveyard(manager.currentGameState) must contain(beCardObject(SavannahLions))
+      Zone.Battlefield(manager.gameState) must not(contain(beCardObject(SavannahLions)))
+      playerTwo.graveyard(manager.gameState) must contain(beCardObject(SavannahLions))
     }
     "deal three damage to a big creature" in {
       val initialState = emptyGameObjectState
@@ -50,7 +50,7 @@ class LightningBoltSpec extends SpecWithGameStateManager {
       manager.choosePlayer(playerOne, playerTwo)
       manager.resolveNext()
 
-      manager.currentGameState.gameObjectState.lifeTotals(playerTwo) mustEqual 17
+      manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 17
     }
 
     "have correct oracle text" in {

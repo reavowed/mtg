@@ -1,7 +1,7 @@
 package mtg.web.visibleState
 
 import mtg.game.stack.ResolveEffectChoice
-import mtg.game.state.{GameState, PlayerChoice}
+import mtg.game.state.{GameState, Choice}
 import mtg.game.turns.priority.TriggeredAbilityChoice
 
 case class PendingTriggeredAbilityDetails(id: Int, text: String, artDetails: ArtDetails)
@@ -9,7 +9,7 @@ case class TriggeredAbilityChoiceDetails(abilities: Seq[PendingTriggeredAbilityD
 
 case class CurrentChoice(`type`: String, playerToAct: String, details: Any)
 object CurrentChoice {
-  def apply(choice: PlayerChoice, gameState: GameState): CurrentChoice = {
+  def apply(choice: Choice, gameState: GameState): CurrentChoice = {
     choice match {
       case resolveEffectChoice: ResolveEffectChoice =>
         CurrentChoice(

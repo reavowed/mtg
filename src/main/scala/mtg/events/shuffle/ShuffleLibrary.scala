@@ -3,16 +3,16 @@ package mtg.events.shuffle
 import mtg.game.PlayerId
 import mtg.game.Zone.Library
 import mtg.game.objects.BasicGameObject
-import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
 
 import scala.util.Random
 
-case class ShuffleLibrary(playerIdentifier: PlayerId) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
+case class ShuffleLibrary(playerIdentifier: PlayerId) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
     val library = Library(playerIdentifier)
-    val shuffledLibraryContents = Random.shuffle(library.getState(currentGameState))
+    val shuffledLibraryContents = Random.shuffle(library.getState(gameState))
     shuffledLibraryContents.foldLeft(
-      library.updateState(currentGameState.gameObjectState, _ => Nil))(
+      library.updateState(gameState.gameObjectState, _ => Nil))(
       (gameState, oldObject) => gameState.addNewObject(BasicGameObject(oldObject.underlyingObject, _, library), _ => 0))
   }
   override def canBeReverted: Boolean = true

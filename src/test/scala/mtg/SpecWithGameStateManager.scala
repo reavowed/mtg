@@ -31,6 +31,6 @@ abstract class SpecWithGameStateManager
   }
 
   def runAction(action: GameAction, gameObjectState: GameObjectState): GameState = {
-    createGameStateManager(gameObjectState, action).currentGameState
+    createGameStateManager(gameObjectState, action).gameState
   }
 }

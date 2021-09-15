@@ -35,9 +35,9 @@ class LethalDamageStateBasedActionSpec extends SpecWithGameStateManager {
       manager.block(playerTwo, AgelessGuardian, GrizzledOutrider)
       manager.passUntilStep(TurnStep.CombatDamageStep)
 
-      Zone.Battlefield(manager.currentGameState) must not(contain(beCardObject(AgelessGuardian)))
-      Zone.Graveyard(playerOne)(manager.currentGameState) must beEmpty
-      Zone.Graveyard(playerTwo)(manager.currentGameState) must contain(exactly(beCardObject(AgelessGuardian)))
+      Zone.Battlefield(manager.gameState) must not(contain(beCardObject(AgelessGuardian)))
+      Zone.Graveyard(playerOne)(manager.gameState) must beEmpty
+      Zone.Graveyard(playerTwo)(manager.gameState) must contain(exactly(beCardObject(AgelessGuardian)))
     }
   }
 }

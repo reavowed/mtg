@@ -6,17 +6,11 @@ import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, PriorityAction}
 import mtg.game.stack.ResolveTopStackObject
 import mtg.game.state._
 
-sealed trait PriorityOption
-object PriorityOption {
-  case object PassPriority extends PriorityOption
-  case class TakeAction(action: PriorityAction) extends PriorityOption
-}
-
 case class PriorityChoice(
   playerToAct: PlayerId,
   remainingPlayers: Seq[PlayerId],
   availableActions: Seq[PriorityAction],
-) extends TypedPlayerChoice[PriorityOption] {
+) extends Choice {
 
   object TakeAction {
     def unapply(string: String): Option[PriorityAction] = {
@@ -37,22 +31,14 @@ case class PriorityChoice(
     }
   }
 
-  override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[PriorityOption] = serializedChosenOption match {
+  override def parseDecision(serializedChosenOption: String): Option[Decision] = serializedChosenOption match {
     case "Pass" =>
-      Some(PriorityOption.PassPriority)
+      if (remainingPlayers.nonEmpty)
+        PriorityForPlayersAction(remainingPlayers)
+      else
+        ResolveTopStackObject
     case TakeAction(action) =>
-      Some(PriorityOption.TakeAction(action))
+      Some(Seq(action, PriorityFromPlayerAction(playerToAct)))
     case _ => None
-  }
-  override def handleDecision(chosenOption: PriorityOption, currentGameState: GameState): InternalGameActionResult = {
-    chosenOption match {
-      case PriorityOption.PassPriority =>
-        if (remainingPlayers.nonEmpty)
-          PriorityForPlayersAction(remainingPlayers)
-        else
-          ResolveTopStackObject
-      case PriorityOption.TakeAction(action) =>
-        Seq(action, PriorityFromPlayerAction(playerToAct))
-    }
   }
 }

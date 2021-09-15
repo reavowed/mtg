@@ -29,7 +29,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
     manager.attackWith(playerOne, AgelessGuardian)
     manager.passUntilStep(TurnStep.CombatDamageStep)
 
-    manager.currentGameState.gameObjectState.lifeTotals(playerTwo) mustEqual 19
+    manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 19
   }
 
   "a blocked creature and its blocker should deal damage to each other" in {
@@ -57,8 +57,8 @@ class CombatDamageSpec extends SpecWithGameStateManager {
     manager.block(playerTwo, SpinedKarok, AgelessGuardian)
     manager.passUntilStep(TurnStep.CombatDamageStep)
 
-    manager.currentGameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
-    manager.currentGameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
+    manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
+    manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
     manager.getPermanent(AgelessGuardian).markedDamage mustEqual 2
     manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
   }
@@ -88,8 +88,8 @@ class CombatDamageSpec extends SpecWithGameStateManager {
     manager.block(playerTwo, AgelessGuardian, GrizzledOutrider)
     manager.passUntilStep(TurnStep.CombatDamageStep)
 
-    manager.currentGameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
-    manager.currentGameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
+    manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
+    manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
   }
 
   "an attacking creature blocked by two creatures" should {
@@ -235,7 +235,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
 
       // Assert
       manager.currentAction should bePriorityChoice
-      Zone.Graveyard(playerTwo)(manager.currentGameState) must contain(beCardObject(AgelessGuardian))
+      Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(AgelessGuardian))
       manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
     }
 
@@ -273,7 +273,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
 
       // Assert
       manager.currentAction should bePriorityChoice
-      Zone.Graveyard(playerTwo)(manager.currentGameState) must contain(beCardObject(AgelessGuardian))
+      Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(AgelessGuardian))
       manager.getPermanent(SpinedKarok).markedDamage mustEqual 0
     }
   }

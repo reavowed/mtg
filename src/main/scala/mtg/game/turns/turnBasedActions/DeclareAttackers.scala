@@ -10,12 +10,12 @@ import mtg.game.turns.TurnPhase
 import mtg.game.{ObjectId, PlayerId}
 
 object DeclareAttackers extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
-    val possibleAttackers = getPossibleAttackers(currentGameState)
+  override def execute(gameState: GameState): GameActionResult = {
+    val possibleAttackers = getPossibleAttackers(gameState)
     if (possibleAttackers.nonEmpty)
       DeclareAttackersChoice(
-        currentGameState.activePlayer,
-        getDefendingPlayer(currentGameState),
+        gameState.activePlayer,
+        getDefendingPlayer(gameState),
         possibleAttackers)
     else
       ()
@@ -40,7 +40,7 @@ object DeclareAttackers extends InternalGameAction {
     gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
   }
   def getAttackDeclarations(gameState: GameState): Seq[AttackDeclaration] = {
-    gameState.gameHistory.gameEventsThisTurn.getDecision[DeclaredAttackers]
+    gameState.gameHistory.gameEventsThisTurn.actions.ofType[DeclaredAttackers]
       .toSeq
       .flatMap(_.attackDeclarations)
   }
@@ -52,36 +52,36 @@ object DeclareAttackers extends InternalGameAction {
 }
 
 case class AttackDeclaration(attacker: ObjectId, attackedPlayer: PlayerId)
-case class DeclaredAttackers(attackDeclarations: Seq[AttackDeclaration])
-
-case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: PlayerId, possibleAttackers: Seq[ObjectId]) extends TypedPlayerChoice[DeclaredAttackers] {
-  override def parseOption(serializedChosenOption: String, currentGameState: GameState): Option[DeclaredAttackers] = {
-    serializedChosenOption
-      .split(" ").toSeq
-      .filter(_.nonEmpty)
-      .map(_.toIntOption.flatMap(i => possibleAttackers.find(_.sequentialId == i)).map(AttackDeclaration(_, defendingPlayer)))
-      .swap
-      .map(DeclaredAttackers)
-  }
-
-  override def handleDecision(chosenOption: DeclaredAttackers, currentGameState: GameState): InternalGameActionResult = {
-    import chosenOption._
+case class DeclaredAttackers(player: PlayerId, attackDeclarations: Seq[AttackDeclaration]) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
     if (attackDeclarations.nonEmpty) {
       (
         attackDeclarations.map(_.attacker).map(TapAttacker),
         LogEvent.DeclareAttackers(
-          playerToAct,
-          attackDeclarations.map(_.attacker.currentCharacteristics(currentGameState).name.get)
+          player,
+          attackDeclarations.map(_.attacker.currentCharacteristics(gameState).name.get)
         )
       )
     } else {
       ()
     }
   }
+  override def canBeReverted: Boolean = false
 }
 
-case class TapAttacker(attacker: ObjectId) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
+case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: PlayerId, possibleAttackers: Seq[ObjectId]) extends Choice {
+  override def parseDecision(serializedChosenOption: String): Option[Decision] = {
+    serializedChosenOption
+      .split(" ").toSeq
+      .filter(_.nonEmpty)
+      .map(_.toIntOption.flatMap(i => possibleAttackers.find(_.sequentialId == i)).map(AttackDeclaration(_, defendingPlayer)))
+      .swap
+      .map(DeclaredAttackers(playerToAct, _))
+  }
+}
+
+case class TapAttacker(attacker: ObjectId) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
     TapObjectEvent(attacker)
   }
   override def canBeReverted: Boolean = true

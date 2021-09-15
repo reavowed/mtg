@@ -24,7 +24,7 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
       manager.castSpell(playerOne, IntroductionToProphecy)
       manager.resolveNext()
 
-      val topTwoCards = playerOne.library(manager.currentGameState).take(2).map(_.objectId)
+      val topTwoCards = playerOne.library(manager.gameState).take(2).map(_.objectId)
       manager.currentAction must beEffectChoice[ScryChoice](beEqualTo(topTwoCards) ^^ ((_: ScryChoice).cardsBeingScryed))
     }
 
@@ -34,8 +34,8 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Plains, 3)
         .setLibrary(playerOne, Seq(Plains, Island, Swamp))
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      val plainsId = playerOne.library(manager.currentGameState)(0).objectId
-      val islandId = playerOne.library(manager.currentGameState)(1).objectId
+      val plainsId = playerOne.library(manager.gameState)(0).objectId
+      val islandId = playerOne.library(manager.gameState)(1).objectId
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)
@@ -43,8 +43,8 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.handleDecision(s"$islandId $plainsId|", playerOne)
 
-      playerOne.hand(manager.currentGameState) must contain(exactly(beCardObject(Island)))
-      playerOne.library(manager.currentGameState) must contain(exactly(beCardObject(Plains), beCardObject(Swamp)).inOrder)
+      playerOne.hand(manager.gameState) must contain(exactly(beCardObject(Island)))
+      playerOne.library(manager.gameState) must contain(exactly(beCardObject(Plains), beCardObject(Swamp)).inOrder)
     }
 
     "put one on bottom" in {
@@ -53,8 +53,8 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Plains, 3)
         .setLibrary(playerOne, Seq(Plains, Island, Swamp))
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      val plainsId = playerOne.library(manager.currentGameState)(0).objectId
-      val islandId = playerOne.library(manager.currentGameState)(1).objectId
+      val plainsId = playerOne.library(manager.gameState)(0).objectId
+      val islandId = playerOne.library(manager.gameState)(1).objectId
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)
@@ -62,8 +62,8 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.handleDecision(s"$islandId|$plainsId", playerOne)
 
-      playerOne.hand(manager.currentGameState) must contain(exactly(beCardObject(Island)))
-      playerOne.library(manager.currentGameState) must contain(exactly(beCardObject(Swamp), beCardObject(Plains)).inOrder)
+      playerOne.hand(manager.gameState) must contain(exactly(beCardObject(Island)))
+      playerOne.library(manager.gameState) must contain(exactly(beCardObject(Swamp), beCardObject(Plains)).inOrder)
     }
 
     "put both on bottom" in {
@@ -72,8 +72,8 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Plains, 3)
         .setLibrary(playerOne, Seq(Plains, Island, Swamp))
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      val plainsId = playerOne.library(manager.currentGameState)(0).objectId
-      val islandId = playerOne.library(manager.currentGameState)(1).objectId
+      val plainsId = playerOne.library(manager.gameState)(0).objectId
+      val islandId = playerOne.library(manager.gameState)(1).objectId
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)
@@ -81,8 +81,8 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.handleDecision(s"|$islandId $plainsId", playerOne)
 
-      playerOne.hand(manager.currentGameState) must contain(exactly(beCardObject(Swamp)))
-      playerOne.library(manager.currentGameState) must contain(exactly(beCardObject(Island), beCardObject(Plains)).inOrder)
+      playerOne.hand(manager.gameState) must contain(exactly(beCardObject(Swamp)))
+      playerOne.library(manager.gameState) must contain(exactly(beCardObject(Island), beCardObject(Plains)).inOrder)
     }
 
     "scry one if only one card in library" in {
@@ -91,7 +91,7 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Plains, 3)
         .setLibrary(playerOne, Seq(Swamp))
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      val swampId = playerOne.library(manager.currentGameState)(0).objectId
+      val swampId = playerOne.library(manager.gameState)(0).objectId
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)
@@ -99,7 +99,7 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.handleDecision(s"|$swampId", playerOne)
 
-      playerOne.hand(manager.currentGameState) must contain(exactly(beCardObject(Swamp)))
+      playerOne.hand(manager.gameState) must contain(exactly(beCardObject(Swamp)))
     }
 
     "have correct oracle text" in {

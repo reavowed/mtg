@@ -55,7 +55,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.chooseCard(playerOne, Island)
 
-      playerOne.hand(manager.currentGameState) must contain(exactly(beCardObject(Island)))
+      playerOne.hand(manager.gameState) must contain(exactly(beCardObject(Island)))
     }
 
     "shuffle its controller's library" in {
@@ -71,7 +71,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.chooseCard(playerOne, Island)
 
-      val finalState = manager.currentGameState
+      val finalState = manager.gameState
       playerOne.library(finalState).map(_.objectId) must not(contain(anyOf(playerOne.library(initialState).map(_.objectId): _*)))
     }
 
@@ -88,7 +88,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.chooseCard(playerOne, Island)
 
-      manager.currentGameState.gameObjectState.lifeTotals(playerOne) mustEqual 22
+      manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 22
     }
 
     "not allow choosing a creature" in {
@@ -103,10 +103,10 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.castSpell(playerOne, EnvironmentalSciences)
       manager.resolveNext()
 
-      val stateBeforeChoice = manager.currentGameState
+      val stateBeforeChoice = manager.gameState
       manager.chooseCard(playerOne, AgelessGuardian)
 
-      manager.currentGameState mustEqual stateBeforeChoice
+      manager.gameState mustEqual stateBeforeChoice
     }
 
     "go to graveyard after resolution" in {
@@ -122,8 +122,8 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.resolveNext()
       manager.chooseCard(playerOne, Island)
 
-      Zone.Stack(manager.currentGameState) must not(contain(beCardObject(EnvironmentalSciences)))
-      playerOne.graveyard(manager.currentGameState) must contain(beCardObject(EnvironmentalSciences))
+      Zone.Stack(manager.gameState) must not(contain(beCardObject(EnvironmentalSciences)))
+      playerOne.graveyard(manager.gameState) must contain(beCardObject(EnvironmentalSciences))
     }
 
     "have correct oracle text" in {

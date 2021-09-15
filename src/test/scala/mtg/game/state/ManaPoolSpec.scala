@@ -16,12 +16,12 @@ class ManaPoolSpec extends SpecWithGameStateManager {
       val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.activateAbility(playerOne, Plains)
 
-      manager.currentGameState.gameObjectState.manaPools(playerOne) must not(beEmpty)
+      manager.gameState.gameObjectState.manaPools(playerOne) must not(beEmpty)
 
       manager.passPriority(playerOne)
       manager.passPriority(playerTwo)
 
-      manager.currentGameState.gameObjectState.manaPools(playerOne) must beEmpty
+      manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
     }
 
     "empty at the end of a phase" in {
@@ -31,12 +31,12 @@ class ManaPoolSpec extends SpecWithGameStateManager {
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbility(playerOne, Plains)
 
-      manager.currentGameState.gameObjectState.manaPools(playerOne) must not(beEmpty)
+      manager.gameState.gameObjectState.manaPools(playerOne) must not(beEmpty)
 
       manager.passPriority(playerOne)
       manager.passPriority(playerTwo)
 
-      manager.currentGameState.gameObjectState.manaPools(playerOne) must beEmpty
+      manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
     }
   }
 

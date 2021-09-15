@@ -2,11 +2,11 @@ package mtg.game.start.mulligans
 
 import mtg.events.DrawCardsEvent
 import mtg.game.PlayerId
-import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class DrawStartingHandsEvent(playersToDraw: Seq[PlayerId]) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
-    playersToDraw.map(DrawCardsEvent(_, currentGameState.gameData.startingHandSize))
+case class DrawStartingHandsEvent(playersToDraw: Seq[PlayerId], mulligansAlready: Int) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+    playersToDraw.map(DrawCardsEvent(_, gameState.gameData.startingHandSize))
   }
   override def canBeReverted: Boolean = false
 }

@@ -1,10 +1,10 @@
 package mtg.events
 
-import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
 
-object EmptyManaPoolsEvent extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
-    currentGameState.playersInApnapOrder.foldLeft(currentGameState.gameObjectState) { (gameObjectState, player) =>
+object EmptyManaPoolsEvent extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+    gameState.playersInApnapOrder.foldLeft(gameState.gameObjectState) { (gameObjectState, player) =>
       gameObjectState.updateManaPool(player, _ => Nil)
     }
   }

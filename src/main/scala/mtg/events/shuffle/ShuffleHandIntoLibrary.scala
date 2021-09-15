@@ -1,12 +1,12 @@
 package mtg.events.shuffle
 
 import mtg.events.MoveObjectEvent
-import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
 import mtg.game.{PlayerId, Zone}
 
-case class ShuffleHandIntoLibrary(player: PlayerId) extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
-    currentGameState.gameObjectState.hands(player)
+case class ShuffleHandIntoLibrary(player: PlayerId) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+    gameState.gameObjectState.hands(player)
       .map(MoveObjectEvent(player, _, Zone.Library(player))) :+ ShuffleLibrary(player)
   }
   override def canBeReverted: Boolean = true

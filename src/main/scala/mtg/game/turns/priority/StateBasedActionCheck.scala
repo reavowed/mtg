@@ -1,13 +1,13 @@
 package mtg.game.turns.priority
 
-import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
 import mtg.sbas.LethalDamageStateBasedAction
 
 object StateBasedActionCheck extends InternalGameAction {
   val allStateBasedActions = Seq(LethalDamageStateBasedAction)
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
-    val actions = allStateBasedActions.flatMap(_.getApplicableEvents(currentGameState))
+  override def execute(gameState: GameState): GameActionResult = {
+    val actions = allStateBasedActions.flatMap(_.getApplicableEvents(gameState))
     if (actions.nonEmpty) {
       actions :+ StateBasedActionCheck
     } else {

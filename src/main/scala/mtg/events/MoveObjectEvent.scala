@@ -1,14 +1,14 @@
 package mtg.events
 
 import mtg.game.objects.GameObject
-import mtg.game.state.{GameObjectEvent, GameObjectEventResult, GameState}
+import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
 import mtg.game.{ObjectId, PlayerId, Zone}
 
-case class MoveObjectEvent(player: PlayerId, objectId: ObjectId, destination: Zone) extends GameObjectEvent {
-  def execute(currentGameState: GameState): GameObjectEventResult = {
-    currentGameState.gameObjectState.derivedState.allObjectStates.get(objectId).map(gameObjectWithState => {
+case class MoveObjectEvent(player: PlayerId, objectId: ObjectId, destination: Zone) extends InternalGameAction {
+  def execute(gameState: GameState): GameActionResult = {
+    gameState.gameObjectState.derivedState.allObjectStates.get(objectId).map(gameObjectWithState => {
         // TODO: Handle putting something onto the battlefield under another player's control
-      currentGameState.gameObjectState.deleteObject(gameObjectWithState.gameObject)
+      gameState.gameObjectState.deleteObject(gameObjectWithState.gameObject)
         .addNewObject(destination.newObjectForZone(gameObjectWithState, player, _), _.length)
     })
   }

@@ -101,8 +101,8 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.passUntilPhase(PrecombatMainPhase)
       manager.playLand(playerOne, Plains)
 
-      manager.currentGameState.gameObjectState.battlefield must contain(exactly(beCardObject(Plains)))
-      manager.currentGameState.gameObjectState.hands(playerOne) must not(contain(beCardObject(Plains)))
+      manager.gameState.gameObjectState.battlefield must contain(exactly(beCardObject(Plains)))
+      manager.gameState.gameObjectState.hands(playerOne) must not(contain(beCardObject(Plains)))
     }
     "log an event" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
@@ -111,7 +111,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.passUntilPhase(PrecombatMainPhase)
       manager.playLand(playerOne, Plains)
 
-      manager.currentGameState.gameHistory.logEvents.last.logEvent mustEqual LogEvent.PlayedLand(playerOne, "Plains")
+      manager.gameState.gameHistory.logEvents.last.logEvent mustEqual LogEvent.PlayedLand(playerOne, "Plains")
     }
   }
 

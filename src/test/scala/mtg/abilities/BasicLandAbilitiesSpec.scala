@@ -66,7 +66,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
 
       manager.currentAction should bePriorityChoice.forPlayer(playerOne)
       manager.getCard(Zone.Battlefield, Plains) must beTapped
-      manager.currentGameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
+      manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
     }
 
     "not tap for mana twice" in {

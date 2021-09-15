@@ -3,7 +3,7 @@ package mtg.effects.oneshot.basic
 import mtg.effects.filters.Filter
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.game.state.{GameState, InternalGameActionResult}
+import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.TextUtils._
 
@@ -20,7 +20,6 @@ case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEf
   }
 }
 
-case class ChosenObject(objectId: ObjectId)
 case class SearchChoice(
     playerChoosing: PlayerId,
     zone: Zone,
@@ -28,11 +27,11 @@ case class SearchChoice(
     resolutionContext: StackObjectResolutionContext)
   extends OneShotEffectChoice
 {
-  override def handleDecision(serializedDecision: String, currentGameState: GameState): Option[(AnyRef, InternalGameActionResult, StackObjectResolutionContext)] = {
+  override def parseDecision(serializedDecision: String): Option[(Option[InternalGameAction], StackObjectResolutionContext)] = {
     for {
       id <- serializedDecision.toIntOption
       chosenObjectId <- possibleChoices.find(_.sequentialId == id)
-    } yield (ChosenObject(chosenObjectId), Nil, resolutionContext.addIdentifiedObject(chosenObjectId))
+    } yield (None, resolutionContext.addIdentifiedObject(chosenObjectId))
   }
   override def temporarilyVisibleZones: Seq[Zone] = Seq(zone)
 }

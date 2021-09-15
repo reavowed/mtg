@@ -4,15 +4,15 @@ import mtg.game.state._
 import mtg.game.turns.Turn
 
 object CleanupAction extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
-    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd(currentGameState.currentTurn.get))
+  override def execute(gameState: GameState): GameActionResult = {
+    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd(gameState.currentTurn.get))
   }
   override def canBeReverted: Boolean = true
 }
 
-object DamageWearsOffEvent extends GameObjectEvent {
-  override def execute(currentGameState: GameState): GameObjectEventResult = {
-    currentGameState.gameObjectState.battlefield.foldLeft(currentGameState.gameObjectState) { (state, obj) =>
+object DamageWearsOffEvent extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+    gameState.gameObjectState.battlefield.foldLeft(gameState.gameObjectState) { (state, obj) =>
       state.updatePermanentObject(obj.objectId, _.updateMarkedDamage(_ => 0))
     }
   }
@@ -20,6 +20,6 @@ object DamageWearsOffEvent extends GameObjectEvent {
 }
 
 case class UntilEndOfTurnEffectsEnd(turn: Turn) extends InternalGameAction {
-  override def execute(currentGameState: GameState): InternalGameActionResult = ()
+  override def execute(gameState: GameState): GameActionResult = ()
   override def canBeReverted: Boolean = true
 }

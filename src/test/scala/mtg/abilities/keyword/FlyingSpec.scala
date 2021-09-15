@@ -78,10 +78,10 @@ class FlyingSpec extends SpecWithGameStateManager {
       manager.attackWith(playerOne, ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
 
-      val stateBeforeBlock = manager.currentGameState
+      val stateBeforeBlock = manager.gameState
       manager.block(playerTwo, AgelessGuardian, ConcordiaPegasus)
 
-      manager.currentGameState mustEqual stateBeforeBlock
+      manager.gameState mustEqual stateBeforeBlock
     }
   }
 }

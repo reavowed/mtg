@@ -42,7 +42,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
       PlayerStartingData(playerTwo, (Seq.fill(30)(BeamingDefiance) ++ Seq.fill(30)(Plains)).map(findCard), Nil)))
 
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
-    val initialGameState = initialManager.currentGameState
+    val initialGameState = initialManager.gameState
 
     val cardsToAdd = Seq(
       (CombatProfessor, Zone.Battlefield, playerOne),

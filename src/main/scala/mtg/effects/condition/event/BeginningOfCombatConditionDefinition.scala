@@ -4,7 +4,7 @@ import mtg.effects.EffectContext
 import mtg.effects.condition.{Condition, ConditionDefinition, EventCondition}
 import mtg.effects.identifiers.StaticIdentifier
 import mtg.game.PlayerId
-import mtg.game.state.{AutomaticGameAction, GameState}
+import mtg.game.state.{GameState, InternalGameAction}
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnEvents.BeginStepEvent
 
@@ -14,7 +14,7 @@ case class BeginningOfCombatConditionDefinition(playerIdentifier: StaticIdentifi
 }
 
 case class BeginningOfCombatCondition(player: PlayerId) extends EventCondition {
-  override def matchesEvent(eventToMatch: AutomaticGameAction, gameState: GameState): Boolean = {
+  override def matchesEvent(eventToMatch: InternalGameAction, gameState: GameState): Boolean = {
     eventToMatch == BeginStepEvent(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == player
   }
 }

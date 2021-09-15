@@ -3,7 +3,7 @@ package mtg.game.stack.steps
 import mtg.game.ObjectId
 import mtg.game.actions.SpendManaAutomaticallyEvent
 import mtg.game.objects.ManaObject
-import mtg.game.state.{BackupAction, GameState, InternalGameAction, InternalGameActionResult}
+import mtg.game.state.{BackupAction, GameState, InternalGameAction, GameActionResult}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
@@ -42,11 +42,11 @@ case class PayCosts(stackObjectId: ObjectId, backupAction: BackupAction) extends
     } yield manaAfterGeneric
   }
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
-    currentGameState.gameObjectState.derivedState.spellStates.get(stackObjectId).toSeq.map { stackObjectWithState =>
+  override def execute(gameState: GameState): GameActionResult = {
+    gameState.gameObjectState.derivedState.spellStates.get(stackObjectId).toSeq.map { stackObjectWithState =>
       stackObjectWithState.characteristics.manaCost match {
         case Some(cost) =>
-          val initialManaInPool = currentGameState.gameObjectState.manaPools(stackObjectWithState.controller)
+          val initialManaInPool = gameState.gameObjectState.manaPools(stackObjectWithState.controller)
           val finalManaInPool = payManaAutomatically(cost.symbols, initialManaInPool)
           finalManaInPool match {
             case Some(finalManaInPool) =>

@@ -7,10 +7,10 @@ import mtg.events.MoveObjectEvent
 import mtg.game.Zone
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, InternalGameActionResult, StackObjectWithState}
+import mtg.game.state.{GameState, InternalGameAction, GameActionResult, StackObjectWithState}
 
 case class ResolveStackObject(stackObject: StackObject) extends InternalGameAction {
-  private def resolvePermanent(stackObjectWithState: StackObjectWithState): InternalGameActionResult = {
+  private def resolvePermanent(stackObjectWithState: StackObjectWithState): GameActionResult = {
     // RULE 608.3 / Apr 22 2021 : If the object that's resolving is a permanent spell, its resolution involves a single
     // step (unless it's an Aura, a copy of a permanent spell, or a mutating creature spell). The spell card becomes a
     // permanent and is put onto the battlefield under the control of the spell's controller.
@@ -22,43 +22,43 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
     )
   }
 
-  private def shouldFizzleDueToInvalidTargets(stackObjectWithState: StackObjectWithState, currentGameState: GameState): Boolean = {
-    val effectContext = stackObjectWithState.getEffectContext(currentGameState)
+  private def shouldFizzleDueToInvalidTargets(stackObjectWithState: StackObjectWithState, gameState: GameState): Boolean = {
+    val effectContext = stackObjectWithState.getEffectContext(gameState)
     stackObjectWithState.gameObject.targets.nonEmpty &&
       stackObject.targets.zip(TargetIdentifier.getAll(stackObjectWithState)).forall { case (target, identifier) =>
-        !identifier.isValidTarget(stackObjectWithState, target, currentGameState, effectContext)
+        !identifier.isValidTarget(stackObjectWithState, target, gameState, effectContext)
       }
   }
 
-  private def resolveInstantOrSorcerySpell(spell: StackObjectWithState, currentGameState: GameState): InternalGameActionResult = {
-    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell, currentGameState)
+  private def resolveInstantOrSorcerySpell(spell: StackObjectWithState, gameState: GameState): GameActionResult = {
+    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell, gameState)
     Seq(
       ResolveEffects(spell.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects), resolutionContext),
       FinishResolvingInstantOrSorcerySpell(spell)
     )
   }
 
-  private def resolveAbility(ability: StackObjectWithState, currentGameState: GameState): InternalGameActionResult = {
-    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability, currentGameState)
+  private def resolveAbility(ability: StackObjectWithState, gameState: GameState): GameActionResult = {
+    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability, gameState)
     Seq(
       ResolveEffects(ability.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects), resolutionContext),
       FinishResolvingAbility(ability)
     )
   }
 
-  override def execute(currentGameState: GameState): InternalGameActionResult = {
-    val stackObjectWithState = stackObject.currentState(currentGameState)
+  override def execute(gameState: GameState): GameActionResult = {
+    val stackObjectWithState = stackObject.currentState(gameState)
     if (stackObjectWithState.characteristics.types.exists(_.isPermanent)) {
       resolvePermanent(stackObjectWithState)
-    } else if (shouldFizzleDueToInvalidTargets(stackObjectWithState, currentGameState)) {
+    } else if (shouldFizzleDueToInvalidTargets(stackObjectWithState, gameState)) {
       (
         MoveObjectEvent(stackObjectWithState.controller, stackObject, Zone.Graveyard(stackObjectWithState.gameObject.owner)),
         LogEvent.SpellFailedToResolve(stackObjectWithState.characteristics.name.get)
       )
     } else if (stackObject.underlyingObject.isInstanceOf[AbilityOnTheStack]) {
-      resolveAbility(stackObjectWithState, currentGameState)
+      resolveAbility(stackObjectWithState, gameState)
     } else {
-      resolveInstantOrSorcerySpell(stackObjectWithState, currentGameState)
+      resolveInstantOrSorcerySpell(stackObjectWithState, gameState)
     }
   }
 

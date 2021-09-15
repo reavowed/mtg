@@ -15,38 +15,38 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
 
   implicit class GameStateManagerOps(gameStateManager: GameStateManager) {
     def updateGameState(f: GameState => GameState): GameStateManager = {
-      new GameStateManager(f(gameStateManager.currentGameState), gameStateManager.onStateUpdate, gameStateManager.stops)
+      new GameStateManager(f(gameStateManager.gameState), gameStateManager.onStateUpdate, gameStateManager.stops)
     }
     def updateGameObjectState(f: GameObjectState => GameObjectState): GameStateManager = {
-      updateGameState(_.updateGameObjectState(f(gameStateManager.currentGameState.gameObjectState)))
+      updateGameState(_.updateGameObjectState(f(gameStateManager.gameState.gameObjectState)))
     }
 
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
-      gameStateManager.currentGameState.gameObjectState.getPermanent(cardDefinition)
+      gameStateManager.gameState.gameObjectState.getPermanent(cardDefinition)
     }
     def getCard(cardDefinition: CardDefinition): GameObject = {
-      gameStateManager.currentGameState.gameObjectState.getCard(cardDefinition)
+      gameStateManager.gameState.gameObjectState.getCard(cardDefinition)
     }
     def getCards(cardDefinitions: CardDefinition*): Seq[GameObject] = {
-      gameStateManager.currentGameState.gameObjectState.getCards(cardDefinitions: _*)
+      gameStateManager.gameState.gameObjectState.getCards(cardDefinitions: _*)
     }
     def getCard(zone: Zone, cardDefinition: CardDefinition): GameObject = {
-      gameStateManager.currentGameState.gameObjectState.getCard(zone, cardDefinition)
+      gameStateManager.gameState.gameObjectState.getCard(zone, cardDefinition)
     }
     def getState(gameObject: GameObject): ObjectWithState = {
-      gameObject.currentState(gameStateManager.currentGameState)
+      gameObject.currentState(gameStateManager.gameState)
     }
     def getState(zone: Zone, cardDefinition: CardDefinition): ObjectWithState = {
       getState(getCard(zone, cardDefinition))
     }
 
-    def currentAction: GameAction = gameStateManager.currentGameState.pendingActions.head
+    def currentAction: GameAction = gameStateManager.gameState.pendingActions.head
 
     def passPriority(player: PlayerId): Unit = {
       gameStateManager.handleDecision("Pass", player)
     }
     private def passUntil(predicate: GameState => Boolean): Unit = {
-      while (!predicate(gameStateManager.currentGameState)) {
+      while (!predicate(gameStateManager.gameState)) {
         currentAction match {
           case choice: PriorityChoice =>
             passPriority(choice.playerToAct)
@@ -78,7 +78,7 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       passUntil(_.gameObjectState.stack.isEmpty)
     }
     def resolveNext(): Unit = {
-      val stackSize = gameStateManager.currentGameState.gameObjectState.stack.size
+      val stackSize = gameStateManager.gameState.gameObjectState.stack.size
       passUntil(_.gameObjectState.stack.size < stackSize)
     }
 
@@ -157,5 +157,5 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     gameStateManager.getCard(cardDefinition).objectId
   }
 
-  implicit def gameObjectStateFromManager(implicit gameStateManager: GameStateManager): GameObjectState = gameStateManager.currentGameState.gameObjectState
+  implicit def gameObjectStateFromManager(implicit gameStateManager: GameStateManager): GameObjectState = gameStateManager.gameState.gameObjectState
 }

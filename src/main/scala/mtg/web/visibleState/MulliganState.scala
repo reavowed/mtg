@@ -2,20 +2,17 @@ package mtg.web.visibleState
 
 import mtg._
 import mtg.game.PlayerId
-import mtg.game.start.mulligans.MulliganOption
+import mtg.game.start.mulligans.MulliganDecision
 import mtg.game.state.GameState
-import mtg.game.state.history.GameEvent.Decision
 
 case class MulliganState(hasKept: Boolean, mulligansTaken: Int)
 object MulliganState {
   def forPlayer(playerIdentifier: PlayerId, gameState: GameState): MulliganState = {
-    val decisions = gameState.gameHistory.gameEventsThisTurn.ofType[Decision]
-      .filter(_.playerIdentifier == playerIdentifier)
-      .map(_.chosenOption)
-      .ofType[MulliganOption]
+    val decisions = gameState.gameHistory.gameEventsThisTurn.actions.ofType[MulliganDecision]
+      .filter(_.player == playerIdentifier)
       .toSeq.reverse
-    val mulligansTaken = decisions.count(_ == MulliganOption.Mulligan)
-    val hasKept = decisions.contains(MulliganOption.Keep) || mulligansTaken == gameState.gameData.startingHandSize;
+    val mulligansTaken = decisions.ofType[MulliganDecision.Mulligan].size
+    val hasKept = decisions.exists(_.isInstanceOf[MulliganDecision.Keep]) || mulligansTaken == gameState.gameData.startingHandSize;
     MulliganState(hasKept, mulligansTaken)
   }
   def forAllPlayers(gameState: GameState): Option[Map[PlayerId, MulliganState]] = {

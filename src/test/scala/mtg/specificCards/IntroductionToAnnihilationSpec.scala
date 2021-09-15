@@ -26,7 +26,7 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
       manager.castSpell(playerOne, IntroductionToAnnihilation)
 
       // TODO: check non-creature permanents
-      implicit val gameObjectState = manager.currentGameState.gameObjectState
+      implicit val gameObjectState = manager.gameState.gameObjectState
       manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions, SpinedKarok)
     }
 
@@ -43,8 +43,8 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
       manager.chooseCard(playerOne, SpinedKarok)
       manager.resolveNext()
 
-      Zone.Battlefield(manager.currentGameState) must not(contain(beCardObject(SpinedKarok)))
-      Zone.Exile(manager.currentGameState) must contain(beCardObject(SpinedKarok))
+      Zone.Battlefield(manager.gameState) must not(contain(beCardObject(SpinedKarok)))
+      Zone.Exile(manager.gameState) must contain(beCardObject(SpinedKarok))
     }
 
     "draw its target's controller a card" in {
@@ -60,9 +60,9 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
       manager.castSpell(playerOne, IntroductionToAnnihilation)
       manager.chooseCard(playerOne, SpinedKarok)
 
-      val gameStateBeforeResolution = manager.currentGameState
+      val gameStateBeforeResolution = manager.gameState
       manager.resolveNext()
-      val gameStateAfterResolution = manager.currentGameState
+      val gameStateAfterResolution = manager.gameState
 
       playerTwo.hand(gameStateAfterResolution).size mustEqual playerTwo.hand(gameStateBeforeResolution).size + 1
     }
