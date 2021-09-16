@@ -1,6 +1,7 @@
 package mtg.stack.resolving
 
 import mtg.abilities.{ActivatedAbilityDefinition, ManaAbility}
+import mtg.cards.text.SimpleSpellEffectParagraph
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.PlayerId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, ObjectWithState}
@@ -8,7 +9,7 @@ import mtg.game.state.{GameActionResult, GameState, InternalGameAction, ObjectWi
 case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     val resolutionContext = StackObjectResolutionContext.forManaAbility(ManaAbility(objectWithAbility.gameObject.objectId, player), gameState)
-    ResolveEffects(ability.effectParagraph.effects, resolutionContext)
+    ResolveEffects(ability.effectParagraph.asInstanceOf[SimpleSpellEffectParagraph].effects, resolutionContext)
   }
 
   override def canBeReverted: Boolean = true

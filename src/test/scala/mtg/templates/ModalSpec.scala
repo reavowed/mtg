@@ -74,5 +74,34 @@ class ModalSpec extends SpecWithGameStateManager {
 
       manager.currentAction must beTargetChoice.forPlayer(playerOne)
     }
+
+    "correctly resolve a mode with no targets" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, ModalCard)
+        .setBattlefield(playerOne, Plains)
+
+      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.activateAbility(playerOne, Plains)
+      manager.castSpell(playerOne, ModalCard)
+      manager.chooseMode(playerOne, 0)
+      manager.resolveNext()
+
+      playerOne.lifeTotal(manager.gameState) mustEqual playerOne.lifeTotal(initialState) + 3
+    }
+
+    "correctly resolve a mode with a target" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, ModalCard)
+        .setBattlefield(playerOne, Plains)
+
+      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.activateAbility(playerOne, Plains)
+      manager.castSpell(playerOne, ModalCard)
+      manager.chooseMode(playerOne, 1)
+      manager.choosePlayer(playerOne, playerTwo)
+      manager.resolveNext()
+
+      playerTwo.lifeTotal(manager.gameState) mustEqual playerTwo.lifeTotal(initialState) - 3
+    }
   }
 }

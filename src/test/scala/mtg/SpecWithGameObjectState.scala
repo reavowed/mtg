@@ -41,6 +41,9 @@ trait SpecWithGameObjectState
     def library = Zone.Library(playerIdentifier)
     def hand = Zone.Hand(playerIdentifier)
     def graveyard = Zone.Graveyard(playerIdentifier)
+
+    def lifeTotal(gameState: GameState): Int = lifeTotal(gameState.gameObjectState)
+    def lifeTotal(gameObjectState: GameObjectState): Int = gameObjectState.lifeTotals(playerIdentifier)
   }
   implicit class ZoneOps(zone: Zone) {
     def apply(gameState: GameState): Seq[GameObject] = {

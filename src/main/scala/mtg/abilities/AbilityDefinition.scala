@@ -52,7 +52,6 @@ trait KeywordAbility extends AbilityDefinition with CaseObjectWithName {
 
 case class SpellAbility(effectParagraph: SpellEffectParagraph) extends AbilityDefinition {
   override def getText(cardName: String): String = effectParagraph.getText(cardName)
-  def effects: Seq[OneShotEffect] = effectParagraph.effects
 }
 
 abstract class StaticAbility extends AbilityDefinition {

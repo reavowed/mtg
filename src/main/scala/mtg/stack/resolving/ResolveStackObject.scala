@@ -33,7 +33,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
   private def resolveInstantOrSorcerySpell(spell: StackObjectWithState, gameState: GameState): GameActionResult = {
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell, gameState)
     Seq(
-      ResolveEffects(spell.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects), resolutionContext),
+      ResolveEffects(spell.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
       FinishResolvingInstantOrSorcerySpell(spell)
     )
   }
@@ -41,7 +41,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
   private def resolveAbility(ability: StackObjectWithState, gameState: GameState): GameActionResult = {
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability, gameState)
     Seq(
-      ResolveEffects(ability.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects), resolutionContext),
+      ResolveEffects(ability.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
       FinishResolvingAbility(ability)
     )
   }

@@ -4,7 +4,6 @@ import mtg.abilities.{AbilityDefinition, SpellAbility}
 import mtg.effects.OneShotEffect
 
 sealed trait SpellEffectParagraph extends TextParagraph {
-  def effects: Seq[OneShotEffect]
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(SpellAbility(this))
 }
 object SpellEffectParagraph {
@@ -20,7 +19,6 @@ case class SimpleSpellEffectParagraph(sentences: SpellEffectSentence*) extends S
 }
 case class ModalEffectParagraph(modes: SimpleSpellEffectParagraph*) extends SpellEffectParagraph {
   override def getText(cardName: String): String = ("Choose one —" +: modes.map(_.getText(cardName)).map("• " + _)).mkString("\n")
-  override def effects: Seq[OneShotEffect] = ???
 }
 
 trait SpellEffectSentence {
