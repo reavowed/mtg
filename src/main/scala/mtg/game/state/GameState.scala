@@ -2,7 +2,7 @@ package mtg.game.state
 
 import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
-import mtg.game.state.history.GameEvent.ResolvedAction
+import mtg.game.state.history.HistoryEvent.{ResolvedAction, ResolvedChoice}
 import mtg.game.state.history._
 import mtg.game.turns.turnEvents.{BeginPhaseEvent, BeginStepEvent, BeginTurnEvent}
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
@@ -20,18 +20,18 @@ case class GameState(
   def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
 
   def currentTurnNumber: Int = currentTurn.map(_.number).getOrElse(0)
-  def currentTurn: Option[Turn] = gameHistory.gameEvents.actions.collectFirst {
+  def currentTurn: Option[Turn] = gameHistory.historyEvents.actions.collectFirst {
     case BeginTurnEvent(turn) => turn
   }
-  def currentPhase: Option[TurnPhase] =  gameHistory.gameEvents.actions.collectOption {
+  def currentPhase: Option[TurnPhase] =  gameHistory.historyEvents.actions.collectFirst {
     case BeginTurnEvent(_) => None
     case BeginPhaseEvent(phase) => Some(phase)
-  }
-  def currentStep: Option[TurnStep] = gameHistory.gameEvents.actions.collectOption {
+  }.flatten
+  def currentStep: Option[TurnStep] = gameHistory.historyEvents.actions.collectFirst {
     case BeginTurnEvent(_) => None
     case BeginPhaseEvent(_) => None
     case BeginStepEvent(step) => Some(step)
-  }
+  }.flatten
 
   def handleActionResult(actionResult: GameActionResult): GameState = {
     addActions(actionResult.childActions).recordLogEvent(actionResult.logEvent)
@@ -41,8 +41,9 @@ case class GameState(
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
   def updateGameObjectState(newGameObjectState: Option[GameObjectState]): GameState = newGameObjectState.map(updateGameObjectState).getOrElse(this)
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
-  def recordAction(action: InternalGameAction): GameState = recordGameEvent(ResolvedAction(action, gameObjectState.derivedState))
-  def recordGameEvent(event: GameEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
+  def recordAction(action: InternalGameAction): GameState = recordHistoryEvent(ResolvedAction(action, this))
+  def recordChoice(choice: Choice): GameState = recordHistoryEvent(ResolvedChoice(choice, this))
+  def recordHistoryEvent(event: HistoryEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
   private def setActions(newActions: Seq[GameAction]) = copy(pendingActions = newActions)

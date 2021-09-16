@@ -33,12 +33,19 @@ case class PriorityChoice(
 
   override def parseDecision(serializedChosenOption: String): Option[Decision] = serializedChosenOption match {
     case "Pass" =>
-      if (remainingPlayers.nonEmpty)
-        PriorityForPlayersAction(remainingPlayers)
-      else
-        ResolveTopStackObject
+      PassPriority(playerToAct, remainingPlayers)
     case TakeAction(action) =>
       Some(Seq(action, PriorityFromPlayerAction(playerToAct)))
     case _ => None
   }
+}
+
+case class PassPriority(playerId: PlayerId, remainingPlayers: Seq[PlayerId]) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+      if (remainingPlayers.nonEmpty)
+        PriorityForPlayersAction(remainingPlayers)
+      else
+        ResolveTopStackObject
+  }
+  override def canBeReverted: Boolean = false
 }

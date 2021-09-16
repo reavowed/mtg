@@ -15,6 +15,11 @@ import scala.collection.mutable
 class GameStateManager(private var _currentGameState: GameState, val onStateUpdate: GameState => Unit, val stops: mutable.Map[PlayerId, Map[PlayerId, Seq[AnyRef]]]) {
   def gameState: GameState = this.synchronized { _currentGameState }
 
+  private def updateState(newState: GameState): Unit = {
+      _currentGameState = newState
+      onStateUpdate(_currentGameState)
+  }
+
   executeAutomaticActions()
 
   private def executeAutomaticActions(): Unit = {
@@ -31,14 +36,9 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       case (priorityChoice: PriorityChoice, gameState)
         if !stops(priorityChoice.playerToAct)(gameState.activePlayer).exists(gameState.currentStep.orElse(gameState.currentPhase).contains)
       =>
-        executeDecision(priorityChoice, "Pass", gameState) match {
-          case Some(gameState) =>
-            executeAutomaticActions(gameState)
-          case None =>
-        }
+        executeAutomaticActions(executeDecision(priorityChoice, "Pass", gameState).get)
       case _ =>
-        _currentGameState = gameState
-        onStateUpdate(_currentGameState)
+        updateState(gameState)
     }
   }
 
@@ -107,10 +107,14 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   def executeDecision(choice: Choice, serializedDecision: String, gameState: GameState): Option[GameState] = {
     choice.parseDecision(serializedDecision) match {
       case Some(decision) =>
-        Some(gameState.addActions(decision.resultingActions))
+        Some(gameState.recordChoice(choice).addActions(decision.resultingActions))
       case None =>
         None
     }
+  }
+
+  def requestUndo(playerId: PlayerId): Unit = {
+    UndoHelper.requestUndo(playerId, gameState).foreach(updateState)
   }
 }
 

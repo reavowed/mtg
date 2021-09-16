@@ -4,7 +4,7 @@ import mtg._
 import mtg.characteristics.types.Type
 import mtg.events.TapObjectEvent
 import mtg.game.state._
-import mtg.game.state.history.GameEvent.ResolvedAction
+import mtg.game.state.history.HistoryEvent.ResolvedAction
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
 import mtg.game.{ObjectId, PlayerId}
@@ -24,7 +24,7 @@ object DeclareAttackers extends InternalGameAction {
 
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
     gameState.gameHistory.gameEventsThisTurn.ofType[ResolvedAction]
-      .forall(_.stateBefore.permanentStates.get(objectId).exists(_.controller == gameState.activePlayer))
+      .forall(_.stateBefore.gameObjectState.derivedState.permanentStates.get(objectId).exists(_.controller == gameState.activePlayer))
   }
   private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
     gameState.gameObjectState.derivedState.permanentStates.values.view

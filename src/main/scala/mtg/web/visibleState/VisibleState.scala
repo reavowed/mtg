@@ -1,7 +1,7 @@
 package mtg.web.visibleState
 
 import mtg.game.objects.GameObject
-import mtg.game.state.{GameState, Choice}
+import mtg.game.state.{Choice, GameState, UndoHelper}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.{GameData, PlayerId, Zone}
 import mtg.parts.mana.ManaType
@@ -21,6 +21,7 @@ case class VisibleState(
   manaPools: Map[PlayerId, Seq[ManaType]],
   mulliganState: Option[Map[PlayerId, MulliganState]],
   currentChoice: Option[CurrentChoice],
+  canUndoLastChoice: Boolean,
   log: Seq[LogEventWrapper]
 )
 
@@ -48,6 +49,7 @@ object VisibleState {
       gameState.gameObjectState.manaPools.view.mapValues(_.map(_.manaType)).toMap,
       MulliganState.forAllPlayers(gameState),
       currentChoice.map(CurrentChoice(_, gameState)),
+      UndoHelper.canUndo(playerIdentifier, gameState),
       gameState.gameHistory.logEvents.map(LogEventWrapper.apply))
   }
 }

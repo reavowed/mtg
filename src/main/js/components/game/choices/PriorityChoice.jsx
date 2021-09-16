@@ -7,6 +7,7 @@ import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import DecisionButton from "../DecisionButton";
 import $ from "jQuery";
+import UndoButton from "../UndoButton";
 
 function ActionText({text}) {
     const elements = [];
@@ -63,6 +64,7 @@ export default function PriorityChoice() {
         <BannerText as="p">Cast spells, activate abilities, or play a land.</BannerText>
         <HorizontalCenter>
             <DecisionButton optionToChoose="Pass">Pass</DecisionButton>
+            <UndoButton/>
         </HorizontalCenter>
         {actionDetails && actionDetails.actions.length > 0 && <ActionMenu {...actionDetails} /> }
     </div>;

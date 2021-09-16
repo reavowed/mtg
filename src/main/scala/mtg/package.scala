@@ -14,7 +14,6 @@ package object mtg {
     def ofType[B : ClassTag]: CC[B] = seq.collect {
       case b: B => b
     }
-    def collectOption[B](f: PartialFunction[A, Option[B]]): Option[B] = findOption(a => f.lift(a).flatten)
     def findOption[B](f: A => Option[B]): Option[B] = seq.iterator.map(f).collectFirst {
       case Some(b) => b
     }

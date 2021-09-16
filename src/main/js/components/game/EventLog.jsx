@@ -19,7 +19,7 @@ function EventLogMessage({entry}) {
         case "ReturnCardsToLibrary":
             return "Player " + entry.details.player + " puts " + getPlural(entry.details.numberOfCards, "card", "cards") + " on the bottom of their library.";
         case "NewTurn":
-            return "Turn " + entry.details.turnNumber + " (" + entry.details.player + ")"
+            return "Turn " + entry.details.turn.number + " (" + entry.details.turn.activePlayer + ")"
         case "DrawForTurn":
             return "Player " + entry.details.player + " draws for turn.";
         case "SkipFirstDrawStep":

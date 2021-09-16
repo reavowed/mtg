@@ -1,8 +1,7 @@
 package mtg.game.start.mulligans
 
 import mtg.events.shuffle.ShuffleHandIntoLibrary
-import mtg.game.state.history.GameEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class ExecuteMulligansAction(mulligansSoFar: Int) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

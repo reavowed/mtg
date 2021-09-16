@@ -39,6 +39,12 @@ class GameController @Autowired() (gameService: GameService) {
     gameService.gameStateManager.handleDecision(if (decision == null) "" else decision, PlayerId(playerIdentifier))
   }
 
+  @PostMapping(Array("/{playerIdentifier}/requestUndo"))
+  @ResponseBody
+  def requestUndo(@PathVariable("playerIdentifier") playerIdentifier: String) = {
+    gameService.gameStateManager.requestUndo(PlayerId(playerIdentifier))
+  }
+
   @GetMapping(value = Array("/{playerIdentifier}/stops"))
   @ResponseBody
   def getStops(@PathVariable("playerIdentifier") playerIdentifier: String) = {
