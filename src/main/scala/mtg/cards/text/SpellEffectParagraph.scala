@@ -3,15 +3,20 @@ package mtg.cards.text
 import mtg.abilities.{AbilityDefinition, SpellAbility}
 import mtg.effects.OneShotEffect
 
-case class SpellEffectParagraph(sentences: SpellEffectSentence*) extends TextParagraph {
-  def getText(cardName: String): String = sentences.map(_.getText(cardName)).mkString(" ")
-  def effects: Seq[OneShotEffect] = sentences.flatMap(_.effects)
+trait SpellEffectParagraph extends TextParagraph {
+  def effects: Seq[OneShotEffect]
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(SpellAbility(this))
 }
 object SpellEffectParagraph {
-  implicit def fromSingleEffect(effect: OneShotEffect): SpellEffectParagraph = SpellEffectParagraph(SpellEffectSentence.SingleClause(effect))
-  implicit def seqFromSingleEffect(effect: OneShotEffect): Seq[SpellEffectParagraph] = Seq(fromSingleEffect(effect))
-  implicit def seqFromSingleSentence(sentence: SpellEffectSentence): Seq[SpellEffectParagraph] = Seq(SpellEffectParagraph(sentence))
+  implicit def fromSingleEffect(effect: OneShotEffect): SimpleSpellEffectParagraph = SimpleSpellEffectParagraph(SpellEffectSentence.SingleClause(effect))
+  implicit def seqFromSingleEffect(effect: OneShotEffect): Seq[SimpleSpellEffectParagraph] = Seq(fromSingleEffect(effect))
+  implicit def seqFromSingleSentence(sentence: SpellEffectSentence): Seq[SimpleSpellEffectParagraph] = Seq(SimpleSpellEffectParagraph(sentence))
+  implicit def seqFromSingleParagraph(paragraph: SpellEffectParagraph): Seq[SpellEffectParagraph] = Seq(paragraph)
+}
+
+case class SimpleSpellEffectParagraph(sentences: SpellEffectSentence*) extends SpellEffectParagraph {
+  def getText(cardName: String): String = sentences.map(_.getText(cardName)).mkString(" ")
+  def effects: Seq[OneShotEffect] = sentences.flatMap(_.effects)
 }
 
 trait SpellEffectSentence {

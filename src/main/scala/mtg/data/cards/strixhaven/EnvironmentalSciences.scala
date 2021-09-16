@@ -2,7 +2,7 @@ package mtg.data.cards.strixhaven
 
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Spell
-import mtg.cards.text.SpellEffectParagraph
+import mtg.cards.text.SimpleSpellEffectParagraph
 import mtg.characteristics.types.SpellType.Lesson
 import mtg.characteristics.types.Supertype.Basic
 import mtg.characteristics.types.Type
@@ -14,6 +14,6 @@ object EnvironmentalSciences extends Spell(
   ManaCost(2),
   Type.Sorcery,
   Seq(Lesson),
-  SpellEffectParagraph(
+  SimpleSpellEffectParagraph(
     (searchYourLibraryForA(card(Basic, Land)), reveal(it), put(it).intoYourHand).`then`(shuffle),
     you.gain(2).life))

@@ -3,7 +3,7 @@ package mtg.data.cards.strixhaven
 import mtg.abilities.builder.EffectBuilder._
 import mtg.abilities.keyword.Vigilance
 import mtg.cards.patterns.Spell
-import mtg.cards.text.SpellEffectParagraph
+import mtg.cards.text.SimpleSpellEffectParagraph
 import mtg.characteristics.types.SpellType.Lesson
 import mtg.characteristics.types.Type
 import mtg.characteristics.types.Type.Creature
@@ -15,7 +15,7 @@ object ExpandedAnatomy extends Spell(
   ManaCost(3),
   Type.Sorcery,
   Seq(Lesson),
-  SpellEffectParagraph(
+  SimpleSpellEffectParagraph(
     put(2, PlusOnePlusOneCounter).on(target(Creature)),
     it(gains(Vigilance)).until(endOfTurn))
 )
