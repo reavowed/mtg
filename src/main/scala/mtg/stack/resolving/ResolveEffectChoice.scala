@@ -1,4 +1,4 @@
-package mtg.game.stack
+package mtg.stack.resolving
 
 import mtg.effects.OneShotEffect
 import mtg.effects.oneshot.OneShotEffectChoice

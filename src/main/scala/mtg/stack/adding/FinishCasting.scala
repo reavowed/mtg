@@ -1,10 +1,9 @@
-package mtg.game.stack.steps
+package mtg.stack.adding
 
 import mtg.game.ObjectId
 import mtg.game.actions.cast
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
-import mtg.game.turns.priority
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class FinishCasting(stackObjectId: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
@@ -15,5 +14,6 @@ case class FinishCasting(stackObjectId: ObjectId) extends InternalGameAction {
       )
     }.getOrElse(())
   }
+
   override def canBeReverted: Boolean = true
 }

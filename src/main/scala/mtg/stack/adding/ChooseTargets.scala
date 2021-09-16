@@ -1,4 +1,4 @@
-package mtg.game.stack.steps
+package mtg.stack.adding
 
 import mtg.effects.EffectContext
 import mtg.effects.targets.TargetIdentifier

@@ -5,11 +5,11 @@ import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.actions.cast.CastSpellAction
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
 import mtg.game.objects.{Card, GameObject, GameObjectState}
-import mtg.game.stack.ResolveEffectChoice
-import mtg.game.stack.steps.TargetChoice
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityChoice
 import mtg.game.{ObjectOrPlayer, PlayerId}
+import mtg.stack.adding.TargetChoice
+import mtg.stack.resolving.ResolveEffectChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 import org.specs2.mutable.SpecificationLike
 

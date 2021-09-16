@@ -3,10 +3,9 @@ package mtg.game.actions.cast
 import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
 import mtg.game.actions.{PriorityAction, TimingChecks}
-import mtg.game.stack.steps
-import mtg.game.stack.steps.FinishCasting
-import mtg.game.state.{BackupAction, GameState, GameActionResult, ObjectWithState}
+import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
+import mtg.stack.adding.{CastSpellAndActivateAbilitySteps, FinishCasting}
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
@@ -16,7 +15,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, back
   override def execute(gameState: GameState): GameActionResult = {
     Seq(
       MoveObjectEvent(player, objectId, Zone.Stack),
-      steps.CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))
+      CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))
   }
   override def canBeReverted: Boolean = true
 }

@@ -1,4 +1,4 @@
-package mtg.game.stack.steps
+package mtg.stack.adding
 
 import mtg.game.ObjectId
 import mtg.game.state._
@@ -11,5 +11,6 @@ case class CastSpellAndActivateAbilitySteps(getFinalAction: ObjectId => GameActi
       PayCosts(stackObjectId, backupAction),
       getFinalAction(stackObjectId))
   }
+
   override def canBeReverted: Boolean = true
 }

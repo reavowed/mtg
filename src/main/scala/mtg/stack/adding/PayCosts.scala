@@ -1,9 +1,9 @@
-package mtg.game.stack.steps
+package mtg.stack.adding
 
 import mtg.game.ObjectId
 import mtg.game.actions.SpendManaAutomaticallyEvent
 import mtg.game.objects.ManaObject
-import mtg.game.state.{BackupAction, GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
@@ -59,5 +59,6 @@ case class PayCosts(stackObjectId: ObjectId, backupAction: BackupAction) extends
       }
     }
   }
+
   override def canBeReverted: Boolean = true
 }

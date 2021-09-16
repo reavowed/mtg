@@ -1,9 +1,9 @@
-package mtg.game.stack.steps
+package mtg.stack.adding
 
 import mtg.game.ObjectId
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class FinishTriggering(abilityId: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
@@ -17,5 +17,6 @@ case class FinishTriggering(abilityId: ObjectId) extends InternalGameAction {
         ability.gameObject.targets.map(_.getName(gameState)))
     }.getOrElse(())
   }
+
   override def canBeReverted: Boolean = true
 }

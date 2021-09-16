@@ -3,8 +3,8 @@ package mtg.game.turns.priority
 import mtg.abilities.PendingTriggeredAbility
 import mtg.game.PlayerId
 import mtg.game.objects.StackObject
-import mtg.game.stack.steps.{ChooseTargets, FinishTriggering}
 import mtg.game.state._
+import mtg.stack.adding.{ChooseTargets, FinishTriggering}
 
 object TriggeredAbilityCheck extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

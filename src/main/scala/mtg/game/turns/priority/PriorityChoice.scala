@@ -3,8 +3,8 @@ package mtg.game.turns.priority
 import mtg.game.PlayerId
 import mtg.game.actions.cast.CastSpellAction
 import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, PriorityAction}
-import mtg.game.stack.ResolveTopStackObject
 import mtg.game.state._
+import mtg.stack.resolving.ResolveTopStackObject
 
 case class PriorityChoice(
   playerToAct: PlayerId,

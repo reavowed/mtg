@@ -1,4 +1,4 @@
-package mtg.game.stack
+package mtg.stack.resolving
 
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
@@ -20,5 +20,6 @@ case class ResolveEffects(effects: Seq[OneShotEffect], resolutionContext: StackO
         ()
     }
   }
+
   override def canBeReverted: Boolean = true
 }

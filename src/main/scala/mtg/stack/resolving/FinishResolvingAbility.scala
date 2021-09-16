@@ -1,10 +1,10 @@
-package mtg.game.stack
+package mtg.stack.resolving
 
 import mtg.abilities.TriggeredAbilityDefinition
 import mtg.events.RemoveObjectFromExistenceEvent
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult, StackObjectWithState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
 
 case class FinishResolvingAbility(ability: StackObjectWithState) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
@@ -20,5 +20,6 @@ case class FinishResolvingAbility(ability: StackObjectWithState) extends Interna
         abilityDefinition.effectParagraph.getText(sourceName))
     )
   }
+
   override def canBeReverted: Boolean = false
 }

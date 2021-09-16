@@ -1,6 +1,6 @@
-package mtg.game.stack
+package mtg.stack.resolving
 
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
 
 object ResolveTopStackObject extends InternalGameAction {
@@ -12,5 +12,6 @@ object ResolveTopStackObject extends InternalGameAction {
         ()
     }
   }
+
   override def canBeReverted: Boolean = false
 }

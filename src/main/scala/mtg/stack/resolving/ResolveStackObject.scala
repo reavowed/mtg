@@ -1,4 +1,4 @@
-package mtg.game.stack
+package mtg.stack.resolving
 
 import mtg.abilities.SpellAbility
 import mtg.effects.StackObjectResolutionContext
@@ -7,7 +7,7 @@ import mtg.events.MoveObjectEvent
 import mtg.game.Zone
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult, StackObjectWithState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
 
 case class ResolveStackObject(stackObject: StackObject) extends InternalGameAction {
   private def resolvePermanent(stackObjectWithState: StackObjectWithState): GameActionResult = {

@@ -1,8 +1,8 @@
 package mtg.web.visibleState
 
-import mtg.game.stack.ResolveEffectChoice
-import mtg.game.state.{GameState, Choice}
+import mtg.game.state.{Choice, GameState}
 import mtg.game.turns.priority.TriggeredAbilityChoice
+import mtg.stack.resolving.ResolveEffectChoice
 
 case class PendingTriggeredAbilityDetails(id: Int, text: String, artDetails: ArtDetails)
 case class TriggeredAbilityChoiceDetails(abilities: Seq[PendingTriggeredAbilityDetails])
