@@ -1,9 +1,12 @@
 package mtg.game.state
 
 import mtg.abilities.AbilityDefinition
+import mtg.cards.text.{ModalEffectParagraph, SimpleSpellEffectParagraph, SpellEffectParagraph}
 import mtg.effects.EffectContext
 import mtg.game.PlayerId
 import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
+
+import scala.annotation.tailrec
 
 sealed abstract class ObjectWithState {
   def gameObject: GameObject
@@ -47,6 +50,21 @@ case class StackObjectWithState(
   override def controllerOrOwner: PlayerId = controller
   override def updateCharacteristics(f: Characteristics => Characteristics): StackObjectWithState = copy(characteristics = f(characteristics))
   def getEffectContext(gameState: GameState): EffectContext = new EffectContext(controller, gameObject.underlyingObject.getSourceName(gameState))
+
+  def applicableEffectParagraphs: Seq[SimpleSpellEffectParagraph] = {
+    @tailrec
+    def getApplicableEffectParagraphs(chosenModes: Seq[Int], remainingParagraphs: Seq[SpellEffectParagraph], resultsSoFar: Seq[SimpleSpellEffectParagraph]): Seq[SimpleSpellEffectParagraph] = {
+      remainingParagraphs match {
+        case (simpleSpellEffectParagraph: SimpleSpellEffectParagraph) +: tail =>
+          getApplicableEffectParagraphs(chosenModes, tail, resultsSoFar :+ simpleSpellEffectParagraph)
+        case (modalEffectParagraph: ModalEffectParagraph) +: tail =>
+          getApplicableEffectParagraphs(chosenModes.tail, tail, resultsSoFar :+ modalEffectParagraph.modes(chosenModes.head))
+        case Nil =>
+          resultsSoFar
+      }
+    }
+    getApplicableEffectParagraphs(gameObject.chosenModes, characteristics.rulesText.ofType[SpellEffectParagraph], Nil)
+  }
 }
 
 object ObjectWithState {

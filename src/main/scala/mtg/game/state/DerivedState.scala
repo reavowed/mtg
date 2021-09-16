@@ -16,9 +16,9 @@ import scala.reflect.ClassTag
 case class DerivedState(
     basicStates: Map[ObjectId, BasicObjectWithState],
     permanentStates: Map[ObjectId, PermanentObjectWithState],
-    spellStates: Map[ObjectId, StackObjectWithState]
+    stackObjectStates: Map[ObjectId, StackObjectWithState]
 ) {
-  val allObjectStates: Map[ObjectId, ObjectWithState] = basicStates ++ permanentStates ++ spellStates
+  val allObjectStates: Map[ObjectId, ObjectWithState] = basicStates ++ permanentStates ++ stackObjectStates
 }
 
 object DerivedState {

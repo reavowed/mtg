@@ -43,7 +43,7 @@ case class PayCosts(stackObjectId: ObjectId, backupAction: BackupAction) extends
   }
 
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.derivedState.spellStates.get(stackObjectId).toSeq.map { stackObjectWithState =>
+    gameState.gameObjectState.derivedState.stackObjectStates.get(stackObjectId).toSeq.map { stackObjectWithState =>
       stackObjectWithState.characteristics.manaCost match {
         case Some(cost) =>
           val initialManaInPool = gameState.gameObjectState.manaPools(stackObjectWithState.controller)

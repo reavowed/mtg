@@ -151,6 +151,9 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     def choosePlayer(player: PlayerId, chosenPlayer: PlayerId): Unit = {
       gameStateManager.handleDecision(chosenPlayer.id, player)
     }
+    def chooseMode(player: PlayerId, modeIndex: Int): Unit = {
+      gameStateManager.handleDecision(modeIndex.toString, player)
+    }
   }
 
   def getId(cardDefinition: CardDefinition)(implicit gameStateManager: GameStateManager): ObjectId = {

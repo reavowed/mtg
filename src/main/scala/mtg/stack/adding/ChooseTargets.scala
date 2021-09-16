@@ -2,13 +2,12 @@ package mtg.stack.adding
 
 import mtg.effects.EffectContext
 import mtg.effects.targets.TargetIdentifier
-import mtg.events.targets.AddTarget
 import mtg.game.state._
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 case class ChooseTargets(objectId: ObjectId, backupAction: BackupAction) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.derivedState.spellStates.get(objectId).toSeq.flatMap { stackObjectWithState =>
+    gameState.gameObjectState.derivedState.stackObjectStates.get(objectId).toSeq.flatMap { stackObjectWithState =>
       val targetIdentifiers = TargetIdentifier.getAll(stackObjectWithState)
       targetIdentifiers.map(targetIdentifier => TargetChoice(
         stackObjectWithState.controller,
@@ -22,6 +21,14 @@ case class ChooseTargets(objectId: ObjectId, backupAction: BackupAction) extends
 
 case class TargetChoice(playerToAct: PlayerId, objectId: ObjectId, targetDescription: String, validOptions: Seq[ObjectOrPlayer]) extends Choice {
   override def parseDecision(serializedChosenOption: String): Option[Decision] = {
-    validOptions.find(_.toString == serializedChosenOption).map(AddTarget(objectId, _))
+    validOptions.find(_.toString == serializedChosenOption)
+      .map(AddTarget(objectId, _))
   }
+}
+
+case class AddTarget(stackObjectId: ObjectId, target: ObjectOrPlayer) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+    gameState.gameObjectState.updateStackObject(stackObjectId, _.addTarget(target))
+  }
+  override def canBeReverted: Boolean = true
 }

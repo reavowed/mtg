@@ -65,15 +65,16 @@ object PermanentObject {
   def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): PermanentObject = PermanentObject(underlyingObject, objectId, defaultController, Map.empty, PermanentStatus(false, false, false, false), 0)
 }
 
-case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, targets: Seq[ObjectOrPlayer], counters: Map[CounterType, Int]) extends TypedGameObject[StackObject] {
+case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, chosenModes: Seq[Int], targets: Seq[ObjectOrPlayer], counters: Map[CounterType, Int]) extends TypedGameObject[StackObject] {
   val zone: Zone.Stack.type = Zone.Stack
   override def updateCounters(newCounters: Map[CounterType, Int]): StackObject = copy(counters = newCounters)
   override def baseState: StackObjectWithState = StackObjectWithState(this, baseCharacteristics, defaultController)
-  def currentState(gameState: GameState): StackObjectWithState = gameState.gameObjectState.derivedState.spellStates(objectId)
+  def currentState(gameState: GameState): StackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(objectId)
   def addTarget(objectOrPlayer: ObjectOrPlayer): StackObject = copy(targets = targets :+ objectOrPlayer)
+  def addMode(modeIndex: Int): StackObject = copy(chosenModes = chosenModes :+ modeIndex)
 }
 object StackObject {
-  def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): StackObject = StackObject(underlyingObject, objectId, defaultController, Nil, Map.empty)
+  def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): StackObject = StackObject(underlyingObject, objectId, defaultController, Nil, Nil, Map.empty)
 }
 
 object GameObject {

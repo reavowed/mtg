@@ -19,7 +19,7 @@ class ModalSpec extends SpecWithGameStateManager {
     Nil,
     chooseOne(
       you.gain(3).life,
-      drawACard)
+      cardName.deals(3).damageTo(anyTarget))
   )
 
   override def getCardPrinting(cardDefinition: CardDefinition): CardPrinting = {
@@ -34,10 +34,10 @@ class ModalSpec extends SpecWithGameStateManager {
       ModalCard.text mustEqual
         """Choose one —
           |• You gain 3 life.
-          |• Draw a card.""".stripMargin.replace("\r", "")
+          |• Modal Card deals 3 damage to any target.""".stripMargin.replace("\r", "")
     }
 
-    "require a choice on casting" in {
+    "require a choice of mode on casting" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, ModalCard)
         .setBattlefield(playerOne, Plains)
@@ -47,6 +47,32 @@ class ModalSpec extends SpecWithGameStateManager {
       manager.castSpell(playerOne, ModalCard)
 
       manager.currentAction must beAnInstanceOf[ModeChoice]
+    }
+
+    "not require a target if chosen mode has no targets" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, ModalCard)
+        .setBattlefield(playerOne, Plains)
+
+      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.activateAbility(playerOne, Plains)
+      manager.castSpell(playerOne, ModalCard)
+      manager.chooseMode(playerOne, 0)
+
+      manager.currentAction must bePriorityChoice.forPlayer(playerOne)
+    }
+
+    "require a target if chosen mode has targets" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, ModalCard)
+        .setBattlefield(playerOne, Plains)
+
+      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.activateAbility(playerOne, Plains)
+      manager.castSpell(playerOne, ModalCard)
+      manager.chooseMode(playerOne, 1)
+
+      manager.currentAction must beTargetChoice.forPlayer(playerOne)
     }
   }
 }

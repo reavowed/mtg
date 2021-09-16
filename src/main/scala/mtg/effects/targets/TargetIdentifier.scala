@@ -1,6 +1,5 @@
 package mtg.effects.targets
 
-import mtg.abilities.SpellAbility
 import mtg.effects.continuous.TargetPreventionEffect
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.Identifier
@@ -29,6 +28,6 @@ class TargetIdentifier[T <: ObjectOrPlayer : ClassTag](filter: Filter[T]) extend
 
 object TargetIdentifier {
   def getAll(stackObjectWithState: StackObjectWithState): Seq[TargetIdentifier[_]] = {
-    stackObjectWithState.characteristics.abilities.ofType[SpellAbility].flatMap(_.effects).flatMap(_.targetIdentifiers)
+    stackObjectWithState.applicableEffectParagraphs.flatMap(_.effects).flatMap(_.targetIdentifiers)
   }
 }

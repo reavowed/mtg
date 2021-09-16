@@ -52,7 +52,7 @@ object VisibleGameObject {
         getCounters(gameObject),
         getModifiers(gameObject, gameState))
     case gameObject: StackObject =>
-      val objectState = gameState.gameObjectState.derivedState.spellStates(gameObject.objectId)
+      val objectState = gameState.gameObjectState.derivedState.stackObjectStates(gameObject.objectId)
       VisibleGameObject(
         objectState.characteristics.name,
         ArtDetails.get(gameObject.underlyingObject, gameState),

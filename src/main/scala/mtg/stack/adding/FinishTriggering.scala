@@ -7,7 +7,7 @@ import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class FinishTriggering(abilityId: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.derivedState.spellStates.get(abilityId).map[GameActionResult] { ability =>
+    gameState.gameObjectState.derivedState.stackObjectStates.get(abilityId).map[GameActionResult] { ability =>
       val abilityDefinition = ability.gameObject.underlyingObject.asInstanceOf[AbilityOnTheStack].abilityDefinition
       val sourceName = ability.gameObject.underlyingObject.getSourceName(gameState)
       LogEvent.PutTriggeredAbilityOnStack(

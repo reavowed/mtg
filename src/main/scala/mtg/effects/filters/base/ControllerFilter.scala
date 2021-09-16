@@ -9,7 +9,7 @@ import mtg.game.{ObjectId, PlayerId}
 case class ControllerFilter(playerIdentifier: StaticIdentifier[PlayerId]) extends PartialFilter[ObjectId] {
   override def matches(t: ObjectId, effectContext: EffectContext, gameState: GameState): Boolean = {
     val expectedController = playerIdentifier.get(effectContext, gameState)
-    gameState.gameObjectState.derivedState.spellStates.get(t).map(_.controller)
+    gameState.gameObjectState.derivedState.stackObjectStates.get(t).map(_.controller)
       .orElse(gameState.gameObjectState.derivedState.permanentStates.get(t).map(_.controller))
       .contains(expectedController)
   }
