@@ -7,6 +7,7 @@ case class CastSpellAndActivateAbilitySteps(getFinalAction: ObjectId => GameActi
   override def execute(gameState: GameState): GameActionResult = {
     val stackObjectId = gameState.gameObjectState.stack.last.objectId
     Seq(
+      ChooseModes(stackObjectId, backupAction),
       ChooseTargets(stackObjectId, backupAction),
       PayCosts(stackObjectId, backupAction),
       getFinalAction(stackObjectId))
