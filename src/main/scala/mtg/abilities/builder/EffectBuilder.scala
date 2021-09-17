@@ -5,7 +5,7 @@ import mtg.cards.text.SpellEffectSentence
 import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
-import mtg.effects.identifiers.Identifier
+import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
 import mtg.effects.oneshot.ContinuousEffectCreationEffect
 import mtg.effects.oneshot.actions._
 import mtg.effects.oneshot.basic._
@@ -18,6 +18,7 @@ object EffectBuilder
     with IdentifierBuilder
     with TargetBuilder
     with ConditionBuilder
+    with NumberBuilder
     with ContinuousEffectBuilder
     with TriggeredAbilityBuilder
     with ParagraphBuilder
@@ -29,19 +30,23 @@ object EffectBuilder
   implicit class EffectExtension(effect: OneShotEffect) extends EffectsSeqExtension(Seq(effect))
   implicit class ThreeEffectsExtension(effects: (OneShotEffect, OneShotEffect, OneShotEffect)) extends EffectsSeqExtension(effects.productIterator.toSeq.ofType[OneShotEffect])
 
-  case class DealEffectBuilder(objectIdentifier: Identifier[ObjectId], amount: Int) {
-      def damageTo(recipientIdentifier: Identifier[ObjectOrPlayer]): OneShotEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
+  case class DealEffectBuilder(objectIdentifier: SingleIdentifier[ObjectId], amount: Int) {
+      def damageTo(recipientIdentifier: SingleIdentifier[ObjectOrPlayer]): OneShotEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
   }
-  case class ContinuousEffectBuilder(objectIdentifier: Identifier[ObjectId], continuousEffectDescriptions: Seq[ContinuousEffectDescription]) {
+  case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[ContinuousEffectDescription]) {
       def until(conditionDefinition: ConditionDefinition): OneShotEffect = ContinuousEffectCreationEffect(objectIdentifier, continuousEffectDescriptions, conditionDefinition)
   }
 
-  implicit class ObjectIdentifierExtension(objectIdentifier: Identifier[ObjectId]) {
+  implicit class ObjectSingleIdentifierExtension(objectIdentifier: SingleIdentifier[ObjectId]) {
     def deals(amount: Int): DealEffectBuilder = DealEffectBuilder(objectIdentifier, amount)
+  }
+  implicit class ObjectMultipleIdentifierExtension(objectIdentifier: MultipleIdentifier[ObjectId]) {
     def apply(continuousEffectDescriptions: ContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectIdentifier, continuousEffectDescriptions)
   }
 
-  implicit class PlayerIdentifierExtension(playerIdentifier: Identifier[PlayerId]) {
+  implicit class ObjectFilterExtension(objectFilter: Filter[ObjectId]) extends ObjectMultipleIdentifierExtension(FilterIdentifier(objectFilter))
+
+  implicit class PlayerIdentifierExtension(playerIdentifier: SingleIdentifier[PlayerId]) {
     def gain(amount: Int) = new {
       def life: OneShotEffect = GainLifeEffect(playerIdentifier, amount)
     }
@@ -49,13 +54,13 @@ object EffectBuilder
   }
 
   def searchYourLibraryForA(objectFilter: Filter[ObjectId]): OneShotEffect = SearchLibraryEffect(objectFilter)
-  def reveal(objectIdentifier: Identifier[ObjectId]): OneShotEffect = RevealEffect(objectIdentifier)
-  def put(objectIdentifier: Identifier[ObjectId]) = new {
+  def reveal(objectIdentifier: SingleIdentifier[ObjectId]): OneShotEffect = RevealEffect(objectIdentifier)
+  def put(objectIdentifier: SingleIdentifier[ObjectId]) = new {
     def intoYourHand: OneShotEffect = PutIntoHandEffect(objectIdentifier)
   }
-  def exile(objectIdentifier: Identifier[ObjectId]): OneShotEffect = ExileEffect(objectIdentifier)
+  def exile(objectIdentifier: SingleIdentifier[ObjectId]): OneShotEffect = ExileEffect(objectIdentifier)
   def put(number: Int, counterType: CounterType) = new {
-    def on(objectIdentifier: Identifier[ObjectId]): OneShotEffect = PutCountersEffect(number, counterType, objectIdentifier)
+    def on(objectIdentifier: SingleIdentifier[ObjectId]): OneShotEffect = PutCountersEffect(number, counterType, objectIdentifier)
   }
   def shuffle: OneShotEffect = ShuffleEffect
   def scry(number: Int): OneShotEffect = ScryEffect(number)

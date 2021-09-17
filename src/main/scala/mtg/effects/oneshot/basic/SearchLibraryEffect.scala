@@ -14,7 +14,7 @@ case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEf
     val zone = Zone.Library(player)
     val possibleChoices = zone.getState(gameState).view
       .map(_.objectId)
-      .filter(objectFilter.isValid(_, resolutionContext, gameState))
+      .filter(objectFilter.matches(_, resolutionContext, gameState))
       .toSeq
     SearchChoice(player, zone, possibleChoices, resolutionContext)
   }

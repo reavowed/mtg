@@ -4,7 +4,7 @@ import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.game.{ObjectId, PlayerId}
 
-case class ControllerIdentifier(objectIdentifier: Identifier[ObjectId]) extends Identifier[PlayerId] {
+case class ControllerIdentifier(objectIdentifier: SingleIdentifier[ObjectId]) extends SingleIdentifier[PlayerId] {
   override def get(gameState: GameState, resolutionContext: StackObjectResolutionContext): (PlayerId, StackObjectResolutionContext) = {
     val (objectId, resolutionContextAfterObject) = objectIdentifier.get(gameState, resolutionContext)
     val controller = gameState.gameObjectState.getCurrentOrLastKnownState(objectId).controllerOrOwner

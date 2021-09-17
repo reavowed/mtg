@@ -64,6 +64,10 @@ package object mtg {
       t
     }
   }
+  implicit class SetExtensionMethods[A](set: Set[A]) {
+    def recast[B >: A]: Set[B] = set.asInstanceOf[Set[B]]
+  }
+
   implicit class TupleExtensionMethods[A, B](tuple: (A, B)) {
     def mapLeft[C](f: A => C): (C, B) = (f(tuple._1), tuple._2)
     def mapRight[C](f: B => C): (A, C) = (tuple._1, f(tuple._2))

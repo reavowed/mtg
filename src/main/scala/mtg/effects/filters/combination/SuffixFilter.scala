@@ -6,8 +6,11 @@ import mtg.game.ObjectOrPlayer
 import mtg.game.state.GameState
 
 case class SuffixFilter[T <: ObjectOrPlayer](mainFilter: Filter[T], suffixFilters: Seq[PartialFilter[T]]) extends Filter[T] {
-  override def isValid(t: T, effectContext: EffectContext, gameState: GameState): Boolean = {
-    suffixFilters.forall(_.matches(t, effectContext, gameState)) && mainFilter.isValid(t, effectContext, gameState)
+  override def matches(t: T, effectContext: EffectContext, gameState: GameState): Boolean = {
+    suffixFilters.forall(_.matches(t, effectContext, gameState)) && mainFilter.matches(t, effectContext, gameState)
   }
-  override def getText(cardName: String): String = (mainFilter +: suffixFilters).map(_.getText(cardName)).mkString(" ")
+  override def getText(cardName: String): String = (mainFilter.getText(cardName) +: suffixFilters.map(_.getText(cardName))).mkString(" ")
+
+  override def getAll(effectContext: EffectContext, gameState: GameState): Set[T] = mainFilter.getAll(effectContext, gameState)
+    .filter(o => suffixFilters.forall(f => f.matches(o, effectContext, gameState)))
 }

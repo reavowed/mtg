@@ -1,13 +1,13 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.identifiers.Identifier
+import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.MoveObjectEvent
 import mtg.game.state.GameState
 import mtg.game.{ObjectId, Zone}
 
-case class ExileEffect(objectIdentifier: Identifier[ObjectId]) extends OneShotEffect {
+case class ExileEffect(objectIdentifier: SingleIdentifier[ObjectId]) extends OneShotEffect {
   override def getText(cardName: String): String = s"exile ${objectIdentifier.getText(cardName)}"
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {

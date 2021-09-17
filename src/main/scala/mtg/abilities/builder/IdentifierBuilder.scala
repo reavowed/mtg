@@ -4,12 +4,12 @@ import mtg.effects.identifiers._
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait IdentifierBuilder {
-  def it: Identifier[ObjectId] = ItIdentifier
+  def it: SingleIdentifier[ObjectId] = ItIdentifier
   def you: StaticIdentifier[PlayerId] = YouIdentifier
-  def cardName: Identifier[ObjectId] = CardNameIdentifier
+  def cardName: SingleIdentifier[ObjectId] = CardNameIdentifier
 
-  implicit class ObjectIdentifierExtensions(objectIdentifier: Identifier[ObjectId]) {
-    def s[T <: ObjectOrPlayer](f: Identifier[ObjectId] => Identifier[T]): Identifier[T] = f(objectIdentifier)
+  implicit class ObjectIdentifierExtensions(objectIdentifier: SingleIdentifier[ObjectId]) {
+    def s[T <: ObjectOrPlayer](f: SingleIdentifier[ObjectId] => SingleIdentifier[T]): SingleIdentifier[T] = f(objectIdentifier)
   }
-  def controller: Identifier[ObjectId] => Identifier[PlayerId] = ControllerIdentifier
+  def controller: SingleIdentifier[ObjectId] => SingleIdentifier[PlayerId] = ControllerIdentifier
 }

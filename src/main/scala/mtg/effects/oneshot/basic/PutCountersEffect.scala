@@ -1,6 +1,6 @@
 package mtg.effects.oneshot.basic
 
-import mtg.effects.identifiers.Identifier
+import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.PutCountersEvent
@@ -9,7 +9,7 @@ import mtg.game.state.GameState
 import mtg.parts.counters.CounterType
 import mtg.utils.TextUtils
 
-case class PutCountersEffect(number: Int, kind: CounterType, objectIdentifier: Identifier[ObjectId]) extends OneShotEffect {
+case class PutCountersEffect(number: Int, kind: CounterType, objectIdentifier: SingleIdentifier[ObjectId]) extends OneShotEffect {
   override def getText(cardName: String): String = {
     def counterDescription = kind.description
     def numberWord = TextUtils.getWord(number, counterDescription)

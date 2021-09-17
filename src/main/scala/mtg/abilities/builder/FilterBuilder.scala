@@ -5,6 +5,7 @@ import mtg.effects.filters.base._
 import mtg.effects.filters.combination.{ImplicitPermanentFilter, NegatedCharacteristicFilter, PrefixFilter, SuffixFilter}
 import mtg.effects.filters.{Filter, PartialFilter}
 import mtg.effects.identifiers.StaticIdentifier
+import mtg.effects.numbers.NumberMatcher
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait FilterBuilder extends FilterBuilder.LowPriority {
@@ -23,6 +24,8 @@ trait FilterBuilder extends FilterBuilder.LowPriority {
   def permanent(filters: PartialFilter[ObjectId]*): Filter[ObjectId] = new PrefixFilter[ObjectId](filters, PermanentFilter)
 
   def non(t: Type) = NegatedCharacteristicFilter(TypeFilter(t))
+
+  def withPower(numberMatcher: NumberMatcher) = PowerFilter(numberMatcher)
 }
 
 object FilterBuilder {
