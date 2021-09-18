@@ -11,7 +11,7 @@ case object Vigilance extends StaticAbility with KeywordAbility {
   override def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect] = Seq(VigilanceEffect(objectWithAbility.gameObject.objectId))
 }
 
-case class VigilanceEffect(affectedObject: ObjectId) extends PreventionEffect.SimpleCheck with ContinuousEffect.ForSingleObject {
+case class VigilanceEffect(affectedObject: ObjectId) extends PreventionEffect.SimpleCheck {
   override def shouldPreventAction(action: InternalGameAction, gameState: GameState): Boolean = {
     action match {
       case TapAttacker(`affectedObject`) => true

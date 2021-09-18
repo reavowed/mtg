@@ -49,5 +49,20 @@ class MassBuffOneShotEffectSpec extends SpecWithTestCards {
       manager.getPermanent(VanillaTwoTwo, playerOne) must havePowerAndToughness(3, 3)
       manager.getPermanent(VanillaOneOne, playerTwo) must havePowerAndToughness(1, 1)
     }
+
+    "only apply to initial set of objects" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, Seq(TestCard, VanillaOneOne))
+        .setBattlefield(playerOne, VanillaTwoTwo)
+
+      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.castSpell(playerOne, TestCard)
+      manager.resolveNext()
+      manager.castSpell(playerOne, VanillaOneOne)
+      manager.resolveNext()
+
+      manager.getPermanent(VanillaOneOne, playerOne) must havePowerAndToughness(1, 1)
+    }
   }
 }

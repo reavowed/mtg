@@ -2,7 +2,7 @@ package mtg.game.state
 
 import mtg.abilities.TriggeredAbility
 import mtg.effects.condition.EventCondition
-import mtg.effects.continuous.PreventionEffect
+import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
 import mtg.effects.continuous.PreventionEffect.Result.Prevent
 import mtg.game.objects.FloatingActiveContinuousEffect
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
@@ -87,8 +87,9 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
         case eventCondition: EventCondition =>
           eventCondition.matchesEvent(action, gameStateAfterAction)
       }
-      def objectExists = effect.effect.affectedObjects.exists(id => gameStateAfterAction.gameObjectState.allObjects.exists(_.objectId == id))
-      matchesCondition || !objectExists
+      def objectIsGone = effect.effect.asOptionalInstanceOf[CharacteristicOrControlChangingContinuousEffect]
+        .exists(e => !gameStateAfterAction.gameObjectState.allObjects.exists(_.objectId == e.affectedObject))
+      matchesCondition || objectIsGone
     })
   }
 

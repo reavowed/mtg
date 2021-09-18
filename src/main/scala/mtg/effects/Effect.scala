@@ -15,15 +15,7 @@ trait OneShotEffect extends Effect with Product {
   def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult
 }
 
-trait ContinuousEffect extends Effect {
-  def affectedObjects: Set[ObjectId]
-}
-
+trait ContinuousEffect extends Effect
 object ContinuousEffect {
-  trait ForSingleObject extends ContinuousEffect {
-    def affectedObject: ObjectId
-    override def affectedObjects: Set[ObjectId] = Set(affectedObject)
-  }
-
   def fromRules = PreventionEffect.fromRules
 }

@@ -1,7 +1,7 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.characteristics.types.Type
-import mtg.effects.continuous.BlockerRestriction
+import mtg.effects.continuous.BlockerRestrictionEffect
 import mtg.game.state.history.LogEvent
 import mtg.game.state._
 import mtg.game.turns.TurnPhase
@@ -30,7 +30,7 @@ object DeclareBlockers extends InternalGameAction {
       .filter(o => o.controller == defendingPlayer)
       .filter(o => !o.gameObject.status.isTapped)
       .toSeq
-    val restrictions = gameState.gameObjectState.activeContinuousEffects.ofType[BlockerRestriction].toSeq
+    val restrictions = gameState.gameObjectState.activeContinuousEffects.ofType[BlockerRestrictionEffect].toSeq
     allPossibleBlockers.map(blockerState => {
       blockerState.gameObject.objectId -> attackerStates.filter(attackerState => !restrictions.exists(_.preventsBlock(attackerState, blockerState))).map(_.gameObject.objectId)
     }).filter(_._2.nonEmpty).toMap

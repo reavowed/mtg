@@ -6,10 +6,10 @@ import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
-import mtg.effects.oneshot.ContinuousEffectCreationEffect
+import mtg.effects.oneshot.CharacteristicOrControlChangingContinuousEffectCreationEffect
 import mtg.effects.oneshot.actions._
 import mtg.effects.oneshot.basic._
-import mtg.effects.oneshot.descriptions.ContinuousEffectDescription
+import mtg.effects.oneshot.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.parts.counters.CounterType
 
@@ -33,15 +33,15 @@ object EffectBuilder
   case class DealEffectBuilder(objectIdentifier: SingleIdentifier[ObjectId], amount: Int) {
       def damageTo(recipientIdentifier: SingleIdentifier[ObjectOrPlayer]): OneShotEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
   }
-  case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[ContinuousEffectDescription]) {
-      def until(conditionDefinition: ConditionDefinition): OneShotEffect = ContinuousEffectCreationEffect(objectIdentifier, continuousEffectDescriptions, conditionDefinition)
+  case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription]) {
+      def until(conditionDefinition: ConditionDefinition): OneShotEffect = CharacteristicOrControlChangingContinuousEffectCreationEffect(objectIdentifier, continuousEffectDescriptions, conditionDefinition)
   }
 
   implicit class ObjectSingleIdentifierExtension(objectIdentifier: SingleIdentifier[ObjectId]) {
     def deals(amount: Int): DealEffectBuilder = DealEffectBuilder(objectIdentifier, amount)
   }
   implicit class ObjectMultipleIdentifierExtension(objectIdentifier: MultipleIdentifier[ObjectId]) {
-    def apply(continuousEffectDescriptions: ContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectIdentifier, continuousEffectDescriptions)
+    def apply(continuousEffectDescriptions: CharacteristicOrControlChangingContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectIdentifier, continuousEffectDescriptions)
   }
 
   implicit class ObjectFilterExtension(objectFilter: Filter[ObjectId]) extends ObjectMultipleIdentifierExtension(FilterIdentifier(objectFilter))

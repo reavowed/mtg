@@ -31,7 +31,6 @@ object PreventionEffect {
   }
 
   object PreventFirstDrawStep extends PreventionEffect {
-    override def affectedObjects: Set[ObjectId] = Set.empty
     override def checkAction(action: InternalGameAction, gameState: GameState): Result = {
       if (gameState.currentTurnNumber == 1 && action == BeginStepEvent(TurnStep.DrawStep)) {
         Result.Prevent(Some(LogEvent.SkipFirstDrawStep(gameState.activePlayer)))

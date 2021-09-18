@@ -2,7 +2,7 @@ package mtg.effects.oneshot
 
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.identifiers.{MultipleIdentifier, SingleIdentifier}
-import mtg.effects.oneshot.descriptions.ContinuousEffectDescription
+import mtg.effects.oneshot.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.CreateContinousEffects
 import mtg.game.ObjectId
@@ -10,9 +10,9 @@ import mtg.game.state.GameState
 import mtg.text.{Sentence, VerbPhraseTemplate}
 import mtg.utils.TextUtils.StringSeqExtensions
 
-case class ContinuousEffectCreationEffect(
+case class CharacteristicOrControlChangingContinuousEffectCreationEffect(
     objectIdentifier: MultipleIdentifier[ObjectId],
-    effectDescriptions: Seq[ContinuousEffectDescription],
+    effectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription],
     conditionDefinition: ConditionDefinition)
   extends OneShotEffect
 {
