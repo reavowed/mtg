@@ -4,22 +4,23 @@
   "description": "Free MTG",
   "scripts": {
     "build": "concurrently \"npm:build-*\"",
-    "build-js": "parcel build -d src/main/resources/static/js --public-url /js/ \"src/main/js/main.js\"",
-    "build-css": "parcel build -d src/main/resources/static/css --public-url /css/ \"src/main/css/main.scss\"",
+    "build-js": "parcel build --dist-dir src/main/resources/static/js --public-url /js/ \"src/main/js/main.js\"",
+    "build-css": "parcel build --dist-dir src/main/resources/static/css --public-url /css/ \"src/main/css/main.scss\"",
     "dev": "concurrently \"npm:dev-*\"",
-    "dev-js": "parcel watch -d src/main/resources/static/js --public-url /js/ \"src/main/js/main.js\"",
-    "dev-css": "parcel watch -d src/main/resources/static/css --public-url /css/ \"src/main/css/main.scss\""
+    "dev-js": "parcel watch --dist-dir src/main/resources/static/js --public-url /js/ \"src/main/js/main.js\"",
+    "dev-css": "parcel watch --dist-dir src/main/resources/static/css --public-url /css/ \"src/main/css/main.scss\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.14.2",
+    "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.13.13",
     "babel-core": "^6.26.3",
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "concurrently": "^6.0.2",
-    "parcel-bundler": "^1.12.4",
+    "parcel": "^2.0.0-rc.0",
     "sass": "^1.32.13"
   },
   "dependencies": {

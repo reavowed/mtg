@@ -10,7 +10,7 @@
     <JSCodeStyleSettings version="0">
       <option name="IMPORT_SORT_MODULE_NAME" value="true" />
     </JSCodeStyleSettings>
-    <PostgresCodeStyleSettings version="5">
+    <PostgresCodeStyleSettings version="6">
       <option name="USE_GENERAL_STYLE" value="false" />
       <option name="QUERY_ALIGN_ELEMENTS" value="false" />
       <option name="INSERT_CONTENT" value="0" />
