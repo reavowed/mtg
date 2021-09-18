@@ -1,33 +1,53 @@
 package mtg.effects
 
-import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.EffectBuilder._
-import mtg.cards.{CardDefinition, CardPrinting}
-import mtg.cards.patterns.Spell
+import mtg.cards.patterns.{Spell, VanillaCreature}
 import mtg.characteristics.types.Type
 import mtg.characteristics.types.Type.Creature
-import mtg.data.sets.Strixhaven
+import mtg.game.turns.{StartNextTurnAction, TurnPhase}
+import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 
-class MassBuffOneShotEffectSpec extends SpecWithGameStateManager {
-  object Card extends Spell(
+class MassBuffOneShotEffectSpec extends SpecWithTestCards {
+  object TestCard extends Spell(
     "Card",
     ManaCost(0),
     Type.Instant,
     Nil,
     Creature(you.control)(get(1, 1)).until(endOfTurn)
   )
+  object VanillaOneOne extends VanillaCreature(
+    "Test 1/1",
+    ManaCost(0),
+    Nil,
+    (1, 1))
+  object VanillaTwoTwo extends VanillaCreature(
+    "Test 2/2",
+    ManaCost(0),
+    Nil,
+    (2, 2))
 
-  override def getCardPrinting(cardDefinition: CardDefinition): CardPrinting = {
-    if (cardDefinition == Card)
-      CardPrinting(cardDefinition, Strixhaven, 999)
-    else
-      super.getCardPrinting(cardDefinition)
-  }
+  override def testCards = Seq(TestCard, VanillaOneOne, VanillaTwoTwo)
 
   "mass buff effect" should {
     "have correct oracle text" in {
-      Card.text mustEqual "Creatures you control get +1/+1 until end of turn."
+      TestCard.text mustEqual "Creatures you control get +1/+1 until end of turn."
+    }
+
+    "apply filter correctly" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, TestCard)
+        .setBattlefield(playerOne, Seq(VanillaOneOne, VanillaTwoTwo))
+        .setBattlefield(playerTwo, VanillaOneOne)
+
+      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.castSpell(playerOne, TestCard)
+      manager.resolveNext()
+
+      manager.getPermanent(VanillaOneOne, playerOne) must havePowerAndToughness(2, 2)
+      manager.getPermanent(VanillaTwoTwo, playerOne) must havePowerAndToughness(3, 3)
+      manager.getPermanent(VanillaOneOne, playerTwo) must havePowerAndToughness(1, 1)
     }
   }
 }

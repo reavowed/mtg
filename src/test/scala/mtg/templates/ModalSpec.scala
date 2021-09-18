@@ -1,18 +1,16 @@
 package mtg.templates
 
-import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Spell
-import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.characteristics.types.Type
 import mtg.data.cards.Plains
-import mtg.data.sets.Strixhaven
 import mtg.game.turns.StartNextTurnAction
+import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice
 
-class ModalSpec extends SpecWithGameStateManager {
-  object ModalCard extends Spell(
+class ModalSpec extends SpecWithTestCards {
+  object TestCard extends Spell(
     "Modal Card",
     ManaCost(1),
     Type.Instant,
@@ -22,41 +20,36 @@ class ModalSpec extends SpecWithGameStateManager {
       cardName.deals(3).damageTo(anyTarget))
   )
 
-  override def getCardPrinting(cardDefinition: CardDefinition): CardPrinting = {
-    if (cardDefinition == ModalCard)
-      CardPrinting(cardDefinition, Strixhaven, 999)
-    else
-      super.getCardPrinting(cardDefinition)
-  }
+  override def testCards = Seq(TestCard)
 
   "modal card" should {
     "have correct oracle text" in {
-      ModalCard.text mustEqual
-        """Choose one —
+      TestCard.text mustEqual
+        s"""Choose one —
           |• You gain 3 life.
-          |• Modal Card deals 3 damage to any target.""".stripMargin.replace("\r", "")
+          |• ${TestCard.name} deals 3 damage to any target.""".stripMargin.replace("\r", "")
     }
 
     "require a choice of mode on casting" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, ModalCard)
+        .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
       implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.activateAbility(playerOne, Plains)
-      manager.castSpell(playerOne, ModalCard)
+      manager.castSpell(playerOne, TestCard)
 
       manager.currentAction must beAnInstanceOf[ModeChoice]
     }
 
     "not require a target if chosen mode has no targets" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, ModalCard)
+        .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
       implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.activateAbility(playerOne, Plains)
-      manager.castSpell(playerOne, ModalCard)
+      manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 0)
 
       manager.currentAction must bePriorityChoice.forPlayer(playerOne)
@@ -64,12 +57,12 @@ class ModalSpec extends SpecWithGameStateManager {
 
     "require a target if chosen mode has targets" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, ModalCard)
+        .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
       implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.activateAbility(playerOne, Plains)
-      manager.castSpell(playerOne, ModalCard)
+      manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 1)
 
       manager.currentAction must beTargetChoice.forPlayer(playerOne)
@@ -77,12 +70,12 @@ class ModalSpec extends SpecWithGameStateManager {
 
     "correctly resolve a mode with no targets" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, ModalCard)
+        .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
       implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.activateAbility(playerOne, Plains)
-      manager.castSpell(playerOne, ModalCard)
+      manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 0)
       manager.resolveNext()
 
@@ -91,12 +84,12 @@ class ModalSpec extends SpecWithGameStateManager {
 
     "correctly resolve a mode with a target" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, ModalCard)
+        .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
       implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.activateAbility(playerOne, Plains)
-      manager.castSpell(playerOne, ModalCard)
+      manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 1)
       manager.choosePlayer(playerOne, playerTwo)
       manager.resolveNext()

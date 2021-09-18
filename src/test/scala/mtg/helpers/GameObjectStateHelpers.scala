@@ -11,6 +11,9 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
       gameObjectState.battlefield.getCard(cardDefinition)
     }
+    def getPermanent(cardDefinition: CardDefinition, owner: PlayerId): PermanentObject = {
+      gameObjectState.battlefield.getMatching(o => o.isCard(cardDefinition) && o.owner == owner)
+    }
     def getCard(cardDefinition: CardDefinition): GameObject = {
       gameObjectState.allObjects.getCard(cardDefinition)
     }

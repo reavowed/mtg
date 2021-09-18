@@ -2,6 +2,7 @@ package mtg.helpers
 
 import mtg.cards.CardDefinition
 import mtg.game.objects.{Card, GameObject, PermanentObject, UnderlyingObject}
+import mtg.game.state.{Characteristics, GameState}
 import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
 
@@ -19,6 +20,12 @@ trait GameObjectHelpers extends SpecificationLike {
     ((_: GameObject).asOptionalInstanceOf[PermanentObject]) ^^ beSome(((_: PermanentObject).status.isTapped) ^^ beTrue)
   }
 
+  def havePowerAndToughness(power: Int, toughness: Int)(implicit gameState: GameState): Matcher[PermanentObject] = {
+    ((_: PermanentObject).currentState(gameState).characteristics) ^^ (
+      (((_: Characteristics).power) ^^ beSome(power)) and (((_: Characteristics).toughness) ^^ beSome(toughness))
+    )
+  }
+
   implicit class GameObjectExtensions[T <: GameObject](gameObject: T) {
     def isCard(cardDefinition: CardDefinition): Boolean = gameObject.underlyingObject.asOptionalInstanceOf[Card].exists(_.printing.cardDefinition == cardDefinition)
   }
@@ -26,10 +33,10 @@ trait GameObjectHelpers extends SpecificationLike {
     def getCard(cardDefinition: CardDefinition): T = {
       gameObjects.view.getCard(cardDefinition)
     }
+    def getMatching(predicate: T => Boolean): T = gameObjects.view.getMatching(predicate)
   }
   implicit class GameObjectViewExtensions[T <: GameObject](gameObjects: View[T]) {
-    def getCard(cardDefinition: CardDefinition): T = {
-      gameObjects.filter(_.isCard(cardDefinition)).single
-    }
+    def getMatching(predicate: T => Boolean): T = gameObjects.filter(predicate).single
+    def getCard(cardDefinition: CardDefinition): T = getMatching(_.isCard(cardDefinition))
   }
 }

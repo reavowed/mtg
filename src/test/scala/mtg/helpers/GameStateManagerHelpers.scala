@@ -24,6 +24,9 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
       gameStateManager.gameState.gameObjectState.getPermanent(cardDefinition)
     }
+    def getPermanent(cardDefinition: CardDefinition, owner: PlayerId): PermanentObject = {
+      gameStateManager.gameState.gameObjectState.getPermanent(cardDefinition, owner)
+    }
     def getCard(cardDefinition: CardDefinition): GameObject = {
       gameStateManager.gameState.gameObjectState.getCard(cardDefinition)
     }
@@ -160,5 +163,6 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     gameStateManager.getCard(cardDefinition).objectId
   }
 
+  implicit def gameStateFromManager(implicit gameStateManager: GameStateManager): GameState = gameStateManager.gameState
   implicit def gameObjectStateFromManager(implicit gameStateManager: GameStateManager): GameObjectState = gameStateManager.gameState.gameObjectState
 }
