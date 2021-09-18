@@ -7,6 +7,7 @@ import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.events.CreateContinousEffects
 import mtg.game.ObjectId
 import mtg.game.state.GameState
+import mtg.text.{Sentence, VerbPhraseTemplate}
 import mtg.utils.TextUtils.StringSeqExtensions
 
 case class ContinuousEffectCreationEffect(
@@ -16,11 +17,12 @@ case class ContinuousEffectCreationEffect(
   extends OneShotEffect
 {
   override def getText(cardName: String): String = {
-    objectIdentifier.getText(cardName) +
-      " " +
-      effectDescriptions.map(_.getText(cardName)).toCommaList +
-      " until " +
-      conditionDefinition.getText(cardName)
+    Sentence.NounAndVerb(
+      objectIdentifier.getNounPhrase(cardName),
+      VerbPhraseTemplate.List(effectDescriptions.map(_.getVerbPhraseTemplate(cardName)))
+        .withSuffix("until")
+        .withSuffix(conditionDefinition.getText(cardName))
+    ).text
   }
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {

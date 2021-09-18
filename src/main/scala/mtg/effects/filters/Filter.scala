@@ -3,6 +3,7 @@ package mtg.effects.filters
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
+import mtg.text.NounPhraseTemplate
 
 trait PartialFilter[T <: ObjectOrPlayer] {
   def matches(t: T, effectContext: EffectContext, gameState: GameState): Boolean
@@ -12,7 +13,7 @@ trait PartialFilter[T <: ObjectOrPlayer] {
 trait Filter[T <: ObjectOrPlayer] {
   def matches(t: T, effectContext: EffectContext, gameState: GameState): Boolean
   def getAll(effectContext: EffectContext, gameState: GameState): Set[T]
-  def getText(cardName: String): String
+  def getNounPhraseTemplate(cardName: String): NounPhraseTemplate
 }
 
 object Filter {
@@ -23,7 +24,7 @@ object Filter {
         case _: PlayerId => false
       }
     }
-    override def getText(cardName: String): String = objectFilter.getText(cardName)
+    override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = objectFilter.getNounPhraseTemplate(cardName)
     override def getAll(effectContext: EffectContext, gameState: GameState): Set[ObjectOrPlayer] = objectFilter.getAll(effectContext, gameState).recast[ObjectOrPlayer]
   }
   implicit class ExtendedPlayerFilter(playerFilter: Filter[PlayerId]) extends Filter[ObjectOrPlayer] {
@@ -33,7 +34,7 @@ object Filter {
         case player: PlayerId => playerFilter.matches(player, effectContext, gameState)
       }
     }
-    override def getText(cardName: String): String = playerFilter.getText(cardName)
+    override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = playerFilter.getNounPhraseTemplate(cardName)
     override def getAll(effectContext: EffectContext, gameState: GameState): Set[ObjectOrPlayer] = playerFilter.getAll(effectContext, gameState).recast[ObjectOrPlayer]
   }
 }

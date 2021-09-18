@@ -6,13 +6,18 @@ import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.ObjectOrPlayer
 import mtg.game.state.{GameState, StackObjectWithState}
+import mtg.text.{GrammaticalNumber, NounPhrase}
 
 import scala.reflect.ClassTag
 
 class TargetIdentifier[T <: ObjectOrPlayer : ClassTag](filter: Filter[T]) extends SingleIdentifier[T] {
-  def getText(cardName: String): String = s"target ${filter.getText(cardName)}"
+  override def getNounPhrase(cardName: String): NounPhrase = {
+    NounPhrase.Templated(
+      filter.getNounPhraseTemplate(cardName).withPrefix("target"),
+      GrammaticalNumber.Singular)
+  }
 
-  def get(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
+  override def get(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
     resolutionContext.popTarget.mapLeft(_.asInstanceOf[T])
   }
   def getValidChoices(source: StackObjectWithState, gameState: GameState, effectContext: EffectContext): Seq[ObjectOrPlayer] = {

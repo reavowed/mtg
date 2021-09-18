@@ -2,8 +2,9 @@ package mtg.effects.oneshot.descriptions
 
 import mtg.effects.ContinuousEffect
 import mtg.game.ObjectId
+import mtg.text.VerbPhraseTemplate
 
 trait ContinuousEffectDescription {
-  def getText(cardName: String): String
+  def getVerbPhraseTemplate(cardName: String): VerbPhraseTemplate
   def getEffect(objectId: ObjectId): ContinuousEffect
 }

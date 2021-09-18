@@ -9,6 +9,4 @@ trait SingleIdentifier[+T <: ObjectOrPlayer] extends MultipleIdentifier[T] {
   def getAll(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Seq[T], StackObjectResolutionContext) = {
     get(gameState, resolutionContext).mapLeft(Seq(_))
   }
-  def getText(cardName: String): String
-  def getPossessiveText(cardName: String): String = getText(cardName) + "'s"
 }

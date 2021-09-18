@@ -13,7 +13,7 @@ object TextUtils {
       getArticle(str) + " " + str
     }
     def uncapitalize: String = {
-      str.head.toLower + str.tail
+      s"${str.head.toLower}${str.tail}"
     }
   }
   def getArticle(word: String): String = {

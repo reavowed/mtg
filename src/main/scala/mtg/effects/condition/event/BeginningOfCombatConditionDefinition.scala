@@ -9,7 +9,11 @@ import mtg.game.turns.TurnStep
 import mtg.game.turns.turnEvents.BeginStepEvent
 
 case class BeginningOfCombatConditionDefinition(playerIdentifier: StaticIdentifier[PlayerId]) extends ConditionDefinition {
-  override def getText(cardName: String): String = "the beginning of combat on " + playerIdentifier.getPossessiveText(cardName) + " turn"
+  override def getText(cardName: String): String = {
+    "the beginning of combat on " +
+      playerIdentifier.getNounPhrase(cardName).possessiveText +
+      " turn"
+  }
   override def getCondition(gameState: GameState, effectContext: EffectContext): Condition = BeginningOfCombatCondition(playerIdentifier.get(effectContext, gameState))
 }
 

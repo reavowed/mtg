@@ -4,6 +4,7 @@ import mtg.abilities.ActivatedAbilityDefinition
 import mtg.characteristics.Color
 import mtg.effects.oneshot.basic
 import mtg.parts.costs.TapSymbol
+import mtg.text.NounPhraseTemplate
 import mtg.utils.CaseObjectWithName
 
 sealed trait TypeSupertypeOrSubtype extends CaseObjectWithName
@@ -17,6 +18,7 @@ object Supertype {
 sealed trait Type extends TypeSupertypeOrSubtype {
   def isSpell: Boolean
   def isPermanent: Boolean
+  def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple(name.toLowerCase)
 }
 
 object Type {
@@ -30,7 +32,9 @@ object Type {
     override def isPermanent: Boolean = true
   }
   case object Instant extends InstantOrSorcery
-  case object Sorcery extends InstantOrSorcery
+  case object Sorcery extends InstantOrSorcery {
+    override def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple("sorcery", "sorceries")
+  }
   case object Creature extends Type {
     override def isSpell: Boolean = true
     override def isPermanent: Boolean = true

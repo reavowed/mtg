@@ -24,7 +24,7 @@ class DataValidationSpec extends Specification {
   "card data" should {
     "match oracle data" in {
       val objectMapper = new ObjectMapper()
-      val oracleDataFile = new FileInputStream(new File(Thread.currentThread().getContextClassLoader.getResource("oracle-cards-20210604090445.json").getPath))
+      val oracleDataFile = new FileInputStream(new File(Thread.currentThread().getContextClassLoader.getResource("oracle-cards-20210918090350.json").getPath))
       val oracleData = objectMapper.readTree(oracleDataFile).asInstanceOf[ArrayNode]
       val cardPrintings = mtg.cards.Set.All.flatMap(_.cardPrintings).filter(p => !Seq(Plains, Island, Swamp, Mountain, Forest).contains(p.cardDefinition))
       foreach(cardPrintings)(cardPrinting => {
