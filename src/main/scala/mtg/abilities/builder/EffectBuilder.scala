@@ -58,6 +58,7 @@ object EffectBuilder
   def put(objectIdentifier: SingleIdentifier[ObjectId]) = new {
     def intoYourHand: OneShotEffect = PutIntoHandEffect(objectIdentifier)
   }
+  def destroy(objectIdentifier: SingleIdentifier[ObjectId]): OneShotEffect = DestroyEffect(objectIdentifier)
   def exile(objectIdentifier: SingleIdentifier[ObjectId]): OneShotEffect = ExileEffect(objectIdentifier)
   def put(number: Int, counterType: CounterType) = new {
     def on(objectIdentifier: SingleIdentifier[ObjectId]): OneShotEffect = PutCountersEffect(number, counterType, objectIdentifier)

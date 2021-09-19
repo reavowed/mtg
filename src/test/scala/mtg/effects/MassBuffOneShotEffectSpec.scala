@@ -1,5 +1,6 @@
 package mtg.effects
 
+import mtg.TestCards.{VanillaOneOne, VanillaTwoTwo}
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.{Spell, VanillaCreature}
 import mtg.characteristics.types.Type
@@ -14,18 +15,7 @@ class MassBuffOneShotEffectSpec extends SpecWithTestCards {
     ManaCost(0),
     Type.Instant,
     Nil,
-    Creature(you.control)(get(1, 1)).until(endOfTurn)
-  )
-  object VanillaOneOne extends VanillaCreature(
-    "Test 1/1",
-    ManaCost(0),
-    Nil,
-    (1, 1))
-  object VanillaTwoTwo extends VanillaCreature(
-    "Test 2/2",
-    ManaCost(0),
-    Nil,
-    (2, 2))
+    Creature(you.control)(get(1, 1)).until(endOfTurn))
 
   override def testCards = Seq(TestCard, VanillaOneOne, VanillaTwoTwo)
 
