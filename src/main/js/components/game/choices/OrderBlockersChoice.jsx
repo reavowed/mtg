@@ -6,7 +6,7 @@ import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import CardImage from "../card/CardImage";
 import DecisionButton from "../DecisionButton";
-import ModalChoice from "./ModalChoice";
+import PopupChoice from "./PopupChoice";
 
 const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
@@ -38,7 +38,7 @@ export default function OrderBlockersChoice() {
         setOrderedBlockerIds(newBlockerIds);
     }, [orderedBlockerIds]);
 
-    return <ModalChoice text="Order Blockers">
+    return <PopupChoice text="Order Blockers">
         <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable" direction="horizontal">
                 {(provided) => (
@@ -74,5 +74,5 @@ export default function OrderBlockersChoice() {
         <HorizontalCenter>
             <DecisionButton optionToChoose={orderedBlockerIds.join(" ")}>Submit</DecisionButton>
         </HorizontalCenter>
-    </ModalChoice>;
+    </PopupChoice>;
 }

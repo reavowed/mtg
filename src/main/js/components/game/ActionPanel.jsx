@@ -12,6 +12,7 @@ import TargetChoice from "./choices/TargetChoice";
 import TriggeredAbilityChoice from "./choices/TriggeredAbilityChoice";
 import ManaPool from "./ManaPool";
 import UndoButton from "./UndoButton";
+import ModeChoice from "./choices/ModeChoice";
 
 function getChoiceDisplay(choiceType) {
     switch (choiceType) {
@@ -33,6 +34,8 @@ function getChoiceDisplay(choiceType) {
             return <ScryChoice />
         case "TriggeredAbilityChoice":
             return <TriggeredAbilityChoice />
+        case "ModeChoice":
+            return <ModeChoice />
     }
 }
 

@@ -3,7 +3,7 @@ import {Button, Modal} from "react-bootstrap";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 
-export default function ModalChoice({text, children}) {
+export default function PopupChoice({text, children}) {
     const [showModal, setShowModal] = useState(true);
     return <div>
         <BannerText as="p">{text}</BannerText>

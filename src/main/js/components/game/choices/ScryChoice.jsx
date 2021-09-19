@@ -8,7 +8,7 @@ import HorizontalCenter from "../../layout/HorizontalCenter";
 import CardBack from "../card/CardBack";
 import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
-import ModalChoice from "./ModalChoice";
+import PopupChoice from "./PopupChoice";
 import _ from "lodash";
 import $ from "jquery";
 
@@ -115,7 +115,7 @@ export default function ScryChoice() {
                                                                 left: (dragLocation.x - cardBeingDragged.x) + "px"
                                                             }} />;
 
-    return <ModalChoice text="Scry">
+    return <PopupChoice text="Scry">
         <HorizontalCenter>
             {dragIndicator}
             {_.map(_.reverse([...cardsOnBottom]), renderCard)}
@@ -129,5 +129,5 @@ export default function ScryChoice() {
         <HorizontalCenter>
             <DecisionButton optionToChoose={cardsOnTop.join(" ") + " | " + cardsOnBottom.join(" ")}>Submit</DecisionButton>
         </HorizontalCenter>
-    </ModalChoice>
+    </PopupChoice>
 }

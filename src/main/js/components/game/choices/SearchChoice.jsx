@@ -5,14 +5,14 @@ import HorizontalCenter from "../../layout/HorizontalCenter";
 import _ from "lodash";
 import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
-import ModalChoice from "./ModalChoice";
+import PopupChoice from "./PopupChoice";
 
 export default function SearchChoice() {
     const gameState = useContext(GameState);
     const [chosenOption, setChosenOption] = useState(null);
     const options = gameState.currentChoice.details.possibleChoices;
 
-    return <ModalChoice text="Choose a Card">
+    return <PopupChoice text="Choose a Card">
                 <div style={{overflowX: "scroll"}}>
                     <HorizontalCenter>
                         {_.map(gameState.libraries[gameState.player], (card, index) => {
@@ -36,5 +36,5 @@ export default function SearchChoice() {
                 <HorizontalCenter>
                     <DecisionButton optionToChoose={chosenOption && chosenOption.toString()} disabled={!chosenOption}>Submit</DecisionButton>
                 </HorizontalCenter>
-    </ModalChoice>;
+    </PopupChoice>;
 }
