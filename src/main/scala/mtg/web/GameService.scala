@@ -3,7 +3,7 @@ package mtg.web
 import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.data.cards.alpha.LightningBolt
 import mtg.data.cards.m21.ConcordiaPegasus
-import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, CombatProfessor}
+import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, CombatProfessor, DefendTheCampus, SpinedKarok}
 import mtg.data.cards.{Mountain, Plains}
 import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
@@ -45,12 +45,13 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialGameState = initialManager.gameState
 
     val cardsToAdd = Seq(
-      (CombatProfessor, Zone.Battlefield, playerOne),
-      (CombatProfessor, Zone.Battlefield, playerOne),
       (Plains, Zone.Battlefield, playerOne),
       (Plains, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
+      (Plains, Zone.Battlefield, playerOne),
+      (DefendTheCampus, Zone.Hand(playerOne), playerOne),
       (ConcordiaPegasus, Zone.Battlefield, playerTwo),
-      (AgelessGuardian, Zone.Battlefield, playerTwo),
+      (SpinedKarok, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
     )
