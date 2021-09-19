@@ -1,45 +1,43 @@
-package mtg.effects
+package mtg.filters
 
 import mtg.TestCards.vanillaCreature
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Spell
 import mtg.characteristics.types.Type
 import mtg.characteristics.types.Type.Creature
-import mtg.game.Zone
 import mtg.game.turns.{StartNextTurnAction, TurnPhase}
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 
-class TargetedDestroyEffectSpec extends SpecWithTestCards {
+class PowerConstantOrGreaterFilterSpec extends SpecWithTestCards {
   object TestCard extends Spell(
     "Card",
     ManaCost(0),
     Type.Instant,
     Nil,
-    destroy(target(Creature)))
+    destroy(target(Creature(withPower(4.orGreater)))))
 
-  val VanillaOneOne = vanillaCreature(1, 1)
+  val ThreeFive = vanillaCreature(3, 5)
+  val FourTwo = vanillaCreature(4, 2)
+  val FiveFive = vanillaCreature(5, 5)
 
-  override def testCards = Seq(TestCard, VanillaOneOne)
+  override def testCards = Seq(TestCard, ThreeFive, FourTwo, FiveFive)
 
-  "destroy effect" should {
+  "power X or greater filter" should {
     "have correct oracle text" in {
-      TestCard.text mustEqual "Destroy target creature."
+      TestCard.text mustEqual "Destroy target creature with power 4 or greater."
     }
 
     "move the creature to the graveyard" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, TestCard)
-        .setBattlefield(playerTwo, VanillaOneOne)
+        .setBattlefield(playerTwo, Seq(ThreeFive, FourTwo, FiveFive))
 
       implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, TestCard)
-      manager.chooseCard(playerOne, VanillaOneOne)
-      manager.resolveNext()
 
-      Zone.Battlefield(manager.gameState) must beEmpty
-      playerTwo.graveyard(manager.gameState) must contain(exactly(beCardObject(VanillaOneOne)))
+      manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(FourTwo, FiveFive)
     }
   }
 }
