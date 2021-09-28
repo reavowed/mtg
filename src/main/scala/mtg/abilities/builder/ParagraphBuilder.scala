@@ -1,9 +1,13 @@
 package mtg.abilities.builder
 
-import mtg.abilities.KeywordAbility
-import mtg.cards.text.{KeywordAbilityParagraph, ModalEffectParagraph, SimpleSpellEffectParagraph, TextParagraph}
+import mtg.abilities.{ActivatedAbilityDefinition, KeywordAbility}
+import mtg.cards.text.{ActivatedAbilityParagraph, KeywordAbilityParagraph, ModalEffectParagraph, SimpleSpellEffectParagraph, SpellEffectParagraph, TextParagraph}
+import mtg.parts.costs.Cost
 
 trait ParagraphBuilder {
+  def activatedAbility(costs: Cost*)(effectParagraph: SpellEffectParagraph): ActivatedAbilityParagraph = {
+    ActivatedAbilityParagraph(ActivatedAbilityDefinition(costs, effectParagraph))
+  }
   def chooseOne(modes: SimpleSpellEffectParagraph*): ModalEffectParagraph = ModalEffectParagraph(modes: _*)
 
   implicit def singleKeywordAbilityAsParagraph(keywordAbility: KeywordAbility): TextParagraph = KeywordAbilityParagraph(Seq(keywordAbility))

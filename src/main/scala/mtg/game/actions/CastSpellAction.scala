@@ -1,8 +1,7 @@
-package mtg.game.actions.cast
+package mtg.game.actions
 
 import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
-import mtg.game.actions.{PriorityAction, TimingChecks}
 import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
 import mtg.stack.adding.{CastSpellAndActivateAbilitySteps, FinishCasting}

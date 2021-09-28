@@ -1,8 +1,7 @@
 package mtg.game.turns.priority
 
 import mtg.game.PlayerId
-import mtg.game.actions.cast.CastSpellAction
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction, PriorityAction}
+import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
 import mtg.stack.resolving.ResolveTopStackObject
 

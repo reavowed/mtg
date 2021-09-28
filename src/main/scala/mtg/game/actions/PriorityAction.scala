@@ -3,7 +3,6 @@ package mtg.game.actions
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
-import mtg.game.actions.cast.CastSpellAction
 import mtg.game.state.{BackupAction, GameState, InternalGameAction}
 import mtg.game.{ObjectId, PlayerId}
 

@@ -5,7 +5,6 @@ import mtg.characteristics.Color
 import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.data.cards.{Forest, Plains}
 import mtg.data.sets.Strixhaven
-import mtg.game.actions.cast.CastSpellAction
 import mtg.game.objects.GameObject
 import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase

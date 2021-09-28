@@ -1,14 +1,13 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
+import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
 import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.turns.priority.PriorityChoice
 import mtg._
-import mtg.game.actions.cast.CastSpellAction
 import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
 
 trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelpers {

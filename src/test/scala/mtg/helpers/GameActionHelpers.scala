@@ -2,8 +2,7 @@ package mtg.helpers
 
 import mtg.cards.CardDefinition
 import mtg.effects.oneshot.OneShotEffectChoice
-import mtg.game.actions.cast.CastSpellAction
-import mtg.game.actions.{ActivateAbilityAction, PlayLandAction}
+import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
 import mtg.game.objects.{Card, GameObject, GameObjectState}
 import mtg.game.state.GameAction
 import mtg.game.turns.priority.PriorityChoice
