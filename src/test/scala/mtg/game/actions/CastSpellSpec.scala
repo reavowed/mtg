@@ -69,7 +69,7 @@ class CastSpellSpec extends SpecWithGameStateManager {
 
       val stateBeforeSpell = manager.gameState
       manager.handleDecision(
-        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
       manager.gameState mustEqual stateBeforeSpell
@@ -85,16 +85,16 @@ class CastSpellSpec extends SpecWithGameStateManager {
 
       // Add necessary mana
       manager.handleDecision(
-        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.handleDecision(
-        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
 
       // Cast spell
       manager.handleDecision(
-        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
       manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
@@ -112,16 +112,16 @@ class CastSpellSpec extends SpecWithGameStateManager {
 
       // Add necessary mana
       manager.handleDecision(
-        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.handleDecision(
-        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
 
       // Cast spell
       manager.handleDecision(
-        manager.gameState.pendingActions.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
       // Resolve the spell

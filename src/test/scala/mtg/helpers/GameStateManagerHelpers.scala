@@ -4,7 +4,7 @@ import mtg.cards.CardDefinition
 import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
-import mtg.game.state.{GameAction, GameState, GameStateManager, ObjectWithState}
+import mtg.game.state.{GameUpdate, GameState, GameStateManager, ObjectWithState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.turns.priority.PriorityChoice
 import mtg._
@@ -42,7 +42,7 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       getState(getCard(zone, cardDefinition))
     }
 
-    def currentAction: GameAction = gameStateManager.gameState.pendingActions.head
+    def currentAction: GameUpdate = gameStateManager.gameState.nextUpdates.head
 
     def passPriority(player: PlayerId): Unit = {
       gameStateManager.handleDecision("Pass", player)

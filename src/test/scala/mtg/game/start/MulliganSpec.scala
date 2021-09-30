@@ -33,7 +33,7 @@ class MulliganSpec extends SpecWithGameStateManager {
     gameState.currentTurnNumber mustEqual 1
     gameState.currentPhase must beSome[TurnPhase](TurnPhase.BeginningPhase)
     gameState.currentStep must beSome[TurnStep](TurnStep.UpkeepStep)
-    gameState.pendingActions.head must bePriorityChoice.forPlayer(playerOne)
+    gameState.nextUpdates.head must bePriorityChoice.forPlayer(playerOne)
   }
 
   "mulligan action" should {
@@ -65,7 +65,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       val finalGameState = manager.gameState
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerOne)
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerTwo)
-      finalGameState.pendingActions.head mustEqual MulliganChoice(playerOne, 1)
+      finalGameState.nextUpdates.head mustEqual MulliganChoice(playerOne, 1)
     }
 
     "only draw one player new cards if other player has kept" in {
@@ -77,7 +77,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       val finalGameState = manager.gameState
       checkLibraryAndHandAreTheSame(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerOne)
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerTwo)
-      finalGameState.pendingActions.head mustEqual MulliganChoice(playerTwo, 1)
+      finalGameState.nextUpdates.head mustEqual MulliganChoice(playerTwo, 1)
     }
 
     "require a card to be put back after mulliganing once" in {
@@ -87,7 +87,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       manager.handleDecision("K", playerTwo)
 
       val finalGameState = manager.gameState
-      finalGameState.pendingActions.head must beLike {
+      finalGameState.nextUpdates.head must beLike {
         case ReturnCardsToLibraryChoice(`playerTwo`, 1, _) => ok
       }
     }
@@ -104,7 +104,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       manager.handleDecision("M", playerTwo)
 
       val finalGameState = manager.gameState
-      finalGameState.pendingActions.head must beLike {
+      finalGameState.nextUpdates.head must beLike {
         case ReturnCardsToLibraryChoice(`playerTwo`, 7, _) => ok
       }
     }

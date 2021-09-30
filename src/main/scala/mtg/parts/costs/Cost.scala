@@ -1,9 +1,9 @@
 package mtg.parts.costs
 
-import mtg.game.state.{GameAction, ObjectWithState}
+import mtg.game.state.{GameUpdate, ObjectWithState}
 
 trait Cost {
   def text: String
   def isUnpayable(objectWithAbility: ObjectWithState): Boolean
-  def payForAbility(objectWithAbility: ObjectWithState): Seq[GameAction]
+  def payForAbility(objectWithAbility: ObjectWithState): Seq[GameUpdate]
 }

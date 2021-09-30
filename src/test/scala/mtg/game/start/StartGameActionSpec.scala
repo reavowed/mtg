@@ -12,7 +12,7 @@ class StartGameActionSpec extends SpecWithGameStateManager {
       val pregameState = createGameState(gameObjectStateWithInitialLibrariesOnly, Nil)
       val result = StartGameAction.execute(pregameState)
 
-      result.childActions mustEqual Seq(
+      result.nextUpdates mustEqual Seq(
         DrawAndMulliganAction(players, 0),
         StartNextTurnAction(playerOne))
     }

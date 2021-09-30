@@ -4,7 +4,7 @@ import mtg.cards.CardDefinition
 import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
 import mtg.game.objects.{Card, GameObject, GameObjectState}
-import mtg.game.state.GameAction
+import mtg.game.state.GameUpdate
 import mtg.game.turns.priority.PriorityChoice
 import mtg.game.{ObjectOrPlayer, PlayerId}
 import mtg.stack.adding.TargetChoice
@@ -15,18 +15,18 @@ import org.specs2.mutable.SpecificationLike
 import scala.collection.mutable.ListBuffer
 import scala.reflect.ClassTag
 
-trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
+trait GameUpdateHelpers extends SpecificationLike with GameObjectStateHelpers {
   def beCastSpellAction(cardDefinition: CardDefinition): Matcher[CastSpellAction] = beCardObject(cardDefinition) ^^ ((_: CastSpellAction).objectToCast.gameObject)
   def beCastSpellAction(gameObject: GameObject): Matcher[CastSpellAction] = { (castSpellAction: CastSpellAction) =>
     (castSpellAction.objectToCast.gameObject == gameObject, "was given object", "was not given object")
   }
 
-  class PriorityChoiceMatcher extends Matcher[GameAction] {
-    private val baseMatcher: Matcher[GameAction] = beAnInstanceOf[PriorityChoice]
+  class PriorityChoiceMatcher extends Matcher[GameUpdate] {
+    private val baseMatcher: Matcher[GameUpdate] = beAnInstanceOf[PriorityChoice]
     private val otherMatchers: ListBuffer[Matcher[PriorityChoice]] = ListBuffer()
-    private def finalMatcher: Matcher[GameAction] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameAction).asInstanceOf[PriorityChoice]}))
+    private def finalMatcher: Matcher[GameUpdate] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameUpdate).asInstanceOf[PriorityChoice]}))
 
-    override def apply[S <: GameAction](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
+    override def apply[S <: GameUpdate](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
 
     def forPlayer(playerIdentifier: PlayerId): PriorityChoiceMatcher = {
       otherMatchers.addOne(((_: PriorityChoice).playerToAct) ^^ beTypedEqualTo(playerIdentifier))
@@ -61,12 +61,12 @@ trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
     implicit def fromPlayer(playerId: PlayerId) = new TargetMagnet(playerId)
   }
 
-  class TargetChoiceMatcher extends Matcher[GameAction] {
-    private val baseMatcher: Matcher[GameAction] = beAnInstanceOf[TargetChoice]
+  class TargetChoiceMatcher extends Matcher[GameUpdate] {
+    private val baseMatcher: Matcher[GameUpdate] = beAnInstanceOf[TargetChoice]
     private val otherMatchers: ListBuffer[Matcher[TargetChoice]] = ListBuffer()
-    private def finalMatcher: Matcher[GameAction] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameAction).asInstanceOf[TargetChoice]}))
+    private def finalMatcher: Matcher[GameUpdate] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameUpdate).asInstanceOf[TargetChoice]}))
 
-    override def apply[S <: GameAction](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
+    override def apply[S <: GameUpdate](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
 
     def forPlayer(playerIdentifier: PlayerId): TargetChoiceMatcher = {
       otherMatchers.addOne(((_: TargetChoice).playerToAct) ^^ beTypedEqualTo(playerIdentifier))
@@ -80,6 +80,6 @@ trait GameActionHelpers extends SpecificationLike with GameObjectStateHelpers {
 
   def bePriorityChoice: PriorityChoiceMatcher = new PriorityChoiceMatcher
   def beTargetChoice: TargetChoiceMatcher = new TargetChoiceMatcher
-  def beEffectChoice[T <: OneShotEffectChoice : ClassTag](m: Matcher[T]): Matcher[GameAction] = beAnInstanceOf[ResolveEffectChoice] and
-    ((_: GameAction).asInstanceOf[ResolveEffectChoice].effectChoice) ^^ (beAnInstanceOf[T] and (((_: OneShotEffectChoice).asInstanceOf[T]) ^^ m))
+  def beEffectChoice[T <: OneShotEffectChoice : ClassTag](m: Matcher[T]): Matcher[GameUpdate] = beAnInstanceOf[ResolveEffectChoice] and
+    ((_: GameUpdate).asInstanceOf[ResolveEffectChoice].effectChoice) ^^ (beAnInstanceOf[T] and (((_: OneShotEffectChoice).asInstanceOf[T]) ^^ m))
 }

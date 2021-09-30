@@ -1,11 +1,11 @@
 package mtg.game.turns
 
-import mtg.game.state.GameAction
+import mtg.game.state.{GameUpdate, InternalGameAction}
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
 import mtg.game.turns.turnBasedActions._
 import mtg.utils.CaseObjectWithName
 
-sealed abstract class TurnStep(val actions: Seq[GameAction]) extends CaseObjectWithName
+sealed abstract class TurnStep(val actions: Seq[InternalGameAction]) extends CaseObjectWithName
 
 object TurnStep {
   case object UntapStep extends TurnStep(Seq(UntapForTurn))

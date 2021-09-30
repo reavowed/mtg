@@ -14,7 +14,7 @@ case class GameState(
   gameData: GameData,
   gameObjectState: GameObjectState,
   gameHistory: GameHistory,
-  pendingActions: Seq[GameAction])
+  nextUpdates: Seq[GameUpdate])
 {
   def activePlayer: PlayerId = currentTurn.get.activePlayer
   def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
@@ -34,7 +34,7 @@ case class GameState(
   }.flatten
 
   def handleActionResult(actionResult: GameActionResult): GameState = {
-    addActions(actionResult.childActions).recordLogEvent(actionResult.logEvent)
+    addUpdates(actionResult.nextUpdates).recordLogEvent(actionResult.logEvent)
   }
 
   def updateHistory(f: GameHistory => GameHistory): GameState = copy(gameHistory = f(gameHistory))
@@ -46,9 +46,9 @@ case class GameState(
   def recordHistoryEvent(event: HistoryEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
-  private def setActions(newActions: Seq[GameAction]) = copy(pendingActions = newActions)
-  def addActions(newActions: Seq[GameAction]) = setActions(newActions ++ pendingActions)
-  def popAction(): (GameAction, GameState) = (pendingActions.head, setActions(pendingActions.tail))
+  private def setActions(newActions: Seq[GameUpdate]) = copy(nextUpdates = newActions)
+  def addUpdates(newActions: Seq[GameUpdate]): GameState = setActions(newActions ++ nextUpdates)
+  def popUpdate(): (GameUpdate, GameState) = (nextUpdates.head, setActions(nextUpdates.tail))
 
   override def toString: String = "GameState"
 }

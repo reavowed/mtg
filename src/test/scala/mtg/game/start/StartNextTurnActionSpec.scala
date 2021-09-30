@@ -3,15 +3,15 @@ package mtg.game.start
 import mtg.SpecWithGameObjectState
 import mtg.game.state.history.GameHistory
 import mtg.game.{GameData, PlayerId}
-import mtg.game.state.{GameAction, GameState, GameActionResult}
+import mtg.game.state.{GameUpdate, GameState, GameActionResult}
 import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.turnEvents.BeginTurnEvent
 import org.specs2.matcher.Matcher
 
 class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
-  def beBeginTurnAction(player: PlayerId): Matcher[GameAction] = {
-    beAnInstanceOf[BeginTurnEvent].and({ (action: GameAction) =>
+  def beBeginTurnAction(player: PlayerId): Matcher[GameUpdate] = {
+    beAnInstanceOf[BeginTurnEvent].and({ (action: GameUpdate) =>
       action.asInstanceOf[BeginTurnEvent].turn.activePlayer
     } ^^ beEqualTo(player))
   }
@@ -22,7 +22,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
       val result = StartNextTurnAction(playerOne).execute(gameState)
 
-      result.childActions must contain(allOf(
+      result.nextUpdates must contain(allOf(
         beBeginTurnAction(playerOne),
         StartNextTurnAction(playerTwo)
       ).inOrder)
@@ -33,7 +33,7 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
       val result = StartNextTurnAction(playerTwo).execute(gameState)
 
-      result.childActions must contain(exactly(
+      result.nextUpdates must contain(exactly(
         beBeginTurnAction(playerTwo),
         StartNextTurnAction(playerOne)
       ))

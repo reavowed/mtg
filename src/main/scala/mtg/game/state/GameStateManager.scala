@@ -28,7 +28,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
 
   @tailrec
   private def executeAutomaticActions(gameState: GameState): Unit = {
-    gameState.popAction() match {
+    gameState.popUpdate() match {
       case (gameEvent: InternalGameAction, gameState) =>
         executeAutomaticActions(executeAutomaticAction(gameEvent, gameState))
       case (BackupAction(gameStateToRevertTo), _) =>
@@ -67,7 +67,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
         initialGameState
           .recordAction(action)
           .updateGameObjectState(finalGameObjectState)
-          .addActions(actionResult.childActions)
+          .addUpdates(actionResult.nextUpdates)
           .recordLogEvent(actionResult.logEvent)
     }
   }
@@ -94,7 +94,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {
-    gameState.popAction() match {
+    gameState.popUpdate() match {
       case (choice: Choice, gameState) if choice.playerToAct == actingPlayer =>
         executeDecision(choice, serializedDecision, gameState) match {
           case Some(gameState) =>
@@ -108,7 +108,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   def executeDecision(choice: Choice, serializedDecision: String, gameState: GameState): Option[GameState] = {
     choice.parseDecision(serializedDecision) match {
       case Some(decision) =>
-        Some(gameState.recordChoice(choice).addActions(decision.resultingActions))
+        Some(gameState.recordChoice(choice).addUpdates(decision.resultingActions))
       case None =>
         None
     }

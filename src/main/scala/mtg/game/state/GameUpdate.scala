@@ -2,16 +2,16 @@ package mtg.game.state
 
 import mtg.game.{ObjectId, PlayerId, Zone}
 
-sealed trait GameAction
+sealed trait GameUpdate
 
-trait InternalGameAction extends GameAction {
+trait InternalGameAction extends GameUpdate {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
 }
 
-case class BackupAction(gameStateToRevertTo: GameState) extends GameAction
+case class BackupAction(gameStateToRevertTo: GameState) extends GameUpdate
 
-trait Choice extends GameAction {
+trait Choice extends GameUpdate {
   def playerToAct: PlayerId
   def parseDecision(serializedDecision: String): Option[Decision]
   def temporarilyVisibleZones: Seq[Zone] = Nil
@@ -32,7 +32,7 @@ object Decision {
   implicit def chain[T, S](f: T => S)(implicit g: S => Decision): T => Decision = t => g(f(t))
 }
 
-sealed abstract class GameResult extends GameAction
+sealed abstract class GameResult extends GameUpdate
 object GameResult {
   object Tie extends GameResult
 }
