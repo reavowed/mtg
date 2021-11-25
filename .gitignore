@@ -279,6 +279,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,scala,gradle,intellij,node
 
 target/
-src/main/resources/static/js/
-src/main/resources/static/css/
+src/main/resources/static/assets/
 src/test/resources/oracle-cards*.json

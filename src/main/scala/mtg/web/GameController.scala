@@ -17,11 +17,11 @@ class GameController @Autowired() (gameService: GameService) {
       <html>
         <head>
           <title>Free MTG</title>
-          <link href="/css/main.css" rel="stylesheet"></link>
+          <link href="/assets/main.css" rel="stylesheet"></link>
         </head>
         <body>
           <div id="container"/>
-          <script crossorigin="" src="/js/main.js"></script>
+          <script crossorigin="" src="/assets/main.js"></script>
         </body>
       </html>.toString
       new ResponseEntity[String](html, HttpStatus.OK)

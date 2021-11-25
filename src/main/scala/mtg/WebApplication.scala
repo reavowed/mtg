@@ -6,8 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 @SpringBootApplication
 class WebApplication
 
-object WebApplication {
-  def main(args: Array[String]): Unit = {
-    SpringApplication.run(classOf[WebApplication], args: _*)
-  }
+object WebApplication extends App {
+  SpringApplication.run(classOf[WebApplication], args: _*)
 }
