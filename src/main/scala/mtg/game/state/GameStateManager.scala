@@ -34,7 +34,8 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       case (BackupAction(gameStateToRevertTo), _) =>
         executeAutomaticActions(gameStateToRevertTo)
       case (priorityChoice: PriorityChoice, gameState)
-        if !stops(priorityChoice.playerToAct)(gameState.activePlayer).exists(gameState.currentStep.orElse(gameState.currentPhase).contains)
+        if !stops(priorityChoice.playerToAct)(gameState.activePlayer).exists(gameState.currentStep.orElse(gameState.currentPhase).contains) &&
+          gameState.gameObjectState.stack.isEmpty
       =>
         executeAutomaticActions(executeDecision(priorityChoice, "Pass", gameState).get)
       case _ =>
