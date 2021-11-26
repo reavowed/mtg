@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import mtg.data.cards.{Forest, Island, Mountain, Plains, Swamp}
 import org.specs2.mutable.Specification
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
 import java.io.{File, FileInputStream}
 import scala.annotation.tailrec
@@ -24,7 +25,7 @@ class DataValidationSpec extends Specification {
   "card data" should {
     "match oracle data" in {
       val objectMapper = new ObjectMapper()
-      val oracleDataFile = new FileInputStream(new File(Thread.currentThread().getContextClassLoader.getResource("oracle-cards-20210918090350.json").getPath))
+      val oracleDataFile = new FileInputStream(new PathMatchingResourcePatternResolver().getResources("classpath*:oracle-cards-*.json").head.getFile)
       val oracleData = objectMapper.readTree(oracleDataFile).asInstanceOf[ArrayNode]
       val cardPrintings = mtg.cards.Set.All.flatMap(_.cardPrintings).filter(p => !Seq(Plains, Island, Swamp, Mountain, Forest).contains(p.cardDefinition))
       foreach(cardPrintings)(cardPrinting => {
