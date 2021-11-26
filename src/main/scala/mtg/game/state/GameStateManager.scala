@@ -30,7 +30,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   private def executeAutomaticActions(gameState: GameState): Unit = {
     gameState.popUpdate() match {
       case (gameEvent: InternalGameAction, gameState) =>
-        executeAutomaticActions(executeAutomaticAction(gameEvent, gameState))
+        executeAutomaticActions(GameActionExecutor.execute(gameEvent, gameState))
       case (BackupAction(gameStateToRevertTo), _) =>
         executeAutomaticActions(gameStateToRevertTo)
       case (priorityChoice: PriorityChoice, gameState)
@@ -41,57 +41,6 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
       case _ =>
         updateState(gameState)
     }
-  }
-
-  private def executeAutomaticAction(action: InternalGameAction, initialGameState: GameState): GameState = {
-    val preventResult = initialGameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
-      .findOption(_.checkAction(action, initialGameState).asOptionalInstanceOf[Prevent])
-
-    preventResult match {
-      case Some(Prevent(logEvent)) =>
-        logEvent.map(initialGameState.recordLogEvent).getOrElse(initialGameState)
-      case None =>
-        val actionResult = action.execute(initialGameState)
-        val gameObjectStateAfterAction = actionResult.newGameObjectState.getOrElse(initialGameState.gameObjectState)
-        val gameStateAfterAction = initialGameState.updateGameObjectState(gameObjectStateAfterAction)
-        val triggeredAbilities = getTriggeringAbilities(action, gameStateAfterAction)
-        val endedEffects = getEndedEffects(action, gameStateAfterAction)
-
-        val finalGameObjectState = if (actionResult.newGameObjectState.isDefined || triggeredAbilities.nonEmpty || endedEffects.nonEmpty) {
-          gameObjectStateAfterAction
-            .addWaitingTriggeredAbilities(triggeredAbilities)
-            .updateEffects(_.filter(!endedEffects.contains(_)))
-        } else {
-          initialGameState.gameObjectState
-        }
-
-        initialGameState
-          .recordAction(action)
-          .updateGameObjectState(finalGameObjectState)
-          .addUpdates(actionResult.nextUpdates)
-          .recordLogEvent(actionResult.logEvent)
-    }
-  }
-
-  private def getTriggeringAbilities(action: InternalGameAction, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
-    gameStateAfterAction.gameObjectState.activeTriggeredAbilities.filter {
-      _.getCondition(gameStateAfterAction) match {
-        case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(action, gameStateAfterAction)
-      }
-    }.toSeq
-  }
-
-  private def getEndedEffects(action: InternalGameAction, gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
-    gameStateAfterAction.gameObjectState.floatingActiveContinuousEffects.filter(effect => {
-      def matchesCondition = effect.endCondition match {
-        case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(action, gameStateAfterAction)
-      }
-      def objectIsGone = effect.effect.asOptionalInstanceOf[CharacteristicOrControlChangingContinuousEffect]
-        .exists(e => !gameStateAfterAction.gameObjectState.allObjects.exists(_.objectId == e.affectedObject))
-      matchesCondition || objectIsGone
-    })
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {
