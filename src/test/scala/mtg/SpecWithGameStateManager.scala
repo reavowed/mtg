@@ -1,10 +1,11 @@
 package mtg
 
 import mtg.game.objects.{GameObject, GameObjectState}
+import mtg.game.start.TakeTurnAction
 import mtg.game.state._
 import mtg.game.state.history.GameHistory
-import mtg.game.turns.TurnPhase
-import mtg.helpers.{GameUpdateHelpers, GameStateManagerHelpers, StackObjectHelpers}
+import mtg.game.turns.{Turn, TurnPhase}
+import mtg.helpers.{GameStateManagerHelpers, GameUpdateHelpers, StackObjectHelpers}
 import org.specs2.matcher.Matcher
 
 import scala.collection.mutable
@@ -15,23 +16,51 @@ abstract class SpecWithGameStateManager
     with GameUpdateHelpers
     with StackObjectHelpers
 {
+  case class RootWrapper(action: GameAction[Any]) extends RootGameAction {
+    override def execute()(implicit gameState: GameState): NewGameActionResult.Partial[RootGameAction] = {
+      NewGameActionResult.Delegated(action, (_: Any, _) => NewGameActionResult.GameOver(GameResult.Tie))
+    }
+  }
+
   def beObjectWithState(gameObject: GameObject): Matcher[ObjectWithState] = {(objectWithState: ObjectWithState) =>
     (objectWithState.gameObject == gameObject, "", "")
   }
 
-  def createGameState(gameObjectState: GameObjectState, actions: Seq[GameUpdate]): GameState = {
-    GameState(gameData, gameObjectState, GameHistory.empty, actions)
+  def createGameState(gameObjectState: GameObjectState, action: RootGameAction): GameState = {
+    GameState(gameData, gameObjectState, GameHistory.empty, Some(action), None)
   }
 
-  def createGameStateManager(gameObjectState: GameObjectState, actions: Seq[GameUpdate]): GameStateManager = {
-    new GameStateManager(createGameState(gameObjectState, actions), _ => {}, mutable.Map(players.map(_ -> players.map(_ -> TurnPhase.AllPhasesAndSteps).toMap): _*))
+  def createGameState(gameObjectState: GameObjectState, action: GameAction[Any]): GameState = {
+    createGameState(gameObjectState, RootWrapper(action))
   }
 
-  def createGameStateManager(gameObjectState: GameObjectState, action: GameUpdate): GameStateManager = {
-    createGameStateManager(gameObjectState, Seq(action, GameResult.Tie))
+  def createGameStateManager(gameState: GameState): GameStateManager = {
+    new GameStateManager(gameState, _ => {}, mutable.Map(players.map(_ -> players.map(_ -> TurnPhase.AllPhasesAndSteps).toMap): _*))
   }
 
-  def runAction(action: GameUpdate, gameObjectState: GameObjectState): GameState = {
-    createGameStateManager(gameObjectState, action).gameState
+  def createGameStateManager(gameObjectState: GameObjectState, action: RootGameAction): GameStateManager = {
+    createGameStateManager(createGameState(gameObjectState, action))
+  }
+
+  def createGameStateManager(gameObjectState: GameObjectState, action: GameAction[Any]): GameStateManager = {
+    createGameStateManager(createGameState(gameObjectState, action))
+  }
+
+  def createGameStateManagerAtStartOfFirstTurn(gameObjectState: GameObjectState): GameStateManager = {
+    createGameStateManager(gameObjectState, TakeTurnAction(Turn(1, playerOne)))
+  }
+
+  def runAction(action: OldGameUpdate, gameObjectState: GameObjectState): GameState = {
+    runAction(WrappedOldUpdates(action), gameObjectState)
+  }
+
+  def runAction(action: GameAction[Any], gameObjectState: GameObjectState): GameState = {
+    val initialGameState = createGameState(gameObjectState, action)
+    GameActionExecutor.executeAllActions(initialGameState)
+  }
+
+  def runAction(action: RootGameAction, gameObjectState: GameObjectState): GameState = {
+    val initialGameState = createGameState(gameObjectState, action)
+    GameActionExecutor.executeAllActions(initialGameState)
   }
 }

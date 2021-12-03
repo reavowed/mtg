@@ -14,10 +14,10 @@ class CombatProfessorSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(CombatProfessor, SavannahLions))
         .setBattlefield(playerTwo, Seq(AgelessGuardian))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.BeginningOfCombatStep)
 
-      manager.currentAction must beTargetChoice.withAvailableTargets(CombatProfessor, SavannahLions)
+      manager.currentChoice must beSome(beTargetChoice.withAvailableTargets(CombatProfessor, SavannahLions))
     }
 
     "grant trigger effect" in {
@@ -25,7 +25,7 @@ class CombatProfessorSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(CombatProfessor, SavannahLions))
         .setBattlefield(playerTwo, Seq(AgelessGuardian))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.BeginningOfCombatStep)
       manager.chooseCard(playerOne, SavannahLions)
       manager.resolveNext()

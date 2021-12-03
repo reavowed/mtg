@@ -19,7 +19,7 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(IntroductionToAnnihilation, GrizzledOutrider))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 5)
@@ -27,7 +27,7 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
 
       // TODO: check non-creature permanents
       implicit val gameObjectState = manager.gameState.gameObjectState
-      manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions, SpinedKarok)
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions, SpinedKarok))
     }
 
     "exile its target" in {
@@ -35,7 +35,7 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(IntroductionToAnnihilation, GrizzledOutrider))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 5)
@@ -53,7 +53,7 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
         .setLibrary(playerTwo, Seq(Forest))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 5)

@@ -32,7 +32,7 @@ class TargetedDestroyEffectSpec extends SpecWithTestCards {
         .setHand(playerOne, TestCard)
         .setBattlefield(playerTwo, VanillaOneOne)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, TestCard)
       manager.chooseCard(playerOne, VanillaOneOne)

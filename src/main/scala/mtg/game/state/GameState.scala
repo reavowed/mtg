@@ -1,7 +1,7 @@
 package mtg.game.state
 
 import mtg.game.objects.GameObjectState
-import mtg.game.start.StartGameAction
+import mtg.game.start.{DrawOpeningHandsAction, TakeTurnAction}
 import mtg.game.state.history.HistoryEvent.{ResolvedAction, ResolvedChoice}
 import mtg.game.state.history._
 import mtg.game.turns.turnEvents.{BeginPhaseEvent, BeginStepEvent, BeginTurnEvent}
@@ -14,15 +14,32 @@ case class GameState(
   gameData: GameData,
   gameObjectState: GameObjectState,
   gameHistory: GameHistory,
-  nextUpdates: Seq[GameUpdate])
+  currentAction: Option[GameAction[RootGameAction]],
+  result: Option[GameResult])
 {
   def activePlayer: PlayerId = currentTurn.get.activePlayer
   def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
 
-  def currentTurnNumber: Int = currentTurn.map(_.number).getOrElse(0)
-  def currentTurn: Option[Turn] = gameHistory.historyEvents.actions.collectFirst {
-    case BeginTurnEvent(turn) => turn
+  def allCurrentActions: Seq[GameUpdate] = {
+    def helper(current: GameAction[_], actions: Seq[GameUpdate]): Seq[GameUpdate] = {
+      current match {
+        case WrappedOldUpdates(nextUpdates@_*) =>
+          actions ++ nextUpdates.headOption.toSeq
+        case WrappedChoice(choice, _) =>
+          actions :+ choice
+        case PartiallyExecutedActionWithChild(rootAction, childAction, _) =>
+          helper(childAction, actions :+ rootAction)
+        case PartiallyExecutedActionWithValue(rootAction, _, _) =>
+          actions :+ rootAction
+        case _ =>
+          actions :+ current
+      }
+    }
+    currentAction.toSeq.flatMap(helper(_, Nil))
   }
+
+  def currentTurn: Option[Turn] = allCurrentActions.headOption.flatMap(_.asOptionalInstanceOf[TakeTurnAction]).map(_.turn)
+  def currentTurnNumber: Int = currentTurn.map(_.number).getOrElse(0)
   def currentPhase: Option[TurnPhase] =  gameHistory.historyEvents.actions.collectFirst {
     case BeginTurnEvent(_) => None
     case BeginPhaseEvent(phase) => Some(phase)
@@ -33,10 +50,6 @@ case class GameState(
     case BeginStepEvent(step) => Some(step)
   }.flatten
 
-  def handleActionResult(actionResult: GameActionResult): GameState = {
-    addUpdates(actionResult.nextUpdates).recordLogEvent(actionResult.logEvent)
-  }
-
   def updateHistory(f: GameHistory => GameHistory): GameState = copy(gameHistory = f(gameHistory))
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
   def updateGameObjectState(newGameObjectState: Option[GameObjectState]): GameState = newGameObjectState.map(updateGameObjectState).getOrElse(this)
@@ -46,9 +59,6 @@ case class GameState(
   def recordHistoryEvent(event: HistoryEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
-  private def setActions(newActions: Seq[GameUpdate]) = copy(nextUpdates = newActions)
-  def addUpdates(newActions: Seq[GameUpdate]): GameState = setActions(newActions ++ nextUpdates)
-  def popUpdate(): (GameUpdate, GameState) = (nextUpdates.head, setActions(nextUpdates.tail))
 
   override def toString: String = "GameState"
 }
@@ -62,6 +72,7 @@ object GameState {
       gameData,
       GameObjectState.initial(gameStartingData, gameData),
       GameHistory.empty,
-      Seq(StartGameAction))
+      Some(DrawOpeningHandsAction),
+      None)
   }
 }

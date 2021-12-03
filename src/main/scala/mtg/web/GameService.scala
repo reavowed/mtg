@@ -8,6 +8,7 @@ import mtg.data.cards.strixhaven.{BeamingDefiance, DefendTheCampus}
 import mtg.data.cards.{Mountain, Plains}
 import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
+import mtg.game.start.TakeTurnAction
 import mtg.game.state.{GameState, GameStateManager}
 import mtg.game.turns.StartNextTurnAction
 import mtg.game.{GameStartingData, PlayerId, PlayerStartingData, Zone}
@@ -59,7 +60,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     )
 
     val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}
-      .copy(nextUpdates = Seq(StartNextTurnAction(playerOne)))
+      .copy(currentAction = Some(TakeTurnAction.first(initialGameState)))
     new GameStateManager(updatedState, onStateUpdate, initialManager.stops)
   }
 

@@ -17,7 +17,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       .setHand(playerOne, Seq(AgelessGuardian))
       .setBattlefield(playerOne, Seq(Plains, Plains))
 
-    val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+    val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
     manager.passUntilPhase(PrecombatMainPhase)
 
     // Tap mana and cast creature
@@ -39,7 +39,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       .setHand(playerTwo, SpinedKarok)
       .setBattlefield(playerTwo, Forest, 3)
 
-    val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+    val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
     // Cast attacker
     manager.passUntilPhase(PrecombatMainPhase)
@@ -70,7 +70,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       .setHand(playerTwo, AgelessGuardian)
       .setBattlefield(playerTwo, Plains, 2)
 
-    val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+    val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
     // Cast attacker
     manager.passUntilPhase(PrecombatMainPhase)
@@ -99,7 +99,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Plains, 2)
         .setHand(playerTwo, Seq(SpinedKarok, GrizzledOutrider))
         .setBattlefield(playerTwo, Forest, 8)
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -125,7 +125,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       manager.passUntilStep(TurnStep.CombatDamageStep)
 
       // Assert
-      manager.currentAction should bePriorityChoice
+      manager.currentChoice must beSome(bePriorityChoice)
       manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
       manager.getPermanent(GrizzledOutrider).markedDamage mustEqual 0
     }
@@ -136,7 +136,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 5)
         .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
         .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -162,7 +162,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       manager.passUntilStep(TurnStep.CombatDamageStep)
 
       // Assert
-      manager.currentAction should beAnInstanceOf[AssignCombatDamageChoice]
+      manager.currentChoice must beSome(beAnInstanceOf[AssignCombatDamageChoice])
     }
 
     "not be allowed to assign less than lethal damage to the first blocker" in {
@@ -171,7 +171,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 5)
         .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
         .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -198,7 +198,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       manager.assignDamage(playerOne, (AgelessGuardian, 1), (SpinedKarok, 4))
 
       // Assert
-      manager.currentAction should beAnInstanceOf[AssignCombatDamageChoice]
+      manager.currentChoice must beSome(beAnInstanceOf[AssignCombatDamageChoice])
     }
 
     "be allowed to assign lethal damage to the first blocker and excess damage to the second" in {
@@ -207,7 +207,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 5)
         .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
         .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -234,7 +234,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       manager.assignDamage(playerOne, (AgelessGuardian, 4), (SpinedKarok, 1))
 
       // Assert
-      manager.currentAction should bePriorityChoice
+      manager.currentChoice must beSome(bePriorityChoice)
       Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(AgelessGuardian))
       manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
     }
@@ -245,7 +245,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 5)
         .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
         .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -272,7 +272,7 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       manager.assignDamage(playerOne, (AgelessGuardian, 5), (SpinedKarok, 0))
 
       // Assert
-      manager.currentAction should bePriorityChoice
+      manager.currentChoice must beSome(bePriorityChoice)
       Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(AgelessGuardian))
       manager.getPermanent(SpinedKarok).markedDamage mustEqual 0
     }

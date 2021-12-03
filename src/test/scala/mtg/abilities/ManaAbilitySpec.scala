@@ -39,7 +39,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
         val initialState = emptyGameObjectState
           .setBattlefield(playerOne, Plains)
 
-        implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+        implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
         manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
         manager.activateAbility(playerOne, Plains)
 
@@ -52,7 +52,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
         val initialState = emptyGameObjectState
           .setBattlefield(playerOne, CreatureWithManaAbility)
 
-        implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+        implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
         manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
         manager.activateAbility(playerOne, CreatureWithManaAbility)
 
@@ -67,7 +67,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, CreatureWithAbilityThatDrawsACard)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.activateAbility(playerOne, CreatureWithAbilityThatDrawsACard)
 
@@ -81,7 +81,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, CreatureWithAbilityThatAddsManaButTargets)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.activateAbility(playerOne, CreatureWithAbilityThatAddsManaButTargets)
 

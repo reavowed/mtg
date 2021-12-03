@@ -16,7 +16,7 @@ class CleanupSpec extends SpecWithGameStateManager {
         .setHand(playerTwo, SpinedKarok)
         .setBattlefield(playerTwo, Forest, 3)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)

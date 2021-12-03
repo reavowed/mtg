@@ -33,7 +33,7 @@ class MassBuffOneShotEffectSpec extends SpecWithTestCards {
         .setBattlefield(playerOne, Seq(VanillaOneOne, VanillaTwoTwo))
         .setBattlefield(playerTwo, VanillaOneOne)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, TestCard)
       manager.resolveNext()
@@ -48,7 +48,7 @@ class MassBuffOneShotEffectSpec extends SpecWithTestCards {
         .setHand(playerOne, Seq(TestCard, VanillaOneOne))
         .setBattlefield(playerOne, VanillaTwoTwo)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, TestCard)
       manager.resolveNext()

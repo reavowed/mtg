@@ -1,26 +1,19 @@
 package mtg.game.start
 
 import mtg.SpecWithGameStateManager
-import mtg.game.start.mulligans.DrawAndMulliganAction
-import mtg.game.state.GameActionResult
 import mtg.game.state.history.LogEvent
-import mtg.game.turns.StartNextTurnAction
 
 class StartGameActionSpec extends SpecWithGameStateManager {
   "start game action" should {
     "initialize mulligans and turns" in {
-      val pregameState = createGameState(gameObjectStateWithInitialLibrariesOnly, Nil)
-      val result = StartGameAction.execute(pregameState)
+      val gameStateAfterAction = runAction(DrawOpeningHandsAction, gameObjectStateWithInitialLibrariesOnly)
 
-      result.nextUpdates mustEqual Seq(
-        DrawAndMulliganAction(players, 0),
-        StartNextTurnAction(playerOne))
+      gameStateAfterAction.allCurrentActions.head mustEqual MulligansAction(players, 0)
     }
     "log event" in {
-      val pregameState = createGameState(gameObjectStateWithInitialLibrariesOnly, Nil)
-      val result = StartGameAction.execute(pregameState)
+      val gameStateAfterAction = runAction(DrawOpeningHandsAction, gameObjectStateWithInitialLibrariesOnly)
 
-      result.logEvent must beSome(LogEvent.Start(playerOne))
+      gameStateAfterAction.gameHistory.logEvents.lastOption must beSome(LogEvent.Start(playerOne))
     }
   }
 }

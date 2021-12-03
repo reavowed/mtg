@@ -18,7 +18,7 @@ class DrawStepSpec extends SpecWithGameStateManager {
   "draw step" should {
     "be skipped for first turn" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilTurn(1)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
@@ -32,7 +32,7 @@ class DrawStepSpec extends SpecWithGameStateManager {
     }
     "not be skipped for second turn" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilTurn(2)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)

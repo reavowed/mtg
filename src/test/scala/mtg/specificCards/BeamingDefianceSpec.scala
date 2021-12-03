@@ -16,11 +16,11 @@ class BeamingDefianceSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(SavannahLions, Plains, Plains))
         .setBattlefield(playerTwo, AgelessGuardian)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbilities(playerOne, Plains, 2)
       manager.castSpell(playerOne, BeamingDefiance)
 
-      manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions)
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions))
     }
 
     "grant p/t bonus" in {
@@ -29,7 +29,7 @@ class BeamingDefianceSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(SavannahLions, Plains, Plains))
         .setBattlefield(playerTwo, AgelessGuardian)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbilities(playerOne, Plains, 2)
       manager.castSpell(playerOne, BeamingDefiance)
       manager.chooseCard(playerOne, SavannahLions)

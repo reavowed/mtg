@@ -18,32 +18,32 @@ class PlayLandSpec extends SpecWithGameStateManager {
     "be available for all lands in hand in main phase of own turn with empty stack" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableLands(contain(exactly(
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableLands(contain(exactly(
         bePlayLandAction(Plains),
-        bePlayLandAction(Forest))))
+        bePlayLandAction(Forest)))))
     }
 
     "not be available on another player's turn" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerTwo).withAvailableLands(beEmpty)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerTwo).withAvailableLands(beEmpty))
     }
 
     "not be available if player has already played a land this turn" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.playLand(playerOne, Plains)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableLands(beEmpty)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableLands(beEmpty))
     }
 
     "be available for all lands in hand if player has not played a land this turn" in {
@@ -51,23 +51,23 @@ class PlayLandSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
         .setLibrary(playerOne, Seq(Swamp))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.playLand(playerOne, Plains)
       manager.passUntilTurn(3)
       manager.passUntilPhase(PrecombatMainPhase)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne)
-        .withAvailableLands(contain(exactly(bePlayLandAction(Forest), bePlayLandAction(Swamp))))
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne)
+        .withAvailableLands(contain(exactly(bePlayLandAction(Forest), bePlayLandAction(Swamp)))))
     }
 
     "not be available in upkeep" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableLands(beEmpty)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableLands(beEmpty))
     }
 
     "not be available if stack is non-empty" in {
@@ -75,7 +75,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(AgelessGuardian, Plains))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Tap mana and cast spell
@@ -83,7 +83,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.activateFirstAbility(playerOne, Plains)
       manager.castSpell(playerOne, AgelessGuardian)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableLands(beEmpty)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableLands(beEmpty))
     }
 
     // TODO: no land actions if stack is non-empty
@@ -97,7 +97,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
     "move the land to the battlefield" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.playLand(playerOne, Plains)
 
@@ -107,7 +107,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
     "log an event" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.playLand(playerOne, Plains)
 

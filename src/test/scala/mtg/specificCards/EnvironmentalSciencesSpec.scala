@@ -16,11 +16,11 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
         .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpell(EnvironmentalSciences)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableSpell(EnvironmentalSciences))
     }
 
     "offer the choice of a basic land" in {
@@ -28,18 +28,18 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
         .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Forest, 2)
       manager.castSpell(playerOne, EnvironmentalSciences)
       manager.resolveNext()
 
-      manager.currentAction must beAnInstanceOf[ResolveEffectChoice]
-      manager.currentAction.asInstanceOf[ResolveEffectChoice].effectChoice.playerChoosing mustEqual playerOne
-      manager.currentAction.asInstanceOf[ResolveEffectChoice].effectChoice must beAnInstanceOf[SearchChoice]
-      manager.currentAction.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchChoice].zone mustEqual Zone.Library(playerOne)
-      manager.currentAction.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchChoice].possibleChoices mustEqual manager.getCards(Island, Plains).map(_.objectId)
+      manager.currentChoice must beSome(beAnInstanceOf[ResolveEffectChoice])
+      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.playerChoosing mustEqual playerOne
+      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice must beAnInstanceOf[SearchChoice]
+      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchChoice].zone mustEqual Zone.Library(playerOne)
+      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchChoice].possibleChoices mustEqual manager.getCards(Island, Plains).map(_.objectId)
     }
 
     "put the chosen land into its controller's hand" in {
@@ -47,7 +47,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
         .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Forest, 2)
@@ -63,7 +63,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
         .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Forest, 2)
@@ -80,7 +80,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
         .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Forest, 2)
@@ -96,7 +96,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
         .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Forest, 2)
@@ -114,7 +114,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
         .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Forest, 2)

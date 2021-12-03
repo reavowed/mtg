@@ -27,7 +27,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     "have an appropriate mana ability" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       val plainsObject = manager.getCard(Zone.Battlefield, Plains)
@@ -38,33 +38,33 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     "be tappable for mana by their controller" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       val plainsObject = manager.getCard(Zone.Battlefield, Plains)
       val plainsState = manager.getState(plainsObject)
-      manager.currentAction should bePriorityChoice.forPlayer(playerOne)
-        .withAvailableAbility(beActivatableAbilityAction(plainsObject, plainsState.characteristics.abilities.head.asInstanceOf[ActivatedAbilityDefinition]))
+      manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerOne)
+        .withAvailableAbility(beActivatableAbilityAction(plainsObject, plainsState.characteristics.abilities.head.asInstanceOf[ActivatedAbilityDefinition])))
     }
 
     "not be tappable for mana by a player who doesn't control them" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
 
-      manager.currentAction should bePriorityChoice.forPlayer(playerTwo).withAvailableAbilities(beEmpty)
+      manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerTwo).withAvailableAbilities(beEmpty))
     }
 
     "tap for mana" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbility(playerOne, Plains)
 
-      manager.currentAction should bePriorityChoice.forPlayer(playerOne)
+      manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerOne))
       manager.getCard(Zone.Battlefield, Plains) must beTapped
       manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
     }
@@ -72,22 +72,22 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     "not tap for mana twice" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbility(playerOne, Plains)
 
-      manager.currentAction should bePriorityChoice.forPlayer(playerOne).withAvailableAbilities(beEmpty)
+      manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerOne).withAvailableAbilities(beEmpty))
     }
 
     "return priority to NAP after tapping for mana" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerTwo, Seq(Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
       manager.activateAbility(playerTwo, Plains)
 
-      manager.currentAction should bePriorityChoice.forPlayer(playerTwo)
+      manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerTwo))
     }
   }
 }

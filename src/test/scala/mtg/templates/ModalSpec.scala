@@ -35,11 +35,11 @@ class ModalSpec extends SpecWithTestCards {
         .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Plains)
       manager.castSpell(playerOne, TestCard)
 
-      manager.currentAction must beAnInstanceOf[ModeChoice]
+      manager.currentChoice must beSome(beAnInstanceOf[ModeChoice])
     }
 
     "not require a target if chosen mode has no targets" in {
@@ -47,12 +47,12 @@ class ModalSpec extends SpecWithTestCards {
         .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Plains)
       manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 0)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne))
     }
 
     "require a target if chosen mode has targets" in {
@@ -60,12 +60,12 @@ class ModalSpec extends SpecWithTestCards {
         .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Plains)
       manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 1)
 
-      manager.currentAction must beTargetChoice.forPlayer(playerOne)
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne))
     }
 
     "correctly resolve a mode with no targets" in {
@@ -73,7 +73,7 @@ class ModalSpec extends SpecWithTestCards {
         .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Plains)
       manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 0)
@@ -87,7 +87,7 @@ class ModalSpec extends SpecWithTestCards {
         .setHand(playerOne, TestCard)
         .setBattlefield(playerOne, Plains)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Plains)
       manager.castSpell(playerOne, TestCard)
       manager.chooseMode(playerOne, 1)

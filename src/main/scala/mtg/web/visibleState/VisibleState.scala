@@ -19,7 +19,6 @@ case class VisibleState(
   graveyards: Map[PlayerId, Seq[VisibleGameObject]],
   stack: Seq[VisibleGameObject],
   manaPools: Map[PlayerId, Seq[ManaType]],
-  mulliganState: Option[Map[PlayerId, MulliganState]],
   currentChoice: Option[CurrentChoice],
   canUndoLastChoice: Boolean,
   log: Seq[LogEventWrapper]
@@ -28,7 +27,7 @@ case class VisibleState(
 object VisibleState {
   def forPlayer(playerIdentifier: PlayerId, gameState: GameState): VisibleState = {
     def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState)
-    def currentChoice = gameState.nextUpdates.head.asOptionalInstanceOf[Choice]
+    def currentChoice = gameState.currentAction.asOptionalInstanceOf[Choice]
     def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): Seq[PossiblyHiddenGameObject] = {
       val canSeeZone = zone == Zone.Hand(playerIdentifier) || currentChoice.exists(_.temporarilyVisibleZones.contains(zone))
       def canSeeObject(gameObject: GameObject): Boolean = canSeeZone || currentChoice.exists(_.temporarilyVisibleObjects.contains(gameObject.objectId))
@@ -47,7 +46,6 @@ object VisibleState {
       gameState.gameObjectState.graveyards.view.mapValues(_.map(getObject)).toMap,
       gameState.gameObjectState.stack.map(getObject),
       gameState.gameObjectState.manaPools.view.mapValues(_.map(_.manaType)).toMap,
-      MulliganState.forAllPlayers(gameState),
       currentChoice.map(CurrentChoice(_, gameState)),
       UndoHelper.canUndo(playerIdentifier, gameState),
       gameState.gameHistory.logEvents.map(LogEventWrapper.apply))

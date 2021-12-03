@@ -78,6 +78,18 @@ package object mtg {
     }
   }
 
+  type Identity[A] = A
+
+  implicit object identityMonad extends Monad[Identity] {
+    override def pure[A](x: A): Identity[A] = x
+    override def flatMap[A, B](fa: Identity[A])(f: A => Identity[B]): Identity[B] = f(fa)
+    @tailrec
+    override def tailRecM[A, B](a: A)(f: A => Identity[Either[A, B]]): Identity[B] = f(a) match {
+      case Left(nextA) => tailRecM(nextA)(f)
+      case Right(b) => b
+    }
+  }
+
   implicit object optionMonad extends Monad[Option] {
     def flatMap[A, B](fa: Option[A])(f: A => Option[B]): Option[B] = fa.flatMap(f)
     def pure[A](a: A): Option[A] = Some(a)

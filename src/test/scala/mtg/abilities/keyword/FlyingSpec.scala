@@ -15,12 +15,12 @@ class FlyingSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, ConcordiaPegasus)
         .setBattlefield(playerTwo, AgelessGuardian)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
 
-      manager.currentAction must bePriorityChoice
+      manager.currentChoice should beSome(bePriorityChoice)
     }
 
     "only offer blocks for an attacker with flying to creatures with flying or reach" in {
@@ -28,13 +28,13 @@ class FlyingSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
         .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, ConcordiaPegasus, SpinedKarok)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
 
-      manager.currentAction must beAnInstanceOf[DeclareBlockersChoice]
-      manager.currentAction.asInstanceOf[DeclareBlockersChoice].possibleBlockers mustEqual Map(
+      manager.currentChoice must beSome(beAnInstanceOf[DeclareBlockersChoice])
+      manager.currentChoice.get.asInstanceOf[DeclareBlockersChoice].possibleBlockers mustEqual Map(
         getId(AgelessGuardian) -> Seq(getId(SpinedKarok)),
         getId(AirElemental) -> Seq(getId(ConcordiaPegasus), getId(SpinedKarok)),
         getId(GnottvoldRecluse) -> Seq(getId(ConcordiaPegasus), getId(SpinedKarok)))
@@ -45,13 +45,13 @@ class FlyingSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
         .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
       manager.block(playerTwo, AirElemental, ConcordiaPegasus)
 
-      manager.currentAction must bePriorityChoice
+      manager.currentChoice must beSome(bePriorityChoice)
     }
 
     "allow a creature with reach to block another creature with flying" in {
@@ -59,13 +59,13 @@ class FlyingSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
         .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
       manager.block(playerTwo, GnottvoldRecluse, ConcordiaPegasus)
 
-      manager.currentAction must bePriorityChoice
+      manager.currentChoice must beSome(bePriorityChoice)
     }
 
     "not allow a creature without flying or reach to block a creature with flying" in {
@@ -73,7 +73,7 @@ class FlyingSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
         .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)

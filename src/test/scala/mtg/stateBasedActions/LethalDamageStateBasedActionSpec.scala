@@ -17,7 +17,7 @@ class LethalDamageStateBasedActionSpec extends SpecWithGameStateManager {
         .setHand(playerTwo, AgelessGuardian)
         .setBattlefield(playerTwo, Plains, 2)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)

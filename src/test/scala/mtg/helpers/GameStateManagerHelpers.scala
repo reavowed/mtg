@@ -1,16 +1,21 @@
 package mtg.helpers
 
+import mtg._
 import mtg.cards.CardDefinition
 import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
-import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
-import mtg.game.state.{GameUpdate, GameState, GameStateManager, ObjectWithState}
-import mtg.game.turns.{TurnPhase, TurnStep}
+import mtg.game.state._
 import mtg.game.turns.priority.PriorityChoice
-import mtg._
 import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
+import mtg.game.turns.{TurnPhase, TurnStep}
+import mtg.game.{ObjectId, PlayerId, Zone}
 
 trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelpers {
+
+  implicit class GameStateOps(gameState: GameState) {
+    def currentChoice: Option[Choice] = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[Choice])
+    def currentNewChoice: Option[DirectChoice[_]] = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[DirectChoice[_]])
+  }
 
   implicit class GameStateManagerOps(gameStateManager: GameStateManager) {
     def updateGameState(f: GameState => GameState): GameStateManager = {
@@ -42,17 +47,17 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       getState(getCard(zone, cardDefinition))
     }
 
-    def currentAction: GameUpdate = gameStateManager.gameState.nextUpdates.head
+    def currentChoice: Option[Choice] = gameStateManager.gameState.currentChoice
 
     def passPriority(player: PlayerId): Unit = {
       gameStateManager.handleDecision("Pass", player)
     }
     private def passUntil(predicate: GameState => Boolean): Unit = {
       while (!predicate(gameStateManager.gameState)) {
-        currentAction match {
-          case choice: PriorityChoice =>
+        currentChoice match {
+          case Some(choice: PriorityChoice) =>
             passPriority(choice.playerToAct)
-          case choice: DeclareAttackersChoice =>
+          case Some(choice: DeclareAttackersChoice) =>
             gameStateManager.handleDecision("", choice.playerToAct)
           case _ =>
             return
@@ -85,22 +90,22 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     }
 
     def playLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
+      val landAction = currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
         .filter(_.land.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(landAction.optionText, player)
     }
     def playFirstLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val landAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
+      val landAction = currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[PlayLandAction]
         .filter(_.land.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(landAction.optionText, player)
     }
     def activateAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
+      val abilityAction = currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
         .filter(_.objectWithAbility.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def activateFirstAbility(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
+      val abilityAction = currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction]
         .filter(_.objectWithAbility.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
@@ -110,12 +115,12 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
 
 
     def castSpell(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
+      val abilityAction = currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
         .filter(_.objectToCast.gameObject.isCard(cardDefinition)).single
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def castFirstSpell(player: PlayerId, cardDefinition: CardDefinition): Unit = {
-      val abilityAction = currentAction.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
+      val abilityAction = currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction]
         .filter(_.objectToCast.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }

@@ -18,7 +18,7 @@ object UndoHelper {
             } else None
           case HistoryEvent.ResolvedChoice(choice, stateBefore) =>
             if (choice.playerToAct == playerId)
-              Some(stateBefore.addUpdates(Seq(choice)))
+              Some(stateBefore)
             else
               None
         }

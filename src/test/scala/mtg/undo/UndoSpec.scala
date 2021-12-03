@@ -27,7 +27,7 @@ class UndoSpec extends SpecWithGameStateManager {
     "revert tapping a basic land for mana" in {
       val initialState = emptyGameObjectState.setBattlefield(playerOne, Plains)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
 
       verifyUndo(manager, _.activateAbility(playerOne, Plains), playerOne, true)
@@ -36,7 +36,7 @@ class UndoSpec extends SpecWithGameStateManager {
     "not revert tapping a basic land for mana if requested by the wrong player" in {
       val initialState = emptyGameObjectState.setBattlefield(playerOne, Plains)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
 
       verifyUndo(manager, _.activateAbility(playerOne, Plains), playerTwo, false)
@@ -45,7 +45,7 @@ class UndoSpec extends SpecWithGameStateManager {
     "not revert a priority pass" in {
       val initialState = emptyGameObjectState
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
 
       verifyUndo(manager, _.passPriority(playerOne), playerOne, false)

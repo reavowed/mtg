@@ -20,7 +20,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
         .setHand(playerTwo, SpinedKarok)
         .setBattlefield(playerTwo, Forest, 3)
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -36,8 +36,8 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
       manager.attackWith(playerOne, AgelessGuardian)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
 
-      manager.currentAction must beAnInstanceOf[DeclareBlockersChoice]
-      manager.currentAction.asInstanceOf[DeclareBlockersChoice].possibleBlockers mustEqual Map(getId(SpinedKarok) -> Seq(getId(AgelessGuardian)))
+      manager.currentChoice must beSome(beAnInstanceOf[DeclareBlockersChoice])
+      manager.currentChoice.get.asInstanceOf[DeclareBlockersChoice].possibleBlockers mustEqual Map(getId(SpinedKarok) -> Seq(getId(AgelessGuardian)))
     }
 
     "require ordering if a single creature blocks an attacker" in {
@@ -46,7 +46,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Plains, 2)
         .setHand(playerTwo, Seq(SpinedKarok))
         .setBattlefield(playerTwo, Forest, 3)
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -64,7 +64,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
       manager.block(playerTwo, SpinedKarok, AgelessGuardian)
 
-      manager.currentAction must not(beAnInstanceOf[OrderBlockersChoice])
+      manager.currentChoice must beSome(not(beAnInstanceOf[OrderBlockersChoice]))
     }
 
     "require ordering if multiple creatures block the same attacker" in {
@@ -73,7 +73,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Plains, 2)
         .setHand(playerTwo, Seq(SpinedKarok, GrizzledOutrider))
         .setBattlefield(playerTwo, Forest, 8)
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
@@ -94,10 +94,10 @@ class DeclareBlockersSpec extends SpecWithGameStateManager {
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
       manager.block(playerTwo, (SpinedKarok, AgelessGuardian), (GrizzledOutrider, AgelessGuardian))
 
-      manager.currentAction must beAnInstanceOf[OrderBlockersChoice]
-      manager.currentAction.asInstanceOf[OrderBlockersChoice].playerToAct mustEqual playerOne
-      manager.currentAction.asInstanceOf[OrderBlockersChoice].attacker mustEqual manager.getCard(Zone.Battlefield, AgelessGuardian).objectId
-      manager.currentAction.asInstanceOf[OrderBlockersChoice].blockers must contain(exactly(
+      manager.currentChoice must beSome(beAnInstanceOf[OrderBlockersChoice])
+      manager.currentChoice.get.asInstanceOf[OrderBlockersChoice].playerToAct mustEqual playerOne
+      manager.currentChoice.get.asInstanceOf[OrderBlockersChoice].attacker mustEqual manager.getCard(Zone.Battlefield, AgelessGuardian).objectId
+      manager.currentChoice.get.asInstanceOf[OrderBlockersChoice].blockers must contain(exactly(
         manager.getCard(Zone.Battlefield, GrizzledOutrider).objectId,
         manager.getCard(Zone.Battlefield, SpinedKarok).objectId))
     }

@@ -15,7 +15,7 @@ class LightningBoltSpec extends SpecWithGameStateManager {
         .setHand(playerOne, LightningBolt)
         .setBattlefield(playerTwo, SavannahLions)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Mountain)
       manager.castSpell(playerOne, LightningBolt)
       manager.chooseCard(playerOne, SavannahLions)
@@ -30,7 +30,7 @@ class LightningBoltSpec extends SpecWithGameStateManager {
         .setHand(playerOne, LightningBolt)
         .setBattlefield(playerTwo, GrizzledOutrider)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Mountain)
       manager.castSpell(playerOne, LightningBolt)
       manager.chooseCard(playerOne, GrizzledOutrider)
@@ -44,7 +44,7 @@ class LightningBoltSpec extends SpecWithGameStateManager {
         .setHand(playerOne, LightningBolt)
         .setBattlefield(playerTwo, GrizzledOutrider)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Mountain)
       manager.castSpell(playerOne, LightningBolt)
       manager.choosePlayer(playerOne, playerTwo)

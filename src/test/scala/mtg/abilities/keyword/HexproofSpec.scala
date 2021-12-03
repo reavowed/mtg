@@ -17,11 +17,11 @@ class HexproofSpec extends SpecWithGameStateManager {
         .setBattlefield(playerOne, Mountain)
         .setBattlefield(playerTwo, Seq(WardscaleCrocodile, AgelessGuardian))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Mountain)
       manager.castSpell(playerOne, LightningBolt)
 
-      manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(AgelessGuardian, playerOne, playerTwo)
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(AgelessGuardian, playerOne, playerTwo))
     }
 
     "prevent a spell from resolving if granted after cast" in {
@@ -31,7 +31,7 @@ class HexproofSpec extends SpecWithGameStateManager {
         .setHand(playerTwo, BeamingDefiance)
         .setBattlefield(playerTwo, Seq(Plains, Plains, SavannahLions))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.activateAbility(playerOne, Mountain)
       manager.castSpell(playerOne, LightningBolt)

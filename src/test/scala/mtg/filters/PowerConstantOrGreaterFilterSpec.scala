@@ -33,11 +33,11 @@ class PowerConstantOrGreaterFilterSpec extends SpecWithTestCards {
         .setHand(playerOne, TestCard)
         .setBattlefield(playerTwo, Seq(ThreeFive, FourTwo, FiveFive))
 
-      implicit val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, TestCard)
 
-      manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(FourTwo, FiveFive)
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(FourTwo, FiveFive))
     }
   }
 }

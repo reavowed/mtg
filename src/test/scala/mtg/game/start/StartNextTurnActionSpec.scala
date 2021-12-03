@@ -1,14 +1,13 @@
 package mtg.game.start
 
-import mtg.SpecWithGameObjectState
-import mtg.game.state.history.GameHistory
-import mtg.game.{GameData, PlayerId}
-import mtg.game.state.{GameUpdate, GameState, GameActionResult}
-import mtg.game.turns.StartNextTurnAction
+import mtg.SpecWithGameStateManager
+import mtg.game.PlayerId
+import mtg.game.state.GameUpdate
+import mtg.game.turns.Turn
 import mtg.game.turns.turnEvents.BeginTurnEvent
 import org.specs2.matcher.Matcher
 
-class StartNextTurnActionSpec extends SpecWithGameObjectState {
+class StartNextTurnActionSpec extends SpecWithGameStateManager {
 
   def beBeginTurnAction(player: PlayerId): Matcher[GameUpdate] = {
     beAnInstanceOf[BeginTurnEvent].and({ (action: GameUpdate) =>
@@ -18,25 +17,19 @@ class StartNextTurnActionSpec extends SpecWithGameObjectState {
 
   "start next turn action" should {
     "pass turn from first to second player" in {
-      val gameState = GameState(GameData.initial(Seq(playerOne, playerTwo)), emptyGameObjectState, GameHistory.empty, Nil)
+      val manager = createGameStateManager(emptyGameObjectState, TakeTurnAction(Turn(1, playerOne)))
 
-      val result = StartNextTurnAction(playerOne).execute(gameState)
+      manager.passUntilTurn(2)
 
-      result.nextUpdates must contain(allOf(
-        beBeginTurnAction(playerOne),
-        StartNextTurnAction(playerTwo)
-      ).inOrder)
+      manager.gameState.currentTurn must beSome(Turn(2, playerTwo))
     }
 
     "pass turn from second to first player" in {
-      val gameState = GameState(GameData.initial(Seq(playerOne, playerTwo)), emptyGameObjectState, GameHistory.empty, Nil)
+      val manager = createGameStateManager(emptyGameObjectState, TakeTurnAction(Turn(2, playerTwo)))
 
-      val result = StartNextTurnAction(playerTwo).execute(gameState)
+      manager.passUntilTurn(3)
 
-      result.nextUpdates must contain(exactly(
-        beBeginTurnAction(playerTwo),
-        StartNextTurnAction(playerOne)
-      ))
+      manager.gameState.currentTurn must beSome(Turn(3, playerOne))
     }
   }
 }

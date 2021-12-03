@@ -8,7 +8,7 @@ case class PriorityForPlayersAction(players: Seq[PlayerId]) extends InternalGame
   override def execute(gameState: GameState): GameActionResult = {
     players match {
       case playerToAct +: remainingPlayers =>
-        val backupAction = BackupAction(gameState.addUpdates(Seq(this)))
+        val backupAction = BackupAction(gameState)
         val priorityChoice = PriorityChoice(
           playerToAct,
           remainingPlayers,

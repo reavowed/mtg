@@ -1,15 +1,14 @@
 package mtg.game.start
 
 import mtg.SpecWithGameStateManager
-import mtg.game.start.mulligans.ReturnCardsToLibraryChoice
 import mtg.game.state.history.LogEvent
 
-class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
+class ReturnCardsToLibraryActionSpec extends SpecWithGameStateManager {
   "returning cards to library" should {
     "put back one card" in {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val cardToPutBack = beforeState.hands(playerOne).head
-      val choice = ReturnCardsToLibraryChoice(playerOne, 1, playerOne.hand(beforeState))
+      val choice = ReturnCardsToLibraryChoice(playerOne, 1)
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
@@ -25,7 +24,7 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val firstCardToPutBack = beforeState.hands(playerOne)(6)
       val secondCardToPutBack = beforeState.hands(playerOne)(2)
-      val choice = ReturnCardsToLibraryChoice(playerOne, 2, playerOne.hand(beforeState))
+      val choice = ReturnCardsToLibraryChoice(playerOne, 2)
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(Seq(firstCardToPutBack, secondCardToPutBack).map(_.objectId.sequentialId.toString).mkString(" "), playerOne)
@@ -40,7 +39,7 @@ class ReturnCardsToLibrarySpec extends SpecWithGameStateManager {
     "log an event" in {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val cardToPutBack = beforeState.hands(playerOne).head
-      val choice = ReturnCardsToLibraryChoice(playerOne, 1, playerOne.hand(beforeState))
+      val choice = ReturnCardsToLibraryChoice(playerOne, 1)
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)

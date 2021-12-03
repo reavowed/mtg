@@ -4,14 +4,39 @@ import mtg.game.{ObjectId, PlayerId, Zone}
 
 sealed trait GameUpdate
 
-trait InternalGameAction extends GameUpdate {
+sealed trait GameAction[+T] extends GameUpdate
+sealed trait CompoundGameAction[+T] extends GameAction[T]
+trait ExecutableGameAction[+T] extends CompoundGameAction[T] {
+  def execute()(implicit gameState: GameState): NewGameActionResult.Partial[T]
+}
+sealed trait NewChoice[+T] extends CompoundGameAction[T] {
+  def playerToAct: PlayerId
+}
+trait RootGameAction extends ExecutableGameAction[RootGameAction]
+
+case class PartiallyExecutedActionWithChild[T, S](rootAction: CompoundGameAction[T], childAction: GameAction[S], callback: (S, GameState) => NewGameActionResult.Partial[T]) extends GameAction[T]
+case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction[T], value: S, callback: (S, GameState) => NewGameActionResult.Partial[T]) extends ExecutableGameAction[T] {
+  override def execute()(implicit gameState: GameState): NewGameActionResult.Partial[T] = callback(value, gameState)
+}
+
+trait DirectChoice[T] extends NewChoice[T] {
+  def playerToAct: PlayerId
+  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[NewGameActionResult.Partial[T]]
+}
+object DirectChoice {
+  trait WithParser[T] extends DirectChoice[T] {
+    def getParser()(implicit gameState: GameState): PartialFunction[String, NewGameActionResult.Partial[T]]
+    override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[NewGameActionResult.Partial[T]] = getParser().lift(serializedDecision)
+  }
+}
+
+sealed trait OldGameUpdate extends GameUpdate
+trait InternalGameAction extends OldGameUpdate {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
 }
-
-case class BackupAction(gameStateToRevertTo: GameState) extends GameUpdate
-
-trait Choice extends GameUpdate {
+case class BackupAction(gameStateToRevertTo: GameState) extends OldGameUpdate
+trait Choice extends OldGameUpdate {
   def playerToAct: PlayerId
   def parseDecision(serializedDecision: String): Option[Decision]
   def temporarilyVisibleZones: Seq[Zone] = Nil
@@ -32,8 +57,10 @@ object Decision {
   implicit def chain[T, S](f: T => S)(implicit g: S => Decision): T => Decision = t => g(f(t))
 }
 
-sealed abstract class GameResult extends GameUpdate
-object GameResult {
-  object Tie extends GameResult
+case class WrappedOldUpdates(oldUpdates: OldGameUpdate*) extends GameAction[Unit]
+case class WrappedChoice(choice: Choice, furtherUpdates: Seq[OldGameUpdate]) extends NewChoice[Unit] {
+  override def playerToAct: PlayerId = choice.playerToAct
 }
+
+
 

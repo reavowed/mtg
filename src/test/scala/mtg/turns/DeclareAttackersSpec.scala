@@ -17,7 +17,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(AgelessGuardian))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Tap mana and cast creature
@@ -27,7 +27,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
 
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
 
-      manager.currentAction must beAnInstanceOf[PriorityChoice]
+      manager.currentChoice must beSome(beAnInstanceOf[PriorityChoice])
     }
 
     "allow a creature that was cast last turn to attack" in {
@@ -35,7 +35,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(AgelessGuardian))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Tap mana and cast creature
@@ -45,8 +45,8 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
 
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
 
-      manager.currentAction must beAnInstanceOf[DeclareAttackersChoice]
-      manager.currentAction.asInstanceOf[DeclareAttackersChoice].possibleAttackers must contain(exactly(
+      manager.currentChoice must beSome(beAnInstanceOf[DeclareAttackersChoice])
+      manager.currentChoice.get.asInstanceOf[DeclareAttackersChoice].possibleAttackers must contain(exactly(
         manager.getCard(Zone.Battlefield, AgelessGuardian).objectId
       ))
     }
@@ -55,7 +55,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setBattlefield(playerOne, AgelessGuardian)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, AgelessGuardian)
 
@@ -66,7 +66,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setBattlefield(playerOne, AlpineWatchdog)
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
       manager.attackWith(playerOne, AlpineWatchdog)
 

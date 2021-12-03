@@ -20,11 +20,11 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
         .setHand(playerOne, Seq(ExpandedAnatomy))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpell(ExpandedAnatomy)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableSpell(ExpandedAnatomy))
     }
 
     "allow targeting any creature on the battlefield" in {
@@ -32,14 +32,14 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(ExpandedAnatomy, GrizzledOutrider))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)
       manager.castSpell(playerOne, ExpandedAnatomy)
 
       implicit val gameObjectState = manager.gameState.gameObjectState
-      manager.currentAction must beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions, SpinedKarok)
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(SavannahLions, SpinedKarok))
     }
 
     "put counters on targeted creature" in {
@@ -47,7 +47,7 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(ExpandedAnatomy))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)
@@ -65,7 +65,7 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(ExpandedAnatomy))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)
@@ -81,7 +81,7 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(ExpandedAnatomy))
         .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
         .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
       manager.activateAbilities(playerOne, Plains, 3)

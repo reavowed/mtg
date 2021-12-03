@@ -16,17 +16,17 @@ class CastSpellSpec extends SpecWithGameStateManager {
     "be available for a creature card in hand at sorcery speed" in {
       val initialState = emptyGameObjectState.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withAvailableSpell(AgelessGuardian)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableSpell(AgelessGuardian))
     }
 
     "not be available for a creature card in hand in upkeep" in {
       val initialState = emptyGameObjectState.setHand(playerOne, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells)
     }
 
     "not be available for a creature card in hand if there is something on the stack" in {
@@ -34,7 +34,7 @@ class CastSpellSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(AgelessGuardian, AgelessGuardian))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Tap mana and cast first spell
@@ -42,17 +42,17 @@ class CastSpellSpec extends SpecWithGameStateManager {
       manager.activateFirstAbility(playerOne, Plains)
       manager.castFirstSpell(playerOne, AgelessGuardian)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells)
     }
 
     "not be available for a creature card for the non-active player" in {
       val initialState = emptyGameObjectState.setHand(playerTwo, Seq(Plains, Forest, AgelessGuardian))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
       manager.passPriority(playerOne)
 
-      manager.currentAction must bePriorityChoice.forPlayer(playerTwo).withNoAvailableSpells
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerTwo).withNoAvailableSpells)
     }
 
     // TODO: Can't cast Dryad Arbor
@@ -64,12 +64,12 @@ class CastSpellSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(AgelessGuardian))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       val stateBeforeSpell = manager.gameState
       manager.handleDecision(
-        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
       manager.gameState mustEqual stateBeforeSpell
@@ -80,21 +80,21 @@ class CastSpellSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(AgelessGuardian))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Add necessary mana
       manager.handleDecision(
-        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.handleDecision(
-        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
 
       // Cast spell
       manager.handleDecision(
-        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
       manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
@@ -107,21 +107,21 @@ class CastSpellSpec extends SpecWithGameStateManager {
         .setHand(playerOne, Seq(AgelessGuardian))
         .setBattlefield(playerOne, Seq(Plains, Plains))
 
-      val manager = createGameStateManager(initialState, StartNextTurnAction(playerOne))
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Add necessary mana
       manager.handleDecision(
-        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.handleDecision(
-        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
+        manager.currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[ActivateAbilityAction].head.optionText,
         playerOne)
       manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType, Color.White.manaType))
 
       // Cast spell
       manager.handleDecision(
-        manager.gameState.nextUpdates.head.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
+        manager.currentChoice.get.asInstanceOf[PriorityChoice].availableActions.ofType[CastSpellAction].head.optionText,
         playerOne)
 
       // Resolve the spell
