@@ -36,19 +36,11 @@ object NewGameActionResult {
       }
       executeNext(childActions, Nil, gameState)
     }
-    def valueAfterChild[T](value: T, child: GameAction[Any])(implicit gameState: GameState): Partial[T] = {
-      Delegated(child, (_: Any, _) => Value(value))
+    def childThenValue[T](child: GameAction[Any], value: T)(implicit gameState: GameState): Partial[T] = {
+      childrenThenValue(Seq(child), value)
     }
-    def valueAfterChildren[T](value: T, children: Seq[GameAction[Any]]): Partial[T] = {
-      def executeNext(remainingChildActions: Seq[GameAction[Any]]): Partial[T] = {
-        remainingChildActions match {
-          case head +: tail =>
-            Delegated(head, (_: Any, _) => executeNext(tail))
-          case Nil =>
-            Value(value)
-        }
-      }
-      executeNext(children)
+    def childrenThenValue[T](children: Seq[GameAction[Any]], value: T)(implicit gameState: GameState): Partial[T] = {
+      toChildren(children, (_: Seq[Any], _) => Value(value))
     }
   }
 }

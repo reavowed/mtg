@@ -7,9 +7,9 @@ case class MulliganChoice(playerToAct: PlayerId, numberOfMulligansTakenSoFar: In
   override def getParser()(implicit gameState: GameState): PartialFunction[String, NewGameActionResult.Partial[MulliganDecision]] = {
     case "K" =>
       if (numberOfMulligansTakenSoFar > 0)
-        NewGameActionResult.Delegated.valueAfterChild(
-          MulliganDecision.Keep(playerToAct),
-          ReturnCardsToLibraryChoice(playerToAct, numberOfMulligansTakenSoFar))
+        NewGameActionResult.Delegated.childThenValue(
+          ReturnCardsToLibraryChoice(playerToAct, numberOfMulligansTakenSoFar),
+          MulliganDecision.Keep(playerToAct))
       else
         NewGameActionResult.Value(MulliganDecision.Keep(playerToAct))
     case "M" => NewGameActionResult.Value(MulliganDecision.Mulligan(playerToAct))

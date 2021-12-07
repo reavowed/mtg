@@ -13,17 +13,17 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
         playersToMakeMulliganDecision.map(MulliganChoice(_, numberOfMulligansTakenSoFar)),
         handleMulliganResult(_)(_))
     else
-      NewGameActionResult.Delegated.valueAfterChildren(
-        TakeTurnAction.first(gameState),
-        playersToMakeMulliganDecision.map(ReturnCardsToLibraryChoice(_, gameState.gameData.startingHandSize)))
+      NewGameActionResult.Delegated.childrenThenValue(
+        playersToMakeMulliganDecision.map(ReturnCardsToLibraryChoice(_, gameState.gameData.startingHandSize)),
+        TakeTurnAction.first(gameState))
   }
 
   def handleMulliganResult(decisions: Seq[MulliganDecision])(implicit gameState: GameState): NewGameActionResult.Partial[RootGameAction] = {
     val playersMulliganning = decisions.ofType[MulliganDecision.Mulligan].map(_.player)
     if (playersMulliganning.nonEmpty) {
-      NewGameActionResult.Delegated.valueAfterChildren(
-        MulligansAction(playersMulliganning, numberOfMulligansTakenSoFar + 1),
-        playersMulliganning.flatMap(player => Seq(WrappedOldUpdates(ShuffleHandIntoLibrary(player)), DrawOpeningHandAction(player))))
+      NewGameActionResult.Delegated.childrenThenValue(
+        playersMulliganning.flatMap(player => Seq(WrappedOldUpdates(ShuffleHandIntoLibrary(player)), DrawOpeningHandAction(player))),
+        MulligansAction(playersMulliganning, numberOfMulligansTakenSoFar + 1))
     } else {
       NewGameActionResult.Value(TakeTurnAction.first(gameState))
     }

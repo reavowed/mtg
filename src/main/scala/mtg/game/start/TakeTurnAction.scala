@@ -6,10 +6,9 @@ import mtg.game.turns.turnEvents.BeginTurnEvent
 
 case class TakeTurnAction(turn: Turn) extends RootGameAction {
   override def execute()(implicit gameState: GameState): NewGameActionResult.Partial[RootGameAction] = {
-    NewGameActionResult.Delegated.valueAfterChild(
-      TakeTurnAction(turn.next(gameState)),
-      WrappedOldUpdates(BeginTurnEvent(turn))
-    )
+    NewGameActionResult.Delegated.childThenValue(
+      WrappedOldUpdates(BeginTurnEvent(turn)),
+      TakeTurnAction(turn.next(gameState)))
   }
 }
 
