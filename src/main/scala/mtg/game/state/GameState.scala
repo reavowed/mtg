@@ -60,6 +60,8 @@ case class GameState(
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
 
+  def updateAction(action: GameAction[RootGameAction]): GameState = copy(currentAction = Some(action))
+
   override def toString: String = "GameState"
 }
 

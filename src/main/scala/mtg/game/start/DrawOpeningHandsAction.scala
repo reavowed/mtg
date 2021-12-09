@@ -1,11 +1,11 @@
 package mtg.game.start
 
-import mtg.game.state.{GameState, NewGameActionResult, RootGameAction}
+import mtg.game.state.{GameState, PartialGameActionResult, RootGameAction}
 
 object DrawOpeningHandsAction extends RootGameAction {
-  override def execute()(implicit gameState: GameState): NewGameActionResult.Partial[RootGameAction] = {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
     val players = gameState.gameData.playersInTurnOrder
-    NewGameActionResult.Delegated.childrenThenValue(
+    PartialGameActionResult.childrenThenValue(
       players.map(DrawOpeningHandAction),
       MulligansAction(players, 0))
   }

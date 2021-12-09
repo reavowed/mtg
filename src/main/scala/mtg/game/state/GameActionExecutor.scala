@@ -2,26 +2,36 @@ package mtg.game.state
 
 import mtg.abilities.TriggeredAbility
 import mtg.effects.condition.EventCondition
-import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
 import mtg.effects.continuous.PreventionEffect.Result.Prevent
+import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
 import mtg.game.PlayerId
 import mtg.game.objects.FloatingActiveContinuousEffect
+import mtg.game.state.history.LogEvent
 
 import scala.annotation.tailrec
 
 object GameActionExecutor {
+
+  sealed trait ProcessedGameActionResult[+T]
+  object ProcessedGameActionResult {
+    case class Value[T](value: T) extends ProcessedGameActionResult[T]
+    case class Action[T](action: GameAction[T]) extends ProcessedGameActionResult[T]
+    sealed trait Interrupted extends ProcessedGameActionResult[Nothing]
+    case class Backup(gameState: GameState) extends Interrupted
+    case class GameOver(gameResult: GameResult) extends Interrupted
+  }
 
   def handleDecision(gameState: GameState, serializedDecision: String, actingPlayer: PlayerId): Option[GameState] = {
     runAction(gameState, handleDecision(_, serializedDecision, actingPlayer)(_))
       .map(executeAllActions)
   }
 
-  def handleDecision[T](action: GameAction[T], serializedDecision: String, actingPlayer: PlayerId)(implicit gameState: GameState): Option[(NewGameActionResult.Terminal[T], GameState)] = {
+  def handleDecision[T](action: GameAction[T], serializedDecision: String, actingPlayer: PlayerId)(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = {
     action match {
       case directChoice: DirectChoice[T] if (directChoice.playerToAct == actingPlayer) =>
         directChoice.handleDecision(serializedDecision).map(handleActionResult(directChoice, _))
       case WrappedChoice(child, furtherUpdates) if (child.playerToAct == actingPlayer) =>
-        child.parseDecision(serializedDecision).map(d => executeOldUpdates(d.resultingActions ++ furtherUpdates, gameState).asInstanceOf[(NewGameActionResult.Terminal[T], GameState)])
+        child.parseDecision(serializedDecision).map(d => executeOldUpdates(d.resultingActions ++ furtherUpdates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
       case PartiallyExecutedActionWithChild(rootAction, child, callback) =>
         handleDecisionForChild(rootAction, child, callback, serializedDecision, actingPlayer)
       case _ =>
@@ -32,16 +42,16 @@ object GameActionExecutor {
   private def handleDecisionForChild[T, S](
     rootAction: CompoundGameAction[T],
     childAction: GameAction[S],
-    callback: (S, GameState) => NewGameActionResult.Partial[T],
+    callback: (S, GameState) => PartialGameActionResult[T],
     serializedDecision: String,
     actingPlayer: PlayerId)(
     implicit gameState: GameState
-  ): Option[(NewGameActionResult.Terminal[T], GameState)] = {
+  ): Option[(ProcessedGameActionResult[T], GameState)] = {
     runChildAction[T, S](rootAction, childAction, callback, handleDecision[S](_, serializedDecision, actingPlayer)(_))
   }
 
 
-  private def runAction(gameState: GameState, f: (GameAction[RootGameAction], GameState) => Option[(NewGameActionResult.Terminal[RootGameAction], GameState)]): Option[GameState] = {
+  private def runAction(gameState: GameState, f: (GameAction[RootGameAction], GameState) => Option[(ProcessedGameActionResult[RootGameAction], GameState)]): Option[GameState] = {
     for {
       action <- gameState.currentAction
       (result, gameStateAfterAction) <- f(action, gameState)
@@ -62,7 +72,7 @@ object GameActionExecutor {
     runAction(gameState, executeNextAction(_)(_))
   }
 
-  def executeNextAction[T](gameAction: GameAction[T])(implicit gameState: GameState): Option[(NewGameActionResult.Terminal[T], GameState)] = gameAction match {
+  def executeNextAction[T](gameAction: GameAction[T])(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = gameAction match {
     case _: NewChoice[T] =>
       None
     case action: ExecutableGameAction[T] =>
@@ -70,71 +80,72 @@ object GameActionExecutor {
     case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
       executeChildAction(rootAction, childAction, callback)
     case WrappedOldUpdates(updates @ _*) =>
-      Some(executeOldUpdates(updates, gameState).asInstanceOf[(NewGameActionResult.Terminal[T], GameState)])
+      Some(executeOldUpdates(updates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
   }
 
   private def executeChildAction[T, S](
     rootAction: CompoundGameAction[T],
     childAction: GameAction[S],
-    callback: (S, GameState) => NewGameActionResult.Partial[T])(
+    callback: (S, GameState) => PartialGameActionResult[T])(
     implicit gameState: GameState
-  ): Option[(NewGameActionResult.Terminal[T], GameState)] = {
+  ): Option[(ProcessedGameActionResult[T], GameState)] = {
     runChildAction[T, S](rootAction, childAction, callback, executeNextAction[S](_)(_))
   }
 
   private def runChildAction[T, S](
     rootAction: CompoundGameAction[T],
     childAction: GameAction[S],
-    callback: (S, GameState) => NewGameActionResult.Partial[T],
-    f: (GameAction[S], GameState) => Option[(NewGameActionResult.Terminal[S], GameState)])(
+    callback: (S, GameState) => PartialGameActionResult[T],
+    f: (GameAction[S], GameState) => Option[(ProcessedGameActionResult[S], GameState)])(
     implicit gameState: GameState
-  ): Option[(NewGameActionResult.Terminal[T], GameState)] = {
+  ): Option[(ProcessedGameActionResult[T], GameState)] = {
     f(childAction, gameState) map {
-      case (NewGameActionResult.Value(s), newGameState) =>
-        (NewGameActionResult.NewAction(PartiallyExecutedActionWithValue(rootAction, s, callback)), newGameState)
-      case (NewGameActionResult.NewAction(action), newGameState) =>
-        (NewGameActionResult.NewAction(PartiallyExecutedActionWithChild(rootAction, action, callback)), newGameState)
-      case (halting: NewGameActionResult.Halting, newGameState) =>
-        (halting, newGameState)
+      case (ProcessedGameActionResult.Value(value), newGameState) =>
+        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithValue(rootAction, value, callback)), newGameState)
+      case (ProcessedGameActionResult.Action(action), newGameState) =>
+        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithChild(rootAction, action, callback)), newGameState)
+      case (result: ProcessedGameActionResult.Interrupted, newGameState) =>
+        (result, newGameState)
     }
   }
 
-  private def updateGameState(gameState: GameState, newGameActionResult: NewGameActionResult.Terminal[RootGameAction]): GameState = {
+  private def updateGameState(gameState: GameState, newGameActionResult: ProcessedGameActionResult[RootGameAction]): GameState = {
     newGameActionResult match {
-        case NewGameActionResult.Value(nextAction) =>
-          gameState.copy(currentAction = Some(nextAction))
-        case NewGameActionResult.NewAction(action) =>
-          gameState.copy(currentAction = Some(action))
-        case NewGameActionResult.Backup(gameStateToReturnTo) =>
+        case ProcessedGameActionResult.Value(nextAction) =>
+          gameState.updateAction(nextAction)
+        case ProcessedGameActionResult.Action(nextAction) =>
+          gameState.updateAction(nextAction)
+        case ProcessedGameActionResult.Backup(gameStateToReturnTo) =>
           gameStateToReturnTo
-        case NewGameActionResult.GameOver(result) =>
+        case ProcessedGameActionResult.GameOver(result) =>
           gameState.copy(currentAction = None, result = Some(result))
     }
   }
 
-
-  def handleActionResult[T](rootAction: CompoundGameAction[T], currentResult: NewGameActionResult.Partial[T])(implicit gameState: GameState): (NewGameActionResult.Terminal[T], GameState) = {
+  def handleActionResult[T](rootAction: CompoundGameAction[T], currentResult: PartialGameActionResult[T])(implicit gameState: GameState): (ProcessedGameActionResult[T], GameState) = {
     currentResult match {
-      case NewGameActionResult.Value(value) =>
-        (NewGameActionResult.Value(value), gameState)
-      case NewGameActionResult.Delegated(child: GameAction[_], callback) =>
-        (NewGameActionResult.NewAction(PartiallyExecutedActionWithChild(rootAction, child, callback)), gameState)
-      case terminal: NewGameActionResult.Halting =>
-        (terminal, gameState)
+      case PartialGameActionResult.Value(value) =>
+        (ProcessedGameActionResult.Value(value), gameState)
+      case PartialGameActionResult.ChildWithCallback(child, callback) =>
+        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithChild(rootAction, child, callback)), gameState)
+      case PartialGameActionResult.Backup(gameStateToBackupTo) =>
+        (ProcessedGameActionResult.Backup(gameStateToBackupTo), gameStateToBackupTo)
+      case PartialGameActionResult.GameOver(result) =>
+        (ProcessedGameActionResult.GameOver(result), gameState)
     }
   }
 
-  def executeOldUpdates(oldUpdates: Seq[OldGameUpdate], gameState: GameState): (NewGameActionResult.Terminal[Unit], GameState) = {
+  def executeOldUpdates(oldUpdates: Seq[OldGameUpdate], gameState: GameState): (ProcessedGameActionResult[Unit], GameState) = {
     oldUpdates match {
       case (head: InternalGameAction) +: tail =>
         val (newGameState, newUpdates) = execute(head, gameState)
-        (NewGameActionResult.NewAction(WrappedOldUpdates(newUpdates ++ tail: _*)), newGameState)
+        (ProcessedGameActionResult.Action(WrappedOldUpdates(newUpdates ++ tail: _*)), newGameState)
       case (head: Choice) +: tail =>
-        (NewGameActionResult.NewAction(WrappedChoice(head, tail)), gameState)
+        (ProcessedGameActionResult.Action(WrappedChoice(head, tail)), gameState)
       case BackupAction(gameStateToRevertTo) +: _ =>
-        (NewGameActionResult.Backup(gameStateToRevertTo), gameState)
+        (ProcessedGameActionResult.Backup(gameStateToRevertTo), gameState)
       case Nil =>
-        (NewGameActionResult.Value(()), gameState)
+        (ProcessedGameActionResult.Value(()), gameState)
     }
   }
 

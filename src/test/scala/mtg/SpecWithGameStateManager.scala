@@ -17,8 +17,8 @@ abstract class SpecWithGameStateManager
     with StackObjectHelpers
 {
   case class RootWrapper(action: GameAction[Any]) extends RootGameAction {
-    override def execute()(implicit gameState: GameState): NewGameActionResult.Partial[RootGameAction] = {
-      NewGameActionResult.Delegated(action, (_: Any, _) => NewGameActionResult.GameOver(GameResult.Tie))
+    override def execute()(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
+      PartialGameActionResult.ChildWithCallback(action, (_: Any, _) => PartialGameActionResult.GameOver(GameResult.Tie))
     }
   }
 

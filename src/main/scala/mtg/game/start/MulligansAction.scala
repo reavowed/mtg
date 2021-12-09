@@ -7,25 +7,25 @@ import mtg.game.state._
 
 case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberOfMulligansTakenSoFar: Int) extends RootGameAction {
 
-  override def execute()(implicit gameState: GameState): NewGameActionResult.Partial[RootGameAction] = {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
     if (numberOfMulligansTakenSoFar < gameState.gameData.startingHandSize)
-      NewGameActionResult.Delegated.toChildren[RootGameAction, MulliganDecision](
+      PartialGameActionResult.childrenWithCallback[RootGameAction, MulliganDecision](
         playersToMakeMulliganDecision.map(MulliganChoice(_, numberOfMulligansTakenSoFar)),
         handleMulliganResult(_)(_))
     else
-      NewGameActionResult.Delegated.childrenThenValue(
+      PartialGameActionResult.childrenThenValue(
         playersToMakeMulliganDecision.map(ReturnCardsToLibraryChoice(_, gameState.gameData.startingHandSize)),
         TakeTurnAction.first(gameState))
   }
 
-  def handleMulliganResult(decisions: Seq[MulliganDecision])(implicit gameState: GameState): NewGameActionResult.Partial[RootGameAction] = {
+  def handleMulliganResult(decisions: Seq[MulliganDecision])(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
     val playersMulliganning = decisions.ofType[MulliganDecision.Mulligan].map(_.player)
     if (playersMulliganning.nonEmpty) {
-      NewGameActionResult.Delegated.childrenThenValue(
+      PartialGameActionResult.childrenThenValue(
         playersMulliganning.flatMap(player => Seq(WrappedOldUpdates(ShuffleHandIntoLibrary(player)), DrawOpeningHandAction(player))),
         MulligansAction(playersMulliganning, numberOfMulligansTakenSoFar + 1))
     } else {
-      NewGameActionResult.Value(TakeTurnAction.first(gameState))
+      TakeTurnAction.first(gameState)
     }
   }
 }

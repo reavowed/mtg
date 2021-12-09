@@ -7,26 +7,26 @@ sealed trait GameUpdate
 sealed trait GameAction[+T] extends GameUpdate
 sealed trait CompoundGameAction[+T] extends GameAction[T]
 trait ExecutableGameAction[+T] extends CompoundGameAction[T] {
-  def execute()(implicit gameState: GameState): NewGameActionResult.Partial[T]
+  def execute()(implicit gameState: GameState): PartialGameActionResult[T]
 }
 sealed trait NewChoice[+T] extends CompoundGameAction[T] {
   def playerToAct: PlayerId
 }
 trait RootGameAction extends ExecutableGameAction[RootGameAction]
 
-case class PartiallyExecutedActionWithChild[T, S](rootAction: CompoundGameAction[T], childAction: GameAction[S], callback: (S, GameState) => NewGameActionResult.Partial[T]) extends GameAction[T]
-case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction[T], value: S, callback: (S, GameState) => NewGameActionResult.Partial[T]) extends ExecutableGameAction[T] {
-  override def execute()(implicit gameState: GameState): NewGameActionResult.Partial[T] = callback(value, gameState)
+case class PartiallyExecutedActionWithChild[T, S](rootAction: CompoundGameAction[T], childAction: GameAction[S], callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
+case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction[T], value: S, callback: (S, GameState) => PartialGameActionResult[T]) extends ExecutableGameAction[T] {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[T] = callback(value, gameState)
 }
 
 trait DirectChoice[T] extends NewChoice[T] {
   def playerToAct: PlayerId
-  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[NewGameActionResult.Partial[T]]
+  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PartialGameActionResult[T]]
 }
 object DirectChoice {
   trait WithParser[T] extends DirectChoice[T] {
-    def getParser()(implicit gameState: GameState): PartialFunction[String, NewGameActionResult.Partial[T]]
-    override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[NewGameActionResult.Partial[T]] = getParser().lift(serializedDecision)
+    def getParser()(implicit gameState: GameState): PartialFunction[String, PartialGameActionResult[T]]
+    override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PartialGameActionResult[T]] = getParser().lift(serializedDecision)
   }
 }
 

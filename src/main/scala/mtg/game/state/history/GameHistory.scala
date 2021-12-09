@@ -7,6 +7,9 @@ case class GameHistory(historyEvents: List[HistoryEvent], logEvents: Seq[Timesta
   def addLogEvent(event: LogEvent): GameHistory = {
     copy(logEvents = logEvents :+ TimestampedLogEvent(event))
   }
+  def addLogEvent(event: Option[LogEvent]): GameHistory = {
+    event.map(addLogEvent).getOrElse(this)
+  }
   def gameEventsThisTurn: Iterable[HistoryEvent] = historyEvents.view.since[BeginTurnEvent]
 }
 object GameHistory {
