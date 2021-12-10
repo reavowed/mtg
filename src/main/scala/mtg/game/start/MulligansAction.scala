@@ -6,8 +6,13 @@ import mtg.game.PlayerId
 import mtg.game.state._
 
 case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberOfMulligansTakenSoFar: Int) extends RootGameAction {
-
   override def execute()(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
+      PartialGameActionResult.childrenWithCallback[RootGameAction, Unit](
+        playersToMakeMulliganDecision.map(DrawOpeningHandAction),
+        mulliganChoices(_)(_))
+  }
+
+  def mulliganChoices(any: Any)(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
     if (numberOfMulligansTakenSoFar < gameState.gameData.startingHandSize)
       PartialGameActionResult.childrenWithCallback[RootGameAction, MulliganDecision](
         playersToMakeMulliganDecision.map(MulliganChoice(_, numberOfMulligansTakenSoFar)),
@@ -21,8 +26,8 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
   def handleMulliganResult(decisions: Seq[MulliganDecision])(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
     val playersMulliganning = decisions.ofType[MulliganDecision.Mulligan].map(_.player)
     if (playersMulliganning.nonEmpty) {
-      PartialGameActionResult.childrenThenValue(
-        playersMulliganning.flatMap(player => Seq(WrappedOldUpdates(ShuffleHandIntoLibrary(player)), DrawOpeningHandAction(player))),
+      PartialGameActionResult.childThenValue(
+        WrappedOldUpdates(playersMulliganning.map(ShuffleHandIntoLibrary): _*),
         MulligansAction(playersMulliganning, numberOfMulligansTakenSoFar + 1))
     } else {
       TakeTurnAction.first(gameState)
@@ -30,7 +35,9 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
   }
 }
 
-
+object MulligansAction {
+  def initial(implicit gameState: GameState): MulligansAction = MulligansAction(gameState.gameData.playersInTurnOrder, 0)
+}
 
 
 

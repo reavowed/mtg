@@ -77,10 +77,23 @@ object GameActionExecutor {
       None
     case action: ExecutableGameAction[T] =>
       Some(handleActionResult(action, action.execute()))
+    case PartiallyExecutedActionWithValue(rootAction, value, callback) =>
+      Some(executeCallback(rootAction, value, callback))
     case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
       executeChildAction(rootAction, childAction, callback)
     case WrappedOldUpdates(updates @ _*) =>
       Some(executeOldUpdates(updates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
+    case LogEventAction(logEvent) =>
+      Some((ProcessedGameActionResult.Value(()).asInstanceOf[ProcessedGameActionResult[T]], gameState.recordLogEvent(logEvent)))
+  }
+
+  private def executeCallback[T, S](
+    rootAction: CompoundGameAction[T],
+    childValue: S,
+    callback: (S, GameState) => PartialGameActionResult[T])(
+    implicit gameState: GameState
+  ): (ProcessedGameActionResult[T], GameState) = {
+    handleActionResult(rootAction, callback(childValue, gameState))
   }
 
   private def executeChildAction[T, S](

@@ -1,7 +1,7 @@
 package mtg.game.state
 
 import mtg.game.objects.GameObjectState
-import mtg.game.start.{DrawOpeningHandsAction, TakeTurnAction}
+import mtg.game.start.{StartGameAction, TakeTurnAction}
 import mtg.game.state.history.HistoryEvent.{ResolvedAction, ResolvedChoice}
 import mtg.game.state.history._
 import mtg.game.turns.turnEvents.{BeginPhaseEvent, BeginStepEvent, BeginTurnEvent}
@@ -74,7 +74,7 @@ object GameState {
       gameData,
       GameObjectState.initial(gameStartingData, gameData),
       GameHistory.empty,
-      Some(DrawOpeningHandsAction),
+      Some(StartGameAction),
       None)
   }
 }

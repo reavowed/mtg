@@ -1,5 +1,6 @@
 package mtg.game.state
 
+import mtg.game.state.history.LogEvent
 import mtg.game.{ObjectId, PlayerId, Zone}
 
 sealed trait GameUpdate
@@ -15,9 +16,9 @@ sealed trait NewChoice[+T] extends CompoundGameAction[T] {
 trait RootGameAction extends ExecutableGameAction[RootGameAction]
 
 case class PartiallyExecutedActionWithChild[T, S](rootAction: CompoundGameAction[T], childAction: GameAction[S], callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
-case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction[T], value: S, callback: (S, GameState) => PartialGameActionResult[T]) extends ExecutableGameAction[T] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[T] = callback(value, gameState)
-}
+case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction[T], value: S, callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
+
+case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
 trait DirectChoice[T] extends NewChoice[T] {
   def playerToAct: PlayerId
@@ -62,5 +63,7 @@ case class WrappedChoice(choice: Choice, furtherUpdates: Seq[OldGameUpdate]) ext
   override def playerToAct: PlayerId = choice.playerToAct
 }
 
-
+object GameAction {
+  implicit def logEventAsAction(logEvent: LogEvent): GameAction[Unit] = LogEventAction(logEvent)
+}
 
