@@ -27,7 +27,7 @@ case class VisibleState(
 object VisibleState {
   def forPlayer(playerIdentifier: PlayerId, gameState: GameState): VisibleState = {
     def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState)
-    def currentChoice = gameState.currentAction.asOptionalInstanceOf[Choice]
+    def currentChoice = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[Choice])
     def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): Seq[PossiblyHiddenGameObject] = {
       val canSeeZone = zone == Zone.Hand(playerIdentifier) || currentChoice.exists(_.temporarilyVisibleZones.contains(zone))
       def canSeeObject(gameObject: GameObject): Boolean = canSeeZone || currentChoice.exists(_.temporarilyVisibleObjects.contains(gameObject.objectId))
