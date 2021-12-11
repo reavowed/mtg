@@ -6,7 +6,7 @@ import mtg.effects.continuous.PreventionEffect.Result.Prevent
 import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
 import mtg.game.PlayerId
 import mtg.game.objects.FloatingActiveContinuousEffect
-import mtg.game.state.history.LogEvent
+import mtg.game.turns.priority.PriorityChoice
 
 import scala.annotation.tailrec
 
@@ -39,6 +39,10 @@ object GameActionExecutor {
     }
   }
 
+  private def handleDecisionForOldChoice(choice: Choice, furtherUpdates: Seq[OldGameUpdate], serializedDecision: String, actingPlayer: PlayerId)(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = {
+    
+  }
+
   private def handleDecisionForChild[T, S](
     rootAction: CompoundGameAction[T],
     childAction: GameAction[S],
@@ -59,7 +63,7 @@ object GameActionExecutor {
   }
 
   @tailrec
-  def executeAllActions(gameState: GameState): GameState = {
+  def executeAllActions(gameState: GameState)(implicit stops: Stops): GameState = {
     executeNextAction(gameState) match {
       case Some(newGameState) =>
         executeAllActions(newGameState)
@@ -68,11 +72,13 @@ object GameActionExecutor {
     }
   }
 
-  def executeNextAction(gameState: GameState): Option[GameState] = {
-    runAction(gameState, executeNextAction(_)(_))
+  def executeNextAction(gameState: GameState)(implicit stops: Stops): Option[GameState] = {
+    runAction(gameState, executeNextAction(_)(_, stops))
   }
 
-  def executeNextAction[T](gameAction: GameAction[T])(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = gameAction match {
+  def executeNextAction[T](gameAction: GameAction[T])(implicit gameState: GameState, stops: Stops): Option[(ProcessedGameActionResult[T], GameState)] = gameAction match {
+    case WrappedChoice(priorityChoice: PriorityChoice, furtherUpdates) if stops.shouldAutoPass(priorityChoice, gameState) =>
+      priorityChoice.handleDecision(serializedDecision).map(handleActionResult(directChoice, _))
     case _: NewChoice[T] =>
       None
     case action: ExecutableGameAction[T] =>

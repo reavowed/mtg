@@ -60,12 +60,7 @@ class GameController @Autowired() (gameService: GameService) {
   ) = {
     val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(_.name == stepOrPhaseText)
     stepOrPhaseOption.foreach(stepOrPhase => {
-      gameService.gameStateManager.stops
-        .updateWith(
-          PlayerId(playerIdentifier))(
-          _.map(_.updatedWith(
-            PlayerId(playerToStopAt))(
-            _.map(existingStops => if (existingStops.contains(stepOrPhase)) existingStops else existingStops :+ stepOrPhase))))
+      gameService.gameStateManager.setStop(PlayerId(playerIdentifier), PlayerId(playerToStopAt), stepOrPhase)
     })
     gameService.gameStateManager.stops(PlayerId(playerIdentifier))
   }
@@ -79,12 +74,7 @@ class GameController @Autowired() (gameService: GameService) {
   ) = {
     val stepOrPhaseOption = TurnPhase.AllPhasesAndSteps.find(_.name == stepOrPhaseText)
     stepOrPhaseOption.foreach(stepOrPhase => {
-      gameService.gameStateManager.stops
-        .updateWith(
-          PlayerId(playerIdentifier))(
-          _.map(_.updatedWith(
-            PlayerId(playerToStopAt))(
-            _.map(existingStops => existingStops.filter(_ != stepOrPhase)))))
+      gameService.gameStateManager.unsetStop(PlayerId(playerIdentifier), PlayerId(playerToStopAt), stepOrPhase)
     })
     gameService.gameStateManager.stops(PlayerId(playerIdentifier))
   }
