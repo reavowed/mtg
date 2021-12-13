@@ -2,9 +2,9 @@ package mtg.abilities
 
 import mtg.cards.text.{SimpleSpellEffectParagraph, SpellEffectParagraph, TextParagraph}
 import mtg.characteristics.types.Type.{Instant, Sorcery}
+import mtg.effects.ContinuousEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.oneshot.basic.AddManaEffect
-import mtg.effects.{ContinuousEffect, OneShotEffect}
 import mtg.game.ZoneType
 import mtg.game.state.ObjectWithState
 import mtg.parts.costs.Cost

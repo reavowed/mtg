@@ -3,7 +3,6 @@ package mtg.helpers
 import mtg.cards.CardDefinition
 import mtg.game.Zone.BasicZone
 import mtg.game.objects._
-import mtg.game.state.ObjectWithState
 import mtg.game.{PlayerId, TypedZone, Zone}
 
 trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {

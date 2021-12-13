@@ -5,8 +5,8 @@ import mtg.data.cards.alpha.AirElemental
 import mtg.data.cards.kaldheim.GnottvoldRecluse
 import mtg.data.cards.m21.ConcordiaPegasus
 import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
+import mtg.game.turns.TurnStep
 import mtg.game.turns.turnBasedActions.DeclareBlockersChoice
-import mtg.game.turns.{StartNextTurnAction, TurnStep}
 
 class FlyingSpec extends SpecWithGameStateManager {
   "flying" should {

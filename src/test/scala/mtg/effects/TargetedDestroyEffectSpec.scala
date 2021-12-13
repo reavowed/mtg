@@ -6,7 +6,7 @@ import mtg.cards.patterns.Spell
 import mtg.characteristics.types.Type
 import mtg.characteristics.types.Type.Creature
 import mtg.game.Zone
-import mtg.game.turns.{StartNextTurnAction, TurnPhase}
+import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 

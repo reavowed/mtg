@@ -3,9 +3,8 @@ package mtg
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
 import mtg.game.state.GameState
-import mtg.game.{GameData, GameStartingData, PlayerId, PlayerStartingData, Zone}
+import mtg.game._
 import mtg.helpers.{GameObjectHelpers, GameObjectStateHelpers}
-import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
 
 trait SpecWithGameObjectState

@@ -1,13 +1,12 @@
 package mtg.abilities.keyword
 
 import mtg.SpecWithGameStateManager
-import mtg.data.cards.{Mountain, Plains}
 import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
-import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance, IntroductionToAnnihilation}
+import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance}
 import mtg.data.cards.warofthespark.WardscaleCrocodile
+import mtg.data.cards.{Mountain, Plains}
 import mtg.game.Zone
-import mtg.game.turns.{StartNextTurnAction, TurnPhase}
+import mtg.game.turns.TurnPhase
 
 class HexproofSpec extends SpecWithGameStateManager {
   "hexproof" should {

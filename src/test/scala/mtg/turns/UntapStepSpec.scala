@@ -3,7 +3,6 @@ package mtg.turns
 import mtg.SpecWithGameStateManager
 import mtg.data.cards.{Forest, Plains}
 import mtg.game.Zone
-import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 
 class UntapStepSpec extends SpecWithGameStateManager {

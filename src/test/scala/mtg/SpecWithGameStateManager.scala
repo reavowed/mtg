@@ -4,11 +4,9 @@ import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.start.TakeTurnAction
 import mtg.game.state._
 import mtg.game.state.history.GameHistory
-import mtg.game.turns.{Turn, TurnPhase}
+import mtg.game.turns.Turn
 import mtg.helpers.{GameStateManagerHelpers, GameUpdateHelpers, StackObjectHelpers}
 import org.specs2.matcher.Matcher
-
-import scala.collection.mutable
 
 abstract class SpecWithGameStateManager
     extends SpecWithGameObjectState

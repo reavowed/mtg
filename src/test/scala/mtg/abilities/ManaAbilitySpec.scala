@@ -6,7 +6,7 @@ import mtg.cards.text.SimpleSpellEffectParagraph
 import mtg.characteristics.Color
 import mtg.characteristics.Color.{Green, Red}
 import mtg.data.cards.Plains
-import mtg.game.turns.{StartNextTurnAction, TurnPhase}
+import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.{ManaCost, TapSymbol}
 

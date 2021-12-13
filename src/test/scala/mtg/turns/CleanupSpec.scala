@@ -1,11 +1,10 @@
 package mtg.turns
 
 import mtg.SpecWithGameStateManager
-import mtg.data.cards.{Forest, Plains}
 import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
-import mtg.game.Zone
+import mtg.data.cards.{Forest, Plains}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.game.turns.{StartNextTurnAction, TurnStep}
+import mtg.game.turns.TurnStep
 
 class CleanupSpec extends SpecWithGameStateManager {
   "cleanup step" should {

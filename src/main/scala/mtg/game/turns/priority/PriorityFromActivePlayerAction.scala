@@ -1,6 +1,6 @@
 package mtg.game.turns.priority
 
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case object PriorityFromActivePlayerAction extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

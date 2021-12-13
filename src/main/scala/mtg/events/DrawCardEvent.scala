@@ -1,6 +1,6 @@
 package mtg.events
 
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.{PlayerId, Zone}
 
 case class DrawCardEvent(player: PlayerId) extends InternalGameAction {

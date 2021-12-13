@@ -1,7 +1,7 @@
 package mtg.effects.oneshot.descriptions
 
+import mtg.effects.PowerToughnessModifier
 import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, ModifyPowerToughnessEffect}
-import mtg.effects.{ContinuousEffect, PowerToughnessModifier}
 import mtg.game.ObjectId
 import mtg.text.{VerbPhraseTemplate, Verbs}
 

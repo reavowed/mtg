@@ -5,7 +5,6 @@ import mtg.data.cards.Mountain
 import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.game.Zone
-import mtg.game.turns.StartNextTurnAction
 
 class LightningBoltSpec extends SpecWithGameStateManager {
   "Lightning Bolt" should {

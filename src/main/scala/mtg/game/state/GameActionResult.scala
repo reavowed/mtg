@@ -1,7 +1,6 @@
 package mtg.game.state
 
 import mtg.game.objects.GameObjectState
-import mtg.game.state.GameActionResult.nextUpdates
 import mtg.game.state.history.LogEvent
 
 case class GameActionResult(newGameObjectState: Option[GameObjectState], nextUpdates: Seq[OldGameUpdate], logEvent: Option[LogEvent])

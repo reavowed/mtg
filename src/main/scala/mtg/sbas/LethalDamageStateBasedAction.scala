@@ -2,7 +2,7 @@ package mtg.sbas
 
 import mtg.characteristics.types.Type
 import mtg.events.DestroyEvent
-import mtg.game.state.{InternalGameAction, GameState}
+import mtg.game.state.{GameState, InternalGameAction}
 
 object LethalDamageStateBasedAction {
   def getApplicableEvents(gameState: GameState): Seq[InternalGameAction] = {

@@ -2,7 +2,7 @@ package mtg.game.actions
 
 import mtg.events.MoveObjectEvent
 import mtg.game.objects.GameObject
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.{PlayerId, Zone}
 
 case class PlayLandEvent(player: PlayerId, landCard: GameObject) extends InternalGameAction {

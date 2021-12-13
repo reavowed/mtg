@@ -5,14 +5,10 @@ import mtg.abilities.AbilityDefinition
 import mtg.abilities.keyword.Vigilance
 import mtg.data.cards.alpha.SavannahLions
 import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences, ExpandedAnatomy, SpinedKarok}
-import mtg.data.cards.{Forest, Island, Plains}
-import mtg.effects.oneshot.basic.SearchChoice
-import mtg.game.Zone
-import mtg.game.turns.StartNextTurnAction
+import mtg.data.cards.strixhaven.{ExpandedAnatomy, SpinedKarok}
+import mtg.data.cards.{Forest, Plains}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.counters.PlusOnePlusOneCounter
-import mtg.stack.resolving.ResolveEffectChoice
 
 class ExpandedAnatomySpec extends SpecWithGameStateManager {
   "Expanded Anatomy" should {

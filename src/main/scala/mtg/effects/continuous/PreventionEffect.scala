@@ -1,7 +1,6 @@
 package mtg.effects.continuous
 
 import mtg.effects.ContinuousEffect
-import mtg.game.ObjectId
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameState, InternalGameAction}
 import mtg.game.turns.TurnStep

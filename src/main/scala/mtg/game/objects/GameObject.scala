@@ -3,8 +3,8 @@ package mtg.game.objects
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
-import mtg.game.state._
 import mtg.game._
+import mtg.game.state._
 import mtg.parts.counters.CounterType
 
 trait GameObject {

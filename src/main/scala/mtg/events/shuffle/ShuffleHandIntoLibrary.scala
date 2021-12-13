@@ -1,7 +1,7 @@
 package mtg.events.shuffle
 
 import mtg.events.MoveObjectEvent
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.{PlayerId, Zone}
 
 case class ShuffleHandIntoLibrary(player: PlayerId) extends InternalGameAction {

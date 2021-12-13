@@ -3,7 +3,7 @@ package mtg.effects.oneshot.basic
 import mtg.effects.filters.Filter
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameState, InternalGameAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 import mtg.utils.TextUtils._
 

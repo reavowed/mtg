@@ -2,7 +2,7 @@ package mtg.events
 
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class CreateContinousEffects(effects: Seq[ContinuousEffect], endCondition: Condition) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

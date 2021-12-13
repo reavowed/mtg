@@ -1,9 +1,9 @@
 package mtg.game.state
 
 import mtg.game.turns.TurnPhase
-import mtg.game.{GameStartingData, PlayerId}
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice
+import mtg.game.{GameStartingData, PlayerId}
 
 case class Stops(stepOrPhaseByActivePlayerByPlayerWithStop: Map[PlayerId, Map[PlayerId, Seq[AnyRef]]]) {
   def shouldAutoPass(priorityChoice: PriorityChoice, gameState: GameState): Boolean = {

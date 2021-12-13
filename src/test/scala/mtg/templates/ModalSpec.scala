@@ -4,7 +4,6 @@ import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Spell
 import mtg.characteristics.types.Type
 import mtg.data.cards.Plains
-import mtg.game.turns.StartNextTurnAction
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice

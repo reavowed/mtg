@@ -1,7 +1,7 @@
 package mtg.events
 
 import mtg.game.PlayerId
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class DrawCardsEvent(playerIdentifier: PlayerId, numberOfCards: Int) extends InternalGameAction {
   def execute(gameState: GameState): GameActionResult = {

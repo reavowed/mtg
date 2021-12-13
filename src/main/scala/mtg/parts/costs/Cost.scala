@@ -1,6 +1,6 @@
 package mtg.parts.costs
 
-import mtg.game.state.{GameUpdate, ObjectWithState, OldGameUpdate}
+import mtg.game.state.{ObjectWithState, OldGameUpdate}
 
 trait Cost {
   def text: String

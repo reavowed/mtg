@@ -1,6 +1,6 @@
 package mtg.events
 
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 
 case class DestroyEvent(player: PlayerId, objectId: ObjectId) extends InternalGameAction {

@@ -1,6 +1,6 @@
 package mtg.game.turns.turnEvents
 
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.turns.TurnPhase
 
 case class BeginPhaseEvent(phase: TurnPhase) extends InternalGameAction {

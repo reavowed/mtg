@@ -1,6 +1,5 @@
 package mtg.stack.resolving
 
-import mtg.abilities.SpellAbility
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.targets.TargetIdentifier
 import mtg.events.MoveObjectEvent

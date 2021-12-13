@@ -1,12 +1,9 @@
 package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
-import mtg.data.cards.{Mountain, Plains}
-import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
-import mtg.data.cards.kaldheim.GrizzledOutrider
+import mtg.data.cards.Plains
+import mtg.data.cards.alpha.SavannahLions
 import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance}
-import mtg.game.Zone
-import mtg.game.turns.StartNextTurnAction
 
 class BeamingDefianceSpec extends SpecWithGameStateManager {
   "Beaming Defiance" should {

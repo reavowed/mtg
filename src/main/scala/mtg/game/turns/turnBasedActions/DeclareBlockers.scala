@@ -2,8 +2,8 @@ package mtg.game.turns.turnBasedActions
 
 import mtg.characteristics.types.Type
 import mtg.effects.continuous.BlockerRestrictionEffect
-import mtg.game.state.history.LogEvent
 import mtg.game.state._
+import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
 import mtg.game.{ObjectId, PlayerId}
 import mtg.utils.ParsingUtils

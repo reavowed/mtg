@@ -1,6 +1,6 @@
 package mtg.game.turns
 
-import mtg.game.state.{GameUpdate, InternalGameAction}
+import mtg.game.state.InternalGameAction
 import mtg.game.turns.priority.PriorityFromActivePlayerAction
 import mtg.game.turns.turnEvents.BeginStepEvent
 import mtg.utils.CaseObjectWithName

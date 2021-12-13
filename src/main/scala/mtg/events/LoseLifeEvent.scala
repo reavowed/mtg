@@ -1,7 +1,7 @@
 package mtg.events
 
 import mtg.game.PlayerId
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class LoseLifeEvent(player: PlayerId, amount: Int) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

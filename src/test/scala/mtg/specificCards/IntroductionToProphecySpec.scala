@@ -1,13 +1,9 @@
 package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
-import mtg.data.cards.alpha.SavannahLions
-import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.strixhaven.{IntroductionToAnnihilation, IntroductionToProphecy, SpinedKarok}
-import mtg.data.cards.{Forest, Island, Plains, Swamp}
+import mtg.data.cards.strixhaven.IntroductionToProphecy
+import mtg.data.cards.{Island, Plains, Swamp}
 import mtg.effects.oneshot.actions.ScryChoice
-import mtg.game.Zone
-import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 
 class IntroductionToProphecySpec extends SpecWithGameStateManager {

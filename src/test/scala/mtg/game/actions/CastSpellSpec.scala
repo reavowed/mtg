@@ -4,12 +4,8 @@ import mtg.SpecWithGameStateManager
 import mtg.characteristics.Color
 import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.data.cards.{Forest, Plains}
-import mtg.data.sets.Strixhaven
-import mtg.game.objects.GameObject
-import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.priority.PriorityChoice
-import org.specs2.matcher.Matcher
 
 class CastSpellSpec extends SpecWithGameStateManager {
   "cast spell action" should {

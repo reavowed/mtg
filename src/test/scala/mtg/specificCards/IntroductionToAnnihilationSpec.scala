@@ -1,16 +1,12 @@
 package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
-import mtg.abilities.AbilityDefinition
-import mtg.abilities.keyword.Vigilance
 import mtg.data.cards.alpha.SavannahLions
 import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.strixhaven.{AgelessGuardian, ExpandedAnatomy, IntroductionToAnnihilation, SpinedKarok}
+import mtg.data.cards.strixhaven.{IntroductionToAnnihilation, SpinedKarok}
 import mtg.data.cards.{Forest, Plains}
 import mtg.game.Zone
-import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.parts.counters.PlusOnePlusOneCounter
 
 class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
   "Introduction to Annihilation" should {

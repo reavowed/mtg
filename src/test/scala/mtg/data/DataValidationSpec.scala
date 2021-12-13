@@ -2,11 +2,11 @@ package mtg.data
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
-import mtg.data.cards.{Forest, Island, Mountain, Plains, Swamp}
+import mtg.data.cards._
 import org.specs2.mutable.Specification
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
-import java.io.{File, FileInputStream}
+import java.io.FileInputStream
 import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
 

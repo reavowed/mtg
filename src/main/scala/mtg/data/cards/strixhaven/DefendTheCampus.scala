@@ -1,7 +1,6 @@
 package mtg.data.cards.strixhaven
 
 import mtg.abilities.builder.EffectBuilder._
-import mtg.abilities.keyword.Hexproof
 import mtg.cards.patterns.Spell
 import mtg.characteristics.Color.White
 import mtg.characteristics.types.Type.{Creature, Instant}

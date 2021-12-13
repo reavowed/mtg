@@ -1,7 +1,6 @@
 package mtg.events
 
 import mtg.SpecWithGameStateManager
-import mtg.game.objects.Card
 
 class DrawCardEventSpec extends SpecWithGameStateManager {
 

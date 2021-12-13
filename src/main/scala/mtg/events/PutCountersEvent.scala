@@ -1,7 +1,7 @@
 package mtg.events
 
 import mtg.game.ObjectId
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.parts.counters.CounterType
 
 case class PutCountersEvent(number: Int, kind: CounterType, objectId: ObjectId) extends InternalGameAction {

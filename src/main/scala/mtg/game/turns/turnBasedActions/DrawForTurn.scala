@@ -2,7 +2,7 @@ package mtg.game.turns.turnBasedActions
 
 import mtg.events.DrawCardEvent
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case object DrawForTurn extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

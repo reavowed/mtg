@@ -5,9 +5,9 @@ import mtg.data.cards.Mountain
 import mtg.data.cards.alpha.LightningBolt
 import mtg.game.start.TakeTurnAction
 import mtg.game.state.{GameStateManager, Stops}
-import mtg.game.turns.{Turn, TurnPhase, TurnStep}
 import mtg.game.turns.TurnPhase.{CombatPhase, PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.TurnStep.BeginningOfCombatStep
+import mtg.game.turns.{Turn, TurnPhase, TurnStep}
 
 class StopsSpec extends SpecWithGameStateManager {
   "stops" should {

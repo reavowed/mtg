@@ -2,7 +2,7 @@ package mtg.parts.costs
 
 import mtg.events.TapObjectEvent
 import mtg.game.objects.PermanentObject
-import mtg.game.state.{GameUpdate, ObjectWithState, OldGameUpdate}
+import mtg.game.state.{ObjectWithState, OldGameUpdate}
 
 case object TapSymbol extends Symbol("T") with Cost {
   override def isUnpayable(objectWithAbility: ObjectWithState): Boolean = objectWithAbility.gameObject.asOptionalInstanceOf[PermanentObject].exists(_.status.isTapped)

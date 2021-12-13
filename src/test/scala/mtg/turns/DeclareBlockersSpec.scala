@@ -6,8 +6,8 @@ import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
 import mtg.data.cards.{Forest, Plains}
 import mtg.game.Zone
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
+import mtg.game.turns.TurnStep
 import mtg.game.turns.turnBasedActions.{DeclareBlockersChoice, OrderBlockersChoice}
-import mtg.game.turns.{StartNextTurnAction, TurnStep}
 
 class DeclareBlockersSpec extends SpecWithGameStateManager {
   "declare blockers step" should {

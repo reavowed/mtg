@@ -1,7 +1,7 @@
 package mtg.events
 
 import mtg.game.ObjectId
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class UntapObjectEvent(objectId: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

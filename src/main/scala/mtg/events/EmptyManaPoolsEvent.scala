@@ -1,6 +1,6 @@
 package mtg.events
 
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 object EmptyManaPoolsEvent extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {

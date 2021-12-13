@@ -4,7 +4,6 @@ import mtg._
 import mtg.effects.continuous.PreventionEffect
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.targets.TargetIdentifier
-import mtg.game.ObjectId
 import mtg.game.state.GameState
 
 trait Effect

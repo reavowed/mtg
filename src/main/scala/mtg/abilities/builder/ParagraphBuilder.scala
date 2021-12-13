@@ -1,7 +1,7 @@
 package mtg.abilities.builder
 
 import mtg.abilities.{ActivatedAbilityDefinition, KeywordAbility}
-import mtg.cards.text.{ActivatedAbilityParagraph, KeywordAbilityParagraph, ModalEffectParagraph, SimpleSpellEffectParagraph, SpellEffectParagraph, TextParagraph}
+import mtg.cards.text._
 import mtg.parts.costs.Cost
 
 trait ParagraphBuilder {

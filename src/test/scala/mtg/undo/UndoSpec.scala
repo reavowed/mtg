@@ -4,7 +4,7 @@ import mtg.SpecWithGameStateManager
 import mtg.data.cards.Plains
 import mtg.game.PlayerId
 import mtg.game.state.{GameStateManager, UndoHelper}
-import mtg.game.turns.{StartNextTurnAction, TurnPhase}
+import mtg.game.turns.TurnPhase
 
 class UndoSpec extends SpecWithGameStateManager {
   def verifyUndo(

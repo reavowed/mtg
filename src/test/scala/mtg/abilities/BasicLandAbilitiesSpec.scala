@@ -3,14 +3,11 @@ package mtg.abilities
 import mtg.SpecWithGameStateManager
 import mtg.characteristics.Color
 import mtg.data.cards.Plains
-import mtg.effects.oneshot
 import mtg.effects.oneshot.basic
-import mtg.effects.oneshot.basic.AddManaEffect
 import mtg.game.Zone
 import mtg.game.actions.ActivateAbilityAction
 import mtg.game.objects.GameObject
 import mtg.game.state.ObjectWithState
-import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.costs.TapSymbol
 import org.specs2.matcher.Matcher

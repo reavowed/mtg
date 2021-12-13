@@ -5,7 +5,6 @@ import mtg.cards.CardDefinition
 import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.data.cards.{Forest, Plains, Swamp}
 import mtg.game.state.history.LogEvent
-import mtg.game.turns.StartNextTurnAction
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import org.specs2.matcher.Matcher
 

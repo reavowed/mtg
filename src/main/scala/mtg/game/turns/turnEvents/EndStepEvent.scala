@@ -1,7 +1,7 @@
 package mtg.game.turns.turnEvents
 
 import mtg.events.EmptyManaPoolsEvent
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.turns.TurnStep
 
 case class EndStepEvent(step: TurnStep) extends InternalGameAction {

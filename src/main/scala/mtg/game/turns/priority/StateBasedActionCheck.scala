@@ -1,6 +1,6 @@
 package mtg.game.turns.priority
 
-import mtg.game.state.{GameState, InternalGameAction, GameActionResult}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.sbas.LethalDamageStateBasedAction
 
 object StateBasedActionCheck extends InternalGameAction {

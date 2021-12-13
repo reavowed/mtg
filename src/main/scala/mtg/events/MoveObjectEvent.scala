@@ -1,7 +1,7 @@
 package mtg.events
 
 import mtg.game.objects.GameObject
-import mtg.game.state.{InternalGameAction, GameActionResult, GameState}
+import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 import mtg.game.{ObjectId, PlayerId, Zone}
 
 case class MoveObjectEvent(player: PlayerId, objectId: ObjectId, destination: Zone) extends InternalGameAction {
