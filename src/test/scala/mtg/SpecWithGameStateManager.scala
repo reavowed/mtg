@@ -35,7 +35,7 @@ abstract class SpecWithGameStateManager
   }
 
   def createGameStateManager(gameState: GameState): GameStateManager = {
-    new GameStateManager(gameState, _ => {}, mutable.Map(players.map(_ -> players.map(_ -> TurnPhase.AllPhasesAndSteps).toMap): _*))
+    new GameStateManager(gameState, _ => {}, Stops.all(players))
   }
 
   def createGameStateManager(gameObjectState: GameObjectState, action: RootGameAction): GameStateManager = {
@@ -56,11 +56,11 @@ abstract class SpecWithGameStateManager
 
   def runAction(action: GameAction[Any], gameObjectState: GameObjectState): GameState = {
     val initialGameState = createGameState(gameObjectState, action)
-    GameActionExecutor.executeAllActions(initialGameState)
+    GameActionExecutor.executeAllActions(initialGameState)(Stops.all(players))
   }
 
   def runAction(action: RootGameAction, gameObjectState: GameObjectState): GameState = {
     val initialGameState = createGameState(gameObjectState, action)
-    GameActionExecutor.executeAllActions(initialGameState)
+    GameActionExecutor.executeAllActions(initialGameState)(Stops.all(players))
   }
 }

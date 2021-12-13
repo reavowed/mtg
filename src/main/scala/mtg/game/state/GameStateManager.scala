@@ -13,11 +13,11 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   executeAutomaticActionsAndUpdate()
 
   private def executeAutomaticActionsAndUpdate(): Unit = {
-    updateState(GameActionExecutor.executeAllActions(gameState))
+    updateState(GameActionExecutor.executeAllActions(gameState)(stops))
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {
-    GameActionExecutor.handleDecision(gameState, serializedDecision, actingPlayer).foreach(updateState)
+    GameActionExecutor.handleDecision(gameState, serializedDecision, actingPlayer)(stops).foreach(updateState)
   }
 
   def requestUndo(playerId: PlayerId): Unit = {

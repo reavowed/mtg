@@ -1,5 +1,6 @@
 package mtg.game.state
 
+import mtg.game.turns.TurnPhase
 import mtg.game.{GameStartingData, PlayerId}
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.priority.PriorityChoice
@@ -35,10 +36,18 @@ case class Stops(stepOrPhaseByActivePlayerByPlayerWithStop: Map[PlayerId, Map[Pl
 }
 
 object Stops {
-  def default(gameStartingData: GameStartingData): Stops = Stops(
-    gameStartingData.players.map(playerWithStop =>
-      playerWithStop -> gameStartingData.players.map(activePlayer =>
+  def default(gameStartingData: GameStartingData): Stops = default(gameStartingData.players)
+  def default(players: Seq[PlayerId]): Stops = Stops(
+    players.map(playerWithStop =>
+      playerWithStop -> players.map(activePlayer =>
         activePlayer -> (if (playerWithStop == activePlayer) Seq(PrecombatMainPhase, PostcombatMainPhase) else Nil)
+      ).toMap
+    ).toMap
+  )
+  def all(players: Seq[PlayerId]): Stops =  Stops(
+    players.map(playerWithStop =>
+      playerWithStop -> players.map(activePlayer =>
+        activePlayer -> TurnPhase.AllPhasesAndSteps
       ).toMap
     ).toMap
   )
