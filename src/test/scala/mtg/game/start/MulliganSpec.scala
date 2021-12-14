@@ -1,11 +1,12 @@
 package mtg.game.start
 
 import mtg._
-import mtg.game.PlayerId
+import mtg.game.{PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState}
+import mtg.game.state.history.LogEvent
 import mtg.game.state.{DirectChoice, GameState}
 import mtg.game.turns.{TurnPhase, TurnStep}
-import org.specs2.matcher.MatchResult
+import org.specs2.matcher.{MatchFailure, MatchResult}
 
 class MulliganSpec extends SpecWithGameStateManager {
   def checkAllCardsAreNewObjects(gameObjects: Seq[GameObject], previousGameObjectState: GameObjectState): MatchResult[_] = {
@@ -106,6 +107,21 @@ class MulliganSpec extends SpecWithGameStateManager {
       finalGameState.currentNewChoice must beSome(beLike[DirectChoice[_]] {
         case ReturnCardsToLibraryChoice(`playerTwo`, 7) => ok
       })
+    }
+
+    "log events" in {
+      val manager = createGameStateManager(gameObjectStateWithInitialLibrariesAndHands, MulligansAction(players, 0))
+      manager.handleDecision("K", playerOne)
+      manager.handleDecision("M", playerTwo)
+      manager.handleDecision("K", playerTwo)
+      manager.handleDecision(Zone.Hand(playerTwo)(manager.gameState).head.objectId.toString, playerTwo)
+
+      manager.gameState.gameHistory.logEvents.map(_.logEvent) must contain(allOf[LogEvent](
+        LogEvent.KeepHand(playerOne, 7),
+        LogEvent.Mulligan(playerTwo, 6),
+        LogEvent.KeepHand(playerTwo, 6),
+        LogEvent.ReturnCardsToLibrary(playerTwo, 1)
+      ).inOrder)
     }
   }
 }
