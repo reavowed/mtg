@@ -8,8 +8,6 @@ import mtg.game.turns.turnEvents.{BeginPhaseEvent, BeginStepEvent, BeginTurnEven
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
 import mtg.game.{GameData, GameStartingData, PlayerId}
 
-import scala.util.Random
-
 case class GameState(
   gameData: GameData,
   gameObjectState: GameObjectState,
@@ -67,7 +65,7 @@ case class GameState(
 
 object GameState {
   def initial(gameStartingData: GameStartingData) = {
-    val startingPlayer = Random.shuffle(gameStartingData.players).head
+    val startingPlayer = gameStartingData.players.head
     val playersInTurnOrder = GameData.getPlayersInApNapOrder(startingPlayer, gameStartingData.players)
     val gameData = GameData.initial(playersInTurnOrder)
     GameState(

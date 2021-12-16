@@ -12,6 +12,8 @@ trait ExecutableGameAction[+T] extends CompoundGameAction[T] {
 }
 sealed trait NewChoice[+T] extends CompoundGameAction[T] {
   def playerToAct: PlayerId
+  def temporarilyVisibleZones: Seq[Zone] = Nil
+  def temporarilyVisibleObjects: Seq[ObjectId] = Nil
 }
 trait RootGameAction extends ExecutableGameAction[RootGameAction]
 
@@ -21,7 +23,6 @@ case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
 trait DirectChoice[T] extends NewChoice[T] {
-  def playerToAct: PlayerId
   def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PartialGameActionResult[T]]
 }
 object DirectChoice {
@@ -37,11 +38,8 @@ trait InternalGameAction extends OldGameUpdate {
   def canBeReverted: Boolean
 }
 case class BackupAction(gameStateToRevertTo: GameState) extends OldGameUpdate
-trait Choice extends OldGameUpdate {
-  def playerToAct: PlayerId
+trait Choice extends OldGameUpdate with NewChoice[Unit] {
   def parseDecision(serializedDecision: String): Option[Decision]
-  def temporarilyVisibleZones: Seq[Zone] = Nil
-  def temporarilyVisibleObjects: Seq[ObjectId] = Nil
 }
 object Choice {
   trait WithParser extends Choice {

@@ -9,7 +9,7 @@ import Hand from "../Hand";
 
 export default function MulliganChoice() {
     const gameState = useContext(GameState);
-    const numberOfCardsToKeep = 7 - gameState.currentChoice.details.mulligansSoFar;
+    const numberOfCardsToKeep = 7 - gameState.currentChoice.details.numberOfMulligansTakenSoFar;
     if (gameState.player === gameState.currentChoice.playerToAct) {
         return <div>
             <Hand as={CardWithText}/>
