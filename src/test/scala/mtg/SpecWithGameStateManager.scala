@@ -1,10 +1,10 @@
 package mtg
 
 import mtg.game.objects.{GameObject, GameObjectState}
-import mtg.game.start.TakeTurnAction
 import mtg.game.state._
 import mtg.game.state.history.GameHistory
 import mtg.game.turns.Turn
+import mtg.game.turns.turnEvents.TakeTurnAction
 import mtg.helpers.{GameStateManagerHelpers, GameUpdateHelpers, StackObjectHelpers}
 import org.specs2.matcher.Matcher
 

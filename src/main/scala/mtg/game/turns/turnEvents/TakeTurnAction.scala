@@ -1,13 +1,13 @@
-package mtg.game.start
+package mtg.game.turns.turnEvents
 
+import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameState, PartialGameActionResult, RootGameAction, WrappedOldUpdates}
-import mtg.game.turns.Turn
-import mtg.game.turns.turnEvents.BeginTurnEvent
+import mtg.game.turns.{Turn, TurnPhase}
 
 case class TakeTurnAction(turn: Turn) extends RootGameAction {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
-    PartialGameActionResult.childThenValue(
-      WrappedOldUpdates(BeginTurnEvent(turn)),
+    PartialGameActionResult.childrenThenValue(
+      Seq(LogEvent.NewTurn(turn), WrappedOldUpdates(TurnPhase.All.map(BeginPhaseEvent): _*)),
       TakeTurnAction(turn.next(gameState)))
   }
 }

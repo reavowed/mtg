@@ -4,6 +4,7 @@ import mtg._
 import mtg.events.shuffle.ShuffleHandIntoLibrary
 import mtg.game.PlayerId
 import mtg.game.state._
+import mtg.game.turns.turnEvents.TakeTurnAction
 
 case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberOfMulligansTakenSoFar: Int) extends RootGameAction {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {

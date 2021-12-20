@@ -5,7 +5,9 @@ import mtg.game.state.{Choice, GameState, InternalGameAction}
 
 import scala.reflect.{ClassTag, classTag}
 
-sealed trait HistoryEvent
+sealed trait HistoryEvent {
+  def stateBefore: GameState
+}
 object HistoryEvent {
   case class ResolvedAction(action: InternalGameAction, stateBefore: GameState) extends HistoryEvent
   case class ResolvedChoice(choice: Choice, stateBefore: GameState) extends HistoryEvent

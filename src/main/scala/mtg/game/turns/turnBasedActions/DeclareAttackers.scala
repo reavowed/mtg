@@ -40,7 +40,9 @@ object DeclareAttackers extends InternalGameAction {
     gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
   }
   def getAttackDeclarations(gameState: GameState): Seq[AttackDeclaration] = {
-    gameState.gameHistory.gameEventsThisTurn.actions.ofType[DeclaredAttackers]
+    val actions = gameState.gameHistory.gameEventsThisTurn.actions
+    val declaredAttackers = actions.ofType[DeclaredAttackers]
+    declaredAttackers
       .toSeq
       .flatMap(_.attackDeclarations)
   }

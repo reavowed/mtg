@@ -8,8 +8,8 @@ import mtg.data.cards.strixhaven.{BeamingDefiance, DefendTheCampus}
 import mtg.data.cards.{Mountain, Plains}
 import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
-import mtg.game.start.TakeTurnAction
 import mtg.game.state.{GameState, GameStateManager}
+import mtg.game.turns.turnEvents.TakeTurnAction
 import mtg.game.{GameStartingData, PlayerId, PlayerStartingData, Zone}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
