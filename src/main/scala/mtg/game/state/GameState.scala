@@ -4,7 +4,7 @@ import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
 import mtg.game.state.history.HistoryEvent.{ResolvedAction, ResolvedChoice}
 import mtg.game.state.history._
-import mtg.game.turns.turnEvents.{BeginPhaseEvent, BeginStepEvent, BeginTurnEvent, TakeTurnAction}
+import mtg.game.turns.turnEvents.{ExecutePhase, ExecuteStep, ExecuteTurn}
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
 import mtg.game.{GameData, GameStartingData, PlayerId}
 
@@ -36,17 +36,10 @@ case class GameState(
     currentAction.toSeq.flatMap(helper(_, Nil))
   }
 
-  def currentTurn: Option[Turn] = allCurrentActions.headOption.flatMap(_.asOptionalInstanceOf[TakeTurnAction]).map(_.turn)
+  def currentTurn: Option[Turn] = allCurrentActions.headOption.flatMap(_.asOptionalInstanceOf[ExecuteTurn]).map(_.turn)
   def currentTurnNumber: Int = currentTurn.map(_.number).getOrElse(0)
-  def currentPhase: Option[TurnPhase] =  gameHistory.historyEvents.actions.collectFirst {
-    case BeginTurnEvent(_) => None
-    case BeginPhaseEvent(phase) => Some(phase)
-  }.flatten
-  def currentStep: Option[TurnStep] = gameHistory.historyEvents.actions.collectFirst {
-    case BeginTurnEvent(_) => None
-    case BeginPhaseEvent(_) => None
-    case BeginStepEvent(step) => Some(step)
-  }.flatten
+  def currentPhase: Option[TurnPhase] = allCurrentActions.ofType[ExecutePhase].headOption.map(_.phase)
+  def currentStep: Option[TurnStep] = allCurrentActions.ofType[ExecuteStep].headOption.map(_.step)
 
   def updateHistory(f: GameHistory => GameHistory): GameState = copy(gameHistory = f(gameHistory))
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))

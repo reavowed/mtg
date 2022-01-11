@@ -82,7 +82,7 @@ object GameActionExecutor {
     case _: NewChoice[T] =>
       None
     case action: ExecutableGameAction[T] =>
-      Some(handleActionResult(action, action.execute()))
+      Some(executeAction(action))
     case PartiallyExecutedActionWithValue(rootAction, value, callback) =>
       Some(executeCallback(rootAction, value, callback))
     case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
@@ -92,6 +92,21 @@ object GameActionExecutor {
     case LogEventAction(logEvent) =>
       Some((ProcessedGameActionResult.Value(()).asInstanceOf[ProcessedGameActionResult[T]], gameState.recordLogEvent(logEvent)))
   }
+
+  private def executeAction[T](action: ExecutableGameAction[T])(implicit gameState: GameState):  (ProcessedGameActionResult[T], GameState) = {
+    val preventResult = gameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
+      .findOption(_.checkAction(action, gameState).asOptionalInstanceOf[Prevent])
+    preventResult match {
+      case Some(Prevent(logEvent)) =>
+        (ProcessedGameActionResult.Value(().asInstanceOf[T]), gameState.recordLogEvent(logEvent))
+      case None =>
+        handleActionResult(action, action.execute()).mapRight { finalGameState =>
+          val triggeredAbilities = getTriggeringAbilities(action, finalGameState)
+          finalGameState.updateGameObjectState(_.addWaitingTriggeredAbilities(triggeredAbilities))
+        }
+    }
+  }
+
 
   private def executeCallback[T, S](
     rootAction: CompoundGameAction[T],
@@ -199,7 +214,7 @@ object GameActionExecutor {
     }
   }
 
-  private def getTriggeringAbilities(action: InternalGameAction, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
+  private def getTriggeringAbilities(action: GameUpdate, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
     gameStateAfterAction.gameObjectState.activeTriggeredAbilities.filter {
       _.getCondition(gameStateAfterAction) match {
         case eventCondition: EventCondition =>

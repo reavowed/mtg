@@ -4,12 +4,12 @@ import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.data.cards.alpha.LightningBolt
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.m21.ConcordiaPegasus
-import mtg.data.cards.strixhaven.{BeamingDefiance, DefendTheCampus}
+import mtg.data.cards.strixhaven.{BeamingDefiance, CombatProfessor, DefendTheCampus}
 import mtg.data.cards.{Mountain, Plains}
 import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
 import mtg.game.state.{GameState, GameStateManager}
-import mtg.game.turns.turnEvents.TakeTurnAction
+import mtg.game.turns.turnEvents.ExecuteTurn
 import mtg.game.{GameStartingData, PlayerId, PlayerStartingData, Zone}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,6 +52,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
       (Plains, Zone.Battlefield, playerOne),
       (DefendTheCampus, Zone.Hand(playerOne), playerOne),
       (ConcordiaPegasus, Zone.Battlefield, playerOne),
+      (CombatProfessor, Zone.Battlefield, playerOne),
       (ConcordiaPegasus, Zone.Battlefield, playerTwo),
       (GrizzledOutrider, Zone.Battlefield, playerTwo),
       (Plains, Zone.Battlefield, playerTwo),
@@ -59,7 +60,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     )
 
     val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}
-      .copy(currentAction = Some(TakeTurnAction.first(initialGameState)))
+      .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
     new GameStateManager(updatedState, onStateUpdate, initialManager.stops)
   }
 

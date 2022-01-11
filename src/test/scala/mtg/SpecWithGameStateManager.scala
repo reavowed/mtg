@@ -4,7 +4,7 @@ import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state._
 import mtg.game.state.history.GameHistory
 import mtg.game.turns.Turn
-import mtg.game.turns.turnEvents.TakeTurnAction
+import mtg.game.turns.turnEvents.ExecuteTurn
 import mtg.helpers.{GameStateManagerHelpers, GameUpdateHelpers, StackObjectHelpers}
 import org.specs2.matcher.Matcher
 
@@ -45,7 +45,7 @@ abstract class SpecWithGameStateManager
   }
 
   def createGameStateManagerAtStartOfFirstTurn(gameObjectState: GameObjectState): GameStateManager = {
-    createGameStateManager(gameObjectState, TakeTurnAction(Turn(1, playerOne)))
+    createGameStateManager(gameObjectState, ExecuteTurn(Turn(1, playerOne)))
   }
 
   def runAction(action: OldGameUpdate, gameObjectState: GameObjectState): GameState = {

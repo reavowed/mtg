@@ -4,7 +4,7 @@ import mtg._
 import mtg.events.shuffle.ShuffleHandIntoLibrary
 import mtg.game.PlayerId
 import mtg.game.state._
-import mtg.game.turns.turnEvents.TakeTurnAction
+import mtg.game.turns.turnEvents.ExecuteTurn
 
 case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberOfMulligansTakenSoFar: Int) extends RootGameAction {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
@@ -21,7 +21,7 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
     else
       PartialGameActionResult.childrenThenValue(
         playersToMakeMulliganDecision.map(ReturnCardsToLibraryChoice(_, gameState.gameData.startingHandSize)),
-        TakeTurnAction.first(gameState))
+        ExecuteTurn.first(gameState))
   }
 
   def handleMulliganResult(decisions: Seq[MulliganDecision])(implicit gameState: GameState): PartialGameActionResult[RootGameAction] = {
@@ -31,7 +31,7 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
         WrappedOldUpdates(playersMulliganning.map(ShuffleHandIntoLibrary): _*),
         MulligansAction(playersMulliganning, numberOfMulligansTakenSoFar + 1))
     } else {
-      TakeTurnAction.first(gameState)
+      ExecuteTurn.first(gameState)
     }
   }
 }

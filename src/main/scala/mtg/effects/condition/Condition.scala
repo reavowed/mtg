@@ -1,13 +1,13 @@
 package mtg.effects.condition
 
-import mtg.game.state.{GameState, InternalGameAction}
+import mtg.game.state.{GameState, GameUpdate}
 
 sealed trait Condition
 
 trait EventCondition extends Condition {
-  def matchesEvent(eventToMatch: InternalGameAction, gameState: GameState): Boolean
+  def matchesEvent(eventToMatch: GameUpdate, gameState: GameState): Boolean
 }
 
-case class SingleEventCondition(event: InternalGameAction) extends EventCondition {
-  override def matchesEvent(eventToMatch: InternalGameAction, gameState: GameState): Boolean = eventToMatch == event
+case class SingleEventCondition(event: GameUpdate) extends EventCondition {
+  override def matchesEvent(eventToMatch: GameUpdate, gameState: GameState): Boolean = eventToMatch == event
 }

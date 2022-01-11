@@ -6,14 +6,14 @@ import mtg.data.cards.alpha.LightningBolt
 import mtg.game.state.{GameStateManager, Stops}
 import mtg.game.turns.TurnPhase.{CombatPhase, PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.TurnStep.BeginningOfCombatStep
-import mtg.game.turns.turnEvents.TakeTurnAction
+import mtg.game.turns.turnEvents.ExecuteTurn
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
 
 class StopsSpec extends SpecWithGameStateManager {
   "stops" should {
     "stop each player in main phases by default" in {
       val manager = new GameStateManager(
-        createGameState(gameObjectStateWithInitialLibrariesAndHands, TakeTurnAction(Turn(1, playerOne))),
+        createGameState(gameObjectStateWithInitialLibrariesAndHands, ExecuteTurn(Turn(1, playerOne))),
         _ => {},
         Stops.default(players))
 
@@ -33,7 +33,7 @@ class StopsSpec extends SpecWithGameStateManager {
 
     "stop a player in a step if stop is manually set" in {
       val manager = new GameStateManager(
-        createGameState(gameObjectStateWithInitialLibrariesAndHands, TakeTurnAction(Turn(1, playerOne))),
+        createGameState(gameObjectStateWithInitialLibrariesAndHands, ExecuteTurn(Turn(1, playerOne))),
         _ => {},
         Stops.default(players))
 
@@ -51,7 +51,7 @@ class StopsSpec extends SpecWithGameStateManager {
         .setHand(playerOne, LightningBolt)
 
       val manager = new GameStateManager(
-        createGameState(initialState, TakeTurnAction(Turn(1, playerOne))),
+        createGameState(initialState, ExecuteTurn(Turn(1, playerOne))),
         _ => {},
         Stops.default(players))
 

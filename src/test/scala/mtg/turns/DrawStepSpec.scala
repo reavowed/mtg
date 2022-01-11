@@ -26,7 +26,6 @@ class DrawStepSpec extends SpecWithGameStateManager {
       val finalState = manager.gameState
 
       playerOne.hand(finalState).size mustEqual 7
-      finalState.gameHistory.gameEventsThisTurn.actions must not(contain(BeginStepEvent(TurnStep.DrawStep)))
       finalState.gameHistory.logEvents must not(contain(logEvent(LogEvent.DrawForTurn(playerOne))))
       finalState.gameHistory.logEvents must contain(logEvent(LogEvent.SkipFirstDrawStep(playerOne)))
     }
@@ -40,7 +39,6 @@ class DrawStepSpec extends SpecWithGameStateManager {
       val finalState = manager.gameState
 
       playerTwo.hand(finalState).size mustEqual 8
-      finalState.gameHistory.gameEventsThisTurn.actions must contain(BeginStepEvent(TurnStep.DrawStep))
       finalState.gameHistory.logEvents must contain(logEvent(LogEvent.DrawForTurn(playerTwo)))
       finalState.gameHistory.logEvents must not(contain(logEvent(LogEvent.SkipFirstDrawStep(playerTwo))))
     }
