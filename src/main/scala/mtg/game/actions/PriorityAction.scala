@@ -3,19 +3,21 @@ package mtg.game.actions
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
-import mtg.game.state.{BackupAction, GameState, InternalGameAction}
+import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction, PartialGameActionResult}
 import mtg.game.{ObjectId, PlayerId}
 
 @JsonSerialize(using = classOf[PriorityAction.Serializer])
-abstract class PriorityAction extends InternalGameAction {
+abstract class PriorityAction {
   def objectId: ObjectId
   def displayText: String
   def optionText: String
+
+  def execute(backupAction: BackupAction)(implicit gameState: GameState): PartialGameActionResult[Any]
 }
 
 object PriorityAction {
-  def getAll(player: PlayerId, gameState: GameState, backupAction: BackupAction): Seq[PriorityAction] = {
-    CastSpellAction.getCastableSpells(player, gameState, backupAction) ++
+  def getAll(player: PlayerId, gameState: GameState): Seq[PriorityAction] = {
+    CastSpellAction.getCastableSpells(player, gameState) ++
     ActivateAbilityAction.getActivatableAbilities(player, gameState) ++
       PlayLandAction.getPlayableLands(player, gameState)
   }

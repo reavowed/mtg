@@ -1,14 +1,14 @@
 package mtg.game.turns
 
-import mtg.game.state.{GameAction, WrappedOldUpdates}
-import mtg.game.turns.priority.PriorityFromActivePlayerAction
+import mtg.game.state.GameAction
+import mtg.game.turns.priority.PrioritySequenceAction
 import mtg.game.turns.turnEvents.ExecuteStep
 import mtg.utils.CaseObjectWithName
 
 sealed abstract class TurnPhase(val actions: Seq[GameAction[Any]]) extends CaseObjectWithName
 
 sealed abstract class TurnPhaseWithSteps(val steps: Seq[TurnStep]) extends TurnPhase(steps.map(ExecuteStep))
-sealed abstract class MainPhase extends TurnPhase(Seq(WrappedOldUpdates(PriorityFromActivePlayerAction)))
+sealed abstract class MainPhase extends TurnPhase(Seq(PrioritySequenceAction))
 
 object TurnPhase {
   case object BeginningPhase extends TurnPhaseWithSteps(TurnStep.BeginningPhaseSteps)

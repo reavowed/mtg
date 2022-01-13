@@ -1,12 +1,12 @@
 package mtg.game.start
 
 import mtg._
-import mtg.game.{PlayerId, Zone}
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{DirectChoice, GameState}
+import mtg.game.state.{GameState, NewChoice}
 import mtg.game.turns.{TurnPhase, TurnStep}
-import org.specs2.matcher.{MatchFailure, MatchResult}
+import mtg.game.{PlayerId, Zone}
+import org.specs2.matcher.MatchResult
 
 class MulliganSpec extends SpecWithGameStateManager {
   def checkAllCardsAreNewObjects(gameObjects: Seq[GameObject], previousGameObjectState: GameObjectState): MatchResult[_] = {
@@ -65,7 +65,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       val finalGameState = manager.gameState
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerOne)
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerTwo)
-      finalGameState.currentNewChoice must beSome(MulliganChoice(playerOne, 1))
+      finalGameState.currentChoice must beSome(MulliganChoice(playerOne, 1))
     }
 
     "only draw one player new cards if other player has kept" in {
@@ -77,7 +77,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       val finalGameState = manager.gameState
       checkLibraryAndHandAreTheSame(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerOne)
       checkMulliganAndNewHandDrawn(beforeMulliganGameObjectState, finalGameState.gameObjectState, playerTwo)
-      finalGameState.currentNewChoice must beSome(MulliganChoice(playerTwo, 1))
+      finalGameState.currentChoice must beSome(MulliganChoice(playerTwo, 1))
     }
 
     "require a card to be put back after mulliganing once" in {
@@ -87,7 +87,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       manager.handleDecision("K", playerTwo)
 
       val finalGameState = manager.gameState
-      finalGameState.currentNewChoice must beSome(beLike[DirectChoice[_]] {
+      finalGameState.currentChoice must beSome(beLike[NewChoice[_]] {
         case ReturnCardsToLibraryChoice(`playerTwo`, 1) => ok
       })
     }
@@ -104,7 +104,7 @@ class MulliganSpec extends SpecWithGameStateManager {
       manager.handleDecision("M", playerTwo)
 
       val finalGameState = manager.gameState
-      finalGameState.currentNewChoice must beSome(beLike[DirectChoice[_]] {
+      finalGameState.currentChoice must beSome(beLike[NewChoice[_]] {
         case ReturnCardsToLibraryChoice(`playerTwo`, 7) => ok
       })
     }

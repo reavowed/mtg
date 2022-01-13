@@ -2,25 +2,24 @@ package mtg.game.actions
 
 import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
-import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState}
+import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
 import mtg.stack.adding.{CastSpellAndActivateAbilitySteps, FinishCasting}
 
-case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState, backupAction: BackupAction) extends PriorityAction {
+case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
-  override def execute(gameState: GameState): GameActionResult = {
-    Seq(
+  override def execute(backupAction: BackupAction)(implicit gameState: GameState): PartialGameActionResult[Any] = {
+    PartialGameActionResult.child(WrappedOldUpdates(
       MoveObjectEvent(player, objectId, Zone.Stack),
-      CastSpellAndActivateAbilitySteps(FinishCasting, backupAction))
+      CastSpellAndActivateAbilitySteps(FinishCasting, backupAction)))
   }
-  override def canBeReverted: Boolean = true
 }
 
 object CastSpellAction {
-  def getCastableSpells(player: PlayerId, gameState: GameState, backupAction: BackupAction): Seq[CastSpellAction] = {
+  def getCastableSpells(player: PlayerId, gameState: GameState): Seq[CastSpellAction] = {
     if (cannotCastSpells(player, gameState)) {
       return Nil
     }
@@ -29,7 +28,7 @@ object CastSpellAction {
       .filter(!cannotCastSpell(player, gameState, _))
       .filter(hasGeneralPermissionToCastSpell(player, gameState, _))
       .filter(hasTimingPermissionToCastSpell(player, gameState, _))
-      .map(CastSpellAction(player, _, backupAction))
+      .map(CastSpellAction(player, _))
       .toSeq
   }
 

@@ -2,7 +2,6 @@ package mtg.turns
 
 import mtg.SpecWithGameStateManager
 import mtg.game.state.history.{LogEvent, PhaseHistory, PhaseHistoryWithSteps, TimestampedLogEvent}
-import mtg.game.turns.turnEvents.BeginStepEvent
 import mtg.game.turns.{TurnPhase, TurnStep}
 import org.specs2.matcher.Matcher
 

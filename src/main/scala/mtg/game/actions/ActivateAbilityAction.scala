@@ -1,7 +1,7 @@
 package mtg.game.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.game.state.{GameActionResult, GameState, ObjectWithState}
+import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.{ObjectId, PlayerId}
 import mtg.stack.resolving.ResolveManaAbility
 
@@ -10,10 +10,10 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
   override def displayText: String = ability.getText(objectWithAbility.characteristics.name.getOrElse("this object"))
   override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + objectWithAbility.characteristics.abilities.indexOf(ability)
 
-  override def execute(gameState: GameState): GameActionResult = {
-    ability.costs.flatMap(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
+  override def execute(backupAction: BackupAction)(implicit gameState: GameState): PartialGameActionResult[Any] = {
+    val actions = ability.costs.flatMap(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
+    PartialGameActionResult.child(WrappedOldUpdates(actions: _*))
   }
-  override def canBeReverted: Boolean = true
 }
 
 object ActivateAbilityAction {

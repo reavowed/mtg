@@ -6,6 +6,6 @@ import mtg.game.turns.TurnPhase
 
 case class ExecutePhase(phase: TurnPhase) extends ExecutableGameAction[Any] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
-    PartialGameActionResult.children(phase.actions :+ WrappedOldUpdates(EmptyManaPoolsEvent))
+    PartialGameActionResult.children(phase.actions :+ WrappedOldUpdates(EmptyManaPoolsEvent): _*)
   }
 }

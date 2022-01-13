@@ -3,13 +3,11 @@ package mtg.game.turns.priority
 import mtg.game.PlayerId
 import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
-import mtg.stack.resolving.ResolveTopStackObject
 
 case class PriorityChoice(
   playerToAct: PlayerId,
-  remainingPlayers: Seq[PlayerId],
   availableActions: Seq[PriorityAction],
-) extends Choice {
+) extends DirectChoice[PriorityDecision] {
 
   object TakeAction {
     def unapply(string: String): Option[PriorityAction] = {
@@ -30,21 +28,23 @@ case class PriorityChoice(
     }
   }
 
-  override def parseDecision(serializedChosenOption: String): Option[Decision] = serializedChosenOption match {
+  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PartialGameActionResult[PriorityDecision]] = serializedDecision match {
     case "Pass" =>
-      PassPriority(playerToAct, remainingPlayers)
+      Some(PartialGameActionResult.Value(PriorityDecision.Pass))
     case TakeAction(action) =>
-      Some(Seq(action, PriorityFromPlayerAction(playerToAct)))
-    case _ => None
+      Some(PartialGameActionResult.Value(PriorityDecision.TakeAction(action, gameState)))
+    case _ =>
+      None
+  }
+}
+object PriorityChoice {
+  def apply(playerToAct: PlayerId)(implicit gameState: GameState): PriorityChoice = {
+    PriorityChoice(playerToAct, PriorityAction.getAll(playerToAct, gameState))
   }
 }
 
-case class PassPriority(playerId: PlayerId, remainingPlayers: Seq[PlayerId]) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
-      if (remainingPlayers.nonEmpty)
-        PriorityForPlayersAction(remainingPlayers)
-      else
-        ResolveTopStackObject
-  }
-  override def canBeReverted: Boolean = false
+sealed trait PriorityDecision
+object PriorityDecision {
+  case object Pass extends PriorityDecision
+  case class TakeAction(priorityAction: PriorityAction, backupState: GameState) extends PriorityDecision
 }

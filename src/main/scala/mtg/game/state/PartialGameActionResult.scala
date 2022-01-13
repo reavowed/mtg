@@ -10,7 +10,7 @@ object PartialGameActionResult {
   implicit def valueAsPartialGameActionResult[T](value: T): PartialGameActionResult[T] = Value(value)
 
   def child[T](child: GameAction[T]): PartialGameActionResult[T] = ChildWithCallback(child, (v: T, _) => v)
-  def children[T](children: Seq[GameAction[T]]): PartialGameActionResult[Seq[T]] = {
+  def children[T](children: GameAction[T]*): PartialGameActionResult[Seq[T]] = {
     def executeNext(remainingChildActions: Seq[GameAction[T]], resultsSoFar: Seq[T]): PartialGameActionResult[Seq[T]] = {
       remainingChildActions match {
         case head +: tail =>

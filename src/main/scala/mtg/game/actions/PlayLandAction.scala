@@ -2,7 +2,7 @@ package mtg.game.actions
 
 import mtg.characteristics.types.Type
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameActionResult, GameState, ObjectWithState}
+import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.{ObjectId, PlayerId, Zone}
 
 case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends PriorityAction {
@@ -10,15 +10,14 @@ case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends Prior
   override def displayText: String = "Play"
   override def optionText: String = "Play " + land.gameObject.objectId
 
-  override def execute(gameState: GameState): GameActionResult = {
+  override def execute(backupAction: BackupAction)(implicit gameState: GameState): PartialGameActionResult[Any] = {
     val preventEvent = PlayLandAction.cannotPlayLands(player, gameState) || PlayLandAction.cannotPlayLand(land, player, gameState)
     val eventOption = if (preventEvent) None else Some(PlayLandEvent(player, land.gameObject))
-    (
-      eventOption.toSeq,
+    PartialGameActionResult.children(
+      WrappedOldUpdates(eventOption.toSeq: _*),
       LogEvent.PlayedLand(player, land.characteristics.name.get)
     )
   }
-  override def canBeReverted: Boolean = true
 }
 
 object PlayLandAction {

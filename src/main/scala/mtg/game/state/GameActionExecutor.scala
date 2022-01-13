@@ -77,8 +77,8 @@ object GameActionExecutor {
   }
 
   def executeNextAction[T](gameAction: GameAction[T])(implicit gameState: GameState, stops: Stops): Option[(ProcessedGameActionResult[T], GameState)] = gameAction match {
-    case WrappedChoice(priorityChoice: PriorityChoice, furtherUpdates) if stops.shouldAutoPass(priorityChoice, gameState) =>
-      handleDecisionForOldChoice(priorityChoice, furtherUpdates, "Pass")
+    case priorityChoice: PriorityChoice if stops.shouldAutoPass(priorityChoice, gameState) =>
+      handleDecision(priorityChoice, "Pass", priorityChoice.playerToAct)
     case _: NewChoice[T] =>
       None
     case action: ExecutableGameAction[T] =>
