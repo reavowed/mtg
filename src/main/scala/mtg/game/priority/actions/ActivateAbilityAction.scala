@@ -1,4 +1,4 @@
-package mtg.game.actions
+package mtg.game.priority.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}

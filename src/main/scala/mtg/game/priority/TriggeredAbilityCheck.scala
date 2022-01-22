@@ -1,4 +1,4 @@
-package mtg.game.turns.priority
+package mtg.game.priority
 
 import mtg.abilities.PendingTriggeredAbility
 import mtg.game.PlayerId

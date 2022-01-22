@@ -1,10 +1,10 @@
-package mtg.game.actions
+package mtg.game.priority.actions
 
 import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
 import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
-import mtg.stack.adding.{CastSpellAndActivateAbilitySteps, FinishCasting}
+import mtg.stack.adding.{CastSpellAndActivateAbilitySteps, FinishCasting, TimingChecks}
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId

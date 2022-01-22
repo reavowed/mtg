@@ -1,4 +1,4 @@
-package mtg.game.actions
+package mtg.game.priority.actions
 
 import mtg.events.MoveObjectEvent
 import mtg.game.objects.GameObject

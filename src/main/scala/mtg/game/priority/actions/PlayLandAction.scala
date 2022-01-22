@@ -1,9 +1,10 @@
-package mtg.game.actions
+package mtg.game.priority.actions
 
 import mtg.characteristics.types.Type
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.{ObjectId, PlayerId, Zone}
+import mtg.stack.adding.TimingChecks
 
 case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = land.gameObject.objectId

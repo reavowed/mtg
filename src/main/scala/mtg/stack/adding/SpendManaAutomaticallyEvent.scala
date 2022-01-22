@@ -1,4 +1,4 @@
-package mtg.game.actions
+package mtg.stack.adding
 
 import mtg.game.PlayerId
 import mtg.game.objects.ManaObject
@@ -8,5 +8,6 @@ case class SpendManaAutomaticallyEvent(player: PlayerId, remainingMana: Seq[Mana
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState.updateManaPool(player, _ => remainingMana)
   }
+
   override def canBeReverted: Boolean = true
 }

@@ -6,7 +6,7 @@ import mtg.effects.continuous.PreventionEffect.Result.Prevent
 import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
 import mtg.game.PlayerId
 import mtg.game.objects.FloatingActiveContinuousEffect
-import mtg.game.turns.priority.PriorityChoice
+import mtg.game.priority.PriorityChoice
 
 import scala.annotation.tailrec
 

@@ -1,4 +1,4 @@
-package mtg.game.actions
+package mtg.stack.adding
 
 import mtg.game.PlayerId
 import mtg.game.state.GameState
@@ -8,9 +8,11 @@ object TimingChecks {
   def isPlayersTurn(player: PlayerId, gameState: GameState): Boolean = {
     player == gameState.activePlayer
   }
+
   def isMainPhase(gameState: GameState): Boolean = {
     gameState.currentPhase.exists(_.isInstanceOf[MainPhase])
   }
+
   def isStackEmpty(gameState: GameState): Boolean = {
     gameState.gameObjectState.stack.isEmpty
   }

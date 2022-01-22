@@ -1,7 +1,7 @@
 package mtg.game.turns
 
+import mtg.game.priority.PrioritySequenceAction
 import mtg.game.state.GameAction
-import mtg.game.turns.priority.PrioritySequenceAction
 import mtg.game.turns.turnEvents.ExecuteStep
 import mtg.utils.CaseObjectWithName
 

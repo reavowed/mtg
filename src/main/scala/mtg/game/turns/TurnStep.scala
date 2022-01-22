@@ -1,7 +1,7 @@
 package mtg.game.turns
 
+import mtg.game.priority.PrioritySequenceAction
 import mtg.game.state.{GameAction, WrappedOldUpdates}
-import mtg.game.turns.priority.PrioritySequenceAction
 import mtg.game.turns.turnBasedActions._
 import mtg.utils.CaseObjectWithName
 

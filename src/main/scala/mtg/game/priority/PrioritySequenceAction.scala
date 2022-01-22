@@ -1,4 +1,4 @@
-package mtg.game.turns.priority
+package mtg.game.priority
 
 import mtg.game.PlayerId
 import mtg.game.state.{BackupAction, ExecutableGameAction, GameState, PartialGameActionResult, WrappedOldUpdates}

@@ -5,8 +5,8 @@ import mtg.characteristics.Color
 import mtg.data.cards.Plains
 import mtg.effects.oneshot.basic
 import mtg.game.Zone
-import mtg.game.actions.ActivateAbilityAction
 import mtg.game.objects.GameObject
+import mtg.game.priority.actions.ActivateAbilityAction
 import mtg.game.state.ObjectWithState
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.costs.TapSymbol

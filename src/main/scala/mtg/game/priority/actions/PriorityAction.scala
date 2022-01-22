@@ -1,4 +1,4 @@
-package mtg.game.actions
+package mtg.game.priority.actions
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize

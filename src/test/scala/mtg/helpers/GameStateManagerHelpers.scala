@@ -2,10 +2,10 @@ package mtg.helpers
 
 import mtg._
 import mtg.cards.CardDefinition
-import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
 import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
+import mtg.game.priority.PriorityChoice
+import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
-import mtg.game.turns.priority.PriorityChoice
 import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.{ObjectId, PlayerId, Zone}

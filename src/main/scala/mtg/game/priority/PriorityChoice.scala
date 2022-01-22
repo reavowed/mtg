@@ -1,7 +1,7 @@
-package mtg.game.turns.priority
+package mtg.game.priority
 
 import mtg.game.PlayerId
-import mtg.game.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
+import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
 
 case class PriorityChoice(

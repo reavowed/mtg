@@ -5,9 +5,9 @@ import mtg.data.cards.Plains
 import mtg.data.cards.m21.AlpineWatchdog
 import mtg.data.cards.strixhaven.AgelessGuardian
 import mtg.game.Zone
+import mtg.game.priority.PriorityChoice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep
-import mtg.game.turns.priority.PriorityChoice
 import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
 
 class DeclareAttackersSpec extends SpecWithGameStateManager {
