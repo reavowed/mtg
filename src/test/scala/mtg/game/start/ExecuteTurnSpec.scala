@@ -1,6 +1,7 @@
 package mtg.game.start
 
 import mtg.SpecWithGameStateManager
+import mtg.game.state.history.LogEvent
 import mtg.game.turns.Turn
 import mtg.game.turns.turnEvents.ExecuteTurn
 
@@ -20,6 +21,12 @@ class ExecuteTurnSpec extends SpecWithGameStateManager {
       manager.passUntilTurn(3)
 
       manager.gameState.currentTurn must beSome(Turn(3, playerOne))
+    }
+
+    "log event" in {
+      val manager = createGameStateManager(emptyGameObjectState, ExecuteTurn(Turn(1, playerOne)))
+
+      manager.gameState.gameHistory.logEvents.map(_.logEvent) must contain(LogEvent.NewTurn(Turn(1, playerOne)))
     }
   }
 }
