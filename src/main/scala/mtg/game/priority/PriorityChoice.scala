@@ -28,11 +28,11 @@ case class PriorityChoice(
     }
   }
 
-  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PartialGameActionResult[PriorityDecision]] = serializedDecision match {
+  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PriorityDecision] = serializedDecision match {
     case "Pass" =>
-      Some(PartialGameActionResult.Value(PriorityDecision.Pass))
+      Some(PriorityDecision.Pass)
     case TakeAction(action) =>
-      Some(PartialGameActionResult.Value(PriorityDecision.TakeAction(action, gameState)))
+      Some(PriorityDecision.TakeAction(action, gameState))
     case _ =>
       None
   }

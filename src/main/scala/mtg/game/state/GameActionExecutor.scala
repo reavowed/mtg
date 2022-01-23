@@ -29,7 +29,7 @@ object GameActionExecutor {
   def handleDecision[T](action: GameAction[T], serializedDecision: String, actingPlayer: PlayerId)(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = {
     action match {
       case directChoice: DirectChoice[T] if (directChoice.playerToAct == actingPlayer) =>
-        directChoice.handleDecision(serializedDecision).map(handleActionResult(directChoice, _)(gameState.recordChoice(directChoice)))
+        directChoice.handleDecision(serializedDecision).map(d => (ProcessedGameActionResult.Value(d), gameState.recordChoice(directChoice, d)))
       case WrappedChoice(child, furtherUpdates) if (child.playerToAct == actingPlayer) =>
         handleDecisionForOldChoice(child, furtherUpdates, serializedDecision)
       case PartiallyExecutedActionWithChild(rootAction, child, callback) =>
@@ -40,7 +40,7 @@ object GameActionExecutor {
   }
 
   private def handleDecisionForOldChoice[T](choice: Choice, furtherUpdates: Seq[OldGameUpdate], serializedDecision: String)(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = {
-    choice.parseDecision(serializedDecision).map(d => executeOldUpdates(d.resultingActions ++ furtherUpdates, gameState.recordChoice(choice)).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
+    choice.parseDecision(serializedDecision).map(d => executeOldUpdates(d.resultingActions ++ furtherUpdates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
   }
 
   private def handleDecisionForChild[T, S](

@@ -23,12 +23,12 @@ case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
 trait DirectChoice[T] extends NewChoice[T] {
-  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PartialGameActionResult[T]]
+  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[T]
 }
 object DirectChoice {
   trait WithParser[T] extends DirectChoice[T] {
-    def getParser()(implicit gameState: GameState): PartialFunction[String, PartialGameActionResult[T]]
-    override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PartialGameActionResult[T]] = getParser().lift(serializedDecision)
+    def getParser()(implicit gameState: GameState): PartialFunction[String, T]
+    override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[T] = getParser().lift(serializedDecision)
   }
 }
 

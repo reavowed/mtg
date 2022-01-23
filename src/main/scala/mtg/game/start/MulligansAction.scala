@@ -16,7 +16,7 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
   def mulliganChoices(any: Any, gameState: GameState): PartialGameActionResult[RootGameAction] = {
     if (numberOfMulligansTakenSoFar < gameState.gameData.startingHandSize)
       PartialGameActionResult.childrenWithCallback[RootGameAction, MulliganDecision](
-        playersToMakeMulliganDecision.map(MulliganChoice(_, numberOfMulligansTakenSoFar)),
+        playersToMakeMulliganDecision.map(TakeMulligan(_, numberOfMulligansTakenSoFar)),
         handleMulliganResult)(
         gameState)
     else

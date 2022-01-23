@@ -17,7 +17,7 @@ case class ReturnCardsToLibrary(playerToAct: PlayerId, numberOfCardsToReturn: In
 }
 
 case class ChooseCardsInHand(playerToAct: PlayerId, numberOfCards: Int) extends DirectChoice[Seq[GameObject]] {
-  override def handleDecision(serializedChosenOption: String)(implicit gameState: GameState): Option[PartialGameActionResult[Seq[GameObject]]] = {
+  override def handleDecision(serializedChosenOption: String)(implicit gameState: GameState): Option[Seq[GameObject]] = {
     val cardsInHand = gameState.gameObjectState.hands(playerToAct)
     for {
       idValues <- serializedChosenOption.split(" ").toList.map(_.toIntOption).swap

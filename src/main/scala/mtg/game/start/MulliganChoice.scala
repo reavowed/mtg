@@ -2,17 +2,31 @@ package mtg.game.start
 
 import mtg.game.PlayerId
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{DirectChoice, GameAction, GameState, PartialGameActionResult}
+import mtg.game.state.{DirectChoice, ExecutableGameAction, GameAction, GameState, PartialGameActionResult}
+
+case class TakeMulligan(playerToAct: PlayerId, numberOfMulligansTakenSoFar: Int) extends ExecutableGameAction[MulliganDecision] {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[MulliganDecision] = {
+    PartialGameActionResult.ChildWithCallback(
+      MulliganChoice(playerToAct, numberOfMulligansTakenSoFar),
+      logResult)
+  }
+
+  def logResult(decision: MulliganDecision, gameState: GameState): PartialGameActionResult[MulliganDecision] = {
+    val logEvent = decision match {
+      case _: MulliganDecision.Mulligan =>
+        LogEvent.Mulligan(playerToAct, gameState.gameData.startingHandSize - numberOfMulligansTakenSoFar - 1)
+      case _: MulliganDecision.Keep =>
+        LogEvent.KeepHand(playerToAct, gameState.gameData.startingHandSize - numberOfMulligansTakenSoFar)
+    }
+    PartialGameActionResult.childThenValue(logEvent, decision)(gameState)
+  }
+}
 
 case class MulliganChoice(playerToAct: PlayerId, numberOfMulligansTakenSoFar: Int) extends DirectChoice.WithParser[MulliganDecision] {
-  override def getParser()(implicit gameState: GameState): PartialFunction[String, PartialGameActionResult[MulliganDecision]] = {
+  override def getParser()(implicit gameState: GameState): PartialFunction[String, MulliganDecision] = {
     case "K" =>
-      PartialGameActionResult.childThenValue(
-        LogEvent.KeepHand(playerToAct, gameState.gameData.startingHandSize - numberOfMulligansTakenSoFar),
-        MulliganDecision.Keep(playerToAct))
+      MulliganDecision.Keep(playerToAct)
     case "M" =>
-      PartialGameActionResult.childThenValue(
-        LogEvent.Mulligan(playerToAct, gameState.gameData.startingHandSize - numberOfMulligansTakenSoFar - 1),
-        MulliganDecision.Mulligan(playerToAct))
+      MulliganDecision.Mulligan(playerToAct)
   }
 }

@@ -10,7 +10,7 @@ sealed trait HistoryEvent {
 }
 object HistoryEvent {
   case class ResolvedAction(action: InternalGameAction, stateBefore: GameState) extends HistoryEvent
-  case class ResolvedChoice(choice: NewChoice[_], stateBefore: GameState) extends HistoryEvent
+  case class ResolvedChoice[DecisionType](choice: NewChoice[DecisionType], decision: DecisionType, stateBefore: GameState) extends HistoryEvent
 
   implicit class GameEventSeqOps(seq: Iterable[HistoryEvent]) {
     def since[T <: InternalGameAction : ClassTag]: Iterable[HistoryEvent] = seq.takeWhile {

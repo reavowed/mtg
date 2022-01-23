@@ -1,6 +1,7 @@
 package mtg.game.state
 
 import mtg.game.PlayerId
+import mtg.game.priority.PriorityDecision
 import mtg.game.state.history.HistoryEvent
 
 import scala.annotation.tailrec
@@ -16,8 +17,8 @@ object UndoHelper {
             if (action.canBeReverted) {
               helper(iterator)
             } else None
-          case HistoryEvent.ResolvedChoice(choice, stateBefore) =>
-            if (choice.playerToAct == playerId)
+          case HistoryEvent.ResolvedChoice(choice, decision, stateBefore) =>
+            if (choice.playerToAct == playerId && decision != PriorityDecision.Pass)
               Some(stateBefore)
             else
               None
@@ -30,20 +31,6 @@ object UndoHelper {
   }
 
   def canUndo(playerId: PlayerId, gameState: GameState): Boolean = {
-    @tailrec
-    def helper(iterator: Iterator[HistoryEvent]): Boolean = {
-      iterator.hasNext && (iterator.next() match {
-        case HistoryEvent.ResolvedAction(action, _) =>
-          if (action.canBeReverted) {
-            helper(iterator)
-          } else {
-            false
-          }
-        case HistoryEvent.ResolvedChoice(choice, _) =>
-          choice.playerToAct == playerId
-      })
-    }
-
-    helper(gameState.gameHistory.historyEvents.iterator)
+    requestUndo(playerId, gameState).isDefined
   }
 }
