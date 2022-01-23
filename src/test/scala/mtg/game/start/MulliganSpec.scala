@@ -87,8 +87,9 @@ class MulliganSpec extends SpecWithGameStateManager {
       manager.handleDecision("K", playerTwo)
 
       val finalGameState = manager.gameState
+      finalGameState.allCurrentActions must contain(beAnInstanceOf[ReturnCardsToLibrary])
       finalGameState.currentChoice must beSome(beLike[NewChoice[_]] {
-        case ReturnCardsToLibraryChoice(`playerTwo`, 1) => ok
+        case ChooseCardsInHand(`playerTwo`, 1) => ok
       })
     }
 
@@ -104,8 +105,9 @@ class MulliganSpec extends SpecWithGameStateManager {
       manager.handleDecision("M", playerTwo)
 
       val finalGameState = manager.gameState
+      finalGameState.allCurrentActions must contain(beAnInstanceOf[ReturnCardsToLibrary])
       finalGameState.currentChoice must beSome(beLike[NewChoice[_]] {
-        case ReturnCardsToLibraryChoice(`playerTwo`, 7) => ok
+        case ChooseCardsInHand(`playerTwo`, 7) => ok
       })
     }
 

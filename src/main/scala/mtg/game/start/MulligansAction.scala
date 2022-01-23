@@ -21,7 +21,7 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
         gameState)
     else
       PartialGameActionResult.childrenThenValue(
-        playersToMakeMulliganDecision.map(ReturnCardsToLibraryChoice(_, gameState.gameData.startingHandSize)),
+        playersToMakeMulliganDecision.map(ReturnCardsToLibrary(_, gameState.gameData.startingHandSize)),
         ExecuteTurn.first(gameState))(
         gameState)
   }
@@ -29,7 +29,7 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
   def handleMulliganResult(decisions: Seq[MulliganDecision], gameState: GameState): PartialGameActionResult[RootGameAction] = {
     val playersKeeping = decisions.ofType[MulliganDecision.Keep].map(_.player)
     val playersMulliganning = decisions.ofType[MulliganDecision.Mulligan].map(_.player)
-    val keepActions = if (numberOfMulligansTakenSoFar > 0) playersKeeping.map(ReturnCardsToLibraryChoice(_, numberOfMulligansTakenSoFar)) else Nil
+    val keepActions = if (numberOfMulligansTakenSoFar > 0) playersKeeping.map(ReturnCardsToLibrary(_, numberOfMulligansTakenSoFar)) else Nil
     val mulliganActions = playersMulliganning.map(p => WrappedOldUpdates(ShuffleHandIntoLibrary(p)))
     val resultAction = if (playersMulliganning.nonEmpty) MulligansAction(playersMulliganning, numberOfMulligansTakenSoFar + 1) else ExecuteTurn.first(gameState)
     PartialGameActionResult.childrenThenValue(

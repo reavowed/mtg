@@ -11,7 +11,6 @@ import SearchChoice from "./choices/SearchChoice";
 import TargetChoice from "./choices/TargetChoice";
 import TriggeredAbilityChoice from "./choices/TriggeredAbilityChoice";
 import ManaPool from "./ManaPool";
-import UndoButton from "./UndoButton";
 import ModeChoice from "./choices/ModeChoice";
 
 function getChoiceDisplay(choiceType) {

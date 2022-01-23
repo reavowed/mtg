@@ -4,7 +4,6 @@ import GameState from "../../../contexts/GameState";
 import {getPlural} from "../../../utils/word-helpers";
 import BannerText from "../../layout/BannerText";
 import HorizontalCenter from "../../layout/HorizontalCenter";
-import CardImage from "../card/CardImage";
 import CardBack from "../card/CardBack";
 import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
@@ -18,7 +17,7 @@ export default function ReturnCardsToLibraryChoice() {
     const gameState = useContext(GameState);
     const [cardsPutBack, setCardsPutBack] = useState([]);
     const cardsNotPutBack = _.filter(gameState.hands[gameState.player], card => !_.some(cardsPutBack, cardPutBack => areCardsEqual(card, cardPutBack)));
-    const numberOfCardsToReturn = gameState.currentChoice.details.numberOfCardsToReturn;
+    const numberOfCardsToReturn = gameState.currentChoice.details.numberOfCards;
     const enoughCardsPutBack = (cardsPutBack.length === numberOfCardsToReturn);
 
     const putCardBack = useCallback(

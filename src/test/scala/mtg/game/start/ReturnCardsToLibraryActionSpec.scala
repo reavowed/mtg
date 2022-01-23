@@ -8,7 +8,7 @@ class ReturnCardsToLibraryActionSpec extends SpecWithGameStateManager {
     "put back one card" in {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val cardToPutBack = beforeState.hands(playerOne).head
-      val choice = ReturnCardsToLibraryChoice(playerOne, 1)
+      val choice = ReturnCardsToLibrary(playerOne, 1)
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
@@ -24,7 +24,7 @@ class ReturnCardsToLibraryActionSpec extends SpecWithGameStateManager {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val firstCardToPutBack = beforeState.hands(playerOne)(6)
       val secondCardToPutBack = beforeState.hands(playerOne)(2)
-      val choice = ReturnCardsToLibraryChoice(playerOne, 2)
+      val choice = ReturnCardsToLibrary(playerOne, 2)
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(Seq(firstCardToPutBack, secondCardToPutBack).map(_.objectId.sequentialId.toString).mkString(" "), playerOne)
@@ -39,7 +39,7 @@ class ReturnCardsToLibraryActionSpec extends SpecWithGameStateManager {
     "log an event" in {
       val beforeState = gameObjectStateWithInitialLibrariesAndHands
       val cardToPutBack = beforeState.hands(playerOne).head
-      val choice = ReturnCardsToLibraryChoice(playerOne, 1)
+      val choice = ReturnCardsToLibrary(playerOne, 1)
 
       val manager = createGameStateManager(beforeState, choice)
       manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)

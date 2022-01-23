@@ -60,7 +60,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     )
 
     val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}
-      .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
+//      .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
     new GameStateManager(updatedState, onStateUpdate, initialManager.stops)
   }
 

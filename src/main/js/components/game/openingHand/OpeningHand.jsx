@@ -18,7 +18,7 @@ export default function OpeningHand() {
     const gameState = useContext(GameState);
     const decision = gameState.currentChoice.playerToAct !== gameState.player ? <OpeningHandWhileWaiting/> :
         gameState.currentChoice.type === "MulliganChoice" ? <MulliganChoice /> :
-        gameState.currentChoice.type === "ReturnCardsToLibraryChoice" ? <ReturnCardsToLibraryChoice /> :
+        gameState.currentChoice.type === "ChooseCardsInHand" ? <ReturnCardsToLibraryChoice /> :
         <Hand as={CardWithText} />;
     return <ScreenCenter>
         <div className="w-100">
