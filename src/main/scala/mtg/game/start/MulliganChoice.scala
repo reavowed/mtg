@@ -7,9 +7,8 @@ import mtg.game.state.{DirectChoice, GameAction, GameState, PartialGameActionRes
 case class MulliganChoice(playerToAct: PlayerId, numberOfMulligansTakenSoFar: Int) extends DirectChoice.WithParser[MulliganDecision] {
   override def getParser()(implicit gameState: GameState): PartialFunction[String, PartialGameActionResult[MulliganDecision]] = {
     case "K" =>
-      PartialGameActionResult.childrenThenValue(
-        Seq[GameAction[Any]](LogEvent.KeepHand(playerToAct, gameState.gameData.startingHandSize - numberOfMulligansTakenSoFar)) ++
-          (if (numberOfMulligansTakenSoFar > 0) Seq(ReturnCardsToLibraryChoice(playerToAct, numberOfMulligansTakenSoFar)) else Nil),
+      PartialGameActionResult.childThenValue(
+        LogEvent.KeepHand(playerToAct, gameState.gameData.startingHandSize - numberOfMulligansTakenSoFar),
         MulliganDecision.Keep(playerToAct))
     case "M" =>
       PartialGameActionResult.childThenValue(
