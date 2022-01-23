@@ -1,7 +1,7 @@
 package mtg.game.state.history
 
 import mtg._
-import mtg.game.state.{Choice, GameState, InternalGameAction}
+import mtg.game.state.{Choice, GameState, InternalGameAction, NewChoice}
 
 import scala.reflect.{ClassTag, classTag}
 
@@ -10,7 +10,7 @@ sealed trait HistoryEvent {
 }
 object HistoryEvent {
   case class ResolvedAction(action: InternalGameAction, stateBefore: GameState) extends HistoryEvent
-  case class ResolvedChoice(choice: Choice, stateBefore: GameState) extends HistoryEvent
+  case class ResolvedChoice(choice: NewChoice[_], stateBefore: GameState) extends HistoryEvent
 
   implicit class GameEventSeqOps(seq: Iterable[HistoryEvent]) {
     def since[T <: InternalGameAction : ClassTag]: Iterable[HistoryEvent] = seq.takeWhile {
