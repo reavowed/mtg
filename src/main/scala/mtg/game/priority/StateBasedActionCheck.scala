@@ -1,18 +1,20 @@
 package mtg.game.priority
 
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{ExecutableGameAction, GameState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.sbas.LethalDamageStateBasedAction
 
-object StateBasedActionCheck extends InternalGameAction {
+object StateBasedActionCheck extends ExecutableGameAction[Boolean] {
   val allStateBasedActions = Seq(LethalDamageStateBasedAction)
 
-  override def execute(gameState: GameState): GameActionResult = {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Boolean] = {
     val actions = allStateBasedActions.flatMap(_.getApplicableEvents(gameState))
     if (actions.nonEmpty) {
-      actions :+ StateBasedActionCheck
+      // TODO: Ensure actions executed simultaneously
+      PartialGameActionResult.childThenValue(
+        WrappedOldUpdates(actions: _*),
+        true)
     } else {
-      Nil
+      PartialGameActionResult.Value(false)
     }
   }
-  override def canBeReverted: Boolean = true
 }

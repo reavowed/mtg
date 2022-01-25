@@ -16,7 +16,7 @@ case object PrioritySequenceAction extends ExecutableGameAction[Unit] {
   private def executeForPlayers(playersLeftToAct: Seq[PlayerId])(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     playersLeftToAct match {
       case playerToAct +: otherPlayers =>
-        playerAboutToReceivePriority(playerToAct, otherPlayers)
+        checkStateBasedActionsBeforePriority(playerToAct, otherPlayers)
       case Nil =>
         gameState.gameObjectState.stack match {
           case _ :+ topObject =>
@@ -27,11 +27,35 @@ case object PrioritySequenceAction extends ExecutableGameAction[Unit] {
     }
   }
 
-  private def playerAboutToReceivePriority(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId]): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.ChildWithCallback(WrappedOldUpdates(StateBasedActionCheck, TriggeredAbilityCheck), playerGetsPriority(playerToAct, playersLeftToAct))
+  private def checkStateBasedActionsBeforePriority(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId]): PartialGameActionResult[Unit] = {
+    PartialGameActionResult.ChildWithCallback(
+      StateBasedActionCheck,
+      handleStateBasedActionsResult(playerToAct, playersLeftToAct))
   }
 
-  private def playerGetsPriority(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId])(any: Unit, gameState: GameState) : PartialGameActionResult[Unit] = {
+  private def handleStateBasedActionsResult(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId])(wereStateBasedActionsExecuted: Boolean, gameState: GameState): PartialGameActionResult[Unit] = {
+    if (wereStateBasedActionsExecuted) {
+      checkStateBasedActionsBeforePriority(playerToAct, playersLeftToAct)
+    } else {
+      checkTriggeredAbilitiesBeforePriority(playerToAct, playersLeftToAct)
+    }
+  }
+
+  private def checkTriggeredAbilitiesBeforePriority(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId]): PartialGameActionResult[Unit] = {
+    PartialGameActionResult.ChildWithCallback(
+      TriggeredAbilityCheck,
+      handleTriggeredAbilitiesResult(playerToAct, playersLeftToAct))
+  }
+
+  private def handleTriggeredAbilitiesResult(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId])(wereTriggeredAbilitiesPutOnStack: Boolean, gameState: GameState): PartialGameActionResult[Unit] = {
+    if (wereTriggeredAbilitiesPutOnStack) {
+      checkStateBasedActionsBeforePriority(playerToAct, playersLeftToAct)
+    } else {
+      playerGetsPriority(playerToAct, playersLeftToAct)(gameState)
+    }
+  }
+
+  private def playerGetsPriority(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId])(implicit gameState: GameState) : PartialGameActionResult[Unit] = {
     PartialGameActionResult.ChildWithCallback(PriorityChoice(playerToAct)(gameState), handleDecision(playerToAct, playersLeftToAct))
   }
 

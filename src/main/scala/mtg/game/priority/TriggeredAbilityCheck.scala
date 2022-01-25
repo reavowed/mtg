@@ -6,46 +6,73 @@ import mtg.game.objects.StackObject
 import mtg.game.state._
 import mtg.stack.adding.{ChooseTargets, FinishTriggering}
 
-object TriggeredAbilityCheck extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
+object TriggeredAbilityCheck extends ExecutableGameAction[Boolean] {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Boolean] = {
     if (gameState.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack.nonEmpty) {
-      Seq(PutTriggeredAbilitiesOnStack(gameState.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack), StateBasedActionCheck, TriggeredAbilityCheck)
+      putTriggeredAbilitiesOnStack(gameState.playersInApnapOrder)
     } else {
-      ()
+      PartialGameActionResult.Value(false)
     }
   }
-  override def canBeReverted: Boolean = true
-}
 
-case class PutTriggeredAbilitiesOnStack(triggeredAbilities: Seq[PendingTriggeredAbility]) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
-    gameState.playersInApnapOrder.mapFind(p => Option(triggeredAbilities.filter(_.triggeredAbility.ownerId == p)).filter(_.nonEmpty).map(p -> _))
-      .map { case (player, abilities) =>
-        if (abilities.length > 1) {
-          TriggeredAbilityChoice(player, abilities)
+  private def putTriggeredAbilitiesOnStack(players: Seq[PlayerId])(implicit gameState: GameState): PartialGameActionResult[Boolean] = {
+    players match {
+      case nextPlayer +: remainingPlayers =>
+        val triggeredAbilitiesForPlayer = gameState.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack.filter(_.triggeredAbility.ownerId == nextPlayer)
+        if (triggeredAbilitiesForPlayer.nonEmpty) {
+          putTriggeredAbilitiesOnStackForPlayer(nextPlayer, remainingPlayers, triggeredAbilitiesForPlayer)
         } else {
-          PutTriggeredAbilityOnStack(abilities.head)
+          putTriggeredAbilitiesOnStack(remainingPlayers)
         }
-      }.toSeq
+      case Nil =>
+        PartialGameActionResult.Value(true)
+    }
   }
-  override def canBeReverted: Boolean = true
+
+  private def putTriggeredAbilitiesOnStackForPlayer(
+    player: PlayerId,
+    remainingPlayers: Seq[PlayerId],
+    triggeredAbilitiesForPlayer: Seq[PendingTriggeredAbility])(
+    implicit gameState: GameState
+  ): PartialGameActionResult[Boolean] = {
+    if (triggeredAbilitiesForPlayer.length > 1) {
+      PartialGameActionResult.ChildWithCallback(
+        TriggeredAbilityChoice(player, triggeredAbilitiesForPlayer),
+        handleTriggeredAbilityChoice(player, remainingPlayers, triggeredAbilitiesForPlayer))
+    } else if (triggeredAbilitiesForPlayer.length == 1) {
+      handleTriggeredAbilityChoice(player, remainingPlayers, triggeredAbilitiesForPlayer)(triggeredAbilitiesForPlayer.head, gameState)
+    } else {
+      putTriggeredAbilitiesOnStack(remainingPlayers)
+    }
+  }
+
+  private def handleTriggeredAbilityChoice(
+    player: PlayerId,
+    remainingPlayers: Seq[PlayerId],
+    triggeredAbilitiesForPlayer: Seq[PendingTriggeredAbility])(
+    chosenAbility: PendingTriggeredAbility,
+    gameState: GameState
+  ): PartialGameActionResult[Boolean] = {
+    PartialGameActionResult.ChildWithCallback(
+      PutTriggeredAbilityOnStack(chosenAbility),
+      (_: Any, gameState) => putTriggeredAbilitiesOnStackForPlayer(player, remainingPlayers, triggeredAbilitiesForPlayer.filter(_ != chosenAbility))(gameState))
+  }
+
+
 }
 
-case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingTriggeredAbility]) extends Choice {
-  override def parseDecision(serializedChosenOption: String): Option[Decision] = {
-    serializedChosenOption.toIntOption.flatMap(id => abilities.find(_.id == id))
-      .map(PutTriggeredAbilityOnStack)
+case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingTriggeredAbility]) extends DirectChoice[PendingTriggeredAbility] {
+  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PendingTriggeredAbility] = {
+    serializedDecision.toIntOption.flatMap(id => abilities.find(_.id == id))
   }
 }
 
-case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
-    Seq(
+case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends ExecutableGameAction[Unit] {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+    PartialGameActionResult.child(WrappedOldUpdates(
       CreateAbilityOnStack(pendingTriggeredAbility),
-      TriggeredAbilitySteps(BackupAction(gameState))
-    )
+      TriggeredAbilitySteps(BackupAction(gameState))))
   }
-  override def canBeReverted: Boolean = true
 }
 
 case class CreateAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends InternalGameAction {
