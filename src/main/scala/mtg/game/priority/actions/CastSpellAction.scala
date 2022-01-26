@@ -2,19 +2,28 @@ package mtg.game.priority.actions
 
 import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
-import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
+import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
-import mtg.stack.adding.{CastSpellAndActivateAbilitySteps, FinishCasting, TimingChecks}
+import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishCasting, PayCosts, TimingChecks}
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
-  override def execute(backupAction: BackupAction)(implicit gameState: GameState): PartialGameActionResult[Any] = {
-    PartialGameActionResult.child(WrappedOldUpdates(
-      MoveObjectEvent(player, objectId, Zone.Stack),
-      CastSpellAndActivateAbilitySteps(FinishCasting, backupAction)))
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
+    PartialGameActionResult.ChildWithCallback(
+      WrappedOldUpdates(MoveObjectEvent(player, objectId, Zone.Stack)),
+      steps)
+  }
+  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {
+    // TODO: Should be result of MoveObjectEvent
+    val stackObjectId = gameState.gameObjectState.stack.last.objectId
+    PartialGameActionResult.children(
+      ChooseModes(stackObjectId),
+      ChooseTargets(stackObjectId),
+      PayCosts(stackObjectId),
+      FinishCasting(stackObjectId))
   }
 }
 

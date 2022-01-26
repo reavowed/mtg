@@ -41,12 +41,6 @@ case class BackupAction(gameStateToRevertTo: GameState) extends OldGameUpdate
 trait Choice extends OldGameUpdate with NewChoice[Unit] {
   def parseDecision(serializedDecision: String): Option[Decision]
 }
-object Choice {
-  trait WithParser extends Choice {
-    def parser: PartialFunction[String, Decision]
-    override def parseDecision(serializedDecision: String): Option[Decision] = parser.lift(serializedDecision)
-  }
-}
 
 case class Decision(resultingActions: Seq[InternalGameAction])
 object Decision {

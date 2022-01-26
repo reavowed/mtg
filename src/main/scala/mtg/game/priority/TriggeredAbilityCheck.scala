@@ -4,7 +4,7 @@ import mtg.abilities.PendingTriggeredAbility
 import mtg.game.PlayerId
 import mtg.game.objects.StackObject
 import mtg.game.state._
-import mtg.stack.adding.{ChooseTargets, FinishTriggering}
+import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishTriggering}
 
 object TriggeredAbilityCheck extends ExecutableGameAction[Boolean] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Boolean] = {
@@ -57,8 +57,6 @@ object TriggeredAbilityCheck extends ExecutableGameAction[Boolean] {
       PutTriggeredAbilityOnStack(chosenAbility),
       (_: Any, gameState) => putTriggeredAbilitiesOnStackForPlayer(player, remainingPlayers, triggeredAbilitiesForPlayer.filter(_ != chosenAbility))(gameState))
   }
-
-
 }
 
 case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingTriggeredAbility]) extends DirectChoice[PendingTriggeredAbility] {
@@ -67,11 +65,20 @@ case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingT
   }
 }
 
-case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.child(WrappedOldUpdates(
-      CreateAbilityOnStack(pendingTriggeredAbility),
-      TriggeredAbilitySteps(BackupAction(gameState))))
+case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends ExecutableGameAction[Any] {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
+    PartialGameActionResult.ChildWithCallback(
+      WrappedOldUpdates(CreateAbilityOnStack(pendingTriggeredAbility)),
+      steps)
+  }
+
+  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {
+    // TODO: Should be result of MoveObjectEvent
+    val stackObjectId = gameState.gameObjectState.stack.last.objectId
+    PartialGameActionResult.children(
+      ChooseModes(stackObjectId),
+      ChooseTargets(stackObjectId),
+      FinishTriggering(stackObjectId))
   }
 }
 
@@ -80,16 +87,6 @@ case class CreateAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility
     gameState.gameObjectState
       .removeTriggeredAbility(pendingTriggeredAbility)
       .addNewObject(StackObject(pendingTriggeredAbility.triggeredAbility.toAbilityOnTheStack, _, pendingTriggeredAbility.triggeredAbility.ownerId), _.length)
-  }
-  override def canBeReverted: Boolean = true
-}
-
-case class TriggeredAbilitySteps(backupAction: BackupAction) extends InternalGameAction  {
-  override def execute(gameState: GameState): GameActionResult = {
-    val stackObjectId = gameState.gameObjectState.stack.last.objectId
-    Seq(
-      ChooseTargets(stackObjectId, backupAction),
-      FinishTriggering(stackObjectId))
   }
   override def canBeReverted: Boolean = true
 }

@@ -51,21 +51,17 @@ case object PrioritySequenceAction extends ExecutableGameAction[Unit] {
     if (wereTriggeredAbilitiesPutOnStack) {
       checkStateBasedActionsBeforePriority(playerToAct, playersLeftToAct)
     } else {
-      playerGetsPriority(playerToAct, playersLeftToAct)(gameState)
+      PartialGameActionResult.ChildWithCallback(PriorityChoice(playerToAct)(gameState), handleDecision(playerToAct, playersLeftToAct))
     }
-  }
-
-  private def playerGetsPriority(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId])(implicit gameState: GameState) : PartialGameActionResult[Unit] = {
-    PartialGameActionResult.ChildWithCallback(PriorityChoice(playerToAct)(gameState), handleDecision(playerToAct, playersLeftToAct))
   }
 
   private def handleDecision(playerToAct: PlayerId, playersLeftToAct: Seq[PlayerId])(decision: PriorityDecision, gameState: GameState) : PartialGameActionResult[Unit] = {
     decision match {
       case PriorityDecision.Pass =>
         executeForPlayers(playersLeftToAct)(gameState)
-      case PriorityDecision.TakeAction(action, backupState) =>
+      case PriorityDecision.TakeAction(action) =>
         PartialGameActionResult.ChildWithCallback(
-          ExecutePriorityAction(action, BackupAction(backupState)),
+          action,
           executeAfterAction(playerToAct))
     }
   }

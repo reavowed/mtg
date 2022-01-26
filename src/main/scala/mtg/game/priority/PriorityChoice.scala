@@ -32,7 +32,7 @@ case class PriorityChoice(
     case "Pass" =>
       Some(PriorityDecision.Pass)
     case TakeAction(action) =>
-      Some(PriorityDecision.TakeAction(action, gameState))
+      Some(PriorityDecision.TakeAction(action))
     case _ =>
       None
   }
@@ -46,5 +46,5 @@ object PriorityChoice {
 sealed trait PriorityDecision
 object PriorityDecision {
   case object Pass extends PriorityDecision
-  case class TakeAction(priorityAction: PriorityAction, backupState: GameState) extends PriorityDecision
+  case class TakeAction(priorityAction: PriorityAction) extends PriorityDecision
 }

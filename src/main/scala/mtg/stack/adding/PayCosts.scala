@@ -1,63 +1,69 @@
 package mtg.stack.adding
 
-import mtg.game.ObjectId
 import mtg.game.objects.ManaObject
-import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction}
+import mtg.game.state._
+import mtg.game.{ObjectId, PlayerId}
 import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
 
-case class PayCosts(stackObjectId: ObjectId, backupAction: BackupAction) extends InternalGameAction {
-  @tailrec
-  private def payDirectManaCosts(manaTypeSymbols: Seq[ManaTypeSymbol], manaInPool: Seq[ManaObject]): Option[Seq[ManaObject]] = {
-    manaTypeSymbols match {
-      case symbol +: remainingSymbols =>
-        manaInPool.zipWithIndex.findIndex(_._1.manaType == symbol.manaType).map(manaInPool.removeAtIndex) match {
-          case Some(remainingManaInPool) =>
-            payDirectManaCosts(remainingSymbols, remainingManaInPool)
-          case None =>
-            None
-        }
-      case Nil =>
-        Some(manaInPool)
-    }
-  }
-
-  private def payGenericManaCosts(genericManaSymbols: Seq[GenericManaSymbol], manaInPool: Seq[ManaObject]): Option[Seq[ManaObject]] = {
-    if (genericManaSymbols.map(_.amount).sum == manaInPool.length) {
-      Some(Nil)
-    } else {
-      None
-    }
-  }
-
-  private def payManaAutomatically(manaSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): Option[Seq[ManaObject]] = {
-    val (manaTypeSymbols, nonManaTypeSymbols) = manaSymbols.splitByType[ManaTypeSymbol]
-    for {
-      manaAfterSymbols <- payDirectManaCosts(manaTypeSymbols, manaInPool)
-      (genericManaSymbols, otherSymbols) = nonManaTypeSymbols.splitByType[GenericManaSymbol]
-      manaAfterGeneric <- payGenericManaCosts(genericManaSymbols, manaAfterSymbols)
-      if otherSymbols.isEmpty
-    } yield manaAfterGeneric
-  }
-
-  override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.derivedState.stackObjectStates.get(stackObjectId).toSeq.map { stackObjectWithState =>
-      stackObjectWithState.characteristics.manaCost match {
-        case Some(cost) =>
-          val initialManaInPool = gameState.gameObjectState.manaPools(stackObjectWithState.controller)
-          val finalManaInPool = payManaAutomatically(cost.symbols, initialManaInPool)
-          finalManaInPool match {
-            case Some(finalManaInPool) =>
-              SpendManaAutomaticallyEvent(stackObjectWithState.controller, finalManaInPool)
+case class PayCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
+  private def autoPayColoredCosts(symbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
+    @tailrec
+    def helper(uncheckedSymbols: Seq[ManaSymbol], unpayableSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
+      uncheckedSymbols match {
+        case (symbol: ManaTypeSymbol) +: remainingSymbols =>
+          manaInPool.findIndex(_.manaType == symbol.manaType) match {
+            case Some(index) =>
+              helper(remainingSymbols, unpayableSymbols, manaInPool.removeAtIndex(index))
             case None =>
-              backupAction
+              helper(remainingSymbols, unpayableSymbols :+ symbol, manaInPool)
           }
-        case None =>
-          backupAction
+        case otherSymbol +: remainingSymbols =>
+            helper(remainingSymbols, unpayableSymbols :+ otherSymbol, manaInPool)
+        case Nil =>
+          (unpayableSymbols, manaInPool)
       }
     }
+    helper(symbols, Nil, manaInPool)
   }
 
-  override def canBeReverted: Boolean = true
+  private def autoPayGenericCosts(manaSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
+    if (manaSymbols.map(_.asOptionalInstanceOf[GenericManaSymbol]).swap.exists(_.map(_.amount).sum == manaInPool.length)) {
+      (Nil, Nil)
+    } else {
+      (manaSymbols, manaInPool)
+    }
+  }
+
+  private def payManaAutomatically(manaSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
+    val (symbolsAfterColoredCosts, manaAfterColoredCosts) = autoPayColoredCosts(manaSymbols, manaInPool)
+    val (symbolsAfterGenericCosts, manaAfterGenericCosts) = autoPayGenericCosts(symbolsAfterColoredCosts, manaAfterColoredCosts)
+    (symbolsAfterGenericCosts, manaAfterGenericCosts)
+  }
+
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+    val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
+    val player = stackObjectWithState.controller
+    val manaCost = stackObjectWithState.characteristics.manaCost.get
+    val initialManaInPool = gameState.gameObjectState.manaPools(player)
+    val (remainingCost, remainingManaInPool) = payManaAutomatically(manaCost.symbols, initialManaInPool)
+    PartialGameActionResult.ChildWithCallback(
+      WrappedOldUpdates(SpendManaAutomaticallyEvent(stackObjectWithState.controller, remainingManaInPool)),
+      payRemainingMana(player, remainingCost))
+  }
+
+  private def payRemainingMana(player: PlayerId, remainingCost: Seq[ManaSymbol])(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
+    if (remainingCost.nonEmpty) {
+      PartialGameActionResult.childThenValue(PayManaChoice(player, remainingCost), ())(gameState)
+    } else {
+      PartialGameActionResult.Value(())
+    }
+  }
+}
+
+case class PayManaChoice(playerToAct: PlayerId, remainingCost: Seq[ManaSymbol]) extends DirectChoice[(ManaSymbol, ManaObject)] {
+  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[(ManaSymbol, ManaObject)] = {
+    None
+  }
 }
