@@ -6,15 +6,15 @@ import {useRefWithEventHandler} from "../../../utils/hook-utils";
 import HorizontalCenter from "../../layout/HorizontalCenter";
 import CardWithActions from "./CardWithActions";
 
-function CardWrapper({card, as}) {
+function CardWrapper({as, ...props}) {
     return <div className="cardWrapper">
-        {createElement(as, {card})}
+        {createElement(as, props)}
     </div>
 }
 
 const cardWidth = 129;
 
-export default function CardRow({className, cards, as}) {
+export default function CardRow({className, cards, cardProps, as}) {
     as = as || CardWithActions;
 
     const overlapCards = useCallback((ref) => {
@@ -40,7 +40,7 @@ export default function CardRow({className, cards, as}) {
 
     return <div className={addClass(className, "px-2")}>
         <HorizontalCenter ref={ref}>
-            {_.map(cards, card => <CardWrapper key={card.objectId} card={card} as={as} /> )}
+            {_.map(cards, card => <CardWrapper key={card.objectId} card={card} as={as} {...cardProps} /> )}
         </HorizontalCenter>
     </div>;
 }

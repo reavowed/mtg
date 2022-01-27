@@ -1,10 +1,10 @@
-import _ from "lodash";
 import {forwardRef} from "preact/compat";
 import {useContext, useEffect, useState} from "preact/hooks";
 import ScryfallService from "../../../contexts/ScryfallService";
 import {addClass} from "../../../utils/element-utils";
+import ManaCost from "./ManaCost";
 
-export default forwardRef(function CardImage({card, className, children, showText, ...props}, ref) {
+export default forwardRef(function CardImage({card, className, children, showManaCost, showText, ...props}, ref) {
     const scryfallService = useContext(ScryfallService);
     const [artUrl, setArtUrl] = useState(null);
     useEffect(() => scryfallService.requestArtUrl(card.artDetails, setArtUrl), []);
@@ -12,6 +12,7 @@ export default forwardRef(function CardImage({card, className, children, showTex
         <div className={addClass(className, "cardContainer")} ref={ref} {...props}>
             <div className="cardOuterBorder">
                 <div className="cardColorBackground">
+                    {showManaCost && card.characteristics.manaCost && <div className="cardManaCost"><ManaCost manaCost={card.characteristics.manaCost}/></div> }
                     <div className="cardNameWrapper">
                         <div className="cardNameBorder">
                             <div className="cardName">
