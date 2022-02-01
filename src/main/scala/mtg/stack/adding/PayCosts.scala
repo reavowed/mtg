@@ -3,7 +3,7 @@ package mtg.stack.adding
 import mtg.game.objects.ManaObject
 import mtg.game.state._
 import mtg.game.{ObjectId, PlayerId}
-import mtg.parts.costs.{GenericManaSymbol, ManaSymbol, ManaTypeSymbol}
+import mtg.parts.costs.{GenericManaSymbol, ManaCost, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
 
@@ -55,14 +55,14 @@ case class PayCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] 
 
   private def payRemainingMana(player: PlayerId, remainingCost: Seq[ManaSymbol])(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
     if (remainingCost.nonEmpty) {
-      PartialGameActionResult.childThenValue(PayManaChoice(player, remainingCost), ())(gameState)
+      PartialGameActionResult.childThenValue(PayManaChoice(player, ManaCost(remainingCost: _*)), ())(gameState)
     } else {
       PartialGameActionResult.Value(())
     }
   }
 }
 
-case class PayManaChoice(playerToAct: PlayerId, remainingCost: Seq[ManaSymbol]) extends DirectChoice[(ManaSymbol, ManaObject)] {
+case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost) extends DirectChoice[(ManaSymbol, ManaObject)] {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[(ManaSymbol, ManaObject)] = {
     None
   }

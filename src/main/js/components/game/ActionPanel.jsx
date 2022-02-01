@@ -4,14 +4,15 @@ import BannerText from "../layout/BannerText";
 import AssignCombatDamageChoice from "./choices/AssignCombatDamageChoice";
 import DeclareAttackersChoice from "./choices/DeclareAttackersChoice";
 import DeclareBlockersChoice from "./choices/DeclareBlockersChoice";
+import ModeChoice from "./choices/ModeChoice";
 import OrderBlockersChoice from "./choices/OrderBlockersChoice";
+import PayManaChoice from "./choices/PayManaChoice";
 import PriorityChoice from "./choices/PriorityChoice";
 import ScryChoice from "./choices/ScryChoice";
 import SearchChoice from "./choices/SearchChoice";
 import TargetChoice from "./choices/TargetChoice";
 import TriggeredAbilityChoice from "./choices/TriggeredAbilityChoice";
 import ManaPool from "./ManaPool";
-import ModeChoice from "./choices/ModeChoice";
 
 function getChoiceDisplay(choiceType) {
     switch (choiceType) {
@@ -35,6 +36,8 @@ function getChoiceDisplay(choiceType) {
             return <TriggeredAbilityChoice />
         case "ModeChoice":
             return <ModeChoice />
+        case "PayManaChoice":
+            return <PayManaChoice />
     }
 }
 
