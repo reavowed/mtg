@@ -3,9 +3,15 @@ package mtg.parts.costs
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import mtg.game.state.{GameAction, ObjectWithState}
+import mtg.stack.adding.PayManaCosts
 
 @JsonSerialize(using = classOf[ManaCost.Serializer])
-case class ManaCost(symbols: ManaSymbol*)
+case class ManaCost(symbols: ManaSymbol*) extends Cost {
+  override def text: String = symbols.map(_.text).mkString
+  override def isUnpayable(objectWithAbility: ObjectWithState): Boolean = false
+  override def payForAbility(objectWithAbility: ObjectWithState): GameAction[Any] = PayManaCosts(this, objectWithAbility.controllerOrOwner) // TODO: Controller of ability should pay
+}
 
 object ManaCost {
   class Serializer extends JsonSerializer[ManaCost] {

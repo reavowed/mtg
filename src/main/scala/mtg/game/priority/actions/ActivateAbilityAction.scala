@@ -1,8 +1,11 @@
 package mtg.game.priority.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
-import mtg.game.{ObjectId, PlayerId}
+import mtg.events.MoveObjectEvent
+import mtg.game.objects.{AbilityOnTheStack, StackObject}
+import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
+import mtg.game.{ObjectId, PlayerId, Zone}
+import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishActivating, FinishCasting, PayCosts, PayManaCosts}
 import mtg.stack.resolving.ResolveManaAbility
 
 case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
@@ -11,8 +14,24 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
   override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + objectWithAbility.characteristics.abilities.indexOf(ability)
 
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
-    val actions = ability.costs.flatMap(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
-    PartialGameActionResult.childThenValue(WrappedOldUpdates(actions: _*), ())
+    if (ability.isManaAbility) {
+      val actions = ability.costs.map(_.payForAbility(objectWithAbility)) :+ WrappedOldUpdates(ResolveManaAbility(player, objectWithAbility, ability))
+      PartialGameActionResult.childrenThenValue(actions, ())
+    } else {
+      PartialGameActionResult.ChildWithCallback(
+        WrappedOldUpdates(CreateActivatedAbilityOnStack(ability, objectId, player)),
+        steps)
+    }
+  }
+
+  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {
+    // TODO: Should be result of MoveObjectEvent
+    val stackObjectId = gameState.gameObjectState.stack.last.objectId
+    PartialGameActionResult.children(
+      ChooseModes(stackObjectId),
+      ChooseTargets(stackObjectId),
+      PayCosts(stackObjectId),
+      FinishActivating(stackObjectId))
   }
 }
 
@@ -30,4 +49,12 @@ object ActivateAbilityAction {
       objectWithAbility.controllerOrOwner == player &&
       !ability.costs.exists(_.isUnpayable(objectWithAbility))
   }
+}
+
+case class CreateActivatedAbilityOnStack(ability: ActivatedAbilityDefinition, sourceId: ObjectId, controller: PlayerId) extends InternalGameAction {
+  override def execute(gameState: GameState): GameActionResult = {
+    gameState.gameObjectState
+      .addNewObject(StackObject(AbilityOnTheStack(ability, sourceId, controller), _, controller), _.length)
+  }
+  override def canBeReverted: Boolean = true
 }

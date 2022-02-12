@@ -15,6 +15,7 @@ object LogEvent {
   case class SkipFirstDrawStep(player: PlayerId) extends LogEvent
   case class PlayedLand(player: PlayerId, landName: String) extends LogEvent
   case class CastSpell(player: PlayerId, spellName: String, targetNames: Seq[String]) extends LogEvent
+  case class ActivateAbility(player: PlayerId, sourceName: String, text: String, targetNames: Seq[String]) extends LogEvent
   case class PutTriggeredAbilityOnStack(player: PlayerId, sourceName: String, text: String, targetNames: Seq[String]) extends LogEvent
   case class ResolvePermanent(player: PlayerId, permanentName: String) extends LogEvent
   case class ResolveSpell(player: PlayerId, spellName: String) extends LogEvent

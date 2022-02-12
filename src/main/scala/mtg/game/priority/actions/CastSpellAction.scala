@@ -18,12 +18,12 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
   }
   private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {
     // TODO: Should be result of MoveObjectEvent
-    val stackObjectId = gameState.gameObjectState.stack.last.objectId
+    val spellId = gameState.gameObjectState.stack.last.objectId
     PartialGameActionResult.children(
-      ChooseModes(stackObjectId),
-      ChooseTargets(stackObjectId),
-      PayManaCosts(stackObjectId),
-      FinishCasting(stackObjectId))
+      ChooseModes(spellId),
+      ChooseTargets(spellId),
+      PayManaCosts.ForSpell(spellId),
+      FinishCasting(spellId))
   }
 }
 

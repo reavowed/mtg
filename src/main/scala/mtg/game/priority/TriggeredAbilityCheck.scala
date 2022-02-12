@@ -68,7 +68,7 @@ case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingT
 case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends ExecutableGameAction[Any] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
     PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(CreateAbilityOnStack(pendingTriggeredAbility)),
+      WrappedOldUpdates(CreateTriggeredAbilityOnStack(pendingTriggeredAbility)),
       steps)
   }
 
@@ -82,7 +82,7 @@ case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredA
   }
 }
 
-case class CreateAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends InternalGameAction {
+case class CreateTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState
       .removeTriggeredAbility(pendingTriggeredAbility)

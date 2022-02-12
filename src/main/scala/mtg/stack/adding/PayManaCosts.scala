@@ -7,7 +7,7 @@ import mtg.parts.costs.{GenericManaSymbol, ManaCost, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
 
-case class PayManaCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
+case class PayManaCosts(manaCost: ManaCost, player: PlayerId) extends ExecutableGameAction[Unit] {
   private def autoPayColoredCosts(symbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
     @tailrec
     def helper(uncheckedSymbols: Seq[ManaSymbol], unpayableSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
@@ -43,13 +43,10 @@ case class PayManaCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Un
   }
 
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
-    val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
-    val player = stackObjectWithState.controller
-    val manaCost = stackObjectWithState.characteristics.manaCost.get
     val initialManaInPool = gameState.gameObjectState.manaPools(player)
     val (remainingCost, remainingManaInPool) = payManaAutomatically(manaCost.symbols, initialManaInPool)
     PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(SpendManaAutomaticallyEvent(stackObjectWithState.controller, remainingManaInPool)),
+      WrappedOldUpdates(SpendManaAutomaticallyEvent(player, remainingManaInPool)),
       payRemainingMana(player, remainingCost))
   }
 
@@ -58,6 +55,17 @@ case class PayManaCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Un
       PartialGameActionResult.childThenValue(PayManaChoice(player, ManaCost(remainingCost: _*)), ())(gameState)
     } else {
       PartialGameActionResult.Value(())
+    }
+  }
+}
+
+object PayManaCosts {
+  case class ForSpell(spellId: ObjectId) extends ExecutableGameAction[Unit] {
+    override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+      val spellWithState = gameState.gameObjectState.derivedState.stackObjectStates(spellId)
+      val manaCost = spellWithState.characteristics.manaCost.get
+      val player = spellWithState.controller
+      PartialGameActionResult.child(PayManaCosts(manaCost, player))
     }
   }
 }
