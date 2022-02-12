@@ -7,7 +7,7 @@ import mtg.parts.costs.{GenericManaSymbol, ManaCost, ManaSymbol, ManaTypeSymbol}
 
 import scala.annotation.tailrec
 
-case class PayCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
+case class PayManaCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
   private def autoPayColoredCosts(symbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
     @tailrec
     def helper(uncheckedSymbols: Seq[ManaSymbol], unpayableSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {

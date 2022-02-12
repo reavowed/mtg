@@ -4,7 +4,7 @@ import mtg.characteristics.types.Type
 import mtg.events.MoveObjectEvent
 import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.{ObjectId, PlayerId, Zone, ZoneType}
-import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishCasting, PayCosts, TimingChecks}
+import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishCasting, PayManaCosts, TimingChecks}
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
@@ -22,7 +22,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
     PartialGameActionResult.children(
       ChooseModes(stackObjectId),
       ChooseTargets(stackObjectId),
-      PayCosts(stackObjectId),
+      PayManaCosts(stackObjectId),
       FinishCasting(stackObjectId))
   }
 }
