@@ -10,7 +10,7 @@ import scala.util.Random
 case class ShuffleLibrary(playerIdentifier: PlayerId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     val library = Library(playerIdentifier)
-    val shuffledLibraryContents = Random.shuffle(library.getState(gameState))
+    val shuffledLibraryContents = Random.shuffle(gameState.gameObjectState.getZoneState(library))
     shuffledLibraryContents.foldLeft(
       library.updateState(gameState.gameObjectState, _ => Nil))(
       (gameState, oldObject) => gameState.addNewObject(BasicGameObject(oldObject.underlyingObject, _, library), _ => 0))

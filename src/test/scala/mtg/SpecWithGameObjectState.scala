@@ -49,7 +49,7 @@ trait SpecWithGameObjectState
       apply(gameState.gameObjectState)
     }
     def apply(gameObjectState: GameObjectState): Seq[GameObject] = {
-      zone.getState(gameObjectState)
+      gameObjectState.getZoneState(zone)
     }
   }
 }

@@ -20,7 +20,7 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
       cardDefinitions.map(getCard)
     }
     def getCard(zone: Zone, cardDefinition: CardDefinition): GameObject = {
-      zone.getState(gameObjectState).getCard(cardDefinition)
+      gameObjectState.getZoneState(zone).getCard(cardDefinition)
     }
 
     def clearZone[T <: GameObject](zone: TypedZone[T]): GameObjectState = {

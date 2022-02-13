@@ -7,15 +7,11 @@ import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
 import mtg.utils.AtGuaranteed
 
 sealed abstract class Zone(val zoneType: ZoneType) {
-  def getState(gameObjectState: GameObjectState): Seq[GameObject]
-  def getState(gameState: GameState): Seq[GameObject]
   def newObjectForZone(previousObjectState: ObjectWithState, playerMoving: PlayerId, newObjectId: ObjectId): GameObject
 }
 
 sealed abstract class TypedZone[ObjectType <: GameObject](zoneType: ZoneType) extends Zone(zoneType) {
   def stateLens: Lens[GameObjectState, Seq[ObjectType]]
-  def getState(gameState: GameState): Seq[ObjectType] = getState(gameState.gameObjectState)
-  def getState(gameObjectState: GameObjectState): Seq[ObjectType] = stateLens.get(gameObjectState)
   def updateState(gameObjectState: GameObjectState, f: Seq[ObjectType] => Seq[ObjectType]): GameObjectState = {
     stateLens.modify(f)(gameObjectState)
   }

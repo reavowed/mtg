@@ -12,7 +12,7 @@ case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEf
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
     val player = resolutionContext.controllingPlayer
     val zone = Zone.Library(player)
-    val possibleChoices = zone.getState(gameState).view
+    val possibleChoices = gameState.gameObjectState.getZoneState(zone).view
       .map(_.objectId)
       .filter(objectFilter.matches(_, resolutionContext, gameState))
       .toSeq
