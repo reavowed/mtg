@@ -33,10 +33,10 @@ trait TypedGameObject[T <: GameObject] extends GameObject { this: T =>
   def zone: TypedZone[T]
   def updateCounters(newCounters: Map[CounterType, Int]): T
 
-  def removeFromCurrentZone(gameObjectState: GameObjectState): GameObjectState = zone.updateState(gameObjectState, _.filter(_ != this))
-  def add(gameObjectState: GameObjectState, getIndex: Seq[GameObject] => Int): GameObjectState = zone.updateState(gameObjectState, s => s.insertAtIndex(this, getIndex(s)))
+  def removeFromCurrentZone(gameObjectState: GameObjectState): GameObjectState = gameObjectState.updateZoneState(zone)(_.filter(_ != this))
+  def add(gameObjectState: GameObjectState, getIndex: Seq[GameObject] => Int): GameObjectState = gameObjectState.updateZoneState(zone)(s => s.insertAtIndex(this, getIndex(s)))
   def update(gameObjectState: GameObjectState, f: T => T): GameObjectState = {
-    zone.updateState(gameObjectState, _.map(o => if (o == this) f(o) else o))
+    gameObjectState.updateZoneState(zone)(_.map(o => if (o == this) f(o) else o))
   }
   def updateCounters(gameObjectState: GameObjectState, f: Map[CounterType, Int] => Map[CounterType, Int]): GameObjectState = {
     update(gameObjectState, o => updateCounters(f(o.counters)))

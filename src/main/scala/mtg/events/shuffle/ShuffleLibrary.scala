@@ -12,7 +12,7 @@ case class ShuffleLibrary(playerIdentifier: PlayerId) extends InternalGameAction
     val library = Library(playerIdentifier)
     val shuffledLibraryContents = Random.shuffle(gameState.gameObjectState.getZoneState(library))
     shuffledLibraryContents.foldLeft(
-      library.updateState(gameState.gameObjectState, _ => Nil))(
+      gameState.gameObjectState.updateZoneState(library)(_ => Nil))(
       (gameState, oldObject) => gameState.addNewObject(BasicGameObject(oldObject.underlyingObject, _, library), _ => 0))
   }
   override def canBeReverted: Boolean = true

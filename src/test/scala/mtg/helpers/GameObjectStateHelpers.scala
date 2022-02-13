@@ -24,7 +24,7 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
     }
 
     def clearZone[T <: GameObject](zone: TypedZone[T]): GameObjectState = {
-      zone.updateState(gameObjectState, _ => Nil)
+      gameObjectState.updateZoneState(zone)(_ => Nil)
     }
     def addCardToZone(cardDefinition: CardDefinition, zone: Zone, owner: PlayerId): GameObjectState = {
       val cardPrinting = getCardPrinting(cardDefinition)
@@ -59,7 +59,7 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
     def setHand: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Hand(playerIdentifier), playerIdentifier, cardDefinitions))
     def setLibrary: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Library(playerIdentifier), playerIdentifier, cardDefinitions))
     def setBattlefield: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) =>
-      Zone.Battlefield.updateState(gameObjectState, _.filter(_.defaultController != playerIdentifier))
+      gameObjectState.updateZoneState(Zone.Battlefield)(_.filter(_.defaultController != playerIdentifier))
         .addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
     )
   }

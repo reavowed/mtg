@@ -57,6 +57,16 @@ case class GameObjectState(
       case Zone.Exile => exile
     }
   }
+  def updateZoneState[T <: GameObject](zone: TypedZone[T])(f: Seq[T] => Seq[T]): GameObjectState = {
+    zone match {
+      case Zone.Library(player) => copy(libraries = libraries.updated(player, f(libraries(player).asInstanceOf[Seq[T]])))
+      case Zone.Hand(player) => copy(hands = hands.updated(player, f(hands(player).asInstanceOf[Seq[T]])))
+      case Zone.Graveyard(player) => copy(graveyards = graveyards.updated(player, f(graveyards(player).asInstanceOf[Seq[T]])))
+      case Zone.Battlefield => copy(battlefield = f(battlefield.asInstanceOf[Seq[T]]).asInstanceOf[Seq[PermanentObject]])
+      case Zone.Stack => copy(stack = f(stack.asInstanceOf[Seq[T]]).asInstanceOf[Seq[StackObject]])
+      case Zone.Exile => copy(exile = f(exile.asInstanceOf[Seq[T]]).asInstanceOf[Seq[BasicGameObject]])
+    }
+  }
 
   def allObjects: View[GameObject] = {
     libraries.flatMap(_._2).view ++
