@@ -10,7 +10,7 @@ sealed abstract class TurnStep(val actions: Seq[GameAction[Any]]) extends CaseOb
 object TurnStep {
   case object UntapStep extends TurnStep(Seq(WrappedOldUpdates(UntapForTurn)))
   case object UpkeepStep extends TurnStep(Seq(PrioritySequenceAction))
-  case object DrawStep extends TurnStep(Seq(WrappedOldUpdates(DrawForTurn), PrioritySequenceAction))
+  case object DrawStep extends TurnStep(Seq(DrawForTurn, PrioritySequenceAction))
 
   val BeginningPhaseSteps = Seq(UntapStep, UpkeepStep, DrawStep)
 
