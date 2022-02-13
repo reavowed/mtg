@@ -22,7 +22,7 @@ case class GameObjectState(
     graveyards: Map[PlayerId, Seq[BasicGameObject]],
     stack: Seq[StackObject],
     exile: Seq[BasicGameObject],
-    sideboards: Map[PlayerId, Seq[BasicGameObject]],
+    sideboards: Map[PlayerId, Seq[Card]],
     manaPools: Map[PlayerId, Seq[ManaObject]],
     lastKnownInformation: Map[ObjectId, ObjectWithState],
     floatingActiveContinuousEffects: Seq[FloatingActiveContinuousEffect],
@@ -107,7 +107,7 @@ object GameObjectState {
     }).toMap
     val sideboards = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
-      playerIdentifier -> sideboard.map(createGameObject(_, playerIdentifier, Zone.Sideboard(playerIdentifier)))
+      playerIdentifier -> sideboard.map(Card(playerIdentifier, _))
     }).toMap
 
     GameObjectState(

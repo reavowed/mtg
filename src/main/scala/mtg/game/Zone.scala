@@ -59,9 +59,6 @@ object Zone {
     }
     override def stateLens: Lens[GameObjectState, Seq[StackObject]] = Focus[GameObjectState](_.stack)
   }
-  case class Sideboard(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Hand) with BasicZone {
-    override def stateMapLens: Lens[GameObjectState, Map[PlayerId, Seq[BasicGameObject]]] = Focus[GameObjectState](_.sideboards)
-  }
   case object Exile extends Shared[BasicGameObject](ZoneType.Exile) with BasicZone {
     override def stateLens: Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.exile)
   }
