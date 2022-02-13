@@ -1,13 +1,21 @@
 package mtg.events
 
+import mtg.core.ManaType
+import mtg.core.symbols.ManaSymbol
 import mtg.game.PlayerId
 import mtg.game.objects.ManaObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
-import mtg.parts.mana.ManaType
 
-case class AddManaEvent(player: PlayerId, manaTypes: Seq[ManaType]) extends InternalGameAction {
+case class AddManaEvent(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.updateManaPool(player, _ ++ manaTypes.map(ManaObject))
+    gameState.gameObjectState.updateManaPool(player, _ ++ manaSymbols.flatMap(getManaObjects))
   }
   override def canBeReverted: Boolean = true
+
+  private def getManaObjects(manaSymbol: ManaSymbol): Seq[ManaObject] = {
+    manaSymbol match {
+      case ManaSymbol.ForType(manaType) => Seq(ManaObject(manaType))
+      case ManaSymbol.Generic(amount) => Seq.fill(amount)(ManaObject(ManaType.Colorless))
+    }
+  }
 }

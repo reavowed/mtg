@@ -3,9 +3,9 @@ package mtg.data.cards.strixhaven
 import mtg.abilities.builder.EffectBuilder._
 import mtg.abilities.keyword.{Flying, Vigilance}
 import mtg.cards.patterns.Creature
-import mtg.characteristics.Color.White
 import mtg.characteristics.types.CreatureType.{Bird, Cleric}
 import mtg.characteristics.types.Type.Creature
+import mtg.core.symbols.ManaSymbol.White
 import mtg.parts.costs.ManaCost
 
 object CombatProfessor extends Creature(

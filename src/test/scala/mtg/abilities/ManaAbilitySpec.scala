@@ -3,8 +3,8 @@ package mtg.abilities
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Creature
 import mtg.cards.text.SimpleSpellEffectParagraph
-import mtg.characteristics.Color
-import mtg.characteristics.Color.{Green, Red}
+import mtg.core.ManaType
+import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
@@ -44,7 +44,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
         manager.activateAbility(playerOne, Plains)
 
         manager.gameState.gameObjectState.stack must beEmpty
-        manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
+        manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly[ManaType](ManaType.White))
       }
     }
     "on creature" should {
@@ -57,7 +57,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
         manager.activateAbility(playerOne, CreatureWithManaAbility)
 
         manager.gameState.gameObjectState.stack must beEmpty
-        manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.Green.manaType))
+        manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly[ManaType](ManaType.Green))
       }
     }
   }

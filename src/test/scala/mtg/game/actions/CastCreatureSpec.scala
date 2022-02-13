@@ -1,8 +1,6 @@
 package mtg.game.actions
 
 import mtg.cards.patterns.Creature
-import mtg.characteristics.Color
-import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost

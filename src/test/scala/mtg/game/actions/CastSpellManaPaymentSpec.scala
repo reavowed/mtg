@@ -1,12 +1,9 @@
 package mtg.game.actions
 
-import mtg.cards.patterns.{Creature, Spell}
-import mtg.characteristics.Color
-import mtg.characteristics.Color.White
+import mtg.cards.patterns.Creature
+import mtg.core.ManaType
+import mtg.core.symbols.ManaSymbol.White
 import mtg.data.cards.Plains
-import mtg.data.cards.strixhaven.AgelessGuardian
-import mtg.game.priority.PriorityChoice
-import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
@@ -40,7 +37,7 @@ class CastSpellManaPaymentSpec extends SpecWithTestCards {
 
       // Add necessary mana
       manager.activateAbility(playerOne, Plains)
-      manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
+      manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly[ManaType](ManaType.White))
 
       // Cast spell
       manager.castSpell(playerOne, Creature)

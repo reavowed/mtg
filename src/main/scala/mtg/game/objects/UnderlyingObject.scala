@@ -2,9 +2,9 @@ package mtg.game.objects
 
 import mtg.abilities.ActivatedOrTriggeredAbilityDefinition
 import mtg.cards.CardPrinting
+import mtg.core.symbols.ManaSymbol
 import mtg.game.state.{Characteristics, GameState}
 import mtg.game.{ObjectId, PlayerId}
-import mtg.parts.costs.ManaSymbol
 
 sealed trait UnderlyingObject {
   def baseCharacteristics: Characteristics

@@ -1,7 +1,7 @@
 package mtg.characteristics.types
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.characteristics.Color
+import mtg.core.symbols.ManaSymbol
 import mtg.effects.oneshot.basic
 import mtg.parts.costs.TapSymbol
 import mtg.text.NounPhraseTemplate
@@ -49,15 +49,15 @@ sealed class Subtype extends CaseObjectWithName
 
 sealed class LandType extends Subtype
 
-sealed class BasicLandType(val color: Color) extends LandType {
-  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(color))
+sealed class BasicLandType(val manaSymbol: ManaSymbol) extends LandType {
+  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(manaSymbol))
 }
 object BasicLandType {
-  object Plains extends BasicLandType(Color.White)
-  object Island extends BasicLandType(Color.Blue)
-  object Swamp extends BasicLandType(Color.Black)
-  object Mountain extends BasicLandType(Color.Red)
-  object Forest extends BasicLandType(Color.Green)
+  object Plains extends BasicLandType(ManaSymbol.White)
+  object Island extends BasicLandType(ManaSymbol.Blue)
+  object Swamp extends BasicLandType(ManaSymbol.Black)
+  object Mountain extends BasicLandType(ManaSymbol.Red)
+  object Forest extends BasicLandType(ManaSymbol.Green)
 }
 
 sealed class CreatureType extends Subtype

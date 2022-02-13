@@ -1,7 +1,8 @@
 package mtg.abilities
 
 import mtg.SpecWithGameStateManager
-import mtg.characteristics.Color
+import mtg.core.ManaType
+import mtg.core.symbols.ManaSymbol
 import mtg.data.cards.Plains
 import mtg.effects.oneshot.basic
 import mtg.game.Zone
@@ -29,7 +30,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
 
       val plainsObject = manager.getCard(Zone.Battlefield, Plains)
       val plainsState = manager.getState(plainsObject)
-      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(Color.White)))
+      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(ManaSymbol.White)))
     }
 
     "be tappable for mana by their controller" in {
@@ -63,7 +64,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
 
       manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerOne))
       manager.getCard(Zone.Battlefield, Plains) must beTapped
-      manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly(Color.White.manaType))
+      manager.gameState.gameObjectState.manaPools(playerOne).map(_.manaType) must contain(exactly[ManaType](ManaType.White))
     }
 
     "not tap for mana twice" in {

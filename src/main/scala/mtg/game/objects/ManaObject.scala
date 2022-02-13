@@ -1,5 +1,5 @@
 package mtg.game.objects
 
-import mtg.parts.mana.ManaType
+import mtg.core.ManaType
 
 case class ManaObject(manaType: ManaType)

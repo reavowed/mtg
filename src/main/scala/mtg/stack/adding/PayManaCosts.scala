@@ -1,9 +1,10 @@
 package mtg.stack.adding
 
+import mtg.core.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
 import mtg.game.state._
 import mtg.game.{ObjectId, PlayerId}
-import mtg.parts.costs.{GenericManaSymbol, ManaCost, ManaSymbol, ManaTypeSymbol}
+import mtg.parts.costs.ManaCost
 
 import scala.annotation.tailrec
 
@@ -12,7 +13,7 @@ case class PayManaCosts(manaCost: ManaCost, player: PlayerId) extends Executable
     @tailrec
     def helper(uncheckedSymbols: Seq[ManaSymbol], unpayableSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
       uncheckedSymbols match {
-        case (symbol: ManaTypeSymbol) +: remainingSymbols =>
+        case (symbol: ManaSymbol.ForType) +: remainingSymbols =>
           manaInPool.findIndex(_.manaType == symbol.manaType) match {
             case Some(index) =>
               helper(remainingSymbols, unpayableSymbols, manaInPool.removeAtIndex(index))
@@ -29,7 +30,7 @@ case class PayManaCosts(manaCost: ManaCost, player: PlayerId) extends Executable
   }
 
   private def autoPayGenericCosts(manaSymbols: Seq[ManaSymbol], manaInPool: Seq[ManaObject]): (Seq[ManaSymbol], Seq[ManaObject]) = {
-    if (manaSymbols.map(_.asOptionalInstanceOf[GenericManaSymbol]).swap.exists(_.map(_.amount).sum == manaInPool.length)) {
+    if (manaSymbols.map(_.asOptionalInstanceOf[ManaSymbol.Generic]).swap.exists(_.map(_.amount).sum == manaInPool.length)) {
       (Nil, Nil)
     } else {
       (manaSymbols, manaInPool)

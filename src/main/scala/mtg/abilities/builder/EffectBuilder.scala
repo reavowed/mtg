@@ -2,7 +2,7 @@ package mtg.abilities.builder
 
 import mtg._
 import mtg.cards.text.SpellEffectSentence
-import mtg.characteristics.Color
+import mtg.core.symbols.ManaSymbol
 import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
@@ -67,5 +67,5 @@ object EffectBuilder
   def shuffle: OneShotEffect = ShuffleEffect
   def scry(number: Int): OneShotEffect = ScryEffect(number)
   def drawACard: OneShotEffect = DrawACardEffect
-  def add(color: Color): OneShotEffect = AddManaEffect(color)
+  def add(manaSymbol: ManaSymbol): OneShotEffect = AddManaEffect(manaSymbol)
 }

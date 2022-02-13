@@ -1,5 +1,5 @@
 package mtg.cards
 
-import mtg.characteristics.Color
+import mtg.core.Color
 
 case class ColorIndicator(colors: Color*)
