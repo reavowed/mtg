@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(":core")
     implementation 'org.scala-lang:scala-library:2.13.6'
     implementation 'org.scala-lang.modules:scala-xml_2.13:2.0.1'
     implementation 'org.springframework.boot:spring-boot-starter-web'
