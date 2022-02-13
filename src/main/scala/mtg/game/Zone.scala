@@ -1,20 +1,10 @@
 package mtg.game
 
 import monocle.{Focus, Lens}
+import mtg.core.zones.ZoneType
 import mtg.game.objects._
 import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
 import mtg.utils.AtGuaranteed
-
-sealed abstract class ZoneType
-object ZoneType {
-  case object Library extends ZoneType
-  case object Hand extends ZoneType
-  case object Battlefield extends ZoneType
-  case object Graveyard extends ZoneType
-  case object Stack extends ZoneType
-  case object Exile extends ZoneType
-  case object Sideboard extends ZoneType
-}
 
 sealed abstract class Zone(val zoneType: ZoneType) {
   def getState(gameObjectState: GameObjectState): Seq[GameObject]
