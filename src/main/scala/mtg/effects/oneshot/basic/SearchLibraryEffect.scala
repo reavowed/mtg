@@ -11,18 +11,17 @@ case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEf
   override def getText(cardName: String): String = "search your library for " + objectFilter.getNounPhraseTemplate(cardName).singular.withArticle
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
     val player = resolutionContext.controllingPlayer
-    val zone = Zone.Library(player)
-    val possibleChoices = gameState.gameObjectState.getZoneState(zone).view
+    val possibleChoices = gameState.gameObjectState.libraries(player).view
       .map(_.objectId)
       .filter(objectFilter.matches(_, resolutionContext, gameState))
       .toSeq
-    SearchChoice(player, zone, possibleChoices, resolutionContext)
+    SearchLibraryChoice(player, possibleChoices, resolutionContext)
   }
 }
 
-case class SearchChoice(
+// TODO: Handle a player searching another player's library
+case class SearchLibraryChoice(
     playerChoosing: PlayerId,
-    zone: Zone,
     possibleChoices: Seq[ObjectId],
     resolutionContext: StackObjectResolutionContext)
   extends OneShotEffectChoice
@@ -33,5 +32,5 @@ case class SearchChoice(
       chosenObjectId <- possibleChoices.find(_.sequentialId == id)
     } yield (None, resolutionContext.addIdentifiedObject(chosenObjectId))
   }
-  override def temporarilyVisibleZones: Seq[Zone] = Seq(zone)
+  override def temporarilyVisibleZones: Seq[Zone] = Seq(Zone.Library(playerChoosing))
 }

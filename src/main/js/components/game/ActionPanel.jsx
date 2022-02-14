@@ -9,7 +9,7 @@ import OrderBlockersChoice from "./choices/OrderBlockersChoice";
 import PayManaChoice from "./choices/PayManaChoice";
 import PriorityChoice from "./choices/PriorityChoice";
 import ScryChoice from "./choices/ScryChoice";
-import SearchChoice from "./choices/SearchChoice";
+import SearchLibraryChoice from "./choices/SearchLibraryChoice";
 import TargetChoice from "./choices/TargetChoice";
 import TriggeredAbilityChoice from "./choices/TriggeredAbilityChoice";
 import ManaPool from "./ManaPool";
@@ -26,8 +26,8 @@ function getChoiceDisplay(choiceType) {
             return <OrderBlockersChoice />
         case "AssignCombatDamageChoice":
             return <AssignCombatDamageChoice />
-        case "SearchChoice":
-            return <SearchChoice />
+        case "SearchLibraryChoice":
+            return <SearchLibraryChoice />
         case "TargetChoice":
             return <TargetChoice />
         case "ScryChoice":

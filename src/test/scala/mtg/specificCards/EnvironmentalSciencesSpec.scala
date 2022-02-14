@@ -3,7 +3,7 @@ package mtg.specificCards
 import mtg.SpecWithGameStateManager
 import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences}
 import mtg.data.cards.{Forest, Island, Plains}
-import mtg.effects.oneshot.basic.SearchChoice
+import mtg.effects.oneshot.basic.SearchLibraryChoice
 import mtg.game.Zone
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.stack.resolving.ResolveEffectChoice
@@ -36,9 +36,9 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
 
       manager.currentChoice must beSome(beAnInstanceOf[ResolveEffectChoice])
       manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.playerChoosing mustEqual playerOne
-      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice must beAnInstanceOf[SearchChoice]
-      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchChoice].zone mustEqual Zone.Library(playerOne)
-      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchChoice].possibleChoices mustEqual manager.getCards(Island, Plains).map(_.objectId)
+      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice must beAnInstanceOf[SearchLibraryChoice]
+      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchLibraryChoice].zone mustEqual Zone.Library(playerOne)
+      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchLibraryChoice].possibleChoices mustEqual manager.getCards(Island, Plains).map(_.objectId)
     }
 
     "put the chosen land into its controller's hand" in {

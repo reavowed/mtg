@@ -7,7 +7,7 @@ import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";
 import PopupChoice from "./PopupChoice";
 
-export default function SearchChoice() {
+export default function SearchLibraryChoice() {
     const gameState = useContext(GameState);
     const [chosenOption, setChosenOption] = useState(null);
     const options = gameState.currentChoice.details.possibleChoices;
