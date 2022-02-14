@@ -39,6 +39,12 @@ case class GameObjectState(
   def updateManaPool(player: PlayerId, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
   }
+
+  def createObject[T <: TypedGameObject[T]](createNewObject: ObjectId => T, getIndex: Seq[GameObject] => Int): GameObjectState = {
+    val newObject = createNewObject(ObjectId(nextObjectId))
+    updateZoneState(newObject.zone)(objects => objects.insertAtIndex(newObject, getIndex(objects)))
+      .copy(nextObjectId = nextObjectId + 1)
+  }
   def deleteObject(gameObject: GameObject): GameObjectState = {
     gameObject.removeFromCurrentZone(this)
       .copy(lastKnownInformation = derivedState.allObjectStates.get(gameObject.objectId).foldLeft(lastKnownInformation)(_.updated(gameObject.objectId, _)))
