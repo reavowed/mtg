@@ -53,16 +53,6 @@ case class GameObjectState(
     createNewObject(ObjectId(nextObjectId)).add(this, getIndex).copy(nextObjectId = nextObjectId + 1)
   }
 
-  def getZoneState(zone: Zone): Seq[GameObject] = {
-    zone match {
-      case Zone.Library(player) => libraries(player)
-      case Zone.Hand(player) => hands(player)
-      case Zone.Graveyard(player) => graveyards(player)
-      case Zone.Battlefield => battlefield
-      case Zone.Stack => stack
-      case Zone.Exile => exile
-    }
-  }
   def updateZoneState[T <: GameObject](zone: TypedZone[T])(f: Seq[T] => Seq[T]): GameObjectState = {
     zone match {
       case Zone.Library(player) => copy(libraries = libraries.updated(player, f(libraries(player).asInstanceOf[Seq[T]])))

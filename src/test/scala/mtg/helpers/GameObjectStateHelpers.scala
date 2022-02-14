@@ -7,6 +7,18 @@ import mtg.game.{PlayerId, TypedZone, Zone}
 
 trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
   implicit class GameObjectStateExtensions(gameObjectState: GameObjectState) {
+
+    def getZoneState(zone: Zone): Seq[GameObject] = {
+      zone match {
+        case Zone.Library(player) => gameObjectState.libraries(player)
+        case Zone.Hand(player) => gameObjectState.hands(player)
+        case Zone.Graveyard(player) => gameObjectState.graveyards(player)
+        case Zone.Battlefield => gameObjectState.battlefield
+        case Zone.Stack => gameObjectState.stack
+        case Zone.Exile => gameObjectState.exile
+      }
+    }
+
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
       gameObjectState.battlefield.getCard(cardDefinition)
     }
