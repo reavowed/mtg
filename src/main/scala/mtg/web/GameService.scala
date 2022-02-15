@@ -28,7 +28,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
       case Zone.Stack =>
         throw new Exception("Trying to create things directly on the stack seems like a bad idea")
       case Zone.Battlefield =>
-        gameState.updateGameObjectState(_.createObject(PermanentObject(card, _, owner), _.length))
+        gameState.updateGameObjectState(_.addObjectToBattlefield(PermanentObject(card, _, owner)))
       case zone: BasicZone =>
         gameState.updateGameObjectState(_.createObject(BasicGameObject(card, _, zone), _.length))
     }

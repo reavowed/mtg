@@ -1,6 +1,6 @@
 package mtg.game.objects
 
-import monocle.Focus
+import monocle.{Focus, Lens}
 import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
 import mtg.effects.ContinuousEffect
@@ -40,6 +40,37 @@ case class GameObjectState(
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
   }
 
+  private def libraryLens(player: PlayerId): Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.libraries).at(player)(AtGuaranteed.apply)
+  private def handLens(player: PlayerId): Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.hands).at(player)(AtGuaranteed.apply)
+  private def graveyardLens(player: PlayerId): Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.graveyards).at(player)(AtGuaranteed.apply)
+  private val battlefieldLens: Lens[GameObjectState, Seq[PermanentObject]] = Focus[GameObjectState](_.battlefield)
+  private val stackLens: Lens[GameObjectState, Seq[StackObject]] = Focus[GameObjectState](_.stack)
+  private val exileLens: Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.exile)
+
+  def addObjectToLibrary(player: PlayerId, objectConstructor: ObjectId => BasicGameObject, getIndex: Seq[BasicGameObject] => Int): GameObjectState = {
+    addObjectToZone[BasicGameObject](libraryLens(player), objectConstructor, getIndex)
+  }
+  def addObjectToHand(player: PlayerId, objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
+    addObjectToZone[BasicGameObject](handLens(player), objectConstructor, _.length)
+  }
+  def addObjectToGraveyard(player: PlayerId, objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
+    addObjectToZone[BasicGameObject](graveyardLens(player), objectConstructor, _.length)
+  }
+  def addObjectToBattlefield(objectConstructor: ObjectId => PermanentObject): GameObjectState = {
+    addObjectToZone[PermanentObject](battlefieldLens, objectConstructor, _.length)
+  }
+  def addObjectToStack(objectConstructor: ObjectId => StackObject): GameObjectState = {
+    addObjectToZone[StackObject](stackLens, objectConstructor, _.length)
+  }
+  def addObjectToExile(objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
+    addObjectToZone[BasicGameObject](exileLens, objectConstructor, _.length)
+  }
+  private def addObjectToZone[T <: GameObject](lens: Lens[GameObjectState, Seq[T]], objectConstructor: ObjectId => T, getIndex: Seq[T] => Int): GameObjectState = {
+    val newObject = objectConstructor(ObjectId(nextObjectId))
+    lens.modify(contents => contents.insertAtIndex(newObject, getIndex(contents)))(this)
+      .copy(nextObjectId = nextObjectId + 1)
+  }
+
   def createObject[T <: TypedGameObject[T]](createNewObject: ObjectId => T, getIndex: Seq[GameObject] => Int): GameObjectState = {
     val newObject = createNewObject(ObjectId(nextObjectId))
     updateZoneState(newObject.zone)(objects => objects.insertAtIndex(newObject, getIndex(objects)))
@@ -48,9 +79,6 @@ case class GameObjectState(
   def deleteObject(gameObject: GameObject): GameObjectState = {
     updateZone(gameObject.zone, ObjectDeleter(gameObject))
       .copy(lastKnownInformation = derivedState.allObjectStates.get(gameObject.objectId).foldLeft(lastKnownInformation)(_.updated(gameObject.objectId, _)))
-  }
-  def addNewObject(createNewObject: ObjectId => GameObject, getIndex: Seq[GameObject] => Int): GameObjectState = {
-    createNewObject(ObjectId(nextObjectId)).add(this, getIndex).copy(nextObjectId = nextObjectId + 1)
   }
 
   trait ZoneUpdater {

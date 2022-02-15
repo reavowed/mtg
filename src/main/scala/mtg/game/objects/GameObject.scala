@@ -22,7 +22,6 @@ trait GameObject {
 
   def isCard: Boolean = true
 
-  def add(gameObjectState: GameObjectState, getIndex: Seq[GameObject] => Int): GameObjectState
   def updateCounters(gameObjectState: GameObjectState, f: Map[CounterType, Int] => Map[CounterType, Int]): GameObjectState
 
   override def toString: String = s"GameObject($underlyingObject, $objectId)"
@@ -32,7 +31,6 @@ trait TypedGameObject[T <: GameObject] extends GameObject { this: T =>
   def zone: TypedZone[T]
   def updateCounters(newCounters: Map[CounterType, Int]): T
 
-  def add(gameObjectState: GameObjectState, getIndex: Seq[GameObject] => Int): GameObjectState = gameObjectState.updateZoneState(zone)(s => s.insertAtIndex(this, getIndex(s)))
   def update(gameObjectState: GameObjectState, f: T => T): GameObjectState = {
     gameObjectState.updateZoneState(zone)(_.map(o => if (o == this) f(o) else o))
   }

@@ -16,8 +16,8 @@ object Zone {
 
   case class Library(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Library) with BasicZone
   case class Hand(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Hand) with BasicZone
-  case object Battlefield extends Shared[PermanentObject](ZoneType.Battlefield)
   case class Graveyard(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Graveyard) with BasicZone
+  case object Battlefield extends Shared[PermanentObject](ZoneType.Battlefield)
   case object Stack extends Shared[StackObject](ZoneType.Stack)
   case object Exile extends Shared[BasicGameObject](ZoneType.Exile) with BasicZone
 }

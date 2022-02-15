@@ -52,8 +52,7 @@ object ActivateAbilityAction {
 
 case class CreateActivatedAbilityOnStack(ability: ActivatedAbilityDefinition, sourceId: ObjectId, controller: PlayerId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState
-      .createObject(StackObject(AbilityOnTheStack(ability, sourceId, controller), _, controller), _.length)
+    gameState.gameObjectState.addObjectToStack(StackObject(AbilityOnTheStack(ability, sourceId, controller), _, controller))
   }
   override def canBeReverted: Boolean = true
 }
