@@ -1,11 +1,10 @@
 package mtg.game.priority.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.events.MoveObjectEvent
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
-import mtg.game.state.{BackupAction, GameActionResult, GameState, InternalGameAction, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
-import mtg.game.{ObjectId, PlayerId, Zone}
-import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishActivating, FinishCasting, PayCosts, PayManaCosts}
+import mtg.game.state._
+import mtg.game.{ObjectId, PlayerId}
+import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishActivating, PayCosts}
 import mtg.stack.resolving.ResolveManaAbility
 
 case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {

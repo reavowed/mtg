@@ -2,8 +2,7 @@ package mtg.stack.resolving
 
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.targets.TargetIdentifier
-import mtg.events.MoveObjectEvent
-import mtg.game.Zone
+import mtg.events.moveZone.{MoveToBattlefieldEvent, MoveToGraveyardEvent}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
@@ -16,7 +15,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
     // TODO: Handle the exceptions above
     val controller = stackObjectWithState.controller
     (
-      MoveObjectEvent(controller, stackObject, Zone.Battlefield),
+      MoveToBattlefieldEvent(stackObject.objectId, controller),
       LogEvent.ResolvePermanent(controller, stackObjectWithState.characteristics.name.get)
     )
   }
@@ -51,7 +50,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
       resolvePermanent(stackObjectWithState)
     } else if (shouldFizzleDueToInvalidTargets(stackObjectWithState, gameState)) {
       (
-        MoveObjectEvent(stackObjectWithState.controller, stackObject, Zone.Graveyard(stackObjectWithState.gameObject.owner)),
+        MoveToGraveyardEvent(stackObject.objectId),
         LogEvent.SpellFailedToResolve(stackObjectWithState.characteristics.name.get)
       )
     } else if (stackObject.underlyingObject.isInstanceOf[AbilityOnTheStack]) {

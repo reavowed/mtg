@@ -2,10 +2,10 @@ package mtg.game.priority.actions
 
 import mtg.characteristics.types.Type
 import mtg.core.zones.ZoneType
-import mtg.events.MoveObjectEvent
+import mtg.events.moveZone.MoveToStackEvent
 import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
-import mtg.game.{ObjectId, PlayerId, Zone}
-import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishCasting, PayManaCosts, TimingChecks}
+import mtg.game.{ObjectId, PlayerId}
+import mtg.stack.adding._
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
@@ -14,7 +14,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
 
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
     PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(MoveObjectEvent(player, objectId, Zone.Stack)),
+      WrappedOldUpdates(MoveToStackEvent(objectId, player)),
       steps)
   }
   private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {

@@ -16,7 +16,7 @@ object LethalDamageStateBasedAction {
           gameObject.markedDamage > 0 &&
           gameObject.markedDamage >= characteristics.toughness.getOrElse(0)
       })
-      .map(gameObject => DestroyEvent(gameObject.owner, gameObject.objectId))
+      .map(gameObject => DestroyEvent(gameObject.objectId))
       .toSeq
   }
 }

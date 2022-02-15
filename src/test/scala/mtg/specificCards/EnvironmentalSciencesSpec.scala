@@ -37,7 +37,6 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.currentChoice must beSome(beAnInstanceOf[ResolveEffectChoice])
       manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.playerChoosing mustEqual playerOne
       manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice must beAnInstanceOf[SearchLibraryChoice]
-      manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchLibraryChoice].zone mustEqual Zone.Library(playerOne)
       manager.currentChoice.get.asInstanceOf[ResolveEffectChoice].effectChoice.asInstanceOf[SearchLibraryChoice].possibleChoices mustEqual manager.getCards(Island, Plains).map(_.objectId)
     }
 

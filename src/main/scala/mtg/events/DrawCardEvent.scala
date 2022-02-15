@@ -1,14 +1,15 @@
 package mtg.events
 
+import mtg.events.moveZone.MoveToHandEvent
+import mtg.game.PlayerId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
-import mtg.game.{PlayerId, Zone}
 
 case class DrawCardEvent(player: PlayerId) extends InternalGameAction {
   def execute(gameState: GameState): GameActionResult = {
     val library = gameState.gameObjectState.libraries(player)
     library.dropWhile(!_.isCard).headOption match {
       case Some(topCard) =>
-        MoveObjectEvent(player, topCard, Zone.Hand(player))
+        MoveToHandEvent(topCard.objectId)
       case None =>
         ()
     }
