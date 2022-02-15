@@ -1,11 +1,12 @@
 package mtg.events.moveZone
 
+import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, GameObjectState}
 import mtg.game.state.ObjectWithState
-import mtg.game.{ObjectId, TypedZone, Zone}
+import mtg.game.{ObjectId, Zone}
 
 case class MoveToExileEvent(objectId: ObjectId) extends MoveObjectToSimpleZoneEvent {
-  def getZone(existingObjectWithState: ObjectWithState): TypedZone[BasicGameObject] = Zone.Exile
+  def getZone(existingObjectWithState: ObjectWithState): BasicZone = Zone.Exile
 
   override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
     gameObjectState.addObjectToExile(objectConstructor)

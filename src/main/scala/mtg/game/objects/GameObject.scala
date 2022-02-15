@@ -3,6 +3,7 @@ package mtg.game.objects
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import mtg.game.Zone.BasicZone
 import mtg.game._
 import mtg.game.state._
 import mtg.parts.counters.CounterType
@@ -28,19 +29,18 @@ trait GameObject {
 }
 
 trait TypedGameObject[T <: GameObject] extends GameObject { this: T =>
-  def zone: TypedZone[T]
   def updateCounters(newCounters: Map[CounterType, Int]): T
   def updateCounters(f: Map[CounterType, Int] => Map[CounterType, Int]): T = updateCounters(f(counters))
 }
 
 @JsonSerialize(using = classOf[GameObject.Serializer])
-case class BasicGameObject(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: TypedZone[BasicGameObject], counters: Map[CounterType, Int]) extends TypedGameObject[BasicGameObject] {
+case class BasicGameObject(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: BasicZone, counters: Map[CounterType, Int]) extends TypedGameObject[BasicGameObject] {
   override def updateCounters(newCounters: Map[CounterType, Int]): BasicGameObject = copy(counters = newCounters)
   override def baseState: ObjectWithState = BasicObjectWithState(this, baseCharacteristics)
   def currentState(gameState: GameState): BasicObjectWithState = gameState.gameObjectState.derivedState.basicStates(objectId)
 }
 object BasicGameObject {
-  def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: TypedZone[BasicGameObject]): BasicGameObject = BasicGameObject(underlyingObject, objectId, zone, Map.empty)
+  def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: BasicZone): BasicGameObject = BasicGameObject(underlyingObject, objectId, zone, Map.empty)
 }
 
 case class PermanentObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, counters: Map[CounterType, Int], status: PermanentStatus, markedDamage: Int) extends TypedGameObject[PermanentObject] {

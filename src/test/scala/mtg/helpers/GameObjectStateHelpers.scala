@@ -1,9 +1,10 @@
 package mtg.helpers
 
+import monocle.Focus
 import mtg.cards.CardDefinition
 import mtg.game.Zone.BasicZone
 import mtg.game.objects._
-import mtg.game.{PlayerId, TypedZone, Zone}
+import mtg.game.{PlayerId, Zone}
 
 trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
   implicit class GameObjectStateExtensions(gameObjectState: GameObjectState) {
@@ -35,8 +36,8 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
       gameObjectState.getZoneState(zone).getCard(cardDefinition)
     }
 
-    def clearZone[T <: GameObject](zone: TypedZone[T]): GameObjectState = {
-      gameObjectState.updateZoneState(zone)(_ => Nil)
+    def clearZone(zone: BasicZone): GameObjectState = {
+      gameObjectState.updateZone(zone, _ => Nil)
     }
     def addCardToZone(cardDefinition: CardDefinition, zone: Zone, owner: PlayerId): GameObjectState = {
       val cardPrinting = getCardPrinting(cardDefinition)
@@ -53,7 +54,7 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
     def addCardsToZone(zone: Zone, owner: PlayerId, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
       cardDefinitions.foldLeft(gameObjectState) { _.addCardToZone(_, zone, owner)}
     }
-    def clearZoneAndAddCards[T <: GameObject](zone: TypedZone[T], owner: PlayerId, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
+    def clearZoneAndAddCards(zone: BasicZone, owner: PlayerId, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
       clearZone(zone).addCardsToZone(zone, owner, cardDefinitions)
     }
 
@@ -71,7 +72,7 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
     def setHand: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Hand(playerIdentifier), playerIdentifier, cardDefinitions))
     def setLibrary: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Library(playerIdentifier), playerIdentifier, cardDefinitions))
     def setBattlefield: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) =>
-      gameObjectState.updateZoneState(Zone.Battlefield)(_.filter(_.defaultController != playerIdentifier))
+      Focus[GameObjectState](_.battlefield).modify(_.filter(_.defaultController != playerIdentifier))(gameObjectState)
         .addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
     )
   }

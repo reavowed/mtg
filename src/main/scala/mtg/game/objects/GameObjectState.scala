@@ -5,6 +5,7 @@ import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
+import mtg.game.Zone.BasicZone
 import mtg.game._
 import mtg.game.state.{DerivedState, ObjectWithState}
 import mtg.utils.AtGuaranteed
@@ -105,15 +106,14 @@ case class GameObjectState(
     }
   }
 
-  def updateZoneState[T <: GameObject](zone: TypedZone[T])(f: Seq[T] => Seq[T]): GameObjectState = {
-    zone match {
-      case Zone.Library(player) => copy(libraries = libraries.updated(player, f(libraries(player).asInstanceOf[Seq[T]])))
-      case Zone.Hand(player) => copy(hands = hands.updated(player, f(hands(player).asInstanceOf[Seq[T]])))
-      case Zone.Graveyard(player) => copy(graveyards = graveyards.updated(player, f(graveyards(player).asInstanceOf[Seq[T]])))
-      case Zone.Battlefield => copy(battlefield = f(battlefield.asInstanceOf[Seq[T]]).asInstanceOf[Seq[PermanentObject]])
-      case Zone.Stack => copy(stack = f(stack.asInstanceOf[Seq[T]]).asInstanceOf[Seq[StackObject]])
-      case Zone.Exile => copy(exile = f(exile.asInstanceOf[Seq[T]]).asInstanceOf[Seq[BasicGameObject]])
-    }
+  private def getZoneLens(zone: BasicZone): Lens[GameObjectState, Seq[BasicGameObject]] = zone match {
+      case Zone.Library(player) => Focus[GameObjectState](_.libraries).at(player)(AtGuaranteed.apply)
+      case Zone.Hand(player) => Focus[GameObjectState](_.hands).at(player)(AtGuaranteed.apply)
+      case Zone.Graveyard(player) => Focus[GameObjectState](_.graveyards).at(player)(AtGuaranteed.apply)
+      case Zone.Exile => Focus[GameObjectState](_.exile)
+  }
+  def updateZone(zone: BasicZone, f: Seq[BasicGameObject] => Seq[BasicGameObject]): GameObjectState = {
+    getZoneLens(zone).modify(f)(this)
   }
 
   def allObjects: View[GameObject] = {
@@ -166,7 +166,7 @@ object GameObjectState {
       nextObjectId += 1
       objectId
     }
-    def createGameObject(cardPrinting: CardPrinting, playerIdentifier: PlayerId, zone: TypedZone[BasicGameObject]): BasicGameObject = {
+    def createGameObject(cardPrinting: CardPrinting, playerIdentifier: PlayerId, zone: BasicZone): BasicGameObject = {
       BasicGameObject(Card(playerIdentifier, cardPrinting), getNextObjectId, zone)
     }
     def emptyMap[T]: Map[PlayerId, Seq[T]] = gameStartingData.playerData.map(_.playerIdentifier -> Nil).toMap

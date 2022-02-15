@@ -1,24 +1,19 @@
 package mtg.game
 
 import mtg.core.zones.ZoneType
-import mtg.game.objects._
 
 sealed abstract class Zone(val zoneType: ZoneType)
-sealed abstract class TypedZone[ObjectType <: GameObject](zoneType: ZoneType) extends Zone(zoneType)
 
 object Zone {
-  sealed abstract class PlayerSpecific[ObjectType <: GameObject](zoneType: ZoneType) extends TypedZone[ObjectType](zoneType) {
-    def playerIdentifier: PlayerId
-  }
-  sealed abstract class Shared[ObjectType <: GameObject](zoneType: ZoneType) extends TypedZone[ObjectType](zoneType)
+  // A basic zone is one in which objects do not carry any special information. Best defined by the non-basic zones,
+  // which are the battlefield (where objects carry status and damage information), and the stack (targets etc.)
+  sealed abstract class BasicZone(zoneType: ZoneType) extends Zone(zoneType)
 
-  sealed trait BasicZone extends TypedZone[BasicGameObject]
-
-  case class Library(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Library) with BasicZone
-  case class Hand(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Hand) with BasicZone
-  case class Graveyard(playerIdentifier: PlayerId) extends PlayerSpecific[BasicGameObject](ZoneType.Graveyard) with BasicZone
-  case object Battlefield extends Shared[PermanentObject](ZoneType.Battlefield)
-  case object Stack extends Shared[StackObject](ZoneType.Stack)
-  case object Exile extends Shared[BasicGameObject](ZoneType.Exile) with BasicZone
+  case class Library(playerIdentifier: PlayerId) extends BasicZone(ZoneType.Library)
+  case class Hand(playerIdentifier: PlayerId) extends BasicZone(ZoneType.Hand)
+  case class Graveyard(playerIdentifier: PlayerId) extends BasicZone(ZoneType.Graveyard)
+  case object Battlefield extends Zone(ZoneType.Battlefield)
+  case object Stack extends Zone(ZoneType.Stack)
+  case object Exile extends BasicZone(ZoneType.Exile)
 }
 
