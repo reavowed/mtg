@@ -46,11 +46,31 @@ case class GameObjectState(
       .copy(nextObjectId = nextObjectId + 1)
   }
   def deleteObject(gameObject: GameObject): GameObjectState = {
-    gameObject.removeFromCurrentZone(this)
+    updateZone(gameObject.zone, ObjectDeleter(gameObject))
       .copy(lastKnownInformation = derivedState.allObjectStates.get(gameObject.objectId).foldLeft(lastKnownInformation)(_.updated(gameObject.objectId, _)))
   }
   def addNewObject(createNewObject: ObjectId => GameObject, getIndex: Seq[GameObject] => Int): GameObjectState = {
     createNewObject(ObjectId(nextObjectId)).add(this, getIndex).copy(nextObjectId = nextObjectId + 1)
+  }
+
+  trait ZoneUpdater {
+    def apply[T <: GameObject](seq: Seq[T]): Seq[T]
+  }
+  case class ObjectDeleter(gameObject: GameObject) extends ZoneUpdater {
+    override def apply[T <: GameObject](seq: Seq[T]): Seq[T] = {
+      seq.filter(_ != gameObject)
+    }
+  }
+
+  def updateZone(zone: Zone, zoneUpdater: ZoneUpdater): GameObjectState = {
+    zone match {
+      case Zone.Library(player) => copy(libraries = libraries.updated(player, zoneUpdater(libraries(player))))
+      case Zone.Hand(player) => copy(hands = hands.updated(player, zoneUpdater(hands(player))))
+      case Zone.Graveyard(player) => copy(graveyards = graveyards.updated(player, zoneUpdater(graveyards(player))))
+      case Zone.Battlefield => copy(battlefield = zoneUpdater(battlefield))
+      case Zone.Stack => copy(stack = zoneUpdater(stack))
+      case Zone.Exile => copy(exile = zoneUpdater(exile))
+    }
   }
 
   def updateZoneState[T <: GameObject](zone: TypedZone[T])(f: Seq[T] => Seq[T]): GameObjectState = {
