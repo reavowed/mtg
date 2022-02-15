@@ -23,18 +23,14 @@ trait GameObject {
 
   def isCard: Boolean = true
 
-  def updateCounters(f: Map[CounterType, Int] => Map[CounterType, Int]): GameObject
+  def updateCounters(newCounters: Map[CounterType, Int]): GameObject
+  def updateCounters(f: Map[CounterType, Int] => Map[CounterType, Int]): GameObject = updateCounters(f(counters))
 
   override def toString: String = s"GameObject($underlyingObject, $objectId)"
 }
 
-trait TypedGameObject[T <: GameObject] extends GameObject { this: T =>
-  def updateCounters(newCounters: Map[CounterType, Int]): T
-  def updateCounters(f: Map[CounterType, Int] => Map[CounterType, Int]): T = updateCounters(f(counters))
-}
-
 @JsonSerialize(using = classOf[GameObject.Serializer])
-case class BasicGameObject(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: BasicZone, counters: Map[CounterType, Int]) extends TypedGameObject[BasicGameObject] {
+case class BasicGameObject(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: BasicZone, counters: Map[CounterType, Int]) extends GameObject {
   override def updateCounters(newCounters: Map[CounterType, Int]): BasicGameObject = copy(counters = newCounters)
   override def baseState: ObjectWithState = BasicObjectWithState(this, baseCharacteristics)
   def currentState(gameState: GameState): BasicObjectWithState = gameState.gameObjectState.derivedState.basicStates(objectId)
@@ -43,7 +39,7 @@ object BasicGameObject {
   def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: BasicZone): BasicGameObject = BasicGameObject(underlyingObject, objectId, zone, Map.empty)
 }
 
-case class PermanentObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, counters: Map[CounterType, Int], status: PermanentStatus, markedDamage: Int) extends TypedGameObject[PermanentObject] {
+case class PermanentObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, counters: Map[CounterType, Int], status: PermanentStatus, markedDamage: Int) extends GameObject {
   val zone: Zone.Battlefield.type = Zone.Battlefield
   override def updateCounters(newCounters: Map[CounterType, Int]): PermanentObject = copy(counters = newCounters)
   def updatePermanentStatus(f: PermanentStatus => PermanentStatus): PermanentObject = copy(status = f(status))
@@ -55,7 +51,7 @@ object PermanentObject {
   def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): PermanentObject = PermanentObject(underlyingObject, objectId, defaultController, Map.empty, PermanentStatus(false, false, false, false), 0)
 }
 
-case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, chosenModes: Seq[Int], targets: Seq[ObjectOrPlayer], counters: Map[CounterType, Int]) extends TypedGameObject[StackObject] {
+case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, chosenModes: Seq[Int], targets: Seq[ObjectOrPlayer], counters: Map[CounterType, Int]) extends GameObject {
   val zone: Zone.Stack.type = Zone.Stack
   override def updateCounters(newCounters: Map[CounterType, Int]): StackObject = copy(counters = newCounters)
   override def baseState: StackObjectWithState = StackObjectWithState(this, baseCharacteristics, defaultController)
