@@ -47,6 +47,7 @@ case class ScryEvent(
 ) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     (
+      // TODO: Should create new game objects to hide card identities (if scrying more than one)
       gameState.gameObjectState.updateZoneState(Zone.Library(player)){ library =>
         val onTop = cardsOnTop.map(id => library.find(_.objectId == id).get)
         val onBottom = cardsOnBottom.map(id => library.find(_.objectId == id).get)

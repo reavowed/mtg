@@ -71,11 +71,6 @@ case class GameObjectState(
       .copy(nextObjectId = nextObjectId + 1)
   }
 
-  def createObject[T <: TypedGameObject[T]](createNewObject: ObjectId => T, getIndex: Seq[GameObject] => Int): GameObjectState = {
-    val newObject = createNewObject(ObjectId(nextObjectId))
-    updateZoneState(newObject.zone)(objects => objects.insertAtIndex(newObject, getIndex(objects)))
-      .copy(nextObjectId = nextObjectId + 1)
-  }
   def updateObject[T1 <: GameObject](oldObject: T1, f: T1 => T1): GameObjectState = {
     val newObject = f(oldObject)
     updateZone(oldObject.zone, new ZoneUpdater {
@@ -99,7 +94,7 @@ case class GameObjectState(
     }
   }
 
-  def updateZone(zone: Zone, zoneUpdater: ZoneUpdater): GameObjectState = {
+  private def updateZone(zone: Zone, zoneUpdater: ZoneUpdater): GameObjectState = {
     zone match {
       case Zone.Library(player) => copy(libraries = libraries.updated(player, zoneUpdater(libraries(player))))
       case Zone.Hand(player) => copy(hands = hands.updated(player, zoneUpdater(hands(player))))

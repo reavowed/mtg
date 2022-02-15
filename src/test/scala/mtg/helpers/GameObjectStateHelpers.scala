@@ -45,9 +45,9 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
         case Zone.Stack =>
           throw new Exception("Trying to create things directly on the stack seems like a bad idea")
         case Zone.Battlefield =>
-          gameObjectState.createObject(PermanentObject(card, _, owner), _.length)
-        case zone: BasicZone =>
-          gameObjectState.createObject(BasicGameObject(card, _, zone), _.length)
+          gameObjectState.addObjectToBattlefield(PermanentObject(card, _, owner))
+        case Zone.Hand(player) =>
+          gameObjectState.addObjectToHand(player, BasicGameObject(card, _, Zone.Hand(player)))
       }
     }
     def addCardsToZone(zone: Zone, owner: PlayerId, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
