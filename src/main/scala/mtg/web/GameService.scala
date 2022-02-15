@@ -18,50 +18,45 @@ import org.springframework.stereotype.Service
 
 @Service
 class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
-
-  def findCard(cardDefinition: CardDefinition): CardPrinting = {
+  def findCardPrinting(cardDefinition: CardDefinition): CardPrinting = {
     mtg.cards.Set.All.mapFind(_.cardPrintings.find(_.cardDefinition == cardDefinition)).get
   }
-  def addCard(gameState: GameState, cardDefinition: CardDefinition, zone: Zone, owner: PlayerId): GameState = {
-    val card = Card(owner, findCard(cardDefinition))
-    zone match {
-      case Zone.Stack =>
-        throw new Exception("Trying to create things directly on the stack seems like a bad idea")
-      case Zone.Battlefield =>
-        gameState.updateGameObjectState(_.addObjectToBattlefield(PermanentObject(card, _, owner)))
-      case zone: BasicZone =>
-        gameState.updateGameObjectState(_.createObject(BasicGameObject(card, _, zone), _.length))
+
+  implicit class GameStateExtensions(gameState: GameState) {
+    def addCardToHand(player: PlayerId, cardDefinition: CardDefinition): GameState = {
+      gameState.updateGameObjectState(_.addObjectToHand(player, BasicGameObject(Card(player, findCardPrinting(cardDefinition)), _, Zone.Hand(player))))
+    }
+    def addCardToBattlefield(player: PlayerId, cardDefinition: CardDefinition): GameState = {
+      gameState.updateGameObjectState(_.addObjectToBattlefield(PermanentObject(Card(player, findCardPrinting(cardDefinition)), _, player)))
     }
   }
+
   val playerOne = PlayerId("P1")
   val playerTwo = PlayerId("P2")
   val players = Seq(playerOne, playerTwo)
 
   val gameStateManager: GameStateManager = {
     val gameStartingData = GameStartingData(Seq(
-      PlayerStartingData(playerOne, (Seq.fill(30)(LightningBolt) ++ Seq.fill(30)(Mountain)).map(findCard), Nil),
-      PlayerStartingData(playerTwo, (Seq.fill(30)(BeamingDefiance) ++ Seq.fill(30)(Plains)).map(findCard), Nil)))
+      PlayerStartingData(playerOne, (Seq.fill(30)(LightningBolt) ++ Seq.fill(30)(Mountain)).map(findCardPrinting), Nil),
+      PlayerStartingData(playerTwo, (Seq.fill(30)(BeamingDefiance) ++ Seq.fill(30)(Plains)).map(findCardPrinting), Nil)))
 
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.gameState
-
-    val cardsToAdd = Seq(
-      (Plains, Zone.Battlefield, playerOne),
-      (Plains, Zone.Battlefield, playerOne),
-      (Plains, Zone.Battlefield, playerOne),
-      (Plains, Zone.Battlefield, playerOne),
-      (DefendTheCampus, Zone.Hand(playerOne), playerOne),
-      (ConcordiaPegasus, Zone.Battlefield, playerOne),
-      (CombatProfessor, Zone.Battlefield, playerOne),
-      (ConcordiaPegasus, Zone.Battlefield, playerTwo),
-      (GrizzledOutrider, Zone.Battlefield, playerTwo),
-      (Plains, Zone.Battlefield, playerTwo),
-      (Plains, Zone.Battlefield, playerTwo),
-    )
-
-    val updatedState = cardsToAdd.foldLeft(initialGameState) { case (state, (cardDefinition, zone, player)) => addCard(state, cardDefinition, zone, player)}
+    val updatedGameState = initialGameState
+      .addCardToHand(playerOne, DefendTheCampus)
+      .addCardToBattlefield(playerOne, Plains)
+      .addCardToBattlefield(playerOne, Plains)
+      .addCardToBattlefield(playerOne, Plains)
+      .addCardToBattlefield(playerOne, Plains)
+      .addCardToBattlefield(playerOne, ConcordiaPegasus)
+      .addCardToBattlefield(playerOne, CombatProfessor)
+      .addCardToBattlefield(playerTwo, Plains)
+      .addCardToBattlefield(playerTwo, Plains)
+      .addCardToBattlefield(playerTwo, ConcordiaPegasus)
+      .addCardToBattlefield(playerTwo, GrizzledOutrider)
       .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
-    new GameStateManager(updatedState, onStateUpdate, initialManager.stops)
+
+    new GameStateManager(updatedGameState, onStateUpdate, initialManager.stops)
   }
 
   def onStateUpdate(gameState: GameState): Unit = {
