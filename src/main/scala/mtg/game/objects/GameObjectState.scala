@@ -76,6 +76,15 @@ case class GameObjectState(
     updateZoneState(newObject.zone)(objects => objects.insertAtIndex(newObject, getIndex(objects)))
       .copy(nextObjectId = nextObjectId + 1)
   }
+  def updateObject[T1 <: GameObject](oldObject: T1, f: T1 => T1): GameObjectState = {
+    val newObject = f(oldObject)
+    updateZone(oldObject.zone, new ZoneUpdater {
+      override def apply[T2 <: GameObject](seq: Seq[T2]): Seq[T2] = seq.map(o => if (o == oldObject) newObject.asInstanceOf[T2] else o)
+    })
+  }
+  def updateObject[T1 <: GameObject](oldObject: Option[T1], f: T1 => T1): GameObjectState = {
+    oldObject.map(updateObject(_, f)).getOrElse(this)
+  }
   def deleteObject(gameObject: GameObject): GameObjectState = {
     updateZone(gameObject.zone, ObjectDeleter(gameObject))
       .copy(lastKnownInformation = derivedState.allObjectStates.get(gameObject.objectId).foldLeft(lastKnownInformation)(_.updated(gameObject.objectId, _)))
@@ -120,12 +129,16 @@ case class GameObjectState(
       graveyards.flatMap(_._2).view ++
       exile.view
   }
+  def updateObjectById(objectId: ObjectId, f: GameObject => GameObject): GameObjectState = {
+    updateObject(allObjects.find(_.objectId == objectId), f)
+  }
   def updatePermanentObject(objectId: ObjectId, f: PermanentObject => PermanentObject): GameObjectState = {
-    battlefield.find(_.objectId == objectId).get.update(this, f)
+    updateObject(battlefield.find(_.objectId == objectId), f)
   }
   def updateStackObject(objectId: ObjectId, f: StackObject => StackObject): GameObjectState = {
-    stack.find(_.objectId == objectId).get.update(this, f)
+    updateObject(stack.find(_.objectId == objectId), f)
   }
+
   def updateLifeTotal(player: PlayerId, f: Int => Int): GameObjectState = {
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)
   }

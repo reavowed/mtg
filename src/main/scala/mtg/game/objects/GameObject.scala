@@ -22,7 +22,7 @@ trait GameObject {
 
   def isCard: Boolean = true
 
-  def updateCounters(gameObjectState: GameObjectState, f: Map[CounterType, Int] => Map[CounterType, Int]): GameObjectState
+  def updateCounters(f: Map[CounterType, Int] => Map[CounterType, Int]): GameObject
 
   override def toString: String = s"GameObject($underlyingObject, $objectId)"
 }
@@ -30,13 +30,7 @@ trait GameObject {
 trait TypedGameObject[T <: GameObject] extends GameObject { this: T =>
   def zone: TypedZone[T]
   def updateCounters(newCounters: Map[CounterType, Int]): T
-
-  def update(gameObjectState: GameObjectState, f: T => T): GameObjectState = {
-    gameObjectState.updateZoneState(zone)(_.map(o => if (o == this) f(o) else o))
-  }
-  def updateCounters(gameObjectState: GameObjectState, f: Map[CounterType, Int] => Map[CounterType, Int]): GameObjectState = {
-    update(gameObjectState, o => updateCounters(f(o.counters)))
-  }
+  def updateCounters(f: Map[CounterType, Int] => Map[CounterType, Int]): T = updateCounters(f(counters))
 }
 
 @JsonSerialize(using = classOf[GameObject.Serializer])
