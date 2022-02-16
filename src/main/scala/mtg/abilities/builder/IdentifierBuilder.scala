@@ -1,7 +1,7 @@
 package mtg.abilities.builder
 
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.identifiers._
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait IdentifierBuilder {
   def it: SingleIdentifier[ObjectId] = ItIdentifier
@@ -9,7 +9,7 @@ trait IdentifierBuilder {
   def cardName: SingleIdentifier[ObjectId] = CardNameIdentifier
 
   implicit class ObjectIdentifierExtensions(objectIdentifier: SingleIdentifier[ObjectId]) {
-    def s[T <: ObjectOrPlayer](f: SingleIdentifier[ObjectId] => SingleIdentifier[T]): SingleIdentifier[T] = f(objectIdentifier)
+    def s[T <: ObjectOrPlayerId](f: SingleIdentifier[ObjectId] => SingleIdentifier[T]): SingleIdentifier[T] = f(objectIdentifier)
   }
   def controller: SingleIdentifier[ObjectId] => SingleIdentifier[PlayerId] = ControllerIdentifier
 }

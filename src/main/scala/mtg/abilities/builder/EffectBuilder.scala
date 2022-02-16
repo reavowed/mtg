@@ -2,6 +2,7 @@ package mtg.abilities.builder
 
 import mtg._
 import mtg.cards.text.SpellEffectSentence
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.effects.OneShotEffect
 import mtg.effects.condition.ConditionDefinition
@@ -11,7 +12,6 @@ import mtg.effects.oneshot.CharacteristicOrControlChangingContinuousEffectCreati
 import mtg.effects.oneshot.actions._
 import mtg.effects.oneshot.basic._
 import mtg.effects.oneshot.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.parts.counters.CounterType
 
 object EffectBuilder
@@ -32,7 +32,7 @@ object EffectBuilder
   implicit class ThreeEffectsExtension(effects: (OneShotEffect, OneShotEffect, OneShotEffect)) extends EffectsSeqExtension(effects.productIterator.toSeq.ofType[OneShotEffect])
 
   case class DealEffectBuilder(objectIdentifier: SingleIdentifier[ObjectId], amount: Int) {
-      def damageTo(recipientIdentifier: SingleIdentifier[ObjectOrPlayer]): OneShotEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
+      def damageTo(recipientIdentifier: SingleIdentifier[ObjectOrPlayerId]): OneShotEffect = DealDamageEffect(objectIdentifier, recipientIdentifier, amount)
   }
   case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription]) {
       def until(conditionDefinition: ConditionDefinition): OneShotEffect = CharacteristicOrControlChangingContinuousEffectCreationEffect(objectIdentifier, continuousEffectDescriptions, conditionDefinition)

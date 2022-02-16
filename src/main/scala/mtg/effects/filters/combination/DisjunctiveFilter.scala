@@ -1,12 +1,12 @@
 package mtg.effects.filters.combination
 
+import mtg.core.ObjectOrPlayerId
 import mtg.effects.EffectContext
 import mtg.effects.filters.Filter
-import mtg.game.ObjectOrPlayer
 import mtg.game.state.GameState
 import mtg.text.NounPhraseTemplate
 
-case class DisjunctiveFilter[T <: ObjectOrPlayer](innerFilters: Filter[T]*) extends Filter[T] {
+case class DisjunctiveFilter[T <: ObjectOrPlayerId](innerFilters: Filter[T]*) extends Filter[T] {
   override def matches(t: T, effectContext: EffectContext, gameState: GameState): Boolean = {
     innerFilters.exists(_.matches(t, effectContext, gameState))
   }

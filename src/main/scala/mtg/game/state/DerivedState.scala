@@ -4,9 +4,9 @@ import mtg._
 import mtg.abilities.{AbilityDefinition, StaticAbility, TriggeredAbility, TriggeredAbilityDefinition}
 import mtg.characteristics.types.BasicLandType
 import mtg.characteristics.types.Type.Creature
+import mtg.core.ObjectId
 import mtg.effects.ContinuousEffect
 import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
-import mtg.game.ObjectId
 import mtg.game.objects.GameObjectState
 import mtg.parts.counters.PowerToughnessModifyingCounter
 

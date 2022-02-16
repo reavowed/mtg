@@ -1,9 +1,10 @@
 package mtg.stack.resolving
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.OneShotEffect
 import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.state.{Choice, Decision}
-import mtg.game.{ObjectId, PlayerId, Zone}
+import mtg.game.Zone
 
 case class ResolveEffectChoice(effectChoice: OneShotEffectChoice, remainingEffects: Seq[OneShotEffect]) extends Choice {
   override def playerToAct: PlayerId = effectChoice.playerChoosing

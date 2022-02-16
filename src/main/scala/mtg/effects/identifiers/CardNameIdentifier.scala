@@ -1,7 +1,7 @@
 package mtg.effects.identifiers
 
+import mtg.core.ObjectId
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.ObjectId
 import mtg.game.state.GameState
 import mtg.text.{GrammaticalNumber, NounPhrase}
 

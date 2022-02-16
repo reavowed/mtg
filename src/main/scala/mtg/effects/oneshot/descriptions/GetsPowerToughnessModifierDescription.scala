@@ -1,8 +1,8 @@
 package mtg.effects.oneshot.descriptions
 
+import mtg.core.ObjectId
 import mtg.effects.PowerToughnessModifier
 import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, ModifyPowerToughnessEffect}
-import mtg.game.ObjectId
 import mtg.text.{VerbPhraseTemplate, Verbs}
 
 case class GetsPowerToughnessModifierDescription(powerToughnessModifier: PowerToughnessModifier)

@@ -1,13 +1,13 @@
 package mtg.parts.damage
 
 import mtg.characteristics.types.Type
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.events.LoseLifeEvent
 import mtg.game.state.{CurrentCharacteristics, GameActionResult, GameState, InternalGameAction}
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 import scala.collection.mutable.ListBuffer
 
-case class DealDamageEvent(source: ObjectId, recipient: ObjectOrPlayer, amount: Int) extends InternalGameAction {
+case class DealDamageEvent(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     recipient match {
       case objectId: ObjectId =>

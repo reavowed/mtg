@@ -1,6 +1,6 @@
 package mtg.stack.adding
 
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.state.GameState
 import mtg.game.turns.MainPhase
 

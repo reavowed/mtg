@@ -1,6 +1,7 @@
 package mtg.events.shuffle
 
-import mtg.game.{PlayerId, Zone}
+import mtg.core.PlayerId
+import mtg.game.Zone
 import mtg.game.Zone.Library
 import mtg.game.objects.BasicGameObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}

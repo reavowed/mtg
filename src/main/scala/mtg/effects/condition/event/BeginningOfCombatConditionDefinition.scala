@@ -1,9 +1,9 @@
 package mtg.effects.condition.event
 
+import mtg.core.PlayerId
 import mtg.effects.EffectContext
 import mtg.effects.condition.{Condition, ConditionDefinition, EventCondition}
 import mtg.effects.identifiers.StaticIdentifier
-import mtg.game.PlayerId
 import mtg.game.state.{GameState, GameUpdate}
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnEvents.ExecuteStep

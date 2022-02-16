@@ -1,6 +1,6 @@
 package mtg.game.priority
 
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.state.{BackupAction, ExecutableGameAction, GameState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.stack.resolving.ResolveStackObject
 

@@ -1,6 +1,6 @@
 package mtg.game.priority
 
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
 

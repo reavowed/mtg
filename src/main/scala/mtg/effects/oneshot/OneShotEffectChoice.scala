@@ -1,8 +1,9 @@
 package mtg.effects.oneshot
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.InternalGameAction
-import mtg.game.{ObjectId, PlayerId, Zone}
+import mtg.game.Zone
 
 abstract class OneShotEffectChoice {
   def playerChoosing: PlayerId

@@ -1,6 +1,6 @@
 package mtg.web.visibleState
 
-import mtg.game.ObjectId
+import mtg.core.ObjectId
 import mtg.game.priority.TriggeredAbilityChoice
 import mtg.game.state.{GameState, NewChoice, StackObjectWithState}
 import mtg.stack.adding.ModeChoice

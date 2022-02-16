@@ -1,9 +1,9 @@
 package mtg.effects.oneshot.actions
 
+import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.game.ObjectId
 import mtg.game.state.{CurrentCharacteristics, GameState}
 import mtg.game.state.history.LogEvent
 

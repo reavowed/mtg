@@ -1,10 +1,10 @@
 package mtg.web.visibleState
 
-import mtg.core.ManaType
+import mtg.core.{ManaType, PlayerId}
 import mtg.game.objects.GameObject
 import mtg.game.state.{GameState, NewChoice, UndoHelper}
 import mtg.game.turns.{TurnPhase, TurnStep}
-import mtg.game.{GameData, PlayerId, Zone}
+import mtg.game.{GameData, Zone}
 
 case class VisibleState(
   player: PlayerId,

@@ -1,12 +1,12 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
+import mtg.core.{ObjectOrPlayerId, PlayerId}
 import mtg.effects.oneshot.OneShotEffectChoice
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.priority.PriorityChoice
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
 import mtg.game.state.GameUpdate
-import mtg.game.{ObjectOrPlayer, PlayerId}
 import mtg.stack.adding.TargetChoice
 import mtg.stack.resolving.ResolveEffectChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
@@ -55,7 +55,7 @@ trait GameUpdateHelpers extends SpecificationLike with GameObjectStateHelpers {
     }
   }
 
-  sealed class TargetMagnet(val value: ObjectOrPlayer)
+  sealed class TargetMagnet(val value: ObjectOrPlayerId)
   object TargetMagnet {
     implicit def fromCardDefinition(cardDefinition: CardDefinition)(implicit gameObjectState: GameObjectState) = new TargetMagnet(gameObjectState.getCard(cardDefinition).objectId)
     implicit def fromPlayer(playerId: PlayerId) = new TargetMagnet(playerId)

@@ -1,7 +1,8 @@
 package mtg.game.state
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
-import mtg.game.{ObjectId, PlayerId, Zone}
+import mtg.game.Zone
 
 sealed trait GameUpdate
 

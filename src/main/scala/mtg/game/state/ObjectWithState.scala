@@ -2,8 +2,8 @@ package mtg.game.state
 
 import mtg.abilities.AbilityDefinition
 import mtg.cards.text.{ModalEffectParagraph, SimpleSpellEffectParagraph, SpellEffectParagraph}
+import mtg.core.PlayerId
 import mtg.effects.EffectContext
-import mtg.game.PlayerId
 import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
 
 import scala.annotation.tailrec

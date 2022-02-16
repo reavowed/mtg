@@ -1,8 +1,8 @@
 package mtg.stack.adding
 
 import mtg.cards.text.{ModalEffectParagraph, SimpleSpellEffectParagraph}
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state._
-import mtg.game.{ObjectId, PlayerId}
 
 case class ChooseModes(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {

@@ -1,7 +1,7 @@
 package mtg.game.priority
 
 import mtg.abilities.PendingTriggeredAbility
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.objects.StackObject
 import mtg.game.state._
 import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishTriggering}

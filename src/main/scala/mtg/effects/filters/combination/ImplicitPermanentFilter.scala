@@ -1,10 +1,10 @@
 package mtg.effects.filters.combination
 
 import mtg.characteristics.types.Type
+import mtg.core.ObjectId
 import mtg.effects.EffectContext
 import mtg.effects.filters.Filter
 import mtg.effects.filters.base.{PermanentFilter, TypeFilter}
-import mtg.game.ObjectId
 import mtg.game.state.GameState
 import mtg.text.NounPhraseTemplate
 

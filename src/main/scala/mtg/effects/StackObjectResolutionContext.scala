@@ -1,19 +1,19 @@
 package mtg.effects
 
 import mtg.abilities.ManaAbility
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.state.{GameState, StackObjectWithState}
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 case class StackObjectResolutionContext(
     sourceId: ObjectId,
     override val sourceName: String,
     override val controllingPlayer: PlayerId,
-    identifiedObjects: Seq[ObjectOrPlayer],
-    targets: Seq[ObjectOrPlayer])
+    identifiedObjects: Seq[ObjectOrPlayerId],
+    targets: Seq[ObjectOrPlayerId])
   extends EffectContext(controllingPlayer, sourceName)
 {
-  def addIdentifiedObject(objectId: ObjectOrPlayer): StackObjectResolutionContext = copy(identifiedObjects = identifiedObjects :+ objectId)
-  def popTarget: (ObjectOrPlayer, StackObjectResolutionContext) = {
+  def addIdentifiedObject(objectId: ObjectOrPlayerId): StackObjectResolutionContext = copy(identifiedObjects = identifiedObjects :+ objectId)
+  def popTarget: (ObjectOrPlayerId, StackObjectResolutionContext) = {
     val target = targets.head
     (target, addIdentifiedObject(target).copy(targets = targets.tail))
   }

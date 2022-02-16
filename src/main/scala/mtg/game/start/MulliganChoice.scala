@@ -1,6 +1,6 @@
 package mtg.game.start
 
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{DirectChoice, ExecutableGameAction, GameAction, GameState, PartialGameActionResult}
 

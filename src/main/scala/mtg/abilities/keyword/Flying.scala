@@ -1,9 +1,9 @@
 package mtg.abilities.keyword
 
 import mtg.abilities.{KeywordAbility, StaticAbility}
+import mtg.core.ObjectId
 import mtg.effects.ContinuousEffect
 import mtg.effects.continuous.BlockerRestrictionEffect
-import mtg.game.ObjectId
 import mtg.game.state.ObjectWithState
 
 case object Flying extends StaticAbility with KeywordAbility {

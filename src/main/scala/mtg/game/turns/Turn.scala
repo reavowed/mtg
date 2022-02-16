@@ -1,6 +1,6 @@
 package mtg.game.turns
 
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.state.GameState
 
 case class Turn(number: Int, activePlayer: PlayerId) {

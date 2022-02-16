@@ -1,8 +1,8 @@
 package mtg.effects.filters.base
 
+import mtg.core.ObjectId
 import mtg.effects.EffectContext
 import mtg.effects.filters.PartialFilter
-import mtg.game.ObjectId
 import mtg.game.state.{Characteristics, GameState}
 
 trait CharacteristicFilter extends PartialFilter[ObjectId] {

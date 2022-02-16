@@ -1,8 +1,7 @@
 package mtg.events
 
-import mtg.core.ManaType
+import mtg.core.{ManaType, PlayerId}
 import mtg.core.symbols.ManaSymbol
-import mtg.game.PlayerId
 import mtg.game.objects.ManaObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 

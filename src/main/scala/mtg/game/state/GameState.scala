@@ -1,12 +1,13 @@
 package mtg.game.state
 
+import mtg.core.PlayerId
 import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
 import mtg.game.state.history.HistoryEvent.{ResolvedAction, ResolvedChoice}
 import mtg.game.state.history._
 import mtg.game.turns.turnEvents.{ExecutePhase, ExecuteStep, ExecuteTurn}
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
-import mtg.game.{GameData, GameStartingData, PlayerId}
+import mtg.game.{GameData, GameStartingData}
 
 case class GameState(
   gameData: GameData,

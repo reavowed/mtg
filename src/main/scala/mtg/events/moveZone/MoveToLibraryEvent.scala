@@ -1,9 +1,10 @@
 package mtg.events.moveZone
 
+import mtg.core.ObjectId
 import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, GameObjectState}
 import mtg.game.state.ObjectWithState
-import mtg.game.{ObjectId, Zone}
+import mtg.game.Zone
 
 // TODO: Move to set location in library
 case class MoveToLibraryEvent(objectId: ObjectId) extends MoveObjectToSimpleZoneEvent {

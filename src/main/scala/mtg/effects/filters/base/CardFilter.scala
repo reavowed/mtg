@@ -1,8 +1,8 @@
 package mtg.effects.filters.base
 
+import mtg.core.ObjectId
 import mtg.effects.EffectContext
 import mtg.effects.filters.Filter
-import mtg.game.ObjectId
 import mtg.game.objects.Card
 import mtg.game.state.GameState
 import mtg.text.{NounPhraseTemplate, Nouns}

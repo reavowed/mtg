@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.priority.PriorityDecision
 import mtg.game.state.history.HistoryEvent
 

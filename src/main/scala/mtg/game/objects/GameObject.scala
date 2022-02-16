@@ -3,6 +3,7 @@ package mtg.game.objects
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.Zone.BasicZone
 import mtg.game._
 import mtg.game.state._
@@ -47,11 +48,11 @@ object PermanentObject {
   def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): PermanentObject = PermanentObject(underlyingObject, objectId, defaultController, Map.empty, PermanentStatus(false, false, false, false), 0)
 }
 
-case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, chosenModes: Seq[Int], targets: Seq[ObjectOrPlayer], counters: Map[CounterType, Int]) extends GameObject {
+case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, chosenModes: Seq[Int], targets: Seq[ObjectOrPlayerId], counters: Map[CounterType, Int]) extends GameObject {
   val zone: Zone.Stack.type = Zone.Stack
   override def updateCounters(newCounters: Map[CounterType, Int]): StackObject = copy(counters = newCounters)
   override def baseState: StackObjectWithState = StackObjectWithState(this, baseCharacteristics, defaultController)
-  def addTarget(objectOrPlayer: ObjectOrPlayer): StackObject = copy(targets = targets :+ objectOrPlayer)
+  def addTarget(objectOrPlayer: ObjectOrPlayerId): StackObject = copy(targets = targets :+ objectOrPlayer)
   def addMode(modeIndex: Int): StackObject = copy(chosenModes = chosenModes :+ modeIndex)
 }
 object StackObject {

@@ -1,7 +1,7 @@
 package mtg.stack.adding
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.game.ObjectId
+import mtg.core.ObjectId
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.{ExecutableGameAction, GameState, PartialGameActionResult}
 

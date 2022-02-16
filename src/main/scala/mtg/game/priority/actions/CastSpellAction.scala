@@ -1,10 +1,10 @@
 package mtg.game.priority.actions
 
 import mtg.characteristics.types.Type
+import mtg.core.{ObjectId, PlayerId}
 import mtg.core.zones.ZoneType
 import mtg.events.moveZone.MoveToStackEvent
 import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
-import mtg.game.{ObjectId, PlayerId}
 import mtg.stack.adding._
 
 case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {

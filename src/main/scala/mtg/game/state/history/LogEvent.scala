@@ -1,6 +1,6 @@
 package mtg.game.state.history
 
-import mtg.game.PlayerId
+import mtg.core.PlayerId
 import mtg.game.turns.Turn
 
 sealed class LogEvent

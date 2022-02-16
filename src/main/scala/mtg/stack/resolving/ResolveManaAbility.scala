@@ -2,8 +2,8 @@ package mtg.stack.resolving
 
 import mtg.abilities.{ActivatedAbilityDefinition, ManaAbility}
 import mtg.cards.text.SimpleSpellEffectParagraph
+import mtg.core.PlayerId
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.PlayerId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, ObjectWithState}
 
 case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends InternalGameAction {

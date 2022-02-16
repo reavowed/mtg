@@ -2,12 +2,12 @@ package mtg.game.turns.turnBasedActions
 
 import mtg._
 import mtg.characteristics.types.Type
+import mtg.core.{ObjectId, PlayerId}
 import mtg.events.TapObjectEvent
 import mtg.game.state._
 import mtg.game.state.history.HistoryEvent.ResolvedAction
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
-import mtg.game.{ObjectId, PlayerId}
 import mtg.utils.ParsingUtils
 
 object DeclareAttackers extends InternalGameAction {

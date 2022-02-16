@@ -1,8 +1,8 @@
 package mtg.events.moveZone
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects.{GameObjectState, PermanentObject}
 import mtg.game.state.ObjectWithState
-import mtg.game.{ObjectId, PlayerId}
 
 case class MoveToBattlefieldEvent(objectId: ObjectId, initialController: PlayerId) extends MoveObjectEvent[PermanentObject] {
   override def createNewObject(existingObjectWithState: ObjectWithState, newObjectId: ObjectId): PermanentObject = PermanentObject(

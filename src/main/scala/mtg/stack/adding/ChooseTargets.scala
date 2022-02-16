@@ -1,9 +1,9 @@
 package mtg.stack.adding
 
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.effects.targets.TargetIdentifier
 import mtg.game.state._
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 case class ChooseTargets(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
@@ -22,15 +22,15 @@ case class ChooseTargets(stackObjectId: ObjectId) extends ExecutableGameAction[U
         PartialGameActionResult.Value(())
     }
   }
-  private def addTarget(remainingTargetIdentifiers: Seq[TargetIdentifier[_]])(objectOrPlayer: ObjectOrPlayer, gameState: GameState): PartialGameActionResult[Unit] = {
+  private def addTarget(remainingTargetIdentifiers: Seq[TargetIdentifier[_]])(objectOrPlayer: ObjectOrPlayerId, gameState: GameState): PartialGameActionResult[Unit] = {
     PartialGameActionResult.ChildWithCallback(
       WrappedOldUpdates(AddTarget(stackObjectId, objectOrPlayer)),
       (_: Any, gameState) => chooseTargets(remainingTargetIdentifiers)(gameState))
   }
 }
 
-case class TargetChoice(playerToAct: PlayerId, objectId: ObjectId, targetDescription: String, validOptions: Seq[ObjectOrPlayer]) extends DirectChoice[ObjectOrPlayer] {
-  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[ObjectOrPlayer] = {
+case class TargetChoice(playerToAct: PlayerId, objectId: ObjectId, targetDescription: String, validOptions: Seq[ObjectOrPlayerId]) extends DirectChoice[ObjectOrPlayerId] {
+  def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[ObjectOrPlayerId] = {
     validOptions.find(_.toString == serializedDecision)
   }
 }
@@ -44,7 +44,7 @@ object TargetChoice {
   }
 }
 
-case class AddTarget(stackObjectId: ObjectId, target: ObjectOrPlayer) extends InternalGameAction {
+case class AddTarget(stackObjectId: ObjectId, target: ObjectOrPlayerId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState.updateStackObject(stackObjectId, _.addTarget(target))
   }

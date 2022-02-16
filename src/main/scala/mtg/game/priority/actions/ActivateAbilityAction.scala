@@ -1,9 +1,9 @@
 package mtg.game.priority.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state._
-import mtg.game.{ObjectId, PlayerId}
 import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishActivating, PayCosts}
 import mtg.stack.resolving.ResolveManaAbility
 

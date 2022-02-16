@@ -1,6 +1,7 @@
 package mtg.web
 
 import mtg.cards.{CardDefinition, CardPrinting}
+import mtg.core.PlayerId
 import mtg.data.cards.alpha.LightningBolt
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.m21.ConcordiaPegasus
@@ -10,7 +11,7 @@ import mtg.game.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
 import mtg.game.state.{GameState, GameStateManager}
 import mtg.game.turns.turnEvents.ExecuteTurn
-import mtg.game.{GameStartingData, PlayerId, PlayerStartingData, Zone}
+import mtg.game.{GameStartingData, PlayerStartingData, Zone}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate

@@ -1,12 +1,12 @@
 package mtg.effects.filters.combination
 
+import mtg.core.ObjectOrPlayerId
 import mtg.effects.EffectContext
 import mtg.effects.filters.{Filter, PartialFilter}
-import mtg.game.ObjectOrPlayer
 import mtg.game.state.GameState
 import mtg.text.NounPhraseTemplate
 
-class PrefixFilter[T <: ObjectOrPlayer](prefixFilters: Seq[PartialFilter[T]], mainFilter: Filter[T]) extends Filter[T] {
+class PrefixFilter[T <: ObjectOrPlayerId](prefixFilters: Seq[PartialFilter[T]], mainFilter: Filter[T]) extends Filter[T] {
   override def matches(t: T, effectContext: EffectContext, gameState: GameState): Boolean = {
     prefixFilters.forall(_.matches(t, effectContext, gameState)) && mainFilter.matches(t, effectContext, gameState)
   }

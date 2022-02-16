@@ -1,9 +1,9 @@
 package mtg.web.visibleState
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects._
 import mtg.game.state.{Characteristics, GameState, PermanentStatus}
 import mtg.game.turns.turnBasedActions.{DeclareAttackers, DeclareBlockers}
-import mtg.game.{ObjectId, PlayerId}
 
 sealed trait PossiblyHiddenGameObject
 

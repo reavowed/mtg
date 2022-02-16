@@ -1,18 +1,18 @@
 package mtg.abilities.builder
 
 import mtg.characteristics.types.{Supertype, Type}
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.filters.base._
 import mtg.effects.filters.combination.{ImplicitPermanentFilter, NegatedCharacteristicFilter, PrefixFilter, SuffixFilter}
 import mtg.effects.filters.{Filter, PartialFilter}
 import mtg.effects.identifiers.StaticIdentifier
 import mtg.effects.numbers.NumberMatcher
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 trait FilterBuilder extends FilterBuilder.LowPriority {
   implicit class PlayerIdentifierExtensions(playerIdentifier: StaticIdentifier[PlayerId]) {
     def control: PartialFilter[ObjectId] = ControllerFilter(playerIdentifier)
   }
-  implicit class FilterExtensions[T <: ObjectOrPlayer](filter: Filter[T]) {
+  implicit class FilterExtensions[T <: ObjectOrPlayerId](filter: Filter[T]) {
     def apply(suffixFilters: PartialFilter[T]*): Filter[T] = SuffixFilter(filter, suffixFilters)
   }
   implicit class TypeFilterExtensions(t: Type) extends FilterExtensions(typeToPermanentFilter(t))

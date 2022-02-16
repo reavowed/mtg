@@ -1,11 +1,12 @@
 package mtg.game.start
 
 import mtg._
+import mtg.core.PlayerId
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameState, NewChoice}
 import mtg.game.turns.{TurnPhase, TurnStep}
-import mtg.game.{PlayerId, Zone}
+import mtg.game.Zone
 import org.specs2.matcher.MatchResult
 
 class MulliganSpec extends SpecWithGameStateManager {

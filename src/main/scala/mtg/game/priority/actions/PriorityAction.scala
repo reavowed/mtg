@@ -3,8 +3,8 @@ package mtg.game.priority.actions
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.{BackupAction, ExecutableGameAction, GameActionResult, GameState, InternalGameAction, PartialGameActionResult}
-import mtg.game.{ObjectId, PlayerId}
 
 @JsonSerialize(using = classOf[PriorityAction.Serializer])
 abstract class PriorityAction extends ExecutableGameAction[Any] {

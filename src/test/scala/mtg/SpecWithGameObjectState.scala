@@ -1,5 +1,6 @@
 package mtg
 
+import mtg.core.PlayerId
 import mtg.data.sets.Strixhaven
 import mtg.game.objects._
 import mtg.game.state.GameState

@@ -1,6 +1,6 @@
 package mtg.stack.adding
 
-import mtg.game.ObjectId
+import mtg.core.ObjectId
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{CurrentCharacteristics, ExecutableGameAction, GameState, PartialGameActionResult}

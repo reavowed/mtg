@@ -1,7 +1,7 @@
 package mtg.game.turns.turnBasedActions
 
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.state._
-import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 import mtg.parts.damage.DealDamageEvent
 import mtg.utils.ParsingUtils
 
@@ -119,7 +119,7 @@ case class AssignCombatDamageChoice(
   }
 }
 
-case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayer, amount: Int) extends InternalGameAction {
+case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     Seq(DealDamageEvent(source, recipient, amount))
   }

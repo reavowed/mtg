@@ -1,10 +1,10 @@
 package mtg.game.state
 
 import mtg.abilities.TriggeredAbility
+import mtg.core.PlayerId
 import mtg.effects.condition.EventCondition
 import mtg.effects.continuous.PreventionEffect.Result.Prevent
 import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
-import mtg.game.PlayerId
 import mtg.game.objects.FloatingActiveContinuousEffect
 import mtg.game.priority.PriorityChoice
 

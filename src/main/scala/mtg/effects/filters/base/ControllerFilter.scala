@@ -1,10 +1,10 @@
 package mtg.effects.filters.base
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.effects.filters.PartialFilter
 import mtg.effects.identifiers.StaticIdentifier
 import mtg.game.state.GameState
-import mtg.game.{ObjectId, PlayerId}
 import mtg.text.{Sentence, Verbs}
 
 case class ControllerFilter(playerIdentifier: StaticIdentifier[PlayerId]) extends PartialFilter[ObjectId] {

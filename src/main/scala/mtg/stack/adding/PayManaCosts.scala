@@ -1,9 +1,9 @@
 package mtg.stack.adding
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
 import mtg.game.state._
-import mtg.game.{ObjectId, PlayerId}
 import mtg.parts.costs.ManaCost
 
 import scala.annotation.tailrec

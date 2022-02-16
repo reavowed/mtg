@@ -1,8 +1,8 @@
 package mtg.effects.identifiers
 
+import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.game.{ObjectId, PlayerId}
 import mtg.text.{GrammaticalNumber, NounPhrase}
 
 case class ControllerIdentifier(objectIdentifier: SingleIdentifier[ObjectId]) extends SingleIdentifier[PlayerId] {

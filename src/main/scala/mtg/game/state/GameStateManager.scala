@@ -1,6 +1,7 @@
 package mtg.game.state
 
-import mtg.game.{GameStartingData, PlayerId}
+import mtg.core.PlayerId
+import mtg.game.GameStartingData
 
 class GameStateManager(private var _currentGameState: GameState, val onStateUpdate: GameState => Unit, var stops: Stops) {
   def gameState: GameState = this.synchronized { _currentGameState }

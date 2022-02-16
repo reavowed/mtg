@@ -1,6 +1,6 @@
 package mtg.events
 
-import mtg.game.ObjectId
+import mtg.core.ObjectId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class TapObjectEvent(objectId: ObjectId) extends InternalGameAction {

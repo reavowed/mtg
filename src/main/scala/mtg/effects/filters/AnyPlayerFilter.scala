@@ -1,7 +1,7 @@
 package mtg.effects.filters
 
+import mtg.core.PlayerId
 import mtg.effects.EffectContext
-import mtg.game.PlayerId
 import mtg.game.state.GameState
 import mtg.text.{NounPhraseTemplate, Nouns}
 
