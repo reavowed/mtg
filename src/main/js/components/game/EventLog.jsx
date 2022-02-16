@@ -39,9 +39,17 @@ function EventLogMessage({entry}) {
         case "SpellFailedToResolve":
             return entry.details.spellName + " fails to resolve and is put into its owner's graveyard.";
         case "DeclareAttackers":
-            return "Player " + entry.details.player + " attacks with " + commaList(entry.details.attackerNames) + ".";
+            if (!_.isEmpty(entry.details.attackerNames)) {
+                return "Player " + entry.details.player + " attacks with " + commaList(entry.details.attackerNames) + ".";
+            } else {
+                return "Player " + entry.details.player + " declares no attackers."
+            }
         case "DeclareBlockers":
-            return "Player " + entry.details.player + " blocks " + commaList(_.map(entry.details.blockerAssignments, (blockers, attacker) => attacker + " with " + commaList(blockers))) + ".";
+            if (!_.isEmpty(entry.details.blockerAssignments)) {
+                return "Player " + entry.details.player + " blocks " + commaList(_.map(entry.details.blockerAssignments, (blockers, attacker) => attacker + " with " + commaList(blockers))) + ".";
+            } else {
+                return "Player " + entry.details.player + " declares no blockers."
+            }
         case "OrderBlockers":
             return "Player " + entry.details.player + " orders blockers for " + entry.details.attackerName + ": first " + entry.details.blockerNames.join(", then ") + ".";
         case "RevealCard":

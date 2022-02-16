@@ -55,17 +55,13 @@ object DeclareAttackers extends InternalGameAction {
 case class AttackDeclaration(attacker: ObjectId, attackedPlayer: PlayerId)
 case class DeclaredAttackers(player: PlayerId, attackDeclarations: Seq[AttackDeclaration]) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    if (attackDeclarations.nonEmpty) {
-      (
-        attackDeclarations.map(_.attacker).map(TapAttacker),
-        LogEvent.DeclareAttackers(
-          player,
-          attackDeclarations.map(_.attacker).map(CurrentCharacteristics.getName(_, gameState))
-        )
+    (
+      attackDeclarations.map(_.attacker).map(TapAttacker),
+      LogEvent.DeclareAttackers(
+        player,
+        attackDeclarations.map(_.attacker).map(CurrentCharacteristics.getName(_, gameState))
       )
-    } else {
-      ()
-    }
+    )
   }
   override def canBeReverted: Boolean = false
 }
