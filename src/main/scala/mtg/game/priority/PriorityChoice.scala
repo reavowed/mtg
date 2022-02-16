@@ -12,16 +12,16 @@ case class PriorityChoice(
   object TakeAction {
     def unapply(string: String): Option[PriorityAction] = {
       if (string.startsWith("Play ")) {
-        string.substring("Play ".length).toIntOption.flatMap(id => availableActions.ofType[PlayLandAction].find(_.land.gameObject.objectId.sequentialId == id))
+        availableActions.ofType[PlayLandAction].find(_.land.gameObject.objectId.toString == string.substring("Play ".length))
       } else if (string.startsWith("Cast ")) {
-        string.substring("Cast ".length).toIntOption.flatMap(id => availableActions.ofType[CastSpellAction].find(_.objectToCast.gameObject.objectId.sequentialId == id))
+        availableActions.ofType[CastSpellAction].find(_.objectToCast.gameObject.objectId.toString == string.substring("Cast ".length))
       } else if (string.startsWith("Activate ")) {
         (string.substring("Activate ".length).split(" ").toSeq match {
-          case Seq(aText, bText) => aText.toIntOption.flatMap(a => bText.toIntOption.map(a -> _))
-          case _ => None
-        }).flatMap { case (objectId, abilityIndex) =>
-          availableActions.ofType[ActivateAbilityAction].find(a => a.objectWithAbility.gameObject.objectId.sequentialId == objectId && a.abilityIndex == abilityIndex)
-        }
+          case Seq(objectId, index) =>
+            availableActions.ofType[ActivateAbilityAction].find(a => a.objectWithAbility.gameObject.objectId.toString == objectId && a.abilityIndex.toString == index)
+          case _ =>
+            None
+        })
       } else {
         None
       }

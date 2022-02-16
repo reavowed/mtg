@@ -61,7 +61,7 @@ object StackObject {
 object GameObject {
   class Serializer extends JsonSerializer[GameObject] {
     override def serialize(value: GameObject, gen: JsonGenerator, serializers: SerializerProvider): Unit = {
-      gen.writeNumber(value.objectId.sequentialId)
+      gen.writeObject(value.objectId)
     }
   }
 }

@@ -28,8 +28,7 @@ case class SearchLibraryChoice(
 {
   override def parseDecision(serializedDecision: String): Option[(Option[InternalGameAction], StackObjectResolutionContext)] = {
     for {
-      id <- serializedDecision.toIntOption
-      chosenObjectId <- possibleChoices.find(_.sequentialId == id)
+      chosenObjectId <- possibleChoices.find(_.toString == serializedDecision)
     } yield (None, resolutionContext.addIdentifiedObject(chosenObjectId))
   }
   override def temporarilyVisibleZones: Seq[Zone] = Seq(Zone.Library(playerChoosing))

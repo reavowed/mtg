@@ -30,7 +30,7 @@ case class ScryChoice(
       }
       cardsOnTop <- ParsingUtils.splitStringAsIds(serializedCardsOnTop)
       cardsOnBottom <- ParsingUtils.splitStringAsIds(serializedCardsOnBottom)
-      if (cardsOnTop ++ cardsOnBottom).sortBy(_.sequentialId) == cardsBeingScryed.sortBy(_.sequentialId)
+      if (cardsOnTop ++ cardsOnBottom).sorted == cardsBeingScryed.sorted
     } yield (
       Some(ScryEvent(playerChoosing, cardsOnTop, cardsOnBottom)),
       resolutionContext

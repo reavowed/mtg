@@ -85,13 +85,17 @@ case class AssignCombatDamageChoice(
     damageEvents: Seq[DealCombatDamageEvent])
   extends Choice
 {
+  object DamageAmount {
+    def unapply(text: String): Option[Int] = text.toIntOption
+  }
+
   override def parseDecision(serializedChosenOption: String): Option[Decision] = {
     @tailrec
-    def matchBlockers(remainingIdsAndDamageAmounts: Seq[Int], unmatchedBlockers: Seq[(ObjectId, Int)], assignedBlockerDamage: Map[ObjectId, Int], remainingDamage: Int): Option[Map[ObjectId, Int]] = {
+    def matchBlockers(remainingIdsAndDamageAmounts: Seq[String], unmatchedBlockers: Seq[(ObjectId, Int)], assignedBlockerDamage: Map[ObjectId, Int], remainingDamage: Int): Option[Map[ObjectId, Int]] = {
       unmatchedBlockers match {
         case (blocker, requiredDamage) +: otherBlockers =>
           remainingIdsAndDamageAmounts match {
-            case blocker.sequentialId +: assignedDamage +: otherInts
+            case blocker.toString +: DamageAmount(assignedDamage) +: otherInts
               if assignedDamage <= remainingDamage && (assignedDamage >= requiredDamage || assignedDamage == remainingDamage)
             =>
               matchBlockers(otherInts, otherBlockers, assignedBlockerDamage + (blocker -> assignedDamage), remainingDamage - assignedDamage)
@@ -107,8 +111,8 @@ case class AssignCombatDamageChoice(
           }
       }
     }
+    val idsAndDamageAmounts = ParsingUtils.splitStringBySpaces(serializedChosenOption)
     for {
-      idsAndDamageAmounts <- ParsingUtils.splitStringAsInts(serializedChosenOption)
       damageAssignment <- matchBlockers(idsAndDamageAmounts, blockers, Map.empty, damageToAssign)
       assignedDamageEvents = damageAssignment.map { case (blocker, amount) => DealCombatDamageEvent(attacker, blocker, amount)}.toSeq
     } yield AssignAttackerCombatDamage(attackDeclarations, blockDeclarations, damageEvents ++ assignedDamageEvents)

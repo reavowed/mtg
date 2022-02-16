@@ -11,7 +11,7 @@ class ReturnCardsToLibraryActionSpec extends SpecWithGameStateManager {
       val choice = ReturnCardsToLibrary(playerOne, 1)
 
       val manager = createGameStateManager(beforeState, choice)
-      manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
+      manager.handleDecision(cardToPutBack.objectId.toString, playerOne)
       val afterState = manager.gameState.gameObjectState
 
       val expectedHand = playerOne.hand(beforeState).filter(o => o != cardToPutBack)
@@ -27,7 +27,7 @@ class ReturnCardsToLibraryActionSpec extends SpecWithGameStateManager {
       val choice = ReturnCardsToLibrary(playerOne, 2)
 
       val manager = createGameStateManager(beforeState, choice)
-      manager.handleDecision(Seq(firstCardToPutBack, secondCardToPutBack).map(_.objectId.sequentialId.toString).mkString(" "), playerOne)
+      manager.handleDecision(Seq(firstCardToPutBack, secondCardToPutBack).map(_.objectId.toString).mkString(" "), playerOne)
       val afterState = manager.gameState.gameObjectState
 
       val expectedHand = playerOne.hand(beforeState).filter(o => o != firstCardToPutBack && o != secondCardToPutBack)
@@ -42,7 +42,7 @@ class ReturnCardsToLibraryActionSpec extends SpecWithGameStateManager {
       val choice = ReturnCardsToLibrary(playerOne, 1)
 
       val manager = createGameStateManager(beforeState, choice)
-      manager.handleDecision(cardToPutBack.objectId.sequentialId.toString, playerOne)
+      manager.handleDecision(cardToPutBack.objectId.toString, playerOne)
 
       manager.gameState.gameHistory.logEvents.map(_.logEvent) mustEqual Seq(LogEvent.ReturnCardsToLibrary(playerOne, 1))
     }

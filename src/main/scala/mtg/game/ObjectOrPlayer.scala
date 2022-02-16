@@ -1,30 +1,12 @@
 package mtg.game
 
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import net.reavowed.utils.ValueWrapper
 
 sealed trait ObjectOrPlayer
 
-@JsonSerialize(using = classOf[ObjectId.Serializer])
-case class ObjectId(sequentialId: Int) extends ObjectOrPlayer {
-  override def toString: String = sequentialId.toString
-}
+case class ObjectId(value: Int) extends ValueWrapper[Int] with ObjectOrPlayer
+case class PlayerId(value: String)  extends ValueWrapper[String] with ObjectOrPlayer
 
 object ObjectId {
-  class Serializer extends JsonSerializer[ObjectId] {
-    override def serialize(value: ObjectId, gen: JsonGenerator, serializers: SerializerProvider): Unit = {
-      gen.writeNumber(value.sequentialId)
-    }
-  }
-}
-
-@JsonSerialize(using = classOf[PlayerId.Serializer])
-case class PlayerId(id: String) extends ObjectOrPlayer {
-  override def toString: String = id
-}
-object PlayerId {
-  class Serializer extends JsonSerializer[PlayerId] {
-    override def serialize(value: PlayerId, gen: JsonGenerator, serializers: SerializerProvider): Unit = gen.writeString(value.id)
-  }
+  implicit val ordering: Ordering[ObjectId] = Ordering.by(_.value)
 }

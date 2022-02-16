@@ -8,6 +8,7 @@ import mtg.game.state.history.HistoryEvent.ResolvedAction
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
 import mtg.game.{ObjectId, PlayerId}
+import mtg.utils.ParsingUtils
 
 object DeclareAttackers extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
@@ -71,10 +72,8 @@ case class DeclaredAttackers(player: PlayerId, attackDeclarations: Seq[AttackDec
 
 case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: PlayerId, possibleAttackers: Seq[ObjectId]) extends Choice {
   override def parseDecision(serializedChosenOption: String): Option[Decision] = {
-    serializedChosenOption
-      .split(" ").toSeq
-      .filter(_.nonEmpty)
-      .map(_.toIntOption.flatMap(i => possibleAttackers.find(_.sequentialId == i)).map(AttackDeclaration(_, defendingPlayer)))
+    ParsingUtils.splitStringBySpaces(serializedChosenOption)
+      .map(id => possibleAttackers.find(_.toString == id).map(AttackDeclaration(_, defendingPlayer)))
       .swap
       .map(DeclaredAttackers(playerToAct, _))
   }

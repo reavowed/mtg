@@ -16,7 +16,7 @@ object CurrentCharacteristics {
         case objectId: ObjectId =>
           getName(getCharacteristics(objectId, gameState))
         case playerId: PlayerId =>
-          playerId.id
+          playerId.toString
   }
   def getName(objectWithState: ObjectWithState): String = getName(objectWithState.characteristics)
   private def getName(characteristics: Characteristics): String = {

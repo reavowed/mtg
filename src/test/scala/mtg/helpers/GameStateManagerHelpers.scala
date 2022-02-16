@@ -126,28 +126,28 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
     def attackWith(player: PlayerId, cardDefinitions: CardDefinition*): Unit = {
-      gameStateManager.handleDecision(cardDefinitions.map(d => getCard(Zone.Battlefield, d).objectId.sequentialId.toString).mkString(" "), player)
+      gameStateManager.handleDecision(cardDefinitions.map(d => getCard(Zone.Battlefield, d).objectId.toString).mkString(" "), player)
     }
     def block(player: PlayerId, blocker: CardDefinition, attacker: CardDefinition): Unit = {
       block(player, (blocker, attacker))
     }
     def block(player: PlayerId, blockers: (CardDefinition, CardDefinition)*): Unit = {
       val serializedDecision = blockers.map { case (blocker, attacker) =>
-        getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString + " " +
-          getCard(Zone.Battlefield, attacker).objectId.sequentialId.toString + " "
+        getCard(Zone.Battlefield, blocker).objectId.toString + " " +
+          getCard(Zone.Battlefield, attacker).objectId.toString + " "
       }.mkString(" ")
 
       gameStateManager.handleDecision(serializedDecision, player)
     }
     def orderBlocks(player: PlayerId, blockers: CardDefinition*): Unit = {
       val serializedDecision = blockers.map { blocker =>
-        getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString
+        getCard(Zone.Battlefield, blocker).objectId.toString
       }.mkString(" ")
       gameStateManager.handleDecision(serializedDecision, player)
     }
     def assignDamage(player: PlayerId, damage: (CardDefinition, Int)*): Unit = {
       val serializedDecision = damage.map { case (blocker, amount) =>
-        getCard(Zone.Battlefield, blocker).objectId.sequentialId.toString + " " + amount
+        getCard(Zone.Battlefield, blocker).objectId.toString + " " + amount
       }.mkString(" ")
 
       gameStateManager.handleDecision(serializedDecision, player)
@@ -157,7 +157,7 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       gameStateManager.handleDecision(getCard(cardDefinition).objectId.toString, player)
     }
     def choosePlayer(player: PlayerId, chosenPlayer: PlayerId): Unit = {
-      gameStateManager.handleDecision(chosenPlayer.id, player)
+      gameStateManager.handleDecision(chosenPlayer.toString, player)
     }
     def chooseMode(player: PlayerId, modeIndex: Int): Unit = {
       gameStateManager.handleDecision(modeIndex.toString, player)

@@ -61,7 +61,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
 
   def onStateUpdate(gameState: GameState): Unit = {
     players.foreach(player => {
-      simpMessagingTemplate.convertAndSendToUser(player.id, "/topic/state", VisibleState.forPlayer(player, gameState))
+      simpMessagingTemplate.convertAndSendToUser(player.toString, "/topic/state", VisibleState.forPlayer(player, gameState))
     })
   }
 }
