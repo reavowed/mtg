@@ -42,15 +42,13 @@ sealed class Subtype extends CaseObjectWithName
 
 sealed class LandType extends Subtype
 
-sealed class BasicLandType(val manaSymbol: ManaSymbol) extends LandType {
-  def intrinsicManaAbility: ActivatedAbilityDefinition = ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(manaSymbol))
-}
+sealed class BasicLandType extends LandType
 object BasicLandType {
-  object Plains extends BasicLandType(ManaSymbol.White)
-  object Island extends BasicLandType(ManaSymbol.Blue)
-  object Swamp extends BasicLandType(ManaSymbol.Black)
-  object Mountain extends BasicLandType(ManaSymbol.Red)
-  object Forest extends BasicLandType(ManaSymbol.Green)
+  object Plains extends BasicLandType
+  object Island extends BasicLandType
+  object Swamp extends BasicLandType
+  object Mountain extends BasicLandType
+  object Forest extends BasicLandType
 }
 
 sealed class CreatureType extends Subtype

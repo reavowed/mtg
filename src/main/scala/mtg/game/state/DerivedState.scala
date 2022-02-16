@@ -1,13 +1,16 @@
 package mtg.game.state
 
 import mtg._
-import mtg.abilities.{AbilityDefinition, StaticAbility, TriggeredAbility, TriggeredAbilityDefinition}
+import mtg.abilities.{AbilityDefinition, ActivatedAbilityDefinition, StaticAbility, TriggeredAbility, TriggeredAbilityDefinition}
 import mtg.characteristics.types.BasicLandType
 import mtg.characteristics.types.Type.Creature
 import mtg.core.ObjectId
+import mtg.core.symbols.ManaSymbol
 import mtg.effects.ContinuousEffect
 import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
+import mtg.effects.oneshot.basic
 import mtg.game.objects.GameObjectState
+import mtg.parts.costs.TapSymbol
 import mtg.parts.counters.PowerToughnessModifyingCounter
 
 import scala.collection.View
@@ -54,10 +57,21 @@ object DerivedState {
     DerivedState(mapOfType[BasicObjectWithState], mapOfType[PermanentObjectWithState], mapOfType[StackObjectWithState])
   }
 
+  private def createIntrinsicManaAbility(manaSymbol: ManaSymbol): ActivatedAbilityDefinition = {
+    ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(manaSymbol))
+  }
+  private val intrinsicManaAbilitiesByLandType = Map(
+    BasicLandType.Plains -> ManaSymbol.White,
+    BasicLandType.Island -> ManaSymbol.Blue,
+    BasicLandType.Swamp -> ManaSymbol.Black,
+    BasicLandType.Mountain -> ManaSymbol.Red,
+    BasicLandType.Forest -> ManaSymbol.Green,
+  ).view.mapValues(createIntrinsicManaAbility).toMap
+
   def addIntrinsicManaAbilities(objectStates: View[ObjectWithState]): View[ObjectWithState] = {
     objectStates.map { objectWithState =>
       objectWithState.characteristics.subTypes.ofType[BasicLandType].foldLeft(objectWithState) { (objectWithState, landType) =>
-        objectWithState.addAbility(landType.intrinsicManaAbility)
+        objectWithState.addAbility(intrinsicManaAbilitiesByLandType(landType))
       }
     }
   }
