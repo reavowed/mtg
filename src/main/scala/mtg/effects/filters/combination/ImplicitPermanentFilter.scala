@@ -13,7 +13,12 @@ class ImplicitPermanentFilter(t: Type) extends Filter[ObjectId] {
     PermanentFilter.matches(objectId, effectContext, gameState) && TypeFilter(t).matches(objectId, effectContext, gameState)
   }
 
-  override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = t.nounPhraseTemplate
+  override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = t match {
+    case Type.Sorcery =>
+      NounPhraseTemplate.Simple("sorcery", "sorceries")
+    case otherType =>
+      NounPhraseTemplate.Simple(otherType.name.toLowerCase)
+  }
 
   override def getAll(effectContext: EffectContext, gameState: GameState): Set[ObjectId] = PermanentFilter.getAll(effectContext, gameState)
     .filter(gameState.gameObjectState.getCurrentOrLastKnownState(_).characteristics.types.contains(t))

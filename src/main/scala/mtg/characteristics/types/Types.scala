@@ -1,6 +1,5 @@
 package mtg.characteristics.types
 
-import mtg.text.NounPhraseTemplate
 import mtg.utils.CaseObjectWithName
 
 sealed class Supertype extends CaseObjectWithName
@@ -9,9 +8,7 @@ object Supertype {
   object Basic extends Supertype
 }
 
-sealed trait Type extends CaseObjectWithName {
-  def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple(name.toLowerCase)
-}
+sealed trait Type extends CaseObjectWithName
 
 object Type {
   trait InstantOrSorcery extends Type
@@ -22,9 +19,7 @@ object Type {
   case object Instant extends InstantOrSorcery
   case object Land extends Type
   case object Planeswalker extends Type
-  case object Sorcery extends InstantOrSorcery {
-    override def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple("sorcery", "sorceries")
-  }
+  case object Sorcery extends InstantOrSorcery
   // Unsupported (so far): Conspiracy, Dungeon, Phenomenon, Plane, Scheme, Tribal, Vanguard
 }
 
