@@ -14,19 +14,16 @@ object Supertype {
 }
 
 sealed trait Type extends CaseObjectWithName {
-  def isSpell: Boolean
   def isPermanent: Boolean
   def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple(name.toLowerCase)
 }
 
 object Type {
   trait InstantOrSorcery extends Type {
-    override def isSpell: Boolean = true
     override def isPermanent: Boolean = false
   }
 
   case object Land extends Type {
-    override def isSpell: Boolean = false
     override def isPermanent: Boolean = true
   }
   case object Instant extends InstantOrSorcery
@@ -34,11 +31,9 @@ object Type {
     override def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple("sorcery", "sorceries")
   }
   case object Creature extends Type {
-    override def isSpell: Boolean = true
     override def isPermanent: Boolean = true
   }
   case object Planeswalker extends Type {
-    override def isSpell: Boolean = true
     override def isPermanent: Boolean = true
   }
 }

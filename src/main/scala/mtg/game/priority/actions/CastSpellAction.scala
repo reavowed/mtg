@@ -43,7 +43,7 @@ object CastSpellAction {
   }
 
   private def isSpell(objectWithState: ObjectWithState): Boolean = {
-    objectWithState.characteristics.types.exists(_.isSpell)
+    objectWithState.characteristics.types.exists(_.isInstanceOf[Type.InstantOrSorcery])
   }
 
   private def cannotCastSpells(player: PlayerId, gameState: GameState): Boolean = {
