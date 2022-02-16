@@ -29,21 +29,19 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
 }
 
 object CastSpellAction {
+  private val sorcerySpeedSpellTypes = List(Type.Artifact, Type.Creature, Type.Enchantment, Type.Planeswalker, Type.Sorcery)
+  private val spellTypes = sorcerySpeedSpellTypes :+ Type.Instant
+
   def getCastableSpells(player: PlayerId, gameState: GameState): Seq[CastSpellAction] = {
     if (cannotCastSpells(player, gameState)) {
       return Nil
     }
     gameState.gameObjectState.derivedState.allObjectStates.values.view
-      .filter(isSpell)
-      .filter(!cannotCastSpell(player, gameState, _))
+      .filter(!cannotCast(player, gameState, _))
       .filter(hasGeneralPermissionToCastSpell(player, gameState, _))
       .filter(hasTimingPermissionToCastSpell(player, gameState, _))
       .map(CastSpellAction(player, _))
       .toSeq
-  }
-
-  private def isSpell(objectWithState: ObjectWithState): Boolean = {
-    objectWithState.characteristics.types.exists(_.isInstanceOf[Type.InstantOrSorcery])
   }
 
   private def cannotCastSpells(player: PlayerId, gameState: GameState): Boolean = {
@@ -51,7 +49,7 @@ object CastSpellAction {
     false
   }
 
-  private def cannotCastSpell(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
+  private def cannotCast(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
     if (objectWithState.characteristics.types.contains(Type.Land)) {
       // RULE 305.9 / Apr 22 2021 : If an object is both a land and another card type, it can be played only as a land.
       // It can't be cast as a spell.
@@ -63,7 +61,7 @@ object CastSpellAction {
   }
 
   private def hasGeneralPermissionToCastSpell(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
-    if (objectWithState.gameObject.zone.zoneType == ZoneType.Hand) {
+    if (hasAnyType(objectWithState, spellTypes) && objectWithState.gameObject.zone.zoneType == ZoneType.Hand) {
       true
     } else {
     // TODO: effects like Lurrus
@@ -75,10 +73,19 @@ object CastSpellAction {
     if (objectWithState.characteristics.types.contains(Type.Instant)) {
       // RULE 117.1a / Apr 22 2021: A player may cast an instant spell any time they have priority.
       true
-    } else {
+    } else if (hasAnyType(objectWithState, sorcerySpeedSpellTypes)) {
       // RULE 117.1a / Apr 22 2021: A player may cast a noninstant spell during their main phase any time they have
       // priority and the stack is empty.
+      // It is assumed that if this method is being called, the relevant player has priority. Non-priority-based spell
+      // casting does not run through this permission check.
       TimingChecks.isMainPhaseOfPlayersTurnWithEmptyStack(player, gameState)
+    } else {
+      // TODO: effects like flash
+      false
     }
+  }
+
+  private def hasAnyType(objectWithState: ObjectWithState, types: Seq[Type]): Boolean = {
+    objectWithState.characteristics.types.exists(types.contains)
   }
 }

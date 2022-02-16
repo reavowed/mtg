@@ -23,19 +23,26 @@ object Type {
     override def isPermanent: Boolean = false
   }
 
-  case object Land extends Type {
+  case object Artifact extends Type {
+    override def isPermanent: Boolean = true
+  }
+  case object Creature extends Type {
+    override def isPermanent: Boolean = true
+  }
+  case object Enchantment extends Type {
     override def isPermanent: Boolean = true
   }
   case object Instant extends InstantOrSorcery
-  case object Sorcery extends InstantOrSorcery {
-    override def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple("sorcery", "sorceries")
-  }
-  case object Creature extends Type {
+  case object Land extends Type {
     override def isPermanent: Boolean = true
   }
   case object Planeswalker extends Type {
     override def isPermanent: Boolean = true
   }
+  case object Sorcery extends InstantOrSorcery {
+    override def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple("sorcery", "sorceries")
+  }
+  // Unsupported (so far): Conspiracy, Dungeon, Phenomenon, Plane, Scheme, Tribal, Vanguard
 }
 
 sealed class Subtype extends CaseObjectWithName

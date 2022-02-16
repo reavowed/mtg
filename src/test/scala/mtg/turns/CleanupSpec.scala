@@ -9,7 +9,7 @@ import mtg.game.turns.TurnStep
 class CleanupSpec extends SpecWithGameStateManager {
   "cleanup step" should {
     "wear off damage" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands
+      val initialState = emptyGameObjectState
         .setHand(playerOne, AgelessGuardian)
         .setBattlefield(playerOne, Plains, 2)
         .setHand(playerTwo, SpinedKarok)
