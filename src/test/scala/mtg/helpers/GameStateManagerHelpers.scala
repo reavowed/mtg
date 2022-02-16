@@ -2,7 +2,7 @@ package mtg.helpers
 
 import mtg._
 import mtg.cards.CardDefinition
-import mtg.game.objects.{GameObject, GameObjectState, PermanentObject}
+import mtg.game.objects.{BasicGameObject, GameObject, GameObjectState, PermanentObject, StackObject}
 import mtg.game.priority.PriorityChoice
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction, PriorityAction}
 import mtg.game.state._
@@ -40,7 +40,7 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       gameStateManager.gameState.gameObjectState.getCard(zone, cardDefinition)
     }
     def getState(gameObject: GameObject): ObjectWithState = {
-      gameObject.currentState(gameStateManager.gameState)
+      gameStateManager.gameState.gameObjectState.derivedState.allObjectStates(gameObject.objectId)
     }
     def getState(zone: Zone, cardDefinition: CardDefinition): ObjectWithState = {
       getState(getCard(zone, cardDefinition))

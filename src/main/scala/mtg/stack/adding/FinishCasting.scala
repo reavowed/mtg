@@ -2,11 +2,15 @@ package mtg.stack.adding
 
 import mtg.game.ObjectId
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{ExecutableGameAction, GameActionResult, GameState, InternalGameAction, PartialGameActionResult}
+import mtg.game.state.{CurrentCharacteristics, ExecutableGameAction, GameState, PartialGameActionResult}
 
 case class FinishCasting(stackObjectId: ObjectId) extends ExecutableGameAction[Any] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
-    PartialGameActionResult.child(LogEvent.CastSpell(stackObjectWithState.controller, stackObjectWithState.characteristics.name.get, stackObjectWithState.gameObject.targets.map(_.getName(gameState))))
+    PartialGameActionResult.child(
+      LogEvent.CastSpell(
+        stackObjectWithState.controller,
+        CurrentCharacteristics.getName(stackObjectWithState),
+        stackObjectWithState.gameObject.targets.map(CurrentCharacteristics.getName(_, gameState))))
   }
 }

@@ -11,7 +11,7 @@ object LethalDamageStateBasedAction {
     // Regeneration can replace this event.
     gameState.gameObjectState.battlefield.view
       .filter(gameObject => {
-        val characteristics = gameObject.currentCharacteristics(gameState)
+        val characteristics = gameState.gameObjectState.derivedState.permanentStates(gameObject.objectId).characteristics
         characteristics.types.contains(Type.Creature) &&
           gameObject.markedDamage > 0 &&
           gameObject.markedDamage >= characteristics.toughness.getOrElse(0)

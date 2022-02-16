@@ -45,7 +45,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
   }
 
   override def execute(gameState: GameState): GameActionResult = {
-    val stackObjectWithState = stackObject.currentState(gameState)
+    val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObject.objectId)
     if (stackObjectWithState.characteristics.types.exists(_.isPermanent)) {
       resolvePermanent(stackObjectWithState)
     } else if (shouldFizzleDueToInvalidTargets(stackObjectWithState, gameState)) {

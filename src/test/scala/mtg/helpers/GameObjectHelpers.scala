@@ -21,7 +21,7 @@ trait GameObjectHelpers extends SpecificationLike {
   }
 
   def havePowerAndToughness(power: Int, toughness: Int)(implicit gameState: GameState): Matcher[PermanentObject] = {
-    ((_: PermanentObject).currentState(gameState).characteristics) ^^ (
+    ((o: PermanentObject) => gameState.gameObjectState.derivedState.permanentStates(o.objectId).characteristics) ^^ (
       (((_: Characteristics).power) ^^ beSome(power)) and (((_: Characteristics).toughness) ^^ beSome(toughness))
     )
   }

@@ -15,10 +15,8 @@ trait GameObject {
   def counters: Map[CounterType, Int]
 
   def baseState: ObjectWithState
-  def currentState(gameState: GameState): ObjectWithState
-
   def baseCharacteristics: Characteristics = underlyingObject.baseCharacteristics
-  def currentCharacteristics(gameState: GameState): Characteristics = currentState(gameState).characteristics
+
   def owner: PlayerId = underlyingObject.owner
 
   def isCard: Boolean = true
@@ -33,7 +31,6 @@ trait GameObject {
 case class BasicGameObject(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: BasicZone, counters: Map[CounterType, Int]) extends GameObject {
   override def updateCounters(newCounters: Map[CounterType, Int]): BasicGameObject = copy(counters = newCounters)
   override def baseState: ObjectWithState = BasicObjectWithState(this, baseCharacteristics)
-  def currentState(gameState: GameState): BasicObjectWithState = gameState.gameObjectState.derivedState.basicStates(objectId)
 }
 object BasicGameObject {
   def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, zone: BasicZone): BasicGameObject = BasicGameObject(underlyingObject, objectId, zone, Map.empty)
@@ -45,7 +42,6 @@ case class PermanentObject(underlyingObject: UnderlyingObject, objectId: ObjectI
   def updatePermanentStatus(f: PermanentStatus => PermanentStatus): PermanentObject = copy(status = f(status))
   def updateMarkedDamage(f: Int => Int): PermanentObject = copy(markedDamage = f(markedDamage))
   override def baseState: PermanentObjectWithState = PermanentObjectWithState(this, baseCharacteristics, defaultController)
-  def currentState(gameState: GameState): PermanentObjectWithState = gameState.gameObjectState.derivedState.permanentStates(objectId)
 }
 object PermanentObject {
   def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): PermanentObject = PermanentObject(underlyingObject, objectId, defaultController, Map.empty, PermanentStatus(false, false, false, false), 0)
@@ -55,7 +51,6 @@ case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, d
   val zone: Zone.Stack.type = Zone.Stack
   override def updateCounters(newCounters: Map[CounterType, Int]): StackObject = copy(counters = newCounters)
   override def baseState: StackObjectWithState = StackObjectWithState(this, baseCharacteristics, defaultController)
-  def currentState(gameState: GameState): StackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(objectId)
   def addTarget(objectOrPlayer: ObjectOrPlayer): StackObject = copy(targets = targets :+ objectOrPlayer)
   def addMode(modeIndex: Int): StackObject = copy(chosenModes = chosenModes :+ modeIndex)
 }

@@ -12,9 +12,9 @@ trait StackObjectHelpers extends SpecificationLike with GameStateManagerHelpers 
     cardDefinition: CardDefinition)(
     implicit gameStateManager: GameStateManager
   ): Matcher[StackObject] = {
-    val expectedAbility = gameStateManager.getPermanent(cardDefinition)
-      .currentState(gameStateManager.gameState)
-      .characteristics.abilities
+    val permanent = gameStateManager.getPermanent(cardDefinition)
+    val state = gameStateManager.gameState.gameObjectState.derivedState.permanentStates(permanent.objectId)
+    val expectedAbility = state.characteristics.abilities
       .ofType[ActivatedAbilityDefinition]
       .single
     ((_: StackObject).underlyingObject.asOptionalInstanceOf[AbilityOnTheStack]) ^^ beSome(

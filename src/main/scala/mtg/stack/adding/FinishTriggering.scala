@@ -3,7 +3,7 @@ package mtg.stack.adding
 import mtg.game.ObjectId
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{ExecutableGameAction, GameActionResult, GameState, InternalGameAction, PartialGameActionResult}
+import mtg.game.state.{CurrentCharacteristics, ExecutableGameAction, GameState, PartialGameActionResult}
 
 case class FinishTriggering(abilityId: ObjectId) extends ExecutableGameAction[Any] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
@@ -15,6 +15,6 @@ case class FinishTriggering(abilityId: ObjectId) extends ExecutableGameAction[An
         ability.controller,
         sourceName,
         abilityDefinition.effectParagraph.getText(sourceName),
-        ability.gameObject.targets.map(_.getName(gameState))))
+        ability.gameObject.targets.map(CurrentCharacteristics.getName(_, gameState))))
   }
 }
