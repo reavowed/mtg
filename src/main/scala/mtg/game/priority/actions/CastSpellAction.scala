@@ -29,8 +29,6 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
 }
 
 object CastSpellAction {
-  private val sorcerySpeedSpellTypes = List(Type.Artifact, Type.Creature, Type.Enchantment, Type.Planeswalker, Type.Sorcery)
-  private val spellTypes = sorcerySpeedSpellTypes :+ Type.Instant
 
   def getCastableSpells(player: PlayerId, gameState: GameState): Seq[CastSpellAction] = {
     if (cannotCastSpells(player, gameState)) {
@@ -61,7 +59,7 @@ object CastSpellAction {
   }
 
   private def hasGeneralPermissionToCastSpell(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
-    if (hasAnyType(objectWithState, spellTypes) && objectWithState.gameObject.zone.zoneType == ZoneType.Hand) {
+    if (TypeChecks.hasSpellType(objectWithState) && objectWithState.gameObject.zone.zoneType == ZoneType.Hand) {
       true
     } else {
     // TODO: effects like Lurrus
@@ -70,15 +68,8 @@ object CastSpellAction {
   }
 
   private def hasTimingPermissionToCastSpell(player: PlayerId, gameState: GameState, objectWithState: ObjectWithState): Boolean = {
-    if (objectWithState.characteristics.types.contains(Type.Instant)) {
-      // RULE 117.1a / Apr 22 2021: A player may cast an instant spell any time they have priority.
-      true
-    } else if (hasAnyType(objectWithState, sorcerySpeedSpellTypes)) {
-      // RULE 117.1a / Apr 22 2021: A player may cast a noninstant spell during their main phase any time they have
-      // priority and the stack is empty.
-      // It is assumed that if this method is being called, the relevant player has priority. Non-priority-based spell
-      // casting does not run through this permission check.
-      TimingChecks.isMainPhaseOfPlayersTurnWithEmptyStack(player, gameState)
+    if (TypeChecks.hasSpellType(objectWithState)) {
+      objectWithState.characteristics.types.contains(Type.Instant) || TimingChecks.isMainPhaseOfPlayersTurnWithEmptyStack(player, gameState)
     } else {
       // TODO: effects like flash
       false

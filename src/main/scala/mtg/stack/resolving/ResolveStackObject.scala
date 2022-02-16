@@ -6,6 +6,7 @@ import mtg.events.moveZone.{MoveToBattlefieldEvent, MoveToGraveyardEvent}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
+import mtg.stack.adding.TypeChecks
 
 case class ResolveStackObject(stackObject: StackObject) extends InternalGameAction {
   private def resolvePermanent(stackObjectWithState: StackObjectWithState): GameActionResult = {
@@ -46,7 +47,7 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
 
   override def execute(gameState: GameState): GameActionResult = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObject.objectId)
-    if (stackObjectWithState.characteristics.types.exists(_.isPermanent)) {
+    if (TypeChecks.hasPermanentType(stackObjectWithState)) {
       resolvePermanent(stackObjectWithState)
     } else if (shouldFizzleDueToInvalidTargets(stackObjectWithState, gameState)) {
       (

@@ -1,9 +1,5 @@
 package mtg.characteristics.types
 
-import mtg.abilities.ActivatedAbilityDefinition
-import mtg.core.symbols.ManaSymbol
-import mtg.effects.oneshot.basic
-import mtg.parts.costs.TapSymbol
 import mtg.text.NounPhraseTemplate
 import mtg.utils.CaseObjectWithName
 
@@ -14,31 +10,18 @@ object Supertype {
 }
 
 sealed trait Type extends CaseObjectWithName {
-  def isPermanent: Boolean
   def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple(name.toLowerCase)
 }
 
 object Type {
-  trait InstantOrSorcery extends Type {
-    override def isPermanent: Boolean = false
-  }
+  trait InstantOrSorcery extends Type
 
-  case object Artifact extends Type {
-    override def isPermanent: Boolean = true
-  }
-  case object Creature extends Type {
-    override def isPermanent: Boolean = true
-  }
-  case object Enchantment extends Type {
-    override def isPermanent: Boolean = true
-  }
+  case object Artifact extends Type
+  case object Creature extends Type
+  case object Enchantment extends Type
   case object Instant extends InstantOrSorcery
-  case object Land extends Type {
-    override def isPermanent: Boolean = true
-  }
-  case object Planeswalker extends Type {
-    override def isPermanent: Boolean = true
-  }
+  case object Land extends Type
+  case object Planeswalker extends Type
   case object Sorcery extends InstantOrSorcery {
     override def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple("sorcery", "sorceries")
   }
