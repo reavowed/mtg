@@ -1,10 +1,10 @@
 package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
+import mtg.core.zones.Zone
 import mtg.data.cards.Mountain
 import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
 import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.game.Zone
 
 class LightningBoltSpec extends SpecWithGameStateManager {
   "Lightning Bolt" should {

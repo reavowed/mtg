@@ -3,9 +3,9 @@ package mtg.helpers
 import monocle.Focus
 import mtg.cards.CardDefinition
 import mtg.core.PlayerId
-import mtg.game.Zone.BasicZone
+import mtg.core.zones.Zone
+import mtg.core.zones.Zone.BasicZone
 import mtg.game.objects._
-import mtg.game.Zone
 
 trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
   implicit class GameObjectStateExtensions(gameObjectState: GameObjectState) {

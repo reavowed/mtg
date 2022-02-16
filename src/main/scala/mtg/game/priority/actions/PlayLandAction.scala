@@ -1,10 +1,10 @@
 package mtg.game.priority.actions
 
 import mtg.characteristics.types.Type
+import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{BackupAction, GameActionResult, GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
-import mtg.game.Zone
 import mtg.stack.adding.TimingChecks
 
 case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends PriorityAction {

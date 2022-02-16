@@ -3,10 +3,11 @@ package mtg.game.objects
 import monocle.{Focus, Lens}
 import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
+import mtg.core.zones.Zone
+import mtg.core.zones.Zone.BasicZone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
-import mtg.game.Zone.BasicZone
 import mtg.game._
 import mtg.game.state.{DerivedState, ObjectWithState}
 import mtg.utils.AtGuaranteed

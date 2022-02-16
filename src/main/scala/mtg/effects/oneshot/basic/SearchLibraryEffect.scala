@@ -1,11 +1,11 @@
 package mtg.effects.oneshot.basic
 
+import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.filters.Filter
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.game.state.{GameState, InternalGameAction}
-import mtg.game.Zone
 import mtg.utils.TextUtils._
 
 case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEffect {

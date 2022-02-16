@@ -1,8 +1,7 @@
 package mtg.events.shuffle
 
 import mtg.core.PlayerId
-import mtg.game.Zone
-import mtg.game.Zone.Library
+import mtg.core.zones.Zone
 import mtg.game.objects.BasicGameObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
@@ -10,7 +9,7 @@ import scala.util.Random
 
 case class ShuffleLibrary(player: PlayerId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    val library = Library(player)
+    val library = Zone.Library(player)
     val shuffledLibraryContents = Random.shuffle(gameState.gameObjectState.libraries(player))
     shuffledLibraryContents.foldLeft(
       gameState.gameObjectState.updateZone(library, _ => Nil))(

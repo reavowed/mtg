@@ -1,11 +1,11 @@
 package mtg.effects.oneshot.actions
 
+import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
-import mtg.game.Zone
 import mtg.utils.ParsingUtils
 
 case class ScryEffect(number: Int) extends OneShotEffect {

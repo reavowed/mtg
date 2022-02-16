@@ -1,7 +1,6 @@
-package mtg.game
+package mtg.core.zones
 
 import mtg.core.PlayerId
-import mtg.core.zones.ZoneType
 
 sealed abstract class Zone(val zoneType: ZoneType)
 

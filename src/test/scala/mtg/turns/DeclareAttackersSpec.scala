@@ -1,10 +1,10 @@
 package mtg.turns
 
 import mtg.SpecWithGameStateManager
+import mtg.core.zones.Zone
 import mtg.data.cards.Plains
 import mtg.data.cards.m21.AlpineWatchdog
 import mtg.data.cards.strixhaven.AgelessGuardian
-import mtg.game.Zone
 import mtg.game.priority.PriorityChoice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep

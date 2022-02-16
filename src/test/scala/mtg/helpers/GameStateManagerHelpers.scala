@@ -2,6 +2,7 @@ package mtg.helpers
 
 import mtg._
 import mtg.cards.CardDefinition
+import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects.{BasicGameObject, GameObject, GameObjectState, PermanentObject, StackObject}
 import mtg.game.priority.PriorityChoice
@@ -9,7 +10,6 @@ import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLa
 import mtg.game.state._
 import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
 import mtg.game.turns.{TurnPhase, TurnStep}
-import mtg.game.Zone
 
 trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelpers {
 

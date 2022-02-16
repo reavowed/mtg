@@ -1,11 +1,11 @@
 package mtg.abilities.keyword
 
 import mtg.SpecWithGameStateManager
+import mtg.core.zones.Zone
 import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
 import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance}
 import mtg.data.cards.warofthespark.WardscaleCrocodile
 import mtg.data.cards.{Mountain, Plains}
-import mtg.game.Zone
 import mtg.game.turns.TurnPhase
 
 class HexproofSpec extends SpecWithGameStateManager {

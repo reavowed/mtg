@@ -3,9 +3,9 @@ package mtg.game.objects
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
+import mtg.core.zones.Zone
+import mtg.core.zones.Zone.BasicZone
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
-import mtg.game.Zone.BasicZone
-import mtg.game._
 import mtg.game.state._
 import mtg.parts.counters.CounterType
 
