@@ -7,15 +7,13 @@ import mtg.parts.costs.TapSymbol
 import mtg.text.NounPhraseTemplate
 import mtg.utils.CaseObjectWithName
 
-sealed trait TypeSupertypeOrSubtype extends CaseObjectWithName
-
-sealed class Supertype extends TypeSupertypeOrSubtype
+sealed class Supertype extends CaseObjectWithName
 
 object Supertype {
   object Basic extends Supertype
 }
 
-sealed trait Type extends TypeSupertypeOrSubtype {
+sealed trait Type extends CaseObjectWithName {
   def isSpell: Boolean
   def isPermanent: Boolean
   def nounPhraseTemplate: NounPhraseTemplate = NounPhraseTemplate.Simple(name.toLowerCase)
