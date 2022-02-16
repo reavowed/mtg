@@ -59,7 +59,7 @@ case class DeclaredAttackers(player: PlayerId, attackDeclarations: Seq[AttackDec
         attackDeclarations.map(_.attacker).map(TapAttacker),
         LogEvent.DeclareAttackers(
           player,
-          attackDeclarations.map(_.attacker.currentCharacteristics(gameState).name.get)
+          attackDeclarations.map(_.attacker).map(CurrentCharacteristics.getName(_, gameState))
         )
       )
     } else {

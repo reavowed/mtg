@@ -2,7 +2,7 @@ package mtg.parts.damage
 
 import mtg.characteristics.types.Type
 import mtg.events.LoseLifeEvent
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{CurrentCharacteristics, GameActionResult, GameState, InternalGameAction}
 import mtg.game.{ObjectId, ObjectOrPlayer, PlayerId}
 
 import scala.collection.mutable.ListBuffer
@@ -11,9 +11,9 @@ case class DealDamageEvent(source: ObjectId, recipient: ObjectOrPlayer, amount: 
   override def execute(gameState: GameState): GameActionResult = {
     recipient match {
       case objectId: ObjectId =>
-        val characteristics = objectId.currentCharacteristics(gameState)
+        val types = CurrentCharacteristics.getCharacteristics(objectId, gameState).types
         val results = ListBuffer[InternalGameAction]()
-        if (characteristics.types.contains(Type.Creature)) {
+        if (types.contains(Type.Creature)) {
           results.addOne(MarkDamageEvent(source, objectId, amount))
         }
         results.result()
