@@ -1,5 +1,7 @@
 package mtg.core
 
+import mtg.core.colors.Color
+
 sealed class ManaType(val letter: String)
 
 object ManaType {

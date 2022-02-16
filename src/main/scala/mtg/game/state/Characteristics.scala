@@ -5,7 +5,7 @@ import mtg.abilities.AbilityDefinition
 import mtg.cards.ColorIndicator
 import mtg.cards.text.TextParagraph
 import mtg.characteristics.types.{Subtype, Supertype, Type}
-import mtg.core.Color
+import mtg.core.colors.Color
 import mtg.parts.costs.ManaCost
 
 case class Characteristics(
