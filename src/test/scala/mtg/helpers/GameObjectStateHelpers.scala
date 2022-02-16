@@ -50,6 +50,8 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
           gameObjectState.addObjectToBattlefield(PermanentObject(card, _, owner))
         case Zone.Hand(player) =>
           gameObjectState.addObjectToHand(player, BasicGameObject(card, _, Zone.Hand(player)))
+        case Zone.Library(player) =>
+          gameObjectState.addObjectToLibrary(player, BasicGameObject(card, _, Zone.Library(player)), _.length)
       }
     }
     def addCardsToZone(zone: Zone, owner: PlayerId, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
