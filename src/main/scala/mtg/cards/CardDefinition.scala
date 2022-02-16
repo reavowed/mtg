@@ -2,6 +2,7 @@ package mtg.cards
 
 import mtg.cards.text.TextParagraph
 import mtg.characteristics.types.{Subtype, Supertype, Type}
+import mtg.core.colors.ColorIndicator
 import mtg.parts.costs.ManaCost
 
 class CardDefinition(
