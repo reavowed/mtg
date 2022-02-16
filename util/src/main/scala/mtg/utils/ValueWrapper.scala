@@ -1,8 +1,8 @@
-package net.reavowed.utils
+package mtg.utils
 
 import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 
 @JsonSerialize(using = classOf[ValueWrapper.Serializer])
 abstract class ValueWrapper[T] {

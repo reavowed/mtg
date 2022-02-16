@@ -1,6 +1,6 @@
 package mtg.core
 
-import net.reavowed.utils.ValueWrapper
+import mtg.utils.ValueWrapper
 
 sealed trait ObjectOrPlayerId
 
