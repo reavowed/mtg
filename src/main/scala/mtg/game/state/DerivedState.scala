@@ -1,11 +1,10 @@
 package mtg.game.state
 
 import mtg._
-import mtg.abilities.{AbilityDefinition, ActivatedAbilityDefinition, StaticAbility, TriggeredAbility, TriggeredAbilityDefinition}
-import mtg.characteristics.types.BasicLandType
-import mtg.characteristics.types.Type.Creature
+import mtg.abilities._
 import mtg.core.ObjectId
 import mtg.core.symbols.ManaSymbol
+import mtg.core.types.{BasicLandType, Type}
 import mtg.effects.ContinuousEffect
 import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
 import mtg.effects.oneshot.basic
@@ -90,7 +89,7 @@ object DerivedState {
     objectStates
       .map { objectWithState => {
         val modifiers = effects.filter(_.affectedObject == objectWithState.gameObject.objectId).map(_.powerToughnessModifier) ++
-          (if (objectWithState.characteristics.types.contains(Creature))
+          (if (objectWithState.characteristics.types.contains(Type.Creature))
             objectWithState.gameObject.counters.view.ofLeftType[PowerToughnessModifyingCounter]
               .map { case (counterType, number) => counterType.modifier * number}
           else Nil)

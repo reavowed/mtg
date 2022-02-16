@@ -1,7 +1,7 @@
 package mtg.abilities
 
 import mtg.cards.text.{SimpleSpellEffectParagraph, SpellEffectParagraph, TextParagraph}
-import mtg.characteristics.types.Type.{Instant, Sorcery}
+import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.ConditionDefinition
@@ -17,7 +17,7 @@ sealed abstract class AbilityDefinition {
     getFunctionalZones(objectWithAbility).contains(objectWithAbility.gameObject.zone.zoneType)
   }
   def getFunctionalZones(objectWithAbility: ObjectWithState): Set[ZoneType] = {
-    if (objectWithAbility.characteristics.types.intersect(Seq(Instant, Sorcery)).nonEmpty)
+    if (objectWithAbility.characteristics.types.intersect(Seq(Type.Instant, Type.Sorcery)).nonEmpty)
       Set(ZoneType.Stack)
     else
       Set(ZoneType.Battlefield)

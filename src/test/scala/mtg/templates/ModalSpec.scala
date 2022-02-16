@@ -2,7 +2,7 @@ package mtg.templates
 
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Spell
-import mtg.characteristics.types.Type
+import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost

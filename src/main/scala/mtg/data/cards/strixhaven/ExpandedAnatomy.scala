@@ -4,9 +4,9 @@ import mtg.abilities.builder.EffectBuilder._
 import mtg.abilities.keyword.Vigilance
 import mtg.cards.patterns.Spell
 import mtg.cards.text.SimpleSpellEffectParagraph
-import mtg.characteristics.types.SpellType.Lesson
-import mtg.characteristics.types.Type
-import mtg.characteristics.types.Type.Creature
+import mtg.core.types.SpellType.Lesson
+import mtg.core.types.Type
+import mtg.core.types.Type.Creature
 import mtg.parts.costs.ManaCost
 import mtg.parts.counters.PlusOnePlusOneCounter
 

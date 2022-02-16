@@ -1,7 +1,7 @@
 package mtg.cards.patterns
 
 import mtg.cards.CardDefinition
-import mtg.characteristics.types.{BasicLandType, Supertype, Type}
+import mtg.core.types.{BasicLandType, Supertype, Type}
 
 class BasicLand(val basicLandType: BasicLandType) extends CardDefinition(
   basicLandType.name,

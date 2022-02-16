@@ -3,8 +3,8 @@ package mtg.filters
 import mtg.TestCards.vanillaCreature
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Spell
-import mtg.characteristics.types.Type
-import mtg.characteristics.types.Type.Creature
+import mtg.core.types.Type
+import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost

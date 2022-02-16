@@ -1,6 +1,6 @@
 package mtg.stack.adding
 
-import mtg.characteristics.types.Type
+import mtg.core.types.Type
 import mtg.game.state.ObjectWithState
 
 object TypeChecks {

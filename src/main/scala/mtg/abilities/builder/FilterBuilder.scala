@@ -1,6 +1,6 @@
 package mtg.abilities.builder
 
-import mtg.characteristics.types.{Supertype, Type}
+import mtg.core.types.{Supertype, Type}
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.filters.base._
 import mtg.effects.filters.combination.{ImplicitPermanentFilter, NegatedCharacteristicFilter, PrefixFilter, SuffixFilter}

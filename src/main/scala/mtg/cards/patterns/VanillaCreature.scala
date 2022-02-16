@@ -1,6 +1,6 @@
 package mtg.cards.patterns
 
-import mtg.characteristics.types.CreatureType
+import mtg.core.types.CreatureType
 import mtg.parts.costs.ManaCost
 
 class VanillaCreature(

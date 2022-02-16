@@ -1,6 +1,6 @@
 package mtg.effects.filters.base
 
-import mtg.characteristics.types.Subtype
+import mtg.core.types.Subtype
 import mtg.game.state.{Characteristics, GameState}
 
 case class SubtypeFilter(subtype: Subtype) extends CharacteristicFilter {

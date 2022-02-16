@@ -2,7 +2,7 @@ package mtg.cards.patterns
 
 import mtg.cards.CardDefinition
 import mtg.cards.text.SpellEffectParagraph
-import mtg.characteristics.types.{SpellType, Type}
+import mtg.core.types.{SpellType, Type}
 import mtg.parts.costs.ManaCost
 
 class Spell(

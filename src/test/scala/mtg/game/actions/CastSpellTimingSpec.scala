@@ -1,7 +1,7 @@
 package mtg.game.actions
 
 import mtg.cards.patterns.{Creature, Spell}
-import mtg.characteristics.types.Type
+import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.helpers.SpecWithTestCards

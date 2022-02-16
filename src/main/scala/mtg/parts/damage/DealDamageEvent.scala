@@ -1,6 +1,6 @@
 package mtg.parts.damage
 
-import mtg.characteristics.types.Type
+import mtg.core.types.Type
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.events.LoseLifeEvent
 import mtg.game.state.{CurrentCharacteristics, GameActionResult, GameState, InternalGameAction}

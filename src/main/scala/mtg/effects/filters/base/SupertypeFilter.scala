@@ -1,6 +1,6 @@
 package mtg.effects.filters.base
 
-import mtg.characteristics.types.Supertype
+import mtg.core.types.Supertype
 import mtg.game.state.{Characteristics, GameState}
 
 case class SupertypeFilter(supertype: Supertype) extends CharacteristicFilter {
