@@ -1,7 +1,7 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.core.zones.Zone
-import mtg.actions.UntapObjectEvent
+import mtg.actions.UntapObjectAction
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case object UntapForTurn extends InternalGameAction {
@@ -10,7 +10,7 @@ case object UntapForTurn extends InternalGameAction {
       .filter(o => o.gameObject.zone == Zone.Battlefield && o.controller == gameState.activePlayer)
       .map(_.gameObject.objectId)
       .toSeq
-    tappedPermanents.map(UntapObjectEvent)
+    tappedPermanents.map(UntapObjectAction)
   }
   override def canBeReverted: Boolean = true
 }

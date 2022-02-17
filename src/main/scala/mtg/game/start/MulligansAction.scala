@@ -1,8 +1,8 @@
 package mtg.game.start
 
 import mtg._
+import mtg.actions.shuffle.ShuffleHandIntoLibraryAction
 import mtg.core.PlayerId
-import mtg.actions.shuffle.ShuffleHandIntoLibrary
 import mtg.game.state._
 import mtg.game.turns.turnEvents.ExecuteTurn
 
@@ -30,7 +30,7 @@ case class MulligansAction(playersToMakeMulliganDecision: Seq[PlayerId], numberO
     val playersKeeping = decisions.ofType[MulliganDecision.Keep].map(_.player)
     val playersMulliganning = decisions.ofType[MulliganDecision.Mulligan].map(_.player)
     val keepActions = if (numberOfMulligansTakenSoFar > 0) playersKeeping.map(ReturnCardsToLibrary(_, numberOfMulligansTakenSoFar)) else Nil
-    val mulliganActions = playersMulliganning.map(p => WrappedOldUpdates(ShuffleHandIntoLibrary(p)))
+    val mulliganActions = playersMulliganning.map(p => WrappedOldUpdates(ShuffleHandIntoLibraryAction(p)))
     val resultAction = if (playersMulliganning.nonEmpty) MulligansAction(playersMulliganning, numberOfMulligansTakenSoFar + 1) else ExecuteTurn.first(gameState)
     PartialGameActionResult.childrenThenValue(
       keepActions ++ mulliganActions,

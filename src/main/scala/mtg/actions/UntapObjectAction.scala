@@ -1,11 +1,13 @@
 package mtg.actions
 
-import mtg.core.PlayerId
+import mtg.core.ObjectId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class LoseLifeEvent(player: PlayerId, amount: Int) extends InternalGameAction {
+case class UntapObjectAction(objectId: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.updateLifeTotal(player, _ - amount)
+    gameState.gameObjectState.updatePermanentObject(
+      objectId,
+      _.updatePermanentStatus(_.untap()))
   }
   override def canBeReverted: Boolean = true
 }

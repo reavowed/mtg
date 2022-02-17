@@ -1,7 +1,7 @@
 package mtg.sbas
 
+import mtg.actions.DestroyAction
 import mtg.core.types.Type
-import mtg.actions.DestroyEvent
 import mtg.game.state.{GameState, InternalGameAction}
 
 object LethalDamageStateBasedAction {
@@ -16,7 +16,7 @@ object LethalDamageStateBasedAction {
           gameObject.markedDamage > 0 &&
           gameObject.markedDamage >= characteristics.toughness.getOrElse(0)
       })
-      .map(gameObject => DestroyEvent(gameObject.objectId))
+      .map(gameObject => DestroyAction(gameObject.objectId))
       .toSeq
   }
 }

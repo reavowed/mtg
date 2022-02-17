@@ -3,7 +3,7 @@ package mtg.actions
 import mtg.core.ObjectId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class TapObjectEvent(objectId: ObjectId) extends InternalGameAction {
+case class TapObjectAction(objectId: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState.updatePermanentObject(
       objectId,

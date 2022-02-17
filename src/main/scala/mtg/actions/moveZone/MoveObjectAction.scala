@@ -4,7 +4,7 @@ import mtg.core.ObjectId
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, ObjectWithState}
 
-abstract class MoveObjectEvent[TGameObject <: GameObject] extends InternalGameAction {
+abstract class MoveObjectAction[TGameObject <: GameObject] extends InternalGameAction {
   def objectId: ObjectId
   def createNewObject(existingObjectWithState: ObjectWithState, newObjectId: ObjectId): TGameObject
   def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => TGameObject): GameObjectState

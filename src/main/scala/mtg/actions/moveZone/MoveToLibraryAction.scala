@@ -7,7 +7,7 @@ import mtg.game.objects.{BasicGameObject, GameObjectState}
 import mtg.game.state.ObjectWithState
 
 // TODO: Move to set location in library
-case class MoveToLibraryEvent(objectId: ObjectId) extends MoveObjectToBasicZoneEvent {
+case class MoveToLibraryAction(objectId: ObjectId) extends MoveObjectToBasicZoneAction {
   def getZone(existingObjectWithState: ObjectWithState): BasicZone = Zone.Library(existingObjectWithState.gameObject.owner)
 
   override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => BasicGameObject): GameObjectState = {

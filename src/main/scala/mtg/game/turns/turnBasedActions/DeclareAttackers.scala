@@ -3,7 +3,7 @@ package mtg.game.turns.turnBasedActions
 import mtg._
 import mtg.core.types.Type
 import mtg.core.{ObjectId, PlayerId}
-import mtg.actions.TapObjectEvent
+import mtg.actions.TapObjectAction
 import mtg.game.state._
 import mtg.game.state.history.HistoryEvent.ResolvedAction
 import mtg.game.state.history.LogEvent
@@ -77,7 +77,7 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
 
 case class TapAttacker(attacker: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    TapObjectEvent(attacker)
+    TapObjectAction(attacker)
   }
   override def canBeReverted: Boolean = true
 }

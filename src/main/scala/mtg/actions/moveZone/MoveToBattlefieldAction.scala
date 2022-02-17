@@ -4,7 +4,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects.{GameObjectState, PermanentObject}
 import mtg.game.state.ObjectWithState
 
-case class MoveToBattlefieldEvent(objectId: ObjectId, initialController: PlayerId) extends MoveObjectEvent[PermanentObject] {
+case class MoveToBattlefieldAction(objectId: ObjectId, initialController: PlayerId) extends MoveObjectAction[PermanentObject] {
   override def createNewObject(existingObjectWithState: ObjectWithState, newObjectId: ObjectId): PermanentObject = PermanentObject(
     existingObjectWithState.gameObject.underlyingObject,
     newObjectId,

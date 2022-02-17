@@ -1,9 +1,9 @@
 package mtg.game.priority.actions
 
+import mtg.actions.moveZone.MoveToStackAction
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.core.{ObjectId, PlayerId}
-import mtg.actions.moveZone.MoveToStackEvent
 import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.stack.adding._
 
@@ -14,7 +14,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
 
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
     PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(MoveToStackEvent(objectId, player)),
+      WrappedOldUpdates(MoveToStackAction(objectId, player)),
       steps)
   }
   private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {

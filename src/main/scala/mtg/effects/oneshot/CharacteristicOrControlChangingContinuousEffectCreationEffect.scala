@@ -5,7 +5,7 @@ import mtg.effects.condition.ConditionDefinition
 import mtg.effects.identifiers.MultipleIdentifier
 import mtg.effects.oneshot.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.actions.CreateContinousEffects
+import mtg.actions.CreateContinousEffectsAction
 import mtg.game.state.GameState
 import mtg.text.{Sentence, VerbPhraseTemplate}
 
@@ -31,6 +31,6 @@ case class CharacteristicOrControlChangingContinuousEffectCreationEffect(
       objectId <- objectIds
       effectDescription <- effectDescriptions
     } yield effectDescription.getEffect(objectId)
-    (CreateContinousEffects(effects, condition), finalContext)
+    (CreateContinousEffectsAction(effects, condition), finalContext)
   }
 }

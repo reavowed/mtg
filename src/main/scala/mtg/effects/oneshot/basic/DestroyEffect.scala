@@ -4,13 +4,13 @@ import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.actions.DestroyEvent
+import mtg.actions.DestroyAction
 import mtg.game.state.GameState
 
 case class DestroyEffect(objectIdentifier: SingleIdentifier[ObjectId]) extends OneShotEffect {
   override def getText(cardName: String): String = "Destroy " + objectIdentifier.getText(cardName)
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
     val (objectId, contextAfterObject) = objectIdentifier.get(gameState, resolutionContext)
-    (DestroyEvent(objectId), contextAfterObject)
+    (DestroyAction(objectId), contextAfterObject)
   }
 }

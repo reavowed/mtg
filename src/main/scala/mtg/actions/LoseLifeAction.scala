@@ -1,12 +1,11 @@
 package mtg.actions
 
-import mtg.core.ObjectId
-import mtg.actions.moveZone.MoveToGraveyardEvent
+import mtg.core.PlayerId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class DestroyEvent(objectId: ObjectId) extends InternalGameAction {
+case class LoseLifeAction(player: PlayerId, amount: Int) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    MoveToGraveyardEvent(objectId)
+    gameState.gameObjectState.updateLifeTotal(player, _ - amount)
   }
   override def canBeReverted: Boolean = true
 }

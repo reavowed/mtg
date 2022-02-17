@@ -4,7 +4,7 @@ import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.actions.PutCountersEvent
+import mtg.actions.PutCountersAction
 import mtg.game.state.GameState
 import mtg.parts.counters.CounterType
 import mtg.utils.TextUtils
@@ -19,6 +19,6 @@ case class PutCountersEffect(number: Int, kind: CounterType, objectIdentifier: S
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
     val (obj, resultContext) = objectIdentifier.get(gameState, resolutionContext)
-    (PutCountersEvent(number, kind, obj), resultContext)
+    (PutCountersAction(number, kind, obj), resultContext)
   }
 }

@@ -4,7 +4,7 @@ import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.actions.moveZone.MoveToExileEvent
+import mtg.actions.moveZone.MoveToExileAction
 import mtg.game.state.GameState
 
 case class ExileEffect(objectIdentifier: SingleIdentifier[ObjectId]) extends OneShotEffect {
@@ -12,6 +12,6 @@ case class ExileEffect(objectIdentifier: SingleIdentifier[ObjectId]) extends One
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
     val (objectId, contextAfterObject) = objectIdentifier.get(gameState, resolutionContext)
-    (MoveToExileEvent(objectId), contextAfterObject)
+    (MoveToExileAction(objectId), contextAfterObject)
   }
 }

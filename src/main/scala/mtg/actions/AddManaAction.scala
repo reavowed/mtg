@@ -5,7 +5,7 @@ import mtg.core.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class AddManaEvent(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends InternalGameAction {
+case class AddManaAction(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState.updateManaPool(player, _ ++ manaSymbols.flatMap(getManaObjects))
   }

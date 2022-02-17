@@ -4,7 +4,7 @@ import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.actions.moveZone.MoveToHandEvent
+import mtg.actions.moveZone.MoveToHandAction
 import mtg.game.state.GameState
 
 case class PutIntoHandEffect(objectIdentifier: SingleIdentifier[ObjectId]) extends OneShotEffect {
@@ -12,6 +12,6 @@ case class PutIntoHandEffect(objectIdentifier: SingleIdentifier[ObjectId]) exten
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
     val (objectId, contextAfterObject) = objectIdentifier.get(gameState, resolutionContext)
-    (MoveToHandEvent(objectId), contextAfterObject)
+    (MoveToHandAction(objectId), contextAfterObject)
   }
 }

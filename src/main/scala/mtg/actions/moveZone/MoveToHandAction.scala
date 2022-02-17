@@ -6,10 +6,10 @@ import mtg.core.zones.Zone.BasicZone
 import mtg.game.objects.{BasicGameObject, GameObjectState}
 import mtg.game.state.ObjectWithState
 
-case class MoveToExileEvent(objectId: ObjectId) extends MoveObjectToBasicZoneEvent {
-  def getZone(existingObjectWithState: ObjectWithState): BasicZone = Zone.Exile
+case class MoveToHandAction(objectId: ObjectId) extends MoveObjectToBasicZoneAction {
+  def getZone(existingObjectWithState: ObjectWithState): BasicZone = Zone.Hand(existingObjectWithState.gameObject.owner)
 
   override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
-    gameObjectState.addObjectToExile(objectConstructor)
+    gameObjectState.addObjectToHand(existingObjectWithState.gameObject.owner, objectConstructor)
   }
 }
