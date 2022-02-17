@@ -4,7 +4,7 @@ import mtg.core.PlayerId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.DrawCardEvent
+import mtg.actions.DrawCardEvent
 import mtg.game.state.GameState
 
 case class DrawsACardEffect(playerIdentifier: SingleIdentifier[PlayerId]) extends OneShotEffect {

@@ -1,7 +1,7 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.core.zones.Zone
-import mtg.events.UntapObjectEvent
+import mtg.actions.UntapObjectEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case object UntapForTurn extends InternalGameAction {

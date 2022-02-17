@@ -5,7 +5,7 @@ import mtg.effects.condition.ConditionDefinition
 import mtg.effects.identifiers.MultipleIdentifier
 import mtg.effects.oneshot.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.CreateContinousEffects
+import mtg.actions.CreateContinousEffects
 import mtg.game.state.GameState
 import mtg.text.{Sentence, VerbPhraseTemplate}
 

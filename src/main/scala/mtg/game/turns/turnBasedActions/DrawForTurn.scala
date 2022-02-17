@@ -1,6 +1,6 @@
 package mtg.game.turns.turnBasedActions
 
-import mtg.events.DrawCardEvent
+import mtg.actions.DrawCardEvent
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{ExecutableGameAction, GameActionResult, GameState, InternalGameAction, PartialGameActionResult, WrappedOldUpdates}
 

@@ -4,7 +4,7 @@ import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.PutCountersEvent
+import mtg.actions.PutCountersEvent
 import mtg.game.state.GameState
 import mtg.parts.counters.CounterType
 import mtg.utils.TextUtils

@@ -2,7 +2,7 @@ package mtg.stack.resolving
 
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.targets.TargetIdentifier
-import mtg.events.moveZone.{MoveToBattlefieldEvent, MoveToGraveyardEvent}
+import mtg.actions.moveZone.{MoveToBattlefieldEvent, MoveToGraveyardEvent}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}

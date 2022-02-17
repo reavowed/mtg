@@ -4,7 +4,7 @@ import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.DestroyEvent
+import mtg.actions.DestroyEvent
 import mtg.game.state.GameState
 
 case class DestroyEffect(objectIdentifier: SingleIdentifier[ObjectId]) extends OneShotEffect {

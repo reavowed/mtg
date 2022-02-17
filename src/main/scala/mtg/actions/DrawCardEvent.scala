@@ -1,7 +1,7 @@
-package mtg.events
+package mtg.actions
 
 import mtg.core.PlayerId
-import mtg.events.moveZone.MoveToHandEvent
+import mtg.actions.moveZone.MoveToHandEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class DrawCardEvent(player: PlayerId) extends InternalGameAction {

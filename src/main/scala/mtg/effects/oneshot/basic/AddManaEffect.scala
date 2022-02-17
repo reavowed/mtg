@@ -3,7 +3,7 @@ package mtg.effects.oneshot.basic
 import mtg.core.symbols.ManaSymbol
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.AddManaEvent
+import mtg.actions.AddManaEvent
 import mtg.game.state.GameState
 
 case class AddManaEffect(symbols: ManaSymbol*) extends OneShotEffect {

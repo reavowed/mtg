@@ -1,7 +1,7 @@
 package mtg.parts.costs
 
 import mtg.core.symbols.Symbol
-import mtg.events.TapObjectEvent
+import mtg.actions.TapObjectEvent
 import mtg.game.objects.PermanentObject
 import mtg.game.state.{GameAction, ObjectWithState, WrappedOldUpdates}
 

@@ -2,7 +2,7 @@ package mtg.effects.oneshot.basic
 
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.DrawCardEvent
+import mtg.actions.DrawCardEvent
 import mtg.game.state.GameState
 
 case object DrawACardEffect extends OneShotEffect {

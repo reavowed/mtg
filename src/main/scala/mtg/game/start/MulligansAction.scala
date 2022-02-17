@@ -2,7 +2,7 @@ package mtg.game.start
 
 import mtg._
 import mtg.core.PlayerId
-import mtg.events.shuffle.ShuffleHandIntoLibrary
+import mtg.actions.shuffle.ShuffleHandIntoLibrary
 import mtg.game.state._
 import mtg.game.turns.turnEvents.ExecuteTurn
 

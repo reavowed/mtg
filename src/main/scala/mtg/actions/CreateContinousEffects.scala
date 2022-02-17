@@ -1,4 +1,4 @@
-package mtg.events
+package mtg.actions
 
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition

@@ -3,7 +3,7 @@ package mtg.game.turns.turnBasedActions
 import mtg._
 import mtg.core.types.Type
 import mtg.core.{ObjectId, PlayerId}
-import mtg.events.TapObjectEvent
+import mtg.actions.TapObjectEvent
 import mtg.game.state._
 import mtg.game.state.history.HistoryEvent.ResolvedAction
 import mtg.game.state.history.LogEvent

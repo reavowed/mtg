@@ -1,4 +1,4 @@
-package mtg.events.moveZone
+package mtg.actions.moveZone
 
 import mtg.core.ObjectId
 import mtg.core.zones.Zone.BasicZone

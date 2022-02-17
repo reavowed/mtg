@@ -1,4 +1,4 @@
-package mtg.events.shuffle
+package mtg.actions.shuffle
 
 import mtg.core.PlayerId
 import mtg.core.zones.Zone

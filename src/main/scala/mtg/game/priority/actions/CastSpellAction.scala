@@ -3,7 +3,7 @@ package mtg.game.priority.actions
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.core.{ObjectId, PlayerId}
-import mtg.events.moveZone.MoveToStackEvent
+import mtg.actions.moveZone.MoveToStackEvent
 import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.stack.adding._
 

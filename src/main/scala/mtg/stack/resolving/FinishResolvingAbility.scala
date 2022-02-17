@@ -1,7 +1,7 @@
 package mtg.stack.resolving
 
 import mtg.abilities.TriggeredAbilityDefinition
-import mtg.events.RemoveObjectFromExistenceEvent
+import mtg.actions.RemoveObjectFromExistenceEvent
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}

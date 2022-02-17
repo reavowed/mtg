@@ -2,7 +2,7 @@ package mtg.parts.damage
 
 import mtg.core.types.Type
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
-import mtg.events.LoseLifeEvent
+import mtg.actions.LoseLifeEvent
 import mtg.game.state.{CurrentCharacteristics, GameActionResult, GameState, InternalGameAction}
 
 import scala.collection.mutable.ListBuffer

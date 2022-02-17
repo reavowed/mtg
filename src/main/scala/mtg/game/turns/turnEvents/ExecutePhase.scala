@@ -1,6 +1,6 @@
 package mtg.game.turns.turnEvents
 
-import mtg.events.EmptyManaPoolsEvent
+import mtg.actions.EmptyManaPoolsEvent
 import mtg.game.state.{ExecutableGameAction, GameState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.game.turns.TurnPhase
 

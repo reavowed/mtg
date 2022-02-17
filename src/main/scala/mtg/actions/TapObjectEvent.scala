@@ -1,4 +1,4 @@
-package mtg.events
+package mtg.actions
 
 import mtg.core.ObjectId
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}

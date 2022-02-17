@@ -1,6 +1,6 @@
 package mtg.stack.resolving
 
-import mtg.events.moveZone.MoveToGraveyardEvent
+import mtg.actions.moveZone.MoveToGraveyardEvent
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
 

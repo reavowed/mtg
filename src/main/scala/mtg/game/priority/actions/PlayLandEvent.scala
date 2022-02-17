@@ -1,7 +1,7 @@
 package mtg.game.priority.actions
 
 import mtg.core.PlayerId
-import mtg.events.moveZone.MoveToBattlefieldEvent
+import mtg.actions.moveZone.MoveToBattlefieldEvent
 import mtg.game.objects.GameObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 

@@ -1,7 +1,7 @@
 package mtg.game.start
 
 import mtg.core.PlayerId
-import mtg.events.moveZone.MoveToLibraryEvent
+import mtg.actions.moveZone.MoveToLibraryEvent
 import mtg.game.objects.GameObject
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}

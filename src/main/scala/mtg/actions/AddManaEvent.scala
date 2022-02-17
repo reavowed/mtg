@@ -1,4 +1,4 @@
-package mtg.events
+package mtg.actions
 
 import mtg.core.{ManaType, PlayerId}
 import mtg.core.symbols.ManaSymbol

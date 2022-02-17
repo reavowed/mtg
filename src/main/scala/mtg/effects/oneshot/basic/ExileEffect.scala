@@ -4,7 +4,7 @@ import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.moveZone.MoveToExileEvent
+import mtg.actions.moveZone.MoveToExileEvent
 import mtg.game.state.GameState
 
 case class ExileEffect(objectIdentifier: SingleIdentifier[ObjectId]) extends OneShotEffect {

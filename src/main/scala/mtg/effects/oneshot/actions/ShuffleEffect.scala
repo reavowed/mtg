@@ -2,7 +2,7 @@ package mtg.effects.oneshot.actions
 
 import mtg.effects.oneshot.OneShotEffectResult
 import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
-import mtg.events.shuffle.ShuffleLibrary
+import mtg.actions.shuffle.ShuffleLibrary
 import mtg.game.state.GameState
 
 case object ShuffleEffect extends OneShotEffect {

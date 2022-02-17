@@ -1,12 +1,13 @@
-package mtg.events
+package mtg.actions
 
 import mtg.core.ObjectId
-import mtg.events.moveZone.MoveToGraveyardEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class DestroyEvent(objectId: ObjectId) extends InternalGameAction {
+case class UntapObjectEvent(objectId: ObjectId) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    MoveToGraveyardEvent(objectId)
+    gameState.gameObjectState.updatePermanentObject(
+      objectId,
+      _.updatePermanentStatus(_.untap()))
   }
   override def canBeReverted: Boolean = true
 }
