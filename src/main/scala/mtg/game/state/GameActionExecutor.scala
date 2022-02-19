@@ -177,8 +177,6 @@ object GameActionExecutor {
         (ProcessedGameActionResult.Action(WrappedOldUpdates(newUpdates ++ tail: _*)), newGameState)
       case (head: Choice) +: tail =>
         (ProcessedGameActionResult.Action(WrappedChoice(head, tail)), gameState)
-      case BackupAction(gameStateToRevertTo) +: _ =>
-        (ProcessedGameActionResult.Backup(gameStateToRevertTo), gameState)
       case Nil =>
         (ProcessedGameActionResult.Value(()), gameState)
     }

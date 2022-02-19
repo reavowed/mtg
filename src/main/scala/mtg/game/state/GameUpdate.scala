@@ -38,7 +38,6 @@ trait InternalGameAction extends OldGameUpdate {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
 }
-case class BackupAction(gameStateToRevertTo: GameState) extends OldGameUpdate
 trait Choice extends OldGameUpdate with NewChoice[Unit] {
   def parseDecision(serializedDecision: String): Option[Decision]
 }
