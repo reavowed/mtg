@@ -23,7 +23,7 @@ object TurnStep {
   val CombatPhaseSteps = Seq(BeginningOfCombatStep, DeclareAttackersStep, DeclareBlockersStep, CombatDamageStep, EndOfCombatStep)
 
   case object EndStep extends TurnStep(Seq(PrioritySequenceAction))
-  case object CleanupStep extends TurnStep(Seq(WrappedOldUpdates(CleanupAction)))
+  case object CleanupStep extends TurnStep(Seq(CleanupAction))
 
   val EndingPhaseSteps = Seq(EndStep, CleanupStep)
 }

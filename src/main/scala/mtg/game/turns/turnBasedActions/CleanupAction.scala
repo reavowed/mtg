@@ -3,11 +3,11 @@ package mtg.game.turns.turnBasedActions
 import mtg.game.state._
 import mtg.game.turns.Turn
 
-object CleanupAction extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
-    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd(gameState.currentTurn.get))
+object CleanupAction extends ExecutableGameAction[Unit] {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+    // TODO: These two actions should be simultaneous
+    PartialGameActionResult.child(WrappedOldUpdates(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd))
   }
-  override def canBeReverted: Boolean = true
 }
 
 object DamageWearsOffEvent extends InternalGameAction {
@@ -19,7 +19,7 @@ object DamageWearsOffEvent extends InternalGameAction {
   override def canBeReverted: Boolean = true
 }
 
-case class UntilEndOfTurnEffectsEnd(turn: Turn) extends InternalGameAction {
+object UntilEndOfTurnEffectsEnd extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = ()
   override def canBeReverted: Boolean = true
 }
