@@ -18,5 +18,6 @@ object HistoryEvent {
       case _ => true
     }
     def actions: Iterable[InternalGameAction] = seq.ofType[ResolvedAction].map(_.action)
+    def decisions[DecisionType : ClassTag]: Iterable[DecisionType] = seq.ofType[ResolvedChoice[_]].map(_.decision).ofType[DecisionType]
   }
 }
