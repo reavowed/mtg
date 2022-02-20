@@ -36,14 +36,6 @@ trait InternalGameAction extends GameUpdate {
   def canBeReverted: Boolean
 }
 
-case class Decision(resultingActions: Seq[InternalGameAction])
-object Decision {
-  implicit def single(action: InternalGameAction): Decision = Decision(Seq(action))
-  implicit def singleOption(action: InternalGameAction): Option[Decision] = Some(Decision(Seq(action)))
-  implicit def multiple(actions: Seq[InternalGameAction]): Decision = Decision(actions)
-  implicit def chain[T, S](f: T => S)(implicit g: S => Decision): T => Decision = t => g(f(t))
-}
-
 case class WrappedOldUpdates(oldUpdates: InternalGameAction*) extends GameAction[Unit]
 
 object GameAction {
