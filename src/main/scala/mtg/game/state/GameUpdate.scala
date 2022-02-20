@@ -38,9 +38,6 @@ trait InternalGameAction extends OldGameUpdate {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
 }
-trait Choice extends OldGameUpdate with NewChoice[Unit] {
-  def parseDecision(serializedDecision: String): Option[Decision]
-}
 
 case class Decision(resultingActions: Seq[InternalGameAction])
 object Decision {
@@ -51,9 +48,6 @@ object Decision {
 }
 
 case class WrappedOldUpdates(oldUpdates: OldGameUpdate*) extends GameAction[Unit]
-case class WrappedChoice(choice: Choice, furtherUpdates: Seq[OldGameUpdate]) extends NewChoice[Unit] {
-  override def playerToAct: PlayerId = choice.playerToAct
-}
 
 object GameAction {
   implicit def logEventAsAction(logEvent: LogEvent): GameAction[Unit] = LogEventAction(logEvent)

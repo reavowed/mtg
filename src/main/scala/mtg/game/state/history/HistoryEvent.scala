@@ -1,7 +1,7 @@
 package mtg.game.state.history
 
 import mtg._
-import mtg.game.state.{Choice, GameState, InternalGameAction, NewChoice}
+import mtg.game.state.{GameState, InternalGameAction, NewChoice}
 
 import scala.reflect.{ClassTag, classTag}
 
