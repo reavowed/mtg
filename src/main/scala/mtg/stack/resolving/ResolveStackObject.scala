@@ -1,24 +1,25 @@
 package mtg.stack.resolving
 
+import mtg.actions.moveZone.{MoveToBattlefieldAction, MoveToGraveyardAction}
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.targets.TargetIdentifier
-import mtg.actions.moveZone.{MoveToBattlefieldAction, MoveToGraveyardAction}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction, StackObjectWithState}
+import mtg.game.state._
 import mtg.stack.adding.TypeChecks
 
-case class ResolveStackObject(stackObject: StackObject) extends InternalGameAction {
-  private def resolvePermanent(stackObjectWithState: StackObjectWithState): GameActionResult = {
+case class ResolveStackObject(stackObject: StackObject) extends ExecutableGameAction[Unit] {
+  private def resolvePermanent(stackObjectWithState: StackObjectWithState)(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     // RULE 608.3 / Apr 22 2021 : If the object that's resolving is a permanent spell, its resolution involves a single
     // step (unless it's an Aura, a copy of a permanent spell, or a mutating creature spell). The spell card becomes a
     // permanent and is put onto the battlefield under the control of the spell's controller.
     // TODO: Handle the exceptions above
     val controller = stackObjectWithState.controller
-    (
-      MoveToBattlefieldAction(stackObject.objectId, controller),
-      LogEvent.ResolvePermanent(controller, stackObjectWithState.characteristics.name.get)
-    )
+    PartialGameActionResult.childrenThenValue(
+      Seq(
+        WrappedOldUpdates(MoveToBattlefieldAction(stackObject.objectId, controller)),
+        LogEvent.ResolvePermanent(controller, stackObjectWithState.characteristics.name.get)),
+      ())(gameState)
   }
 
   private def shouldFizzleDueToInvalidTargets(stackObjectWithState: StackObjectWithState, gameState: GameState): Boolean = {
@@ -29,37 +30,38 @@ case class ResolveStackObject(stackObject: StackObject) extends InternalGameActi
       }
   }
 
-  private def resolveInstantOrSorcerySpell(spell: StackObjectWithState, gameState: GameState): GameActionResult = {
+  private def resolveInstantOrSorcerySpell(spell: StackObjectWithState)(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell, gameState)
-    Seq(
-      ResolveEffects(spell.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
-      FinishResolvingInstantOrSorcerySpell(spell)
-    )
+    PartialGameActionResult.childrenThenValue(
+      Seq(
+        ResolveEffects(spell.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
+        FinishResolvingInstantOrSorcerySpell(spell)),
+      ())
   }
 
-  private def resolveAbility(ability: StackObjectWithState, gameState: GameState): GameActionResult = {
+  private def resolveAbility(ability: StackObjectWithState)(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability, gameState)
-    Seq(
-      ResolveEffects(ability.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
-      FinishResolvingAbility(ability)
-    )
+    PartialGameActionResult.childrenThenValue(
+      Seq(
+        ResolveEffects(ability.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
+        FinishResolvingAbility(ability)),
+      ())
   }
 
-  override def execute(gameState: GameState): GameActionResult = {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObject.objectId)
     if (TypeChecks.hasPermanentType(stackObjectWithState)) {
       resolvePermanent(stackObjectWithState)
     } else if (shouldFizzleDueToInvalidTargets(stackObjectWithState, gameState)) {
-      (
-        MoveToGraveyardAction(stackObject.objectId),
-        LogEvent.SpellFailedToResolve(stackObjectWithState.characteristics.name.get)
-      )
+      PartialGameActionResult.childrenThenValue(
+        Seq(
+          WrappedOldUpdates(MoveToGraveyardAction(stackObject.objectId)),
+          LogEvent.SpellFailedToResolve(stackObjectWithState.characteristics.name.get)),
+        ())
     } else if (stackObject.underlyingObject.isInstanceOf[AbilityOnTheStack]) {
-      resolveAbility(stackObjectWithState, gameState)
+      resolveAbility(stackObjectWithState)
     } else {
-      resolveInstantOrSorcerySpell(stackObjectWithState, gameState)
+      resolveInstantOrSorcerySpell(stackObjectWithState)
     }
   }
-
-  override def canBeReverted: Boolean = false
 }

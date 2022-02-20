@@ -20,7 +20,7 @@ case object PrioritySequenceAction extends ExecutableGameAction[Unit] {
       case Nil =>
         gameState.gameObjectState.stack match {
           case _ :+ topObject =>
-            PartialGameActionResult.ChildWithCallback(WrappedOldUpdates(ResolveStackObject(topObject)), executeAfterStackResolution)
+            PartialGameActionResult.ChildWithCallback(ResolveStackObject(topObject), executeAfterStackResolution)
           case Nil =>
             PartialGameActionResult.Value(())
         }

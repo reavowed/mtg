@@ -14,7 +14,7 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
 
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
     if (ability.isManaAbility) {
-      val actions = ability.costs.map(_.payForAbility(objectWithAbility)) :+ WrappedOldUpdates(ResolveManaAbility(player, objectWithAbility, ability))
+      val actions = ability.costs.map(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
       PartialGameActionResult.childrenThenValue(actions, ())
     } else {
       PartialGameActionResult.ChildWithCallback(
