@@ -48,7 +48,7 @@ abstract class SpecWithGameStateManager
     createGameStateManager(gameObjectState, ExecuteTurn(Turn(1, playerOne)))
   }
 
-  def runAction(action: OldGameUpdate, gameObjectState: GameObjectState): GameState = {
+  def runAction(action: InternalGameAction, gameObjectState: GameObjectState): GameState = {
     runAction(WrappedOldUpdates(action), gameObjectState)
   }
 

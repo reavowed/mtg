@@ -82,7 +82,7 @@ object GameActionExecutor {
     case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
       executeChildAction(rootAction, childAction, callback)
     case WrappedOldUpdates(updates @ _*) =>
-      Some(executeOldUpdates(updates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
+      Some(executeOldActions(updates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
     case LogEventAction(logEvent) =>
       Some((ProcessedGameActionResult.Value(()).asInstanceOf[ProcessedGameActionResult[T]], gameState.recordLogEvent(logEvent)))
   }
@@ -164,9 +164,9 @@ object GameActionExecutor {
     }
   }
 
-  def executeOldUpdates(oldUpdates: Seq[OldGameUpdate], gameState: GameState): (ProcessedGameActionResult[Unit], GameState) = {
-    oldUpdates match {
-      case (head: InternalGameAction) +: tail =>
+  def executeOldActions(oldActions: Seq[InternalGameAction], gameState: GameState): (ProcessedGameActionResult[Unit], GameState) = {
+    oldActions match {
+      case head +: tail =>
         val (newGameState, newUpdates) = execute(head, gameState)
         (ProcessedGameActionResult.Action(WrappedOldUpdates(newUpdates ++ tail: _*)), newGameState)
       case Nil =>
@@ -174,7 +174,7 @@ object GameActionExecutor {
     }
   }
 
-  def execute(action: InternalGameAction, initialGameState: GameState): (GameState, Seq[OldGameUpdate]) = {
+  def execute(action: InternalGameAction, initialGameState: GameState): (GameState, Seq[InternalGameAction]) = {
     val preventResult = initialGameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
       .findOption(_.checkAction(action, initialGameState).asOptionalInstanceOf[Prevent])
 
@@ -200,7 +200,7 @@ object GameActionExecutor {
           .recordAction(action)
           .updateGameObjectState(finalGameObjectState)
           .recordLogEvent(actionResult.logEvent)
-        (newGameState, actionResult.nextUpdates)
+        (newGameState, actionResult.nextActions)
     }
   }
 

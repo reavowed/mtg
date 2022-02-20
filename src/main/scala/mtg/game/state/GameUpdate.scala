@@ -31,9 +31,7 @@ case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
-
-sealed trait OldGameUpdate extends GameUpdate
-trait InternalGameAction extends OldGameUpdate {
+trait InternalGameAction extends GameUpdate {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
 }
@@ -46,7 +44,7 @@ object Decision {
   implicit def chain[T, S](f: T => S)(implicit g: S => Decision): T => Decision = t => g(f(t))
 }
 
-case class WrappedOldUpdates(oldUpdates: OldGameUpdate*) extends GameAction[Unit]
+case class WrappedOldUpdates(oldUpdates: InternalGameAction*) extends GameAction[Unit]
 
 object GameAction {
   implicit def logEventAsAction(logEvent: LogEvent): GameAction[Unit] = LogEventAction(logEvent)
