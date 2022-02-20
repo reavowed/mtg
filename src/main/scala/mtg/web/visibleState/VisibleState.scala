@@ -3,7 +3,7 @@ package mtg.web.visibleState
 import mtg.core.zones.Zone
 import mtg.core.{ManaType, PlayerId}
 import mtg.game.objects.GameObject
-import mtg.game.state.{GameState, NewChoice, UndoHelper}
+import mtg.game.state.{GameState, Choice, UndoHelper}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.GameData
 
@@ -28,7 +28,7 @@ case class VisibleState(
 object VisibleState {
   def forPlayer(playerIdentifier: PlayerId, gameState: GameState): VisibleState = {
     def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState)
-    def currentChoice = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[NewChoice[_]])
+    def currentChoice = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[Choice[_]])
     def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): Seq[PossiblyHiddenGameObject] = {
       val canSeeZone = zone == Zone.Hand(playerIdentifier) || currentChoice.exists(_.temporarilyVisibleZones.contains(zone))
       def canSeeObject(gameObject: GameObject): Boolean = canSeeZone || currentChoice.exists(_.temporarilyVisibleObjects.contains(gameObject.objectId))

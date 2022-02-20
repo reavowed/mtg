@@ -5,7 +5,7 @@ import mtg.core.PlayerId
 import mtg.core.zones.Zone
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, NewChoice}
+import mtg.game.state.{GameState, Choice}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import org.specs2.matcher.MatchResult
 
@@ -89,7 +89,7 @@ class MulliganSpec extends SpecWithGameStateManager {
 
       val finalGameState = manager.gameState
       finalGameState.allCurrentActions must contain(beAnInstanceOf[ReturnCardsToLibrary])
-      finalGameState.currentChoice must beSome(beLike[NewChoice[_]] {
+      finalGameState.currentChoice must beSome(beLike[Choice[_]] {
         case ChooseCardsInHand(`playerTwo`, 1) => ok
       })
     }
@@ -107,7 +107,7 @@ class MulliganSpec extends SpecWithGameStateManager {
 
       val finalGameState = manager.gameState
       finalGameState.allCurrentActions must contain(beAnInstanceOf[ReturnCardsToLibrary])
-      finalGameState.currentChoice must beSome(beLike[NewChoice[_]] {
+      finalGameState.currentChoice must beSome(beLike[Choice[_]] {
         case ChooseCardsInHand(`playerTwo`, 7) => ok
       })
     }

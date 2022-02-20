@@ -59,7 +59,7 @@ object TriggeredAbilityCheck extends ExecutableGameAction[Boolean] {
   }
 }
 
-case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingTriggeredAbility]) extends DirectChoice[PendingTriggeredAbility] {
+case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingTriggeredAbility]) extends Choice[PendingTriggeredAbility] {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[PendingTriggeredAbility] = {
     serializedDecision.toIntOption.flatMap(id => abilities.find(_.id == id))
   }

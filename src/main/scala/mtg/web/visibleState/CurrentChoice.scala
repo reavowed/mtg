@@ -2,7 +2,7 @@ package mtg.web.visibleState
 
 import mtg.core.ObjectId
 import mtg.game.priority.TriggeredAbilityChoice
-import mtg.game.state.{GameState, NewChoice, StackObjectWithState}
+import mtg.game.state.{GameState, Choice, StackObjectWithState}
 import mtg.stack.adding.ModeChoice
 import mtg.stack.resolving.ResolveEffectChoice
 
@@ -12,7 +12,7 @@ case class ModeChoiceDetails(modes: Seq[String], stackObjectId: ObjectId, artDet
 
 case class CurrentChoice(`type`: String, playerToAct: String, details: Any)
 object CurrentChoice {
-  def apply(choice: NewChoice[_], gameState: GameState): CurrentChoice = {
+  def apply(choice: Choice[_], gameState: GameState): CurrentChoice = {
     choice match {
       case resolveEffectChoice: ResolveEffectChoice =>
         CurrentChoice(

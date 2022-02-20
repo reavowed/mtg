@@ -65,7 +65,7 @@ object DeclareAttackers extends ExecutableGameAction[Unit] {
 case class AttackDeclaration(attacker: ObjectId, attackedPlayer: PlayerId)
 case class DeclaredAttackers(player: PlayerId, attackDeclarations: Seq[AttackDeclaration])
 
-case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: PlayerId, possibleAttackers: Seq[ObjectId]) extends DirectChoice[DeclaredAttackers] {
+case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: PlayerId, possibleAttackers: Seq[ObjectId]) extends Choice[DeclaredAttackers] {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[DeclaredAttackers] = {
     ParsingUtils.splitStringBySpaces(serializedDecision)
       .map(id => possibleAttackers.find(_.toString == id).map(AttackDeclaration(_, defendingPlayer)))

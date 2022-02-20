@@ -2,7 +2,7 @@ package mtg.game.start
 
 import mtg.core.PlayerId
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{DirectChoice, ExecutableGameAction, GameAction, GameState, PartialGameActionResult}
+import mtg.game.state.{Choice, ExecutableGameAction, GameAction, GameState, PartialGameActionResult}
 
 case class TakeMulligan(playerToAct: PlayerId, numberOfMulligansTakenSoFar: Int) extends ExecutableGameAction[MulliganDecision] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[MulliganDecision] = {
@@ -22,7 +22,7 @@ case class TakeMulligan(playerToAct: PlayerId, numberOfMulligansTakenSoFar: Int)
   }
 }
 
-case class MulliganChoice(playerToAct: PlayerId, numberOfMulligansTakenSoFar: Int) extends DirectChoice.WithParser[MulliganDecision] {
+case class MulliganChoice(playerToAct: PlayerId, numberOfMulligansTakenSoFar: Int) extends Choice.WithParser[MulliganDecision] {
   override def getParser()(implicit gameState: GameState): PartialFunction[String, MulliganDecision] = {
     case "K" =>
       MulliganDecision.Keep(playerToAct)

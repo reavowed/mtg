@@ -7,7 +7,7 @@ import mtg.game.state._
 case class PriorityChoice(
   playerToAct: PlayerId,
   availableActions: Seq[PriorityAction],
-) extends DirectChoice[PriorityDecision] {
+) extends Choice[PriorityDecision] {
 
   object TakeAction {
     def unapply(string: String): Option[PriorityAction] = {

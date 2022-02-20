@@ -28,7 +28,7 @@ object GameActionExecutor {
 
   def handleDecision[T](action: GameAction[T], serializedDecision: String, actingPlayer: PlayerId)(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = {
     action match {
-      case directChoice: DirectChoice[T] if (directChoice.playerToAct == actingPlayer) =>
+      case directChoice: Choice[T] if (directChoice.playerToAct == actingPlayer) =>
         directChoice.handleDecision(serializedDecision).map(d => (ProcessedGameActionResult.Value(d), gameState.recordChoice(directChoice, d)))
       case PartiallyExecutedActionWithChild(rootAction, child, callback) =>
         handleDecisionForChild(rootAction, child, callback, serializedDecision, actingPlayer)
@@ -73,7 +73,7 @@ object GameActionExecutor {
   def executeNextAction[T](gameAction: GameAction[T])(implicit gameState: GameState, stops: Stops): Option[(ProcessedGameActionResult[T], GameState)] = gameAction match {
     case priorityChoice: PriorityChoice if stops.shouldAutoPass(priorityChoice, gameState) =>
       handleDecision(priorityChoice, "Pass", priorityChoice.playerToAct)
-    case _: NewChoice[T] =>
+    case _: Choice[T] =>
       None
     case action: ExecutableGameAction[T] =>
       Some(executeAction(action))

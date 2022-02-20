@@ -90,7 +90,7 @@ case class DeclareBlockersChoice(
     playerToAct: PlayerId,
     attackers: Seq[ObjectId],
     possibleBlockers: Map[ObjectId, Seq[ObjectId]])
-  extends DirectChoice[DeclaredBlockers]
+  extends Choice[DeclaredBlockers]
 {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[DeclaredBlockers] = {
     ParsingUtils.splitStringAsIds(serializedDecision)
@@ -119,7 +119,7 @@ case class OrderBlockers(blockDeclarations: Seq[BlockDeclaration]) extends Execu
   }
 }
 
-case class OrderBlockersChoice(playerToAct: PlayerId, attacker: ObjectId, blockers: Set[ObjectId]) extends DirectChoice[BlockerOrdering] {
+case class OrderBlockersChoice(playerToAct: PlayerId, attacker: ObjectId, blockers: Set[ObjectId]) extends Choice[BlockerOrdering] {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[BlockerOrdering] = {
     for {
       blockersInOrder <- ParsingUtils.splitStringAsIds(serializedDecision)

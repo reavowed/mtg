@@ -29,7 +29,7 @@ case class ChooseTargets(stackObjectId: ObjectId) extends ExecutableGameAction[U
   }
 }
 
-case class TargetChoice(playerToAct: PlayerId, objectId: ObjectId, targetDescription: String, validOptions: Seq[ObjectOrPlayerId]) extends DirectChoice[ObjectOrPlayerId] {
+case class TargetChoice(playerToAct: PlayerId, objectId: ObjectId, targetDescription: String, validOptions: Seq[ObjectOrPlayerId]) extends Choice[ObjectOrPlayerId] {
   def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[ObjectOrPlayerId] = {
     validOptions.find(_.toString == serializedDecision)
   }

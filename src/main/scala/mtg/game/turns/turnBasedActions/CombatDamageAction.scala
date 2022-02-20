@@ -84,7 +84,7 @@ case class AssignCombatDamageChoice(
     attacker: ObjectId,
     blockers: Seq[(ObjectId, Int)],
     damageToAssign: Int)
-  extends DirectChoice[Seq[DealCombatDamageEvent]]
+  extends Choice[Seq[DealCombatDamageEvent]]
 {
   object DamageAmount {
     def unapply(text: String): Option[Int] = text.toIntOption

@@ -71,7 +71,7 @@ object PayManaCosts {
   }
 }
 
-case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost) extends DirectChoice[(ManaSymbol, ManaObject)] {
+case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost) extends Choice[(ManaSymbol, ManaObject)] {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[(ManaSymbol, ManaObject)] = {
     None
   }

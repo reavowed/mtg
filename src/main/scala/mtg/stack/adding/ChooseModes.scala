@@ -21,7 +21,7 @@ case class ChooseModes(stackObjectId: ObjectId) extends ExecutableGameAction[Uni
   }
 }
 
-case class ModeChoice(playerToAct: PlayerId, stackObjectId: ObjectId, modes: Seq[SimpleSpellEffectParagraph]) extends DirectChoice[Int] {
+case class ModeChoice(playerToAct: PlayerId, stackObjectId: ObjectId, modes: Seq[SimpleSpellEffectParagraph]) extends Choice[Int] {
   def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[Int] = {
     for {
       modeIndex <- serializedDecision.toIntOption

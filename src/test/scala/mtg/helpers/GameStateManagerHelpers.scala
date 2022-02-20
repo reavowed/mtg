@@ -14,7 +14,7 @@ import mtg.game.turns.{TurnPhase, TurnStep}
 trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelpers {
 
   implicit class GameStateOps(gameState: GameState) {
-    def currentChoice: Option[NewChoice[_]] = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[NewChoice[_]])
+    def currentChoice: Option[Choice[_]] = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[Choice[_]])
   }
 
   implicit class GameStateManagerOps(gameStateManager: GameStateManager) {
@@ -47,7 +47,7 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       getState(getCard(zone, cardDefinition))
     }
 
-    def currentChoice: Option[NewChoice[_]] = gameStateManager.gameState.currentChoice
+    def currentChoice: Option[Choice[_]] = gameStateManager.gameState.currentChoice
 
     def passPriority(player: PlayerId): Unit = {
       gameStateManager.handleDecision("Pass", player)
