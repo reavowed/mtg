@@ -38,7 +38,7 @@ object GameActionExecutor {
   }
 
   private def handleDecisionForChild[T, S](
-    rootAction: CompoundGameAction[T],
+    rootAction: GameAction[T],
     childAction: GameAction[S],
     callback: (S, GameState) => PartialGameActionResult[T],
     serializedDecision: String,
@@ -103,7 +103,7 @@ object GameActionExecutor {
 
 
   private def executeCallback[T, S](
-    rootAction: CompoundGameAction[T],
+    rootAction: GameAction[T],
     childValue: S,
     callback: (S, GameState) => PartialGameActionResult[T])(
     implicit gameState: GameState
@@ -112,7 +112,7 @@ object GameActionExecutor {
   }
 
   private def executeChildAction[T, S](
-    rootAction: CompoundGameAction[T],
+    rootAction: GameAction[T],
     childAction: GameAction[S],
     callback: (S, GameState) => PartialGameActionResult[T])(
     implicit gameState: GameState,
@@ -122,7 +122,7 @@ object GameActionExecutor {
   }
 
   private def runChildAction[T, S](
-    rootAction: CompoundGameAction[T],
+    rootAction: GameAction[T],
     childAction: GameAction[S],
     callback: (S, GameState) => PartialGameActionResult[T],
     f: (GameAction[S], GameState) => Option[(ProcessedGameActionResult[S], GameState)])(
@@ -151,7 +151,7 @@ object GameActionExecutor {
     }
   }
 
-  def handleActionResult[T](rootAction: CompoundGameAction[T], currentResult: PartialGameActionResult[T])(implicit gameState: GameState): (ProcessedGameActionResult[T], GameState) = {
+  def handleActionResult[T](rootAction: GameAction[T], currentResult: PartialGameActionResult[T])(implicit gameState: GameState): (ProcessedGameActionResult[T], GameState) = {
     currentResult match {
       case PartialGameActionResult.Value(value) =>
         (ProcessedGameActionResult.Value(value), gameState)

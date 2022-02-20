@@ -7,13 +7,12 @@ import mtg.game.state.history.LogEvent
 sealed trait GameUpdate
 
 sealed trait GameAction[+T] extends GameUpdate
-sealed trait CompoundGameAction[+T] extends GameAction[T]
-trait ExecutableGameAction[+T] extends CompoundGameAction[T] {
+trait ExecutableGameAction[+T] extends GameAction[T] {
   def execute()(implicit gameState: GameState): PartialGameActionResult[T]
 }
 trait RootGameAction extends ExecutableGameAction[RootGameAction]
 
-trait Choice[+T] extends CompoundGameAction[T] {
+trait Choice[+T] extends GameAction[T] {
   def playerToAct: PlayerId
   def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[T]
   def temporarilyVisibleZones: Seq[Zone] = Nil
@@ -26,8 +25,8 @@ object Choice {
   }
 }
 
-case class PartiallyExecutedActionWithChild[T, S](rootAction: CompoundGameAction[T], childAction: GameAction[S], callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
-case class PartiallyExecutedActionWithValue[T, S](rootAction: CompoundGameAction[T], value: S, callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
+case class PartiallyExecutedActionWithChild[T, S](rootAction: GameAction[T], childAction: GameAction[S], callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
+case class PartiallyExecutedActionWithValue[T, S](rootAction: GameAction[T], value: S, callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
