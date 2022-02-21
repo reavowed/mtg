@@ -3,6 +3,7 @@ package mtg.stack.adding
 import mtg.core.{ObjectId, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
+import mtg.game.priority.actions.ActivateAbilityAction
 import mtg.game.state._
 import mtg.parts.costs.ManaCost
 
@@ -48,12 +49,12 @@ case class PayManaCosts(manaCost: ManaCost, player: PlayerId) extends Executable
     val (remainingCost, remainingManaInPool) = payManaAutomatically(manaCost.symbols, initialManaInPool)
     PartialGameActionResult.ChildWithCallback(
       WrappedOldUpdates(SpendManaAutomaticallyEvent(player, remainingManaInPool)),
-      payRemainingMana(player, remainingCost))
+      payRemainingMana(player, remainingCost)(_: Unit)(_))
   }
 
-  private def payRemainingMana(player: PlayerId, remainingCost: Seq[ManaSymbol])(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
+  private def payRemainingMana(player: PlayerId, remainingCost: Seq[ManaSymbol])(any: Unit)(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     if (remainingCost.nonEmpty) {
-      PartialGameActionResult.childThenValue(PayManaChoice(player, ManaCost(remainingCost: _*)), ())(gameState)
+      PartialGameActionResult.childThenValue(PayManaChoice(player, ManaCost(remainingCost: _*)), ())
     } else {
       PartialGameActionResult.Value(())
     }
@@ -71,8 +72,17 @@ object PayManaCosts {
   }
 }
 
-case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost) extends Choice[(ManaSymbol, ManaObject)] {
+case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost, availableManaAbilities: Seq[ActivateAbilityAction]) extends Choice[(ManaSymbol, ManaObject)] {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[(ManaSymbol, ManaObject)] = {
     None
+  }
+}
+object PayManaChoice {
+  def apply(playerToAct: PlayerId, remainingCost: ManaCost)(implicit gameState: GameState): PayManaChoice = {
+    PayManaChoice(
+      playerToAct,
+      remainingCost,
+      ActivateAbilityAction.getActivatableAbilities(playerToAct, gameState)
+        .filter(_.ability.isManaAbility))
   }
 }
