@@ -17,7 +17,7 @@ class CastSpellManaPaymentSpec extends SpecWithTestCards {
     "offer payment choice with no mana in pool" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, Seq(Creature))
-        .setBattlefield(playerOne, Seq(Plains, Plains))
+        .setBattlefield(playerOne, Seq(Plains))
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -25,6 +25,14 @@ class CastSpellManaPaymentSpec extends SpecWithTestCards {
       manager.castSpell(playerOne, Creature)
 
       manager.currentChoice must beSome(beAnInstanceOf[PayManaChoice])
+
+      manager.activateAbility(playerOne, Plains)
+      manager.handleDecision("W", playerOne)
+
+      manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
+      manager.gameState.gameObjectState.hands(playerOne) must beEmpty
+      manager.gameState.gameObjectState.stack must contain(exactly(beCardObject(Creature)))
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne))
     }
 
     "move the card to the stack with correct mana in pool" in {
@@ -45,6 +53,7 @@ class CastSpellManaPaymentSpec extends SpecWithTestCards {
       manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
       manager.gameState.gameObjectState.hands(playerOne) must beEmpty
       manager.gameState.gameObjectState.stack must contain(exactly(beCardObject(Creature)))
+      manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne))
     }
   }
 }

@@ -10,6 +10,7 @@ import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLa
 import mtg.game.state._
 import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
 import mtg.game.turns.{TurnPhase, TurnStep}
+import mtg.stack.adding.PayManaChoice
 
 trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelpers {
 
@@ -89,7 +90,12 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       passUntil(_.gameObjectState.stack.size < stackSize)
     }
 
-    def priorityActions: Seq[PriorityAction] = currentChoice.get.asInstanceOf[PriorityChoice].availableActions
+    def priorityActions: Seq[PriorityAction] = {
+      val choice = currentChoice.get
+      choice.asOptionalInstanceOf[PriorityChoice].map(_.availableActions)
+        .orElse(choice.asOptionalInstanceOf[PayManaChoice].map(_.availableManaAbilities))
+        .get
+    }
 
     def playLand(player: PlayerId, cardDefinition: CardDefinition): Unit = {
       val landAction = priorityActions.ofType[PlayLandAction]

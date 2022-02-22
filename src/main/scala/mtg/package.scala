@@ -31,11 +31,21 @@ package object mtg {
     def mapWithIndex[S](f: (T, Int) => S): Seq[S] = {
       seq.zipWithIndex.map(f.tupled)
     }
+    def findWithIndex(p: T => Boolean): Option[(T, Int)] = {
+      seq.zipWithIndex.find { case (t, _) => p(t) }
+    }
     def findIndex(p: T => Boolean): Option[Int] = {
-      seq.zipWithIndex.find { case (t, _) => p(t) }.map(_._2)
+      findWithIndex(p).map(_._2)
+    }
+    def findWithIndexByType[S <: T : ClassTag]: Option[(S, Int)] = {
+      val classType = implicitly[ClassTag[S]].runtimeClass.asInstanceOf[Class[S]]
+      findWithIndex(classType.isInstance).map(_.mapLeft(classType.cast))
     }
     def removeAtIndex(index: Int): Seq[T] = {
       seq.take(index) ++ seq.drop(index + 1)
+    }
+    def remove(t: T): Seq[T] = {
+      findIndex(_ == t).map(removeAtIndex).getOrElse(seq)
     }
     def single: T = seq match {
       case t +: Nil => t

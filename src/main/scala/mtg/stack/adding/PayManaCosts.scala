@@ -1,7 +1,7 @@
 package mtg.stack.adding
 
 import mtg.abilities.ManaAbility
-import mtg.core.{ObjectId, PlayerId}
+import mtg.core.{ManaType, ObjectId, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
 import mtg.game.priority.actions.ActivateAbilityAction
@@ -49,7 +49,7 @@ case class PayManaCosts(manaCost: ManaCost, player: PlayerId) extends Executable
     val initialManaInPool = gameState.gameObjectState.manaPools(player)
     val (remainingCost, remainingManaInPool) = payManaAutomatically(manaCost.symbols, initialManaInPool)
     PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(SpendManaAutomaticallyEvent(player, remainingManaInPool)),
+      WrappedOldUpdates(UpdateManaPool(player, remainingManaInPool)),
       payRemainingMana(player, remainingCost)(_: Unit)(_))
   }
 
@@ -57,16 +57,36 @@ case class PayManaCosts(manaCost: ManaCost, player: PlayerId) extends Executable
     if (remainingCost.nonEmpty) {
       PartialGameActionResult.ChildWithCallback(
         PayManaChoice(player, ManaCost(remainingCost: _*)),
-        handleManaAbility(player, remainingCost))
+        handleDecision(player, remainingCost))
     } else {
       PartialGameActionResult.Value(())
     }
   }
 
-  private def handleManaAbility(player: PlayerId, remainingCost: Seq[ManaSymbol])(manaAbilityAction: ActivateAbilityAction, gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.ChildWithCallback(
-      manaAbilityAction,
-      payRemainingMana(player, remainingCost)(_: Unit)(_))
+  private def handleDecision(player: PlayerId, remainingCost: Seq[ManaSymbol])(decision: Either[ManaObject, ActivateAbilityAction], gameState: GameState): PartialGameActionResult[Unit] = {
+    decision match {
+      case Left(manaObject) =>
+        def costAfter = remainingCost.findIndex(_.asOptionalInstanceOf[ManaSymbol.ForType].exists(_.manaType == manaObject.manaType)).map(i => remainingCost.removeAtIndex(i))
+          .orElse(remainingCost.findWithIndexByType[ManaSymbol.Generic].map { case (symbol, index) =>
+            if (symbol.amount > 1) {
+              remainingCost.updated(index, ManaSymbol.Generic(symbol.amount - 1))
+            } else {
+              remainingCost.removeAtIndex(index)
+            }
+          })
+        costAfter match {
+          case Some(remainingCost) =>
+            PartialGameActionResult.ChildWithCallback(
+              WrappedOldUpdates(UpdateManaPool(player, gameState.gameObjectState.manaPools(player).remove(manaObject))),
+              payRemainingMana(player, remainingCost)(_: Unit)(_))
+          case None =>
+            payRemainingMana(player, remainingCost)(())(gameState)
+        }
+      case Right(manaAbilityAction) =>
+        PartialGameActionResult.ChildWithCallback(
+          manaAbilityAction,
+          payRemainingMana(player, remainingCost)(_: Unit)(_))
+    }
   }
 }
 
@@ -81,9 +101,10 @@ object PayManaCosts {
   }
 }
 
-case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost, availableManaAbilities: Seq[ActivateAbilityAction]) extends Choice[ActivateAbilityAction] {
-  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[ActivateAbilityAction] = {
-    ActivateAbilityAction.matchDecision(serializedDecision, availableManaAbilities)
+case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost, availableManaAbilities: Seq[ActivateAbilityAction]) extends Choice[Either[ManaObject, ActivateAbilityAction]] {
+  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[Either[ManaObject, ActivateAbilityAction]] = {
+    ActivateAbilityAction.matchDecision(serializedDecision, availableManaAbilities).map(Right(_))
+      .orElse(gameState.gameObjectState.manaPools(playerToAct).find(_.manaType.letter == serializedDecision).map(Left(_)))
   }
 }
 object PayManaChoice {

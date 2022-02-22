@@ -4,7 +4,7 @@ import mtg.core.PlayerId
 import mtg.game.objects.ManaObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class SpendManaAutomaticallyEvent(player: PlayerId, remainingMana: Seq[ManaObject]) extends InternalGameAction {
+case class UpdateManaPool(player: PlayerId, remainingMana: Seq[ManaObject]) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState.updateManaPool(player, _ => remainingMana)
   }
