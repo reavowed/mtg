@@ -12,7 +12,7 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
   override def displayText: String = ability.getText(objectWithAbility.characteristics.name.getOrElse("this object"))
   override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + objectWithAbility.characteristics.abilities.indexOf(ability)
 
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     if (ability.isManaAbility) {
       val actions = ability.costs.map(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
       PartialGameActionResult.childrenThenValue(actions, ())
@@ -23,14 +23,16 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
     }
   }
 
-  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {
+  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
     // TODO: Should be result of MoveObjectEvent
     val stackObjectId = gameState.gameObjectState.stack.last.objectId
-    PartialGameActionResult.children(
-      ChooseModes(stackObjectId),
-      ChooseTargets(stackObjectId),
-      PayCosts(stackObjectId),
-      FinishActivating(stackObjectId))
+    PartialGameActionResult.childrenThenValue(
+      Seq(
+        ChooseModes(stackObjectId),
+        ChooseTargets(stackObjectId),
+        PayCosts(stackObjectId),
+        FinishActivating(stackObjectId)),
+      ())(gameState)
   }
 }
 
@@ -47,6 +49,16 @@ object ActivateAbilityAction {
     ability.isFunctional(objectWithAbility) &&
       objectWithAbility.controllerOrOwner == player &&
       !ability.costs.exists(_.isUnpayable(objectWithAbility))
+  }
+  def matchDecision(serializedDecision: String, availableActions: Seq[ActivateAbilityAction]): Option[ActivateAbilityAction] = {
+    if (serializedDecision.startsWith("Activate ")) {
+      serializedDecision.substring("Activate ".length).split(" ").toSeq match {
+        case Seq(objectId, index) =>
+          availableActions.find(a => a.objectWithAbility.gameObject.objectId.toString == objectId && a.abilityIndex.toString == index)
+        case _ =>
+          None
+      }
+    } else None
   }
 }
 

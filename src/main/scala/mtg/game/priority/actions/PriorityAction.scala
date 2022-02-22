@@ -7,7 +7,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.{ExecutableGameAction, GameState}
 
 @JsonSerialize(using = classOf[PriorityAction.Serializer])
-abstract class PriorityAction extends ExecutableGameAction[Any] {
+abstract class PriorityAction extends ExecutableGameAction[Unit] {
   def objectId: ObjectId
   def displayText: String
   def optionText: String

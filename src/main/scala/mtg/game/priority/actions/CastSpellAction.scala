@@ -12,19 +12,21 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     PartialGameActionResult.ChildWithCallback(
       WrappedOldUpdates(MoveToStackAction(objectId, player)),
       steps)
   }
-  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {
+  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
     // TODO: Should be result of MoveObjectEvent
     val spellId = gameState.gameObjectState.stack.last.objectId
-    PartialGameActionResult.children(
-      ChooseModes(spellId),
-      ChooseTargets(spellId),
-      PayManaCosts.ForSpell(spellId),
-      FinishCasting(spellId))
+    PartialGameActionResult.childrenThenValue(
+      Seq(
+        ChooseModes(spellId),
+        ChooseTargets(spellId),
+        PayManaCosts.ForSpell(spellId),
+        FinishCasting(spellId)),
+      ())(gameState)
   }
 }
 

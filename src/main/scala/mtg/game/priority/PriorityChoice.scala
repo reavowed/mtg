@@ -15,15 +15,8 @@ case class PriorityChoice(
         availableActions.ofType[PlayLandAction].find(_.land.gameObject.objectId.toString == string.substring("Play ".length))
       } else if (string.startsWith("Cast ")) {
         availableActions.ofType[CastSpellAction].find(_.objectToCast.gameObject.objectId.toString == string.substring("Cast ".length))
-      } else if (string.startsWith("Activate ")) {
-        (string.substring("Activate ".length).split(" ").toSeq match {
-          case Seq(objectId, index) =>
-            availableActions.ofType[ActivateAbilityAction].find(a => a.objectWithAbility.gameObject.objectId.toString == objectId && a.abilityIndex.toString == index)
-          case _ =>
-            None
-        })
       } else {
-        None
+        ActivateAbilityAction.matchDecision(string, availableActions.ofType[ActivateAbilityAction])
       }
     }
   }

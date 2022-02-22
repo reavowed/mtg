@@ -12,13 +12,14 @@ case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends Prior
   override def displayText: String = "Play"
   override def optionText: String = "Play " + land.gameObject.objectId
 
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
+  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val preventEvent = PlayLandAction.cannotPlayLands(player, gameState) || PlayLandAction.cannotPlayLand(land, player, gameState)
     val eventOption = if (preventEvent) None else Some(PlayLandEvent(player, land.gameObject))
-    PartialGameActionResult.children(
-      WrappedOldUpdates(eventOption.toSeq: _*),
-      LogEvent.PlayedLand(player, land.characteristics.name.get)
-    )
+    PartialGameActionResult.childrenThenValue(
+      Seq(
+        WrappedOldUpdates(eventOption.toSeq: _*),
+        LogEvent.PlayedLand(player, land.characteristics.name.get)),
+      ())
   }
 }
 

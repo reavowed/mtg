@@ -1,5 +1,6 @@
 package mtg.stack.adding
 
+import mtg.abilities.ManaAbility
 import mtg.core.{ObjectId, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
@@ -54,10 +55,18 @@ case class PayManaCosts(manaCost: ManaCost, player: PlayerId) extends Executable
 
   private def payRemainingMana(player: PlayerId, remainingCost: Seq[ManaSymbol])(any: Unit)(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     if (remainingCost.nonEmpty) {
-      PartialGameActionResult.childThenValue(PayManaChoice(player, ManaCost(remainingCost: _*)), ())
+      PartialGameActionResult.ChildWithCallback(
+        PayManaChoice(player, ManaCost(remainingCost: _*)),
+        handleManaAbility(player, remainingCost))
     } else {
       PartialGameActionResult.Value(())
     }
+  }
+
+  private def handleManaAbility(player: PlayerId, remainingCost: Seq[ManaSymbol])(manaAbilityAction: ActivateAbilityAction, gameState: GameState): PartialGameActionResult[Unit] = {
+    PartialGameActionResult.ChildWithCallback(
+      manaAbilityAction,
+      payRemainingMana(player, remainingCost)(_: Unit)(_))
   }
 }
 
@@ -72,9 +81,9 @@ object PayManaCosts {
   }
 }
 
-case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost, availableManaAbilities: Seq[ActivateAbilityAction]) extends Choice[(ManaSymbol, ManaObject)] {
-  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[(ManaSymbol, ManaObject)] = {
-    None
+case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost, availableManaAbilities: Seq[ActivateAbilityAction]) extends Choice[ActivateAbilityAction] {
+  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[ActivateAbilityAction] = {
+    ActivateAbilityAction.matchDecision(serializedDecision, availableManaAbilities)
   }
 }
 object PayManaChoice {
