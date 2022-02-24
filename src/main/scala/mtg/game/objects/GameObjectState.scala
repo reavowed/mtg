@@ -5,7 +5,7 @@ import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
 import mtg.core.zones.Zone
 import mtg.core.zones.Zone.BasicZone
-import mtg.core.{ObjectId, PlayerId}
+import mtg.core.{ManaType, ObjectId, PlayerId}
 import mtg.effects.ContinuousEffect
 import mtg.effects.condition.Condition
 import mtg.game._
@@ -18,6 +18,7 @@ import scala.util.Random
 case class GameObjectState(
     nextObjectId: Int,
     nextAbilityId: Int,
+    nextManaId: Int,
     lifeTotals: Map[PlayerId, Int],
     libraries: Map[PlayerId, Seq[BasicGameObject]],
     hands: Map[PlayerId, Seq[BasicGameObject]],
@@ -39,6 +40,9 @@ case class GameObjectState(
   }
   def activeTriggeredAbilities: View[TriggeredAbility] = DerivedState.getActiveTriggeredAbilities(derivedState.allObjectStates.values.view)
 
+  def addMana(playerId: PlayerId, manaType: ManaType): GameObjectState = {
+    updateManaPool(playerId, _ :+ ManaObject(nextManaId, manaType)).copy(nextManaId = nextManaId + 1)
+  }
   def updateManaPool(player: PlayerId, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
   }
@@ -187,6 +191,7 @@ object GameObjectState {
 
     GameObjectState(
       nextObjectId,
+      1,
       1,
       lifeTotals,
       libraries,

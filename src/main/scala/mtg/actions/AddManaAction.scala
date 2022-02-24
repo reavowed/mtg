@@ -7,14 +7,14 @@ import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
 case class AddManaAction(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.updateManaPool(player, _ ++ manaSymbols.flatMap(getManaObjects))
+    manaSymbols.flatMap(getManaTypes).foldLeft(gameState.gameObjectState)(_.addMana(player, _))
   }
   override def canBeReverted: Boolean = true
 
-  private def getManaObjects(manaSymbol: ManaSymbol): Seq[ManaObject] = {
+  private def getManaTypes(manaSymbol: ManaSymbol): Seq[ManaType] = {
     manaSymbol match {
-      case ManaSymbol.ForType(manaType) => Seq(ManaObject(manaType))
-      case ManaSymbol.Generic(amount) => Seq.fill(amount)(ManaObject(ManaType.Colorless))
+      case ManaSymbol.ForType(manaType) => Seq(manaType)
+      case ManaSymbol.Generic(amount) => Seq.fill(amount)(ManaType.Colorless)
     }
   }
 }
