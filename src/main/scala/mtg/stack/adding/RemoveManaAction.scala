@@ -4,9 +4,9 @@ import mtg.core.PlayerId
 import mtg.game.objects.ManaObject
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 
-case class UpdateManaPool(player: PlayerId, remainingMana: Seq[ManaObject]) extends InternalGameAction {
+case class RemoveManaAction(player: PlayerId, manaToRemove: Seq[ManaObject]) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.updateManaPool(player, _ => remainingMana)
+    gameState.gameObjectState.updateManaPool(player, pool => pool.diff(manaToRemove))
   }
 
   override def canBeReverted: Boolean = true
