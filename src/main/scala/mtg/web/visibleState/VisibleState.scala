@@ -1,11 +1,11 @@
 package mtg.web.visibleState
 
+import mtg.core.PlayerId
 import mtg.core.zones.Zone
-import mtg.core.{ManaType, PlayerId}
-import mtg.game.objects.GameObject
-import mtg.game.state.{GameState, Choice, UndoHelper}
-import mtg.game.turns.{TurnPhase, TurnStep}
 import mtg.game.GameData
+import mtg.game.objects.{GameObject, ManaObject}
+import mtg.game.state.{Choice, GameState, UndoHelper}
+import mtg.game.turns.{TurnPhase, TurnStep}
 
 case class VisibleState(
   player: PlayerId,
@@ -19,7 +19,7 @@ case class VisibleState(
   battlefield: Map[PlayerId, Seq[VisibleGameObject]],
   graveyards: Map[PlayerId, Seq[VisibleGameObject]],
   stack: Seq[VisibleGameObject],
-  manaPools: Map[PlayerId, Seq[ManaType]],
+  manaPools: Map[PlayerId, Seq[ManaObject]],
   currentChoice: Option[CurrentChoice],
   canUndoLastChoice: Boolean,
   log: Seq[LogEventWrapper]
@@ -46,7 +46,7 @@ object VisibleState {
       gameState.gameObjectState.battlefield.view.map(getObject).toSeq.groupBy(_.controller.get),
       gameState.gameObjectState.graveyards.view.mapValues(_.map(getObject)).toMap,
       gameState.gameObjectState.stack.map(getObject),
-      gameState.gameObjectState.manaPools.view.mapValues(_.map(_.manaType)).toMap,
+      gameState.gameObjectState.manaPools,
       currentChoice.map(CurrentChoice(_, gameState)),
       UndoHelper.canUndo(playerIdentifier, gameState),
       gameState.gameHistory.logEvents.map(LogEventWrapper.apply))

@@ -5,8 +5,8 @@ import HorizontalCenter from "../layout/HorizontalCenter";
 
 export default function ManaPool() {
     const gameState = useContext(GameState);
-    const manaTypes = gameState.manaPools[gameState.player];
+    const manaPool = gameState.manaPools[gameState.player];
     return <HorizontalCenter>
-        {_.map(manaTypes, manaType => <span className={"card-symbol card-symbol-" + manaType}/>)}
+        {_.map(manaPool, manaObject => <span className={"card-symbol card-symbol-" + manaObject.manaType}/>)}
     </HorizontalCenter>;
 }
