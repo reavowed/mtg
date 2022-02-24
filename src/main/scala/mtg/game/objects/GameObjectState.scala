@@ -16,9 +16,7 @@ import scala.collection.View
 import scala.util.Random
 
 case class GameObjectState(
-    nextObjectId: Int,
-    nextAbilityId: Int,
-    nextManaId: Int,
+    nextId: Int,
     lifeTotals: Map[PlayerId, Int],
     libraries: Map[PlayerId, Seq[BasicGameObject]],
     hands: Map[PlayerId, Seq[BasicGameObject]],
@@ -41,7 +39,7 @@ case class GameObjectState(
   def activeTriggeredAbilities: View[TriggeredAbility] = DerivedState.getActiveTriggeredAbilities(derivedState.allObjectStates.values.view)
 
   def addMana(playerId: PlayerId, manaType: ManaType): GameObjectState = {
-    updateManaPool(playerId, _ :+ ManaObject(nextManaId, manaType)).copy(nextManaId = nextManaId + 1)
+    updateManaPool(playerId, _ :+ ManaObject(nextId, manaType)).copy(nextId = nextId + 1)
   }
   def updateManaPool(player: PlayerId, poolUpdater: Seq[ManaObject] => Seq[ManaObject]): GameObjectState = {
     Focus[GameObjectState](_.manaPools).at(player)(AtGuaranteed.apply).modify(poolUpdater)(this)
@@ -73,9 +71,9 @@ case class GameObjectState(
     addObjectToZone[BasicGameObject](exileLens, objectConstructor, _.length)
   }
   private def addObjectToZone[T <: GameObject](lens: Lens[GameObjectState, Seq[T]], objectConstructor: ObjectId => T, getIndex: Seq[T] => Int): GameObjectState = {
-    val newObject = objectConstructor(ObjectId(nextObjectId))
+    val newObject = objectConstructor(ObjectId(nextId))
     lens.modify(contents => contents.insertAtIndex(newObject, getIndex(contents)))(this)
-      .copy(nextObjectId = nextObjectId + 1)
+      .copy(nextId = nextId + 1)
   }
 
   def updateObject[T1 <: GameObject](oldObject: T1, f: T1 => T1): GameObjectState = {
@@ -152,8 +150,8 @@ case class GameObjectState(
   }
   def addWaitingTriggeredAbilities(abilities: Seq[TriggeredAbility]): GameObjectState = {
     copy(
-      triggeredAbilitiesWaitingToBePutOnStack = triggeredAbilitiesWaitingToBePutOnStack ++ abilities.mapWithIndex { case (ability, index) =>  PendingTriggeredAbility(nextAbilityId + index, ability) },
-      nextAbilityId = nextAbilityId + abilities.length)
+      triggeredAbilitiesWaitingToBePutOnStack = triggeredAbilitiesWaitingToBePutOnStack ++ abilities.mapWithIndex { case (ability, index) =>  PendingTriggeredAbility(nextId + index, ability) },
+      nextId = nextId + abilities.length)
   }
   def removeTriggeredAbility(ability: PendingTriggeredAbility): GameObjectState = {
     copy(triggeredAbilitiesWaitingToBePutOnStack = triggeredAbilitiesWaitingToBePutOnStack.filter(_ != ability))
@@ -166,10 +164,10 @@ case class GameObjectState(
 
 object GameObjectState {
   def initial(gameStartingData: GameStartingData, gameData: GameData): GameObjectState = {
-    var nextObjectId = 1
+    var nextId = 1
     def getNextObjectId = {
-      val objectId = ObjectId(nextObjectId)
-      nextObjectId += 1
+      val objectId = ObjectId(nextId)
+      nextId += 1
       objectId
     }
     def createGameObject(cardPrinting: CardPrinting, playerIdentifier: PlayerId, zone: BasicZone): BasicGameObject = {
@@ -190,9 +188,7 @@ object GameObjectState {
     }).toMap
 
     GameObjectState(
-      nextObjectId,
-      1,
-      1,
+      nextId,
       lifeTotals,
       libraries,
       emptyMap,

@@ -11,7 +11,7 @@ import org.specs2.matcher.MatchResult
 
 class MulliganSpec extends SpecWithGameStateManager {
   def checkAllCardsAreNewObjects(gameObjects: Seq[GameObject], previousGameObjectState: GameObjectState): MatchResult[_] = {
-    foreach(gameObjects)(cardObject => cardObject.objectId.value.must(beGreaterThanOrEqualTo(previousGameObjectState.nextObjectId)))
+    foreach(gameObjects)(cardObject => cardObject.objectId.value.must(beGreaterThanOrEqualTo(previousGameObjectState.nextId)))
   }
 
   def checkCardsAreDifferent(firstGameObjects: Seq[GameObject], secondGameObjects: Seq[GameObject]): MatchResult[_] = {
