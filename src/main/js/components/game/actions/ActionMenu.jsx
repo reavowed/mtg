@@ -3,7 +3,6 @@ import _ from "lodash";
 import {useCallback, useContext, useEffect, useState} from "preact/hooks";
 import ActionManager from "../../../contexts/ActionManager";
 import DecisionMaker from "../../../contexts/DecisionMaker";
-import GameState from "../../../contexts/GameState";
 import {ActionText} from "./ActionText";
 
 export function ActionMenu({actions, event}) {

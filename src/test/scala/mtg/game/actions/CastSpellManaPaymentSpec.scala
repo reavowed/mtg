@@ -27,7 +27,7 @@ class CastSpellManaPaymentSpec extends SpecWithTestCards {
       manager.currentChoice must beSome(beAnInstanceOf[PayManaChoice])
 
       manager.activateAbility(playerOne, Plains)
-      manager.handleDecision("W", playerOne)
+      manager.handleDecision("Pay " + manager.gameState.gameObjectState.manaPools(playerOne).single.id, playerOne)
 
       manager.gameState.gameObjectState.manaPools(playerOne) must beEmpty
       manager.gameState.gameObjectState.hands(playerOne) must beEmpty

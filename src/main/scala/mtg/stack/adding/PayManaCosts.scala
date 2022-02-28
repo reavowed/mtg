@@ -115,7 +115,13 @@ object PayManaCosts {
 case class PayManaChoice(playerToAct: PlayerId, remainingCost: ManaCost, availableManaAbilities: Seq[ActivateAbilityAction]) extends Choice[Either[ManaObject, ActivateAbilityAction]] {
   override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[Either[ManaObject, ActivateAbilityAction]] = {
     ActivateAbilityAction.matchDecision(serializedDecision, availableManaAbilities).map(Right(_))
-      .orElse(gameState.gameObjectState.manaPools(playerToAct).find(_.manaType.letter == serializedDecision).map(Left(_)))
+      .orElse(matchManaPayment(serializedDecision).map(Left(_)))
+  }
+  private def matchManaPayment(serializedDecision: String)(implicit gameState: GameState): Option[ManaObject] = {
+    if (serializedDecision.startsWith("Pay "))
+      gameState.gameObjectState.manaPools(playerToAct).find(_.id.toString == serializedDecision.substring("Pay ".length))
+    else
+      None
   }
 }
 object PayManaChoice {
