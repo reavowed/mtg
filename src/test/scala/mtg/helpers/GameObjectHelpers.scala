@@ -7,6 +7,7 @@ import org.specs2.matcher.Matcher
 import org.specs2.mutable.SpecificationLike
 
 import scala.collection.View
+import scala.reflect.ClassTag
 
 trait GameObjectHelpers extends SpecificationLike {
   def beObject(underlyingObject: UnderlyingObject): Matcher[GameObject] = { (gameObject: GameObject) =>
@@ -14,6 +15,10 @@ trait GameObjectHelpers extends SpecificationLike {
   }
   def beCardObject(cardDefinition: CardDefinition): Matcher[GameObject] = { (gameObject: GameObject) =>
     (gameObject.underlyingObject.asOptionalInstanceOf[Card].exists(_.printing.cardDefinition == cardDefinition), "", "")
+  }
+
+  def beInstanceThat[T : ClassTag](inner: Matcher[T]): Matcher[AnyRef] = {
+    beAnInstanceOf[T] and ((_: AnyRef).asInstanceOf[T]) ^^ inner
   }
 
   def beTapped: Matcher[GameObject] = {
