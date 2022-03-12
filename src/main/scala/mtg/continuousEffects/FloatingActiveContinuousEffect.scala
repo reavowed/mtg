@@ -1,6 +1,5 @@
-package mtg.game.objects
+package mtg.continuousEffects
 
-import mtg.continuousEffects.ContinuousEffect
 import mtg.effects.condition.Condition
 
 case class FloatingActiveContinuousEffect(effect: ContinuousEffect, endCondition: Condition)

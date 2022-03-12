@@ -3,7 +3,7 @@ package mtg.game.objects
 import monocle.{Focus, Lens}
 import mtg.abilities.{PendingTriggeredAbility, TriggeredAbility}
 import mtg.cards.CardPrinting
-import mtg.continuousEffects.ContinuousEffect
+import mtg.continuousEffects.{ContinuousEffect, FloatingActiveContinuousEffect}
 import mtg.core.zones.Zone
 import mtg.core.zones.Zone.BasicZone
 import mtg.core.{ManaType, ObjectId, PlayerId}

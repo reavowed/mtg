@@ -2,10 +2,9 @@ package mtg.game.state
 
 import mtg.abilities.TriggeredAbility
 import mtg.continuousEffects.PreventionEffect.Result.Prevent
-import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
+import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
 import mtg.effects.condition.EventCondition
-import mtg.game.objects.FloatingActiveContinuousEffect
 import mtg.game.priority.PriorityChoice
 
 import scala.annotation.tailrec
