@@ -1,7 +1,7 @@
 package mtg.filters
 
 import mtg.TestCards.vanillaCreature
-import mtg.abilities.builder.EffectBuilder._
+import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Spell
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature

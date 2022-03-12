@@ -34,7 +34,7 @@ case class ResolveStackObject(stackObject: StackObject) extends ExecutableGameAc
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell, gameState)
     PartialGameActionResult.childrenThenValue(
       Seq(
-        ResolveEffects(spell.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
+        ResolveInstructions(spell.applicableEffectParagraphs.flatMap(_.instructions), resolutionContext),
         FinishResolvingInstantOrSorcerySpell(spell)),
       ())
   }
@@ -43,7 +43,7 @@ case class ResolveStackObject(stackObject: StackObject) extends ExecutableGameAc
     val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability, gameState)
     PartialGameActionResult.childrenThenValue(
       Seq(
-        ResolveEffects(ability.applicableEffectParagraphs.flatMap(_.effects), resolutionContext),
+        ResolveInstructions(ability.applicableEffectParagraphs.flatMap(_.instructions), resolutionContext),
         FinishResolvingAbility(ability)),
       ())
   }

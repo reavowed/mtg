@@ -30,7 +30,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
 
       val plainsObject = manager.getCard(Zone.Battlefield, Plains)
       val plainsState = manager.getState(plainsObject)
-      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaEffect(ManaSymbol.White)))
+      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaInstruction(ManaSymbol.White)))
     }
 
     "be tappable for mana by their controller" in {

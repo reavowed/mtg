@@ -1,6 +1,6 @@
 package mtg.data.cards.alpha
 
-import mtg.abilities.builder.EffectBuilder._
+import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Spell
 import mtg.core.symbols.ManaSymbol.Red
 import mtg.core.types.Type

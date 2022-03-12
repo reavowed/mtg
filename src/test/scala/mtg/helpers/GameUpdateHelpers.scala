@@ -2,13 +2,13 @@ package mtg.helpers
 
 import mtg.cards.CardDefinition
 import mtg.core.{ObjectOrPlayerId, PlayerId}
-import mtg.effects.oneshot.OneShotEffectChoice
+import mtg.effects.oneshot.InstructionChoice
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.priority.PriorityChoice
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
 import mtg.game.state.GameUpdate
 import mtg.stack.adding.TargetChoice
-import mtg.stack.resolving.ResolveEffectChoice
+import mtg.stack.resolving.ResolveInstructionChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 import org.specs2.mutable.SpecificationLike
 
@@ -80,6 +80,6 @@ trait GameUpdateHelpers extends SpecificationLike with GameObjectStateHelpers {
 
   def bePriorityChoice: PriorityChoiceMatcher = new PriorityChoiceMatcher
   def beTargetChoice: TargetChoiceMatcher = new TargetChoiceMatcher
-  def beEffectChoice[T <: OneShotEffectChoice : ClassTag](m: Matcher[T]): Matcher[GameUpdate] = beAnInstanceOf[ResolveEffectChoice] and
-    ((_: GameUpdate).asInstanceOf[ResolveEffectChoice].effectChoice) ^^ (beAnInstanceOf[T] and (((_: OneShotEffectChoice).asInstanceOf[T]) ^^ m))
+  def beInstructionChoice[T <: InstructionChoice : ClassTag](m: Matcher[T]): Matcher[GameUpdate] = beAnInstanceOf[ResolveInstructionChoice] and
+    ((_: GameUpdate).asInstanceOf[ResolveInstructionChoice].instructionChoice) ^^ (beAnInstanceOf[T] and (((_: InstructionChoice).asInstanceOf[T]) ^^ m))
 }

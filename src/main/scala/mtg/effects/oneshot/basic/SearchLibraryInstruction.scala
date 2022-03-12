@@ -3,14 +3,14 @@ package mtg.effects.oneshot.basic
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.filters.Filter
-import mtg.effects.oneshot.{OneShotEffectChoice, OneShotEffectResult}
-import mtg.effects.{OneShotEffect, StackObjectResolutionContext}
+import mtg.effects.oneshot.{InstructionChoice, InstructionResult}
+import mtg.effects.{Instruction, StackObjectResolutionContext}
 import mtg.game.state.{GameState, InternalGameAction}
 import mtg.utils.TextUtils._
 
-case class SearchLibraryEffect(objectFilter: Filter[ObjectId]) extends OneShotEffect {
+case class SearchLibraryInstruction(objectFilter: Filter[ObjectId]) extends Instruction {
   override def getText(cardName: String): String = "search your library for " + objectFilter.getNounPhraseTemplate(cardName).singular.withArticle
-  override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): OneShotEffectResult = {
+  override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     val player = resolutionContext.controllingPlayer
     val possibleChoices = gameState.gameObjectState.libraries(player).view
       .map(_.objectId)
@@ -25,7 +25,7 @@ case class SearchLibraryChoice(
     playerChoosing: PlayerId,
     possibleChoices: Seq[ObjectId],
     resolutionContext: StackObjectResolutionContext)
-  extends OneShotEffectChoice
+  extends InstructionChoice
 {
   override def parseDecision(serializedDecision: String): Option[(Option[InternalGameAction], StackObjectResolutionContext)] = {
     for {

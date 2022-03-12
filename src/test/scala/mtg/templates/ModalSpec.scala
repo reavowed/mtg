@@ -1,6 +1,6 @@
 package mtg.templates
 
-import mtg.abilities.builder.EffectBuilder._
+import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Spell
 import mtg.core.types.Type
 import mtg.data.cards.Plains

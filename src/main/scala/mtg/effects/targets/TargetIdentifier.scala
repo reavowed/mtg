@@ -33,6 +33,6 @@ class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) exte
 
 object TargetIdentifier {
   def getAll(stackObjectWithState: StackObjectWithState): Seq[TargetIdentifier[_]] = {
-    stackObjectWithState.applicableEffectParagraphs.flatMap(_.effects).flatMap(_.targetIdentifiers)
+    stackObjectWithState.applicableEffectParagraphs.flatMap(_.instructions).flatMap(_.targetIdentifiers)
   }
 }

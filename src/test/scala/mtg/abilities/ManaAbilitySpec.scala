@@ -1,6 +1,6 @@
 package mtg.abilities
 
-import mtg.abilities.builder.EffectBuilder._
+import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Creature
 import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.ManaType

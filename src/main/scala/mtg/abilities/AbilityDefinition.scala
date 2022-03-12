@@ -5,7 +5,7 @@ import mtg.continuousEffects.ContinuousEffect
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.effects.condition.ConditionDefinition
-import mtg.effects.oneshot.basic.AddManaEffect
+import mtg.effects.oneshot.basic.AddManaInstruction
 import mtg.game.state.ObjectWithState
 import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
@@ -40,7 +40,7 @@ case class ActivatedAbilityDefinition(
 
   def isManaAbility: Boolean = {
     instructions.asOptionalInstanceOf[SimpleInstructionParagraph]
-      .exists(p => p.effects.forall(_.targetIdentifiers.isEmpty) && p.effects.exists(_.isInstanceOf[AddManaEffect]))
+      .exists(p => p.instructions.forall(_.targetIdentifiers.isEmpty) && p.instructions.exists(_.isInstanceOf[AddManaInstruction]))
   }
 }
 

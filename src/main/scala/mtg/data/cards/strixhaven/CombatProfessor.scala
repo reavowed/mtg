@@ -1,6 +1,6 @@
 package mtg.data.cards.strixhaven
 
-import mtg.abilities.builder.EffectBuilder._
+import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.keyword.{Flying, Vigilance}
 import mtg.cards.patterns.Creature
 import mtg.core.symbols.ManaSymbol.White

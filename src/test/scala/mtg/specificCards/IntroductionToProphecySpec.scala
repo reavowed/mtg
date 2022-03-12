@@ -21,7 +21,7 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
       manager.resolveNext()
 
       val topTwoCards = playerOne.library(manager.gameState).take(2).map(_.objectId)
-      manager.currentChoice must beSome(beEffectChoice[ScryChoice](beEqualTo(topTwoCards) ^^ ((_: ScryChoice).cardsBeingScryed)))
+      manager.currentChoice must beSome(beInstructionChoice[ScryChoice](beEqualTo(topTwoCards) ^^ ((_: ScryChoice).cardsBeingScryed)))
     }
 
     "reorder the top two" in {

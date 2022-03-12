@@ -1,6 +1,6 @@
 package mtg.data.cards.strixhaven
 
-import mtg.abilities.builder.EffectBuilder._
+import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Spell
 import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.types.SpellType.Lesson

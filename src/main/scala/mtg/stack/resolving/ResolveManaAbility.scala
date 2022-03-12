@@ -10,6 +10,6 @@ case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithSta
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val resolutionContext = StackObjectResolutionContext.forManaAbility(ManaAbility(objectWithAbility.gameObject.objectId, player), gameState)
     PartialGameActionResult.child(
-      ResolveEffects(ability.instructions.asInstanceOf[SimpleInstructionParagraph].effects, resolutionContext))
+      ResolveInstructions(ability.instructions.asInstanceOf[SimpleInstructionParagraph].instructions, resolutionContext))
   }
 }
