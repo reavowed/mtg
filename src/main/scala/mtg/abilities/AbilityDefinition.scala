@@ -33,9 +33,10 @@ sealed trait ActivatedOrTriggeredAbilityDefinition extends AbilityDefinition {
 case class ActivatedAbilityDefinition(
     costs: Seq[Cost],
     effectParagraph: SpellEffectParagraph)
-  extends ActivatedOrTriggeredAbilityDefinition
+  extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
 {
   override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + effectParagraph.getText(cardName)
+  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 
   def isManaAbility: Boolean = {
     effectParagraph.asOptionalInstanceOf[SimpleSpellEffectParagraph]
@@ -46,7 +47,8 @@ case class ActivatedAbilityDefinition(
 case class TriggeredAbilityDefinition(
     condition: ConditionDefinition,
     effectParagraph: SpellEffectParagraph)
-  extends ActivatedOrTriggeredAbilityDefinition with TextParagraph {
+  extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
+{
   override def getText(cardName: String): String = "At " + condition.getText(cardName) + ", " + effectParagraph.getText(cardName).uncapitalize
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 }

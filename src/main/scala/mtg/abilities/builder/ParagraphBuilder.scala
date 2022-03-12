@@ -5,8 +5,8 @@ import mtg.cards.text._
 import mtg.parts.costs.Cost
 
 trait ParagraphBuilder {
-  def activatedAbility(costs: Cost*)(effectParagraph: SpellEffectParagraph): ActivatedAbilityParagraph = {
-    ActivatedAbilityParagraph(ActivatedAbilityDefinition(costs, effectParagraph))
+  def activatedAbility(costs: Cost*)(effectParagraph: SpellEffectParagraph): ActivatedAbilityDefinition = {
+    ActivatedAbilityDefinition(costs, effectParagraph)
   }
   def chooseOne(modes: SimpleSpellEffectParagraph*): ModalEffectParagraph = ModalEffectParagraph(modes: _*)
 
