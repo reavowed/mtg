@@ -1,6 +1,6 @@
 package mtg.actions
 
-import mtg.effects.ContinuousEffect
+import mtg.continuousEffects.ContinuousEffect
 import mtg.effects.condition.Condition
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
 

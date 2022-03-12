@@ -2,11 +2,10 @@ package mtg.game.state
 
 import mtg._
 import mtg.abilities._
+import mtg.continuousEffects.{AddAbilityEffect, ContinuousEffect, ModifyPowerToughnessEffect}
 import mtg.core.ObjectId
 import mtg.core.symbols.ManaSymbol
 import mtg.core.types.{BasicLandType, Type}
-import mtg.effects.ContinuousEffect
-import mtg.effects.continuous.{AddAbilityEffect, ModifyPowerToughnessEffect}
 import mtg.effects.oneshot.basic
 import mtg.game.objects.GameObjectState
 import mtg.parts.costs.TapSymbol

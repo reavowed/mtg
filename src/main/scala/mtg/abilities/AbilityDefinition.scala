@@ -1,9 +1,9 @@
 package mtg.abilities
 
-import mtg.cards.text.{SimpleInstructionParagraph, InstructionParagraph, TextParagraph}
+import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, TextParagraph}
+import mtg.continuousEffects.ContinuousEffect
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
-import mtg.effects.ContinuousEffect
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.oneshot.basic.AddManaEffect
 import mtg.game.state.ObjectWithState

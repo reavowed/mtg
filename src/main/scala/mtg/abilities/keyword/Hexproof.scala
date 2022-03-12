@@ -1,9 +1,8 @@
 package mtg.abilities.keyword
 
 import mtg.abilities.{KeywordAbility, StaticAbility}
+import mtg.continuousEffects.{ContinuousEffect, TargetPreventionEffect}
 import mtg.core.{ObjectId, ObjectOrPlayerId}
-import mtg.effects.ContinuousEffect
-import mtg.effects.continuous.TargetPreventionEffect
 import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
 
 case object Hexproof extends StaticAbility with KeywordAbility {

@@ -1,10 +1,10 @@
 package mtg.game.state
 
 import mtg.abilities.TriggeredAbility
+import mtg.continuousEffects.PreventionEffect.Result.Prevent
+import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
 import mtg.effects.condition.EventCondition
-import mtg.effects.continuous.PreventionEffect.Result.Prevent
-import mtg.effects.continuous.{CharacteristicOrControlChangingContinuousEffect, PreventionEffect}
 import mtg.game.objects.FloatingActiveContinuousEffect
 import mtg.game.priority.PriorityChoice
 
@@ -28,7 +28,7 @@ object GameActionExecutor {
 
   def handleDecision[T](action: GameAction[T], serializedDecision: String, actingPlayer: PlayerId)(implicit gameState: GameState): Option[(ProcessedGameActionResult[T], GameState)] = {
     action match {
-      case directChoice: Choice[T] if (directChoice.playerToAct == actingPlayer) =>
+      case directChoice: Choice[T] if directChoice.playerToAct == actingPlayer =>
         directChoice.handleDecision(serializedDecision).map(d => (ProcessedGameActionResult.Value(d), gameState.recordChoice(directChoice, d)))
       case PartiallyExecutedActionWithChild(rootAction, child, callback) =>
         handleDecisionForChild(rootAction, child, callback, serializedDecision, actingPlayer)

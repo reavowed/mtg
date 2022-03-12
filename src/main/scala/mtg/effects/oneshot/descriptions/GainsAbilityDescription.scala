@@ -1,8 +1,8 @@
 package mtg.effects.oneshot.descriptions
 
 import mtg.abilities.AbilityDefinition
+import mtg.continuousEffects.{AddAbilityEffect, CharacteristicOrControlChangingContinuousEffect}
 import mtg.core.ObjectId
-import mtg.effects.continuous.{AddAbilityEffect, CharacteristicOrControlChangingContinuousEffect}
 import mtg.text.{VerbPhraseTemplate, Verbs}
 
 case class GainsAbilityDescription(ability: AbilityDefinition)

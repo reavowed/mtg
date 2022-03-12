@@ -1,6 +1,5 @@
-package mtg.effects.continuous
+package mtg.continuousEffects
 
-import mtg.effects.ContinuousEffect
 import mtg.game.state.ObjectWithState
 
 trait BlockerRestrictionEffect extends ContinuousEffect {

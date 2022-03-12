@@ -1,4 +1,4 @@
-package mtg.effects.continuous
+package mtg.continuousEffects
 
 import mtg.core.ObjectId
 import mtg.effects.PowerToughnessModifier

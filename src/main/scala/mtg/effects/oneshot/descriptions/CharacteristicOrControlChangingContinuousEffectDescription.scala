@@ -1,7 +1,7 @@
 package mtg.effects.oneshot.descriptions
 
+import mtg.continuousEffects.CharacteristicOrControlChangingContinuousEffect
 import mtg.core.ObjectId
-import mtg.effects.continuous.CharacteristicOrControlChangingContinuousEffect
 import mtg.text.VerbPhraseTemplate
 
 trait CharacteristicOrControlChangingContinuousEffectDescription {

@@ -1,4 +1,4 @@
-package mtg.effects.continuous
+package mtg.continuousEffects
 
 import mtg.abilities.AbilityDefinition
 import mtg.core.ObjectId

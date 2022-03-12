@@ -1,7 +1,7 @@
 package mtg.abilities.keyword
 
 import mtg.abilities.{KeywordAbility, StaticAbility}
-import mtg.effects.ContinuousEffect
+import mtg.continuousEffects.ContinuousEffect
 import mtg.game.state.ObjectWithState
 
 case object Reach extends StaticAbility with KeywordAbility {

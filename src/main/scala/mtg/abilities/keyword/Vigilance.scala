@@ -1,9 +1,8 @@
 package mtg.abilities.keyword
 
 import mtg.abilities.{KeywordAbility, StaticAbility}
+import mtg.continuousEffects.{ContinuousEffect, PreventionEffect}
 import mtg.core.ObjectId
-import mtg.effects.ContinuousEffect
-import mtg.effects.continuous.PreventionEffect
 import mtg.game.state.{GameState, GameUpdate, InternalGameAction, ObjectWithState}
 import mtg.game.turns.turnBasedActions.TapAttacker
 

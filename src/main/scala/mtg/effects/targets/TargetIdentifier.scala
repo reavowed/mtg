@@ -1,7 +1,7 @@
 package mtg.effects.targets
 
+import mtg.continuousEffects.TargetPreventionEffect
 import mtg.core.ObjectOrPlayerId
-import mtg.effects.continuous.TargetPreventionEffect
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.{EffectContext, StackObjectResolutionContext}

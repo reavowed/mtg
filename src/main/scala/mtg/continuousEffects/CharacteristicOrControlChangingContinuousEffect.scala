@@ -1,7 +1,6 @@
-package mtg.effects.continuous
+package mtg.continuousEffects
 
 import mtg.core.ObjectId
-import mtg.effects.ContinuousEffect
 
 trait CharacteristicOrControlChangingContinuousEffect extends ContinuousEffect {
   def affectedObject: ObjectId
