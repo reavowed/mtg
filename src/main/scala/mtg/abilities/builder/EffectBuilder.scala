@@ -1,7 +1,7 @@
 package mtg.abilities.builder
 
 import mtg._
-import mtg.cards.text.SpellEffectSentence
+import mtg.cards.text.InstructionSentence
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.effects.OneShotEffect
@@ -26,7 +26,7 @@ object EffectBuilder
 {
 
   abstract class EffectsSeqExtension(effects: Seq[OneShotEffect]) {
-    def `then`(effect: OneShotEffect): SpellEffectSentence = SpellEffectSentence.MultiClause(effects :+ effect, "then")
+    def `then`(effect: OneShotEffect): InstructionSentence = InstructionSentence.MultiClause(effects :+ effect, "then")
   }
   implicit class EffectExtension(effect: OneShotEffect) extends EffectsSeqExtension(Seq(effect))
   implicit class ThreeEffectsExtension(effects: (OneShotEffect, OneShotEffect, OneShotEffect)) extends EffectsSeqExtension(effects.productIterator.toSeq.ofType[OneShotEffect])

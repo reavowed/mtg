@@ -14,7 +14,7 @@ case class FinishActivating(abilityId: ObjectId) extends ExecutableGameAction[An
       LogEvent.ActivateAbility(
         ability.controller,
         sourceName,
-        abilityDefinition.effectParagraph.getText(sourceName),
+        abilityDefinition.instructions.getText(sourceName),
         ability.gameObject.targets.map(CurrentCharacteristics.getName(_, gameState))))
   }
 }

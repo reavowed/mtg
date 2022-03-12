@@ -2,7 +2,7 @@ package mtg.data.cards.strixhaven
 
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Spell
-import mtg.cards.text.SimpleSpellEffectParagraph
+import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
 import mtg.core.types.Type.Land
@@ -13,6 +13,6 @@ object IntroductionToAnnihilation extends Spell(
   ManaCost(5),
   Type.Sorcery,
   Seq(Lesson),
-  SimpleSpellEffectParagraph(
+  SimpleInstructionParagraph(
     exile(target(permanent(non(Land)))),
     it.s(controller).drawsACard))

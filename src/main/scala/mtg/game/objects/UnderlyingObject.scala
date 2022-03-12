@@ -48,7 +48,7 @@ case class AbilityOnTheStack(
     Nil,
     Nil,
     Nil,
-    Seq(abilityDefinition.effectParagraph),
+    Seq(abilityDefinition.instructions),
     None,
     None,
     None)

@@ -18,7 +18,7 @@ case class FinishResolvingAbility(ability: StackObjectWithState) extends Executa
           ability.controller,
           description,
           sourceName,
-          abilityDefinition.effectParagraph.getText(sourceName))),
+          abilityDefinition.instructions.getText(sourceName))),
       ())
   }
 }

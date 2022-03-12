@@ -1,13 +1,13 @@
 package mtg.stack.adding
 
-import mtg.cards.text.{ModalEffectParagraph, SimpleSpellEffectParagraph}
+import mtg.cards.text.{ModalInstructionParagraph, SimpleInstructionParagraph}
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state._
 
 case class ChooseModes(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
-    stackObjectWithState.characteristics.rulesText.ofType[ModalEffectParagraph].headOption match {
+    stackObjectWithState.characteristics.rulesText.ofType[ModalInstructionParagraph].headOption match {
       case Some(modalEffectParagraph) =>
         PartialGameActionResult.ChildWithCallback(
           ModeChoice(stackObjectWithState.controller, stackObjectId, modalEffectParagraph.modes),
@@ -21,7 +21,7 @@ case class ChooseModes(stackObjectId: ObjectId) extends ExecutableGameAction[Uni
   }
 }
 
-case class ModeChoice(playerToAct: PlayerId, stackObjectId: ObjectId, modes: Seq[SimpleSpellEffectParagraph]) extends Choice[Int] {
+case class ModeChoice(playerToAct: PlayerId, stackObjectId: ObjectId, modes: Seq[SimpleInstructionParagraph]) extends Choice[Int] {
   def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[Int] = {
     for {
       modeIndex <- serializedDecision.toIntOption

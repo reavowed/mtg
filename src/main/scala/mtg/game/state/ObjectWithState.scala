@@ -1,7 +1,7 @@
 package mtg.game.state
 
 import mtg.abilities.AbilityDefinition
-import mtg.cards.text.{ModalEffectParagraph, SimpleSpellEffectParagraph, SpellEffectParagraph}
+import mtg.cards.text.{ModalInstructionParagraph, SimpleInstructionParagraph, InstructionParagraph}
 import mtg.core.PlayerId
 import mtg.effects.EffectContext
 import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
@@ -51,19 +51,19 @@ case class StackObjectWithState(
   override def updateCharacteristics(f: Characteristics => Characteristics): StackObjectWithState = copy(characteristics = f(characteristics))
   def getEffectContext(gameState: GameState): EffectContext = new EffectContext(controller, gameObject.underlyingObject.getSourceName(gameState))
 
-  def applicableEffectParagraphs: Seq[SimpleSpellEffectParagraph] = {
+  def applicableEffectParagraphs: Seq[SimpleInstructionParagraph] = {
     @tailrec
-    def getApplicableEffectParagraphs(chosenModes: Seq[Int], remainingParagraphs: Seq[SpellEffectParagraph], resultsSoFar: Seq[SimpleSpellEffectParagraph]): Seq[SimpleSpellEffectParagraph] = {
+    def getApplicableEffectParagraphs(chosenModes: Seq[Int], remainingParagraphs: Seq[InstructionParagraph], resultsSoFar: Seq[SimpleInstructionParagraph]): Seq[SimpleInstructionParagraph] = {
       remainingParagraphs match {
-        case (simpleSpellEffectParagraph: SimpleSpellEffectParagraph) +: tail =>
+        case (simpleSpellEffectParagraph: SimpleInstructionParagraph) +: tail =>
           getApplicableEffectParagraphs(chosenModes, tail, resultsSoFar :+ simpleSpellEffectParagraph)
-        case (modalEffectParagraph: ModalEffectParagraph) +: tail =>
+        case (modalEffectParagraph: ModalInstructionParagraph) +: tail =>
           getApplicableEffectParagraphs(chosenModes.tail, tail, resultsSoFar :+ modalEffectParagraph.modes(chosenModes.head))
         case Nil =>
           resultsSoFar
       }
     }
-    getApplicableEffectParagraphs(gameObject.chosenModes, characteristics.rulesText.ofType[SpellEffectParagraph], Nil)
+    getApplicableEffectParagraphs(gameObject.chosenModes, characteristics.rulesText.ofType[InstructionParagraph], Nil)
   }
 }
 

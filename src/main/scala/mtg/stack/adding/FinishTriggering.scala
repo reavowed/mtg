@@ -14,7 +14,7 @@ case class FinishTriggering(abilityId: ObjectId) extends ExecutableGameAction[An
       LogEvent.PutTriggeredAbilityOnStack(
         ability.controller,
         sourceName,
-        abilityDefinition.effectParagraph.getText(sourceName),
+        abilityDefinition.instructions.getText(sourceName),
         ability.gameObject.targets.map(CurrentCharacteristics.getName(_, gameState))))
   }
 }

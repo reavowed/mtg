@@ -1,6 +1,6 @@
 package mtg.abilities
 
-import mtg.cards.text.{SimpleSpellEffectParagraph, SpellEffectParagraph, TextParagraph}
+import mtg.cards.text.{SimpleInstructionParagraph, InstructionParagraph, TextParagraph}
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.effects.ContinuousEffect
@@ -27,29 +27,29 @@ sealed abstract class AbilityDefinition {
 }
 
 sealed trait ActivatedOrTriggeredAbilityDefinition extends AbilityDefinition {
-  def effectParagraph: SpellEffectParagraph
+  def instructions: InstructionParagraph
 }
 
 case class ActivatedAbilityDefinition(
     costs: Seq[Cost],
-    effectParagraph: SpellEffectParagraph)
+    instructions: InstructionParagraph)
   extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
 {
-  override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + effectParagraph.getText(cardName)
+  override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + instructions.getText(cardName)
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 
   def isManaAbility: Boolean = {
-    effectParagraph.asOptionalInstanceOf[SimpleSpellEffectParagraph]
+    instructions.asOptionalInstanceOf[SimpleInstructionParagraph]
       .exists(p => p.effects.forall(_.targetIdentifiers.isEmpty) && p.effects.exists(_.isInstanceOf[AddManaEffect]))
   }
 }
 
 case class TriggeredAbilityDefinition(
     condition: ConditionDefinition,
-    effectParagraph: SpellEffectParagraph)
+    instructions: InstructionParagraph)
   extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
 {
-  override def getText(cardName: String): String = "At " + condition.getText(cardName) + ", " + effectParagraph.getText(cardName).uncapitalize
+  override def getText(cardName: String): String = "At " + condition.getText(cardName) + ", " + instructions.getText(cardName).uncapitalize
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 }
 
@@ -58,8 +58,8 @@ trait KeywordAbility extends AbilityDefinition with CaseObjectWithName {
   override def getQuotedDescription(cardName: String): String = name.toLowerCase
 }
 
-case class SpellAbility(effectParagraph: SpellEffectParagraph) extends AbilityDefinition {
-  override def getText(cardName: String): String = effectParagraph.getText(cardName)
+case class SpellAbility(instructions: InstructionParagraph) extends AbilityDefinition {
+  override def getText(cardName: String): String = instructions.getText(cardName)
 }
 
 abstract class StaticAbility extends AbilityDefinition {

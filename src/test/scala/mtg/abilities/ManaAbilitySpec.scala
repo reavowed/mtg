@@ -2,7 +2,7 @@ package mtg.abilities
 
 import mtg.abilities.builder.EffectBuilder._
 import mtg.cards.patterns.Creature
-import mtg.cards.text.SimpleSpellEffectParagraph
+import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
@@ -28,7 +28,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
     "Creature with Ability that Adds Mana but Targets",
     ManaCost(0),
     Nil,
-    Seq(activatedAbility(TapSymbol)(SimpleSpellEffectParagraph(cardName.deals(1).damageTo(anyTarget), add(Red)))),
+    Seq(activatedAbility(TapSymbol)(SimpleInstructionParagraph(cardName.deals(1).damageTo(anyTarget), add(Red)))),
     (1, 1))
 
   override def testCards = Seq(CreatureWithManaAbility, CreatureWithAbilityThatDrawsACard, CreatureWithAbilityThatAddsManaButTargets)
