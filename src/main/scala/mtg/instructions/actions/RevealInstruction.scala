@@ -1,11 +1,11 @@
-package mtg.effects.oneshot.actions
+package mtg.instructions.actions
 
 import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
-import mtg.effects.oneshot.InstructionResult
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.{CurrentCharacteristics, GameState}
 import mtg.game.state.history.LogEvent
+import mtg.instructions.{Instruction, InstructionResult}
 
 case class RevealInstruction(objectIdentifier: SingleIdentifier[ObjectId]) extends Instruction {
   override def getText(cardName: String): String = "reveal " + objectIdentifier.getText(cardName)

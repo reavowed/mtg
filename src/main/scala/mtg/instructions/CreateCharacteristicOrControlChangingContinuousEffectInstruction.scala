@@ -1,12 +1,12 @@
-package mtg.effects.oneshot
+package mtg.instructions
 
 import mtg.core.ObjectId
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.identifiers.MultipleIdentifier
-import mtg.effects.oneshot.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.actions.CreateContinousEffectsAction
 import mtg.game.state.GameState
+import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.text.{Sentence, VerbPhraseTemplate}
 
 case class CreateCharacteristicOrControlChangingContinuousEffectInstruction(

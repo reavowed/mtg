@@ -5,8 +5,8 @@ import mtg.continuousEffects.ContinuousEffect
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.effects.condition.ConditionDefinition
-import mtg.effects.oneshot.basic.AddManaInstruction
 import mtg.game.state.ObjectWithState
+import mtg.instructions.basic.AddManaInstruction
 import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
 import mtg.utils.TextUtils._

@@ -1,7 +1,7 @@
 package mtg.abilities.builder
 
 import mtg.abilities.AbilityDefinition
-import mtg.effects.oneshot.descriptions.{CharacteristicOrControlChangingContinuousEffectDescription, GainsAbilityDescription, GetsPowerToughnessModifierDescription}
+import mtg.instructions.descriptions.{CharacteristicOrControlChangingContinuousEffectDescription, GainsAbilityDescription, GetsPowerToughnessModifierDescription}
 
 trait ContinuousEffectBuilder {
   def gains(abilityDefinition: AbilityDefinition): CharacteristicOrControlChangingContinuousEffectDescription = GainsAbilityDescription(abilityDefinition)

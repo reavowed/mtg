@@ -1,9 +1,9 @@
-package mtg.effects.oneshot.basic
+package mtg.instructions.basic
 
-import mtg.effects.oneshot.InstructionResult
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.actions.DrawCardAction
 import mtg.game.state.GameState
+import mtg.instructions.{Instruction, InstructionResult}
 
 case object DrawACardInstruction extends Instruction {
   override def getText(cardName: String): String = "draw a card"

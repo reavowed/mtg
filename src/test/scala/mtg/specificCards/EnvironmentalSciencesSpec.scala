@@ -4,8 +4,8 @@ import mtg.SpecWithGameStateManager
 import mtg.core.zones.Zone
 import mtg.data.cards.strixhaven.{AgelessGuardian, EnvironmentalSciences}
 import mtg.data.cards.{Forest, Island, Plains}
-import mtg.effects.oneshot.basic.SearchLibraryChoice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
+import mtg.instructions.basic.SearchLibraryChoice
 import mtg.stack.resolving.ResolveInstructionChoice
 
 class EnvironmentalSciencesSpec extends SpecWithGameStateManager {

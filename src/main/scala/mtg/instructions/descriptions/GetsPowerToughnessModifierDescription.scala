@@ -1,4 +1,4 @@
-package mtg.effects.oneshot.descriptions
+package mtg.instructions.descriptions
 
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, ModifyPowerToughnessEffect}
 import mtg.core.ObjectId

@@ -1,10 +1,10 @@
-package mtg.effects.oneshot.basic
+package mtg.instructions.basic
 
 import mtg.core.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.identifiers.SingleIdentifier
-import mtg.effects.oneshot.InstructionResult
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
+import mtg.instructions.{Instruction, InstructionResult}
 import mtg.parts.damage.DealDamageEvent
 
 case class DealDamageInstruction(sourceIdentifier: SingleIdentifier[ObjectId], recipientIdentifier: SingleIdentifier[ObjectOrPlayerId], amount: Int) extends Instruction {

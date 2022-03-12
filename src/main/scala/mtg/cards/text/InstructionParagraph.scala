@@ -1,7 +1,7 @@
 package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, SpellAbility}
-import mtg.effects.Instruction
+import mtg.instructions.Instruction
 
 sealed trait InstructionParagraph extends TextParagraph {
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(SpellAbility(this))

@@ -1,11 +1,11 @@
-package mtg.effects.oneshot.basic
+package mtg.instructions.basic
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.filters.Filter
-import mtg.effects.oneshot.{InstructionChoice, InstructionResult}
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.{GameState, InternalGameAction}
+import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
 import mtg.utils.TextUtils._
 
 case class SearchLibraryInstruction(objectFilter: Filter[ObjectId]) extends Instruction {

@@ -1,11 +1,11 @@
-package mtg.effects.oneshot.actions
+package mtg.instructions.actions
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.oneshot.{InstructionChoice, InstructionResult}
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
 import mtg.utils.ParsingUtils
 
 case class ScryInstruction(number: Int) extends Instruction {

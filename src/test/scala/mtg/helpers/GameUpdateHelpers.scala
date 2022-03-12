@@ -2,11 +2,11 @@ package mtg.helpers
 
 import mtg.cards.CardDefinition
 import mtg.core.{ObjectOrPlayerId, PlayerId}
-import mtg.effects.oneshot.InstructionChoice
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.priority.PriorityChoice
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
 import mtg.game.state.GameUpdate
+import mtg.instructions.InstructionChoice
 import mtg.stack.adding.TargetChoice
 import mtg.stack.resolving.ResolveInstructionChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}

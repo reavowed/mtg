@@ -4,14 +4,13 @@ import mtg._
 import mtg.cards.text.InstructionSentence
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.core.symbols.ManaSymbol
-import mtg.effects.Instruction
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
-import mtg.effects.oneshot.CreateCharacteristicOrControlChangingContinuousEffectInstruction
-import mtg.effects.oneshot.actions._
-import mtg.effects.oneshot.basic._
-import mtg.effects.oneshot.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
+import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
+import mtg.instructions.actions.{RevealInstruction, ScryInstruction, ShuffleInstruction}
+import mtg.instructions.basic.{AddManaInstruction, DealDamageInstruction, DestroyInstruction, DrawACardInstruction, DrawsACardInstruction, ExileInstruction, GainLifeInstruction, PutCountersInstruction, PutIntoHandInstruction, SearchLibraryInstruction}
+import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.parts.counters.CounterType
 
 object InstructionBuilder

@@ -1,9 +1,9 @@
-package mtg.effects.oneshot.actions
+package mtg.instructions.actions
 
-import mtg.effects.oneshot.InstructionResult
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.actions.shuffle.ShuffleLibraryAction
 import mtg.game.state.GameState
+import mtg.instructions.{Instruction, InstructionResult}
 
 case object ShuffleInstruction extends Instruction {
   override def getText(cardName: String): String = "shuffle"

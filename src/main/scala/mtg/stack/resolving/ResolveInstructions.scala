@@ -1,8 +1,8 @@
 package mtg.stack.resolving
 
-import mtg.effects.oneshot.InstructionResult
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.game.state._
+import mtg.instructions.{Instruction, InstructionResult}
 
 case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolutionContext: StackObjectResolutionContext) extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {

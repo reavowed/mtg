@@ -6,8 +6,8 @@ import mtg.continuousEffects.{AddAbilityEffect, ContinuousEffect, ModifyPowerTou
 import mtg.core.ObjectId
 import mtg.core.symbols.ManaSymbol
 import mtg.core.types.{BasicLandType, Type}
-import mtg.effects.oneshot.basic
 import mtg.game.objects.GameObjectState
+import mtg.instructions.basic.AddManaInstruction
 import mtg.parts.costs.TapSymbol
 import mtg.parts.counters.PowerToughnessModifyingCounter
 
@@ -56,7 +56,7 @@ object DerivedState {
   }
 
   private def createIntrinsicManaAbility(manaSymbol: ManaSymbol): ActivatedAbilityDefinition = {
-    ActivatedAbilityDefinition(Seq(TapSymbol), basic.AddManaInstruction(manaSymbol))
+    ActivatedAbilityDefinition(Seq(TapSymbol), AddManaInstruction(manaSymbol))
   }
   private val intrinsicManaAbilitiesByLandType = Map(
     BasicLandType.Plains -> ManaSymbol.White,

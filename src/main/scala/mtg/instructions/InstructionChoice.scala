@@ -1,4 +1,4 @@
-package mtg.effects.oneshot
+package mtg.instructions
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}

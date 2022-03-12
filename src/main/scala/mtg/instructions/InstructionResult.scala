@@ -1,4 +1,4 @@
-package mtg.effects.oneshot
+package mtg.instructions
 
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.InternalGameAction

@@ -1,11 +1,11 @@
-package mtg.effects.oneshot.basic
+package mtg.instructions.basic
 
 import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
-import mtg.effects.oneshot.InstructionResult
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.actions.DestroyAction
 import mtg.game.state.GameState
+import mtg.instructions.{Instruction, InstructionResult}
 
 case class DestroyInstruction(objectIdentifier: SingleIdentifier[ObjectId]) extends Instruction {
   override def getText(cardName: String): String = "Destroy " + objectIdentifier.getText(cardName)

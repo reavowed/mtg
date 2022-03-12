@@ -1,11 +1,11 @@
-package mtg.effects.oneshot.basic
+package mtg.instructions.basic
 
 import mtg.core.ObjectId
 import mtg.effects.identifiers.SingleIdentifier
-import mtg.effects.oneshot.InstructionResult
-import mtg.effects.{Instruction, StackObjectResolutionContext}
+import mtg.effects.StackObjectResolutionContext
 import mtg.actions.PutCountersAction
 import mtg.game.state.GameState
+import mtg.instructions.{Instruction, InstructionResult}
 import mtg.parts.counters.CounterType
 import mtg.utils.TextUtils
 
