@@ -9,9 +9,9 @@ class CardDefinition(
   val name: String,
   val manaCost: Option[ManaCost],
   val colorIndicator: Option[ColorIndicator],
-  val superTypes: Seq[Supertype],
+  val supertypes: Seq[Supertype],
   val types: Seq[Type],
-  val subTypes: Seq[Subtype],
+  val subtypes: Seq[Subtype],
   val textParagraphs: Seq[TextParagraph],
   val powerAndToughness: Option[PowerAndToughness],
   val loyalty: Option[Int])

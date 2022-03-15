@@ -22,9 +22,9 @@ case class Card(owner: PlayerId, printing: CardPrinting) extends UnderlyingObjec
         .orElse(manaCost.map(_.symbols.toSet[ManaSymbol].flatMap(_.colors)))
         .getOrElse(Set.empty),
       colorIndicator,
-      superTypes,
+      supertypes,
       types,
-      subTypes,
+      subtypes,
       textParagraphs,
       powerAndToughness.map(_.basePower),
       powerAndToughness.map(_.baseToughness),

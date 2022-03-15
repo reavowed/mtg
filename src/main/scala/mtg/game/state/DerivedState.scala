@@ -68,7 +68,7 @@ object DerivedState {
 
   def addIntrinsicManaAbilities(objectStates: View[ObjectWithState]): View[ObjectWithState] = {
     objectStates.map { objectWithState =>
-      objectWithState.characteristics.subTypes.ofType[BasicLandType].foldLeft(objectWithState) { (objectWithState, landType) =>
+      objectWithState.characteristics.subtypes.ofType[BasicLandType].foldLeft(objectWithState) { (objectWithState, landType) =>
         objectWithState.addAbility(intrinsicManaAbilitiesByLandType(landType))
       }
     }
