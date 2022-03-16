@@ -8,7 +8,7 @@ import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
-import mtg.instructions.actions.{RevealInstruction, ScryInstruction, ShuffleInstruction}
+import mtg.instructions.actions.{Reveal, ScryInstruction, ShuffleInstruction}
 import mtg.instructions.basic.{AddManaInstruction, DealDamageInstruction, DestroyInstruction, ExileInstruction, GainLifeInstruction, PutCountersInstruction, PutIntoHandInstruction, SearchLibraryInstruction}
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.parts.counters.CounterType
@@ -23,13 +23,6 @@ object InstructionBuilder
     with TriggeredAbilityBuilder
     with ParagraphBuilder
 {
-
-  abstract class InstructionsSeqExtension(instructions: Seq[Instruction]) {
-    def `then`(instruction: Instruction): InstructionSentence = InstructionSentence.MultiClause(instructions :+ instruction, "then")
-  }
-  implicit class InstructionExtension(instruction: Instruction) extends InstructionsSeqExtension(Seq(instruction))
-  implicit class ThreeInstructionsExtension(instructions: (Instruction, Instruction, Instruction)) extends InstructionsSeqExtension(instructions.productIterator.toSeq.ofType[Instruction])
-
   case class DealInstructionBuilder(objectIdentifier: SingleIdentifier[ObjectId], amount: Int) {
       def damageTo(recipientIdentifier: SingleIdentifier[ObjectOrPlayerId]): Instruction = DealDamageInstruction(objectIdentifier, recipientIdentifier, amount)
   }
@@ -53,7 +46,6 @@ object InstructionBuilder
   }
 
   def searchYourLibraryForA(objectFilter: Filter[ObjectId]): Instruction = SearchLibraryInstruction(objectFilter)
-  def reveal(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = RevealInstruction(objectIdentifier)
   def put(objectIdentifier: SingleIdentifier[ObjectId]) = new {
     def intoYourHand: Instruction = PutIntoHandInstruction(objectIdentifier)
   }

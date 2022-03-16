@@ -31,12 +31,12 @@ object InstructionSentence {
     def instructions: Seq[Instruction] = Seq(instruction)
     override def getText(cardName: String): String = instruction.getText(cardName).capitalize + "."
   }
-  case class MultiClause(instructions: Seq[Instruction], joiner: String) extends InstructionSentence {
+  case class MultiClause(instructions: Instruction*) extends InstructionSentence {
     override def getText(cardName: String): String = {
       val clausesText = (
         instructions.head.getText(cardName).capitalize +:
           (if (instructions.length > 2) instructions.tail.init.map(_.getText(cardName)) else Nil)
-        ) :+ (joiner + " " + instructions.last.getText(cardName))
+        ) :+ ("then " + instructions.last.getText(cardName))
       clausesText.mkString(", ") + "."
     }
   }
