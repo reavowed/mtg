@@ -4,13 +4,15 @@ import mtg.abilities.TriggeredAbilityDefinition
 import mtg.actions.RemoveObjectFromExistenceAction
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{ExecutableGameAction, GameActionResult, GameState, InternalGameAction, PartialGameActionResult, StackObjectWithState, WrappedOldUpdates}
+import mtg.game.state.{CurrentCharacteristics, ExecutableGameAction, GameActionResult, GameState, InternalGameAction, PartialGameActionResult, StackObjectWithState, WrappedOldUpdates}
 
 case class FinishResolvingAbility(ability: StackObjectWithState) extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
-    val abilityDefinition = ability.gameObject.underlyingObject.asInstanceOf[AbilityOnTheStack].abilityDefinition
-    val description = if (abilityDefinition.isInstanceOf[TriggeredAbilityDefinition]) "triggered" else "activated"
-    val sourceName = ability.gameObject.underlyingObject.getSourceName(gameState)
+    val underlyingAbilityObject = ability.gameObject.underlyingObject.asInstanceOf[AbilityOnTheStack]
+    val abilityDefinition = underlyingAbilityObject.abilityDefinition
+    val description = if (underlyingAbilityObject.abilityDefinition.isInstanceOf[TriggeredAbilityDefinition]) "triggered" else "activated"
+    val sourceWithState = gameState.gameObjectState.derivedState.allObjectStates(underlyingAbilityObject.source)
+    val sourceName = CurrentCharacteristics.getName(sourceWithState)
     PartialGameActionResult.childrenThenValue(
       Seq(
         WrappedOldUpdates(RemoveObjectFromExistenceAction(ability.gameObject.objectId)),

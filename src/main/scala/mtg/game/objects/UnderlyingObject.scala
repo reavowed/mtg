@@ -9,7 +9,6 @@ import mtg.game.state.{Characteristics, GameState}
 sealed trait UnderlyingObject {
   def baseCharacteristics: Characteristics
   def owner: PlayerId
-  def getSourceName(gameState: GameState): String
 }
 
 case class Card(owner: PlayerId, printing: CardPrinting) extends UnderlyingObject {
@@ -31,7 +30,6 @@ case class Card(owner: PlayerId, printing: CardPrinting) extends UnderlyingObjec
       loyalty)
   }
   override def toString: String = s"${baseCharacteristics.name} ${printing.set}-${printing.collectorNumber}"
-  override def getSourceName(gameState: GameState): String = printing.cardDefinition.name
 }
 
 case class AbilityOnTheStack(
@@ -52,5 +50,4 @@ case class AbilityOnTheStack(
     None,
     None,
     None)
-  override def getSourceName(gameState: GameState): String = gameState.gameObjectState.getCurrentOrLastKnownState(source).gameObject.underlyingObject.getSourceName(gameState)
 }
