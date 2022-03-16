@@ -4,6 +4,7 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Spell
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
+import mtg.instructions.actions.DrawACard
 import mtg.parts.costs.ManaCost
 
 object IntroductionToProphecy extends Spell(
@@ -11,4 +12,4 @@ object IntroductionToProphecy extends Spell(
   ManaCost(3),
   Type.Sorcery,
   Seq(Lesson),
-  scry(2).`then`(drawACard))
+  scry(2).`then`(DrawACard))

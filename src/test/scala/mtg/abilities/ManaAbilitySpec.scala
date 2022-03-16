@@ -8,6 +8,7 @@ import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.actions.DrawACard
 import mtg.parts.costs.{ManaCost, TapSymbol}
 
 class ManaAbilitySpec extends SpecWithTestCards {
@@ -22,7 +23,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
     "Creature with Ability that Doesn't Add Mana",
     ManaCost(0),
     Nil,
-    Seq(activatedAbility(TapSymbol)(drawACard)),
+    Seq(activatedAbility(TapSymbol)(DrawACard)),
     (1, 1))
   val CreatureWithAbilityThatAddsManaButTargets = new Creature(
     "Creature with Ability that Adds Mana but Targets",

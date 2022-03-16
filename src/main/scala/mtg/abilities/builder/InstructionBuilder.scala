@@ -9,7 +9,7 @@ import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
 import mtg.instructions.actions.{RevealInstruction, ScryInstruction, ShuffleInstruction}
-import mtg.instructions.basic.{AddManaInstruction, DealDamageInstruction, DestroyInstruction, DrawACardInstruction, DrawsACardInstruction, ExileInstruction, GainLifeInstruction, PutCountersInstruction, PutIntoHandInstruction, SearchLibraryInstruction}
+import mtg.instructions.basic.{AddManaInstruction, DealDamageInstruction, DestroyInstruction, ExileInstruction, GainLifeInstruction, PutCountersInstruction, PutIntoHandInstruction, SearchLibraryInstruction}
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.parts.counters.CounterType
 
@@ -50,7 +50,6 @@ object InstructionBuilder
     def gain(amount: Int) = new {
       def life: Instruction = GainLifeInstruction(playerIdentifier, amount)
     }
-    def drawsACard: Instruction = DrawsACardInstruction(playerIdentifier)
   }
 
   def searchYourLibraryForA(objectFilter: Filter[ObjectId]): Instruction = SearchLibraryInstruction(objectFilter)
@@ -65,6 +64,5 @@ object InstructionBuilder
   }
   def shuffle: Instruction = ShuffleInstruction
   def scry(number: Int): Instruction = ScryInstruction(number)
-  def drawACard: Instruction = DrawACardInstruction
   def add(manaSymbol: ManaSymbol): Instruction = AddManaInstruction(manaSymbol)
 }
