@@ -7,7 +7,7 @@ import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Supertype.Basic
 import mtg.core.types.Type
 import mtg.core.types.Type.Land
-import mtg.instructions.actions.Reveal
+import mtg.instructions.actions.{Reveal, Shuffle}
 import mtg.parts.costs.ManaCost
 
 object EnvironmentalSciences extends Spell(
@@ -16,5 +16,5 @@ object EnvironmentalSciences extends Spell(
   Type.Sorcery,
   Seq(Lesson),
   SimpleInstructionParagraph(
-    InstructionSentence.MultiClause(searchYourLibraryForA(card(Basic, Land)), Reveal(it), put(it).intoYourHand, shuffle),
+    InstructionSentence.MultiClause(searchYourLibraryForA(card(Basic, Land)), Reveal(it), put(it).intoYourHand, Shuffle),
     you.gain(2).life))

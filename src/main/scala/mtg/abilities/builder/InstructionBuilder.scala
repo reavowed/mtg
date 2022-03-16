@@ -1,16 +1,13 @@
 package mtg.abilities.builder
 
-import mtg._
-import mtg.cards.text.InstructionSentence
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.core.symbols.ManaSymbol
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
-import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
-import mtg.instructions.actions.{Reveal, Scry, ShuffleInstruction}
-import mtg.instructions.basic.{AddManaInstruction, DealDamageInstruction, DestroyInstruction, ExileInstruction, GainLifeInstruction, PutCountersInstruction, PutIntoHandInstruction, SearchLibraryInstruction}
+import mtg.instructions.basic._
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
+import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
 import mtg.parts.counters.CounterType
 
 object InstructionBuilder
@@ -54,6 +51,5 @@ object InstructionBuilder
   def put(number: Int, counterType: CounterType) = new {
     def on(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = PutCountersInstruction(number, counterType, objectIdentifier)
   }
-  def shuffle: Instruction = ShuffleInstruction
   def add(manaSymbol: ManaSymbol): Instruction = AddManaInstruction(manaSymbol)
 }
