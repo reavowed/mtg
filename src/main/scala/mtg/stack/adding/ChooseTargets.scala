@@ -40,7 +40,7 @@ object TargetChoice {
       stackObjectWithState.controller,
       stackObjectWithState.gameObject.objectId,
       targetIdentifier.getText(stackObjectWithState.gameObject.underlyingObject.getSourceName(gameState)),
-      targetIdentifier.getValidChoices(stackObjectWithState, gameState, EffectContext(stackObjectWithState, gameState)))
+      targetIdentifier.getValidChoices(stackObjectWithState, gameState, EffectContext(stackObjectWithState)))
   }
 }
 

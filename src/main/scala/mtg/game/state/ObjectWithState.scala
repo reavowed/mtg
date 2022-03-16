@@ -1,9 +1,8 @@
 package mtg.game.state
 
 import mtg.abilities.AbilityDefinition
-import mtg.cards.text.{ModalInstructionParagraph, SimpleInstructionParagraph, InstructionParagraph}
+import mtg.cards.text.{InstructionParagraph, ModalInstructionParagraph, SimpleInstructionParagraph}
 import mtg.core.PlayerId
-import mtg.effects.EffectContext
 import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
 
 import scala.annotation.tailrec
@@ -49,7 +48,6 @@ case class StackObjectWithState(
 {
   override def controllerOrOwner: PlayerId = controller
   override def updateCharacteristics(f: Characteristics => Characteristics): StackObjectWithState = copy(characteristics = f(characteristics))
-  def getEffectContext(gameState: GameState): EffectContext = new EffectContext(controller, gameObject.underlyingObject.getSourceName(gameState))
 
   def applicableEffectParagraphs: Seq[SimpleInstructionParagraph] = {
     @tailrec

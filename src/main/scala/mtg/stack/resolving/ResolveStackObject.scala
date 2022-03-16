@@ -1,7 +1,7 @@
 package mtg.stack.resolving
 
 import mtg.actions.moveZone.{MoveToBattlefieldAction, MoveToGraveyardAction}
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.effects.targets.TargetIdentifier
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
@@ -23,7 +23,7 @@ case class ResolveStackObject(stackObject: StackObject) extends ExecutableGameAc
   }
 
   private def shouldFizzleDueToInvalidTargets(stackObjectWithState: StackObjectWithState, gameState: GameState): Boolean = {
-    val effectContext = stackObjectWithState.getEffectContext(gameState)
+    val effectContext = EffectContext(stackObjectWithState)
     stackObjectWithState.gameObject.targets.nonEmpty &&
       stackObject.targets.zip(TargetIdentifier.getAll(stackObjectWithState)).forall { case (target, identifier) =>
         !identifier.isValidTarget(stackObjectWithState, target, gameState, effectContext)
