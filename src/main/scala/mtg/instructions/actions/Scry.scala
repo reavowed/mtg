@@ -5,11 +5,11 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
-import mtg.instructions.{Instruction, InstructionChoice, InstructionResult, IntransitiveVerbInstruction}
+import mtg.instructions.{Instruction, InstructionChoice, InstructionResult, IntransitiveInstructionVerb}
 import mtg.text.{Verb, VerbInflection}
 import mtg.utils.ParsingUtils
 
-case class Scry(number: Int) extends IntransitiveVerbInstruction with Verb.RegularCaseObject {
+case class Scry(number: Int) extends IntransitiveInstructionVerb with Verb.RegularCaseObject {
   override def thirdPerson: String = "scries"
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
     super.inflect(verbInflection, cardName) + " " + number

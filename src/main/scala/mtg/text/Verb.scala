@@ -18,6 +18,7 @@ object Verb {
     override def root: String = name.toLowerCase
   }
 
+  case object Add extends RegularCaseObject
   case object Draw extends RegularCaseObject
 
   abstract class WithSuffix(verb: Verb, suffix: String) extends Verb {

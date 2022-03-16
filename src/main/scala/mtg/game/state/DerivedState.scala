@@ -1,15 +1,14 @@
 package mtg.game.state
 
-import mtg._
 import mtg.abilities._
 import mtg.continuousEffects.{AddAbilityEffect, ContinuousEffect, ModifyPowerToughnessEffect}
 import mtg.core.ObjectId
 import mtg.core.symbols.ManaSymbol
 import mtg.core.types.{BasicLandType, Type}
 import mtg.game.objects.GameObjectState
-import mtg.instructions.basic.AddManaInstruction
 import mtg.parts.costs.TapSymbol
 import mtg.parts.counters.PowerToughnessModifyingCounter
+import mtg.{instructions, _}
 
 import scala.collection.View
 import scala.reflect.ClassTag
@@ -56,7 +55,7 @@ object DerivedState {
   }
 
   private def createIntrinsicManaAbility(manaSymbol: ManaSymbol): ActivatedAbilityDefinition = {
-    ActivatedAbilityDefinition(Seq(TapSymbol), AddManaInstruction(manaSymbol))
+    ActivatedAbilityDefinition(Seq(TapSymbol), instructions.actions.Add(manaSymbol))
   }
   private val intrinsicManaAbilitiesByLandType = Map(
     BasicLandType.Plains -> ManaSymbol.White,

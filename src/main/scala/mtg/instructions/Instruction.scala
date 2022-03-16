@@ -3,6 +3,7 @@ package mtg.instructions
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.targets.TargetIdentifier
 import mtg.game.state.GameState
+import mtg.instructions.actions.Add
 
 trait Instruction {
   def targetIdentifiers: Seq[TargetIdentifier[_]] = {
@@ -19,6 +20,21 @@ trait Instruction {
       }
     }
     helper(Seq(this), Nil)
+  }
+  def couldAddMana: Boolean = {
+    def helper(refs: Seq[Any]): Boolean = {
+      refs match {
+        case (_: Add) +: tail =>
+          true
+        case (product: Product) +: tail =>
+          helper(product.productIterator.toSeq ++ tail)
+        case _ +: tail =>
+          helper(tail)
+        case Nil =>
+          false
+      }
+    }
+    helper(Seq(this))
   }
 
   def getText(cardName: String): String

@@ -1,6 +1,5 @@
 package mtg.abilities.builder
 
-import mtg.core.symbols.ManaSymbol
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
@@ -49,5 +48,4 @@ object InstructionBuilder
   def put(number: Int, counterType: CounterType) = new {
     def on(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = PutCountersInstruction(number, counterType, objectIdentifier)
   }
-  def add(manaSymbol: ManaSymbol): Instruction = AddManaInstruction(manaSymbol)
 }

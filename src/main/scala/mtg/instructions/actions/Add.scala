@@ -1,14 +1,15 @@
 package mtg.instructions.actions
 
-import mtg.actions.DrawCardAction
+import mtg.actions.AddManaAction
 import mtg.core.PlayerId
+import mtg.core.symbols.ManaSymbol
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb}
 import mtg.text.Verb
 
-case object DrawACard extends Verb.WithSuffix(Verb.Draw, "a card") with IntransitiveInstructionVerb {
+case class Add(symbols: ManaSymbol*) extends Verb.WithSuffix(Verb.Add, symbols.map(_.text).mkString) with IntransitiveInstructionVerb {
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    (DrawCardAction(playerId), resolutionContext)
+    (AddManaAction(playerId, symbols), resolutionContext)
   }
 }

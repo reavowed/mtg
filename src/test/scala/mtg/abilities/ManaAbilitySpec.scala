@@ -8,7 +8,7 @@ import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.DrawACard
+import mtg.instructions.actions.{Add, DrawACard}
 import mtg.parts.costs.{ManaCost, TapSymbol}
 
 class ManaAbilitySpec extends SpecWithTestCards {
@@ -17,7 +17,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
     "Creature with Mana Ability",
     ManaCost(0),
     Nil,
-    Seq(activatedAbility(TapSymbol)(add(Green))),
+    Seq(activatedAbility(TapSymbol)(Add(Green))),
     (1, 1))
   val CreatureWithAbilityThatDrawsACard = new Creature(
     "Creature with Ability that Doesn't Add Mana",
@@ -29,7 +29,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
     "Creature with Ability that Adds Mana but Targets",
     ManaCost(0),
     Nil,
-    Seq(activatedAbility(TapSymbol)(SimpleInstructionParagraph(cardName.deals(1).damageTo(anyTarget), add(Red)))),
+    Seq(activatedAbility(TapSymbol)(SimpleInstructionParagraph(cardName.deals(1).damageTo(anyTarget), Add(Red)))),
     (1, 1))
 
   override def testCards = Seq(CreatureWithManaAbility, CreatureWithAbilityThatDrawsACard, CreatureWithAbilityThatAddsManaButTargets)

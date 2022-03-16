@@ -6,7 +6,6 @@ import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.effects.condition.ConditionDefinition
 import mtg.game.state.ObjectWithState
-import mtg.instructions.basic.AddManaInstruction
 import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
 import mtg.utils.TextUtils._
@@ -40,7 +39,7 @@ case class ActivatedAbilityDefinition(
 
   def isManaAbility: Boolean = {
     instructions.asOptionalInstanceOf[SimpleInstructionParagraph]
-      .exists(p => p.instructions.forall(_.targetIdentifiers.isEmpty) && p.instructions.exists(_.isInstanceOf[AddManaInstruction]))
+      .exists(p => p.instructions.forall(_.targetIdentifiers.isEmpty) && p.instructions.exists(_.couldAddMana))
   }
 }
 
