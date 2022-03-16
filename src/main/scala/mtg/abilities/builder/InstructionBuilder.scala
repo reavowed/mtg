@@ -6,7 +6,7 @@ import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
 import mtg.instructions.basic._
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
+import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction, IntransitiveInstructionVerb}
 import mtg.parts.counters.CounterType
 
 object InstructionBuilder
@@ -36,9 +36,7 @@ object InstructionBuilder
   implicit class ObjectFilterExtension(objectFilter: Filter[ObjectId]) extends ObjectMultipleIdentifierExtension(FilterIdentifier(objectFilter))
 
   implicit class PlayerIdentifierExtension(playerIdentifier: SingleIdentifier[PlayerId]) {
-    def gain(amount: Int) = new {
-      def life: Instruction = GainLifeInstruction(playerIdentifier, amount)
-    }
+    def apply(intransitiveInstructionVerb: IntransitiveInstructionVerb): Instruction = intransitiveInstructionVerb(playerIdentifier)
   }
 
   def searchYourLibraryForA(objectFilter: Filter[ObjectId]): Instruction = SearchLibraryInstruction(objectFilter)

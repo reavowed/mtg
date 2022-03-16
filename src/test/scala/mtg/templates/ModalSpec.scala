@@ -5,6 +5,7 @@ import mtg.cards.patterns.Spell
 import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.actions.GainLife
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice
 
@@ -15,7 +16,7 @@ class ModalSpec extends SpecWithTestCards {
     Type.Instant,
     Nil,
     chooseOne(
-      you.gain(3).life,
+      you(GainLife(3)),
       cardName.deals(3).damageTo(anyTarget))
   )
 

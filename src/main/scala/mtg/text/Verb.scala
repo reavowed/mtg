@@ -20,6 +20,7 @@ object Verb {
 
   case object Add extends RegularCaseObject
   case object Draw extends RegularCaseObject
+  case object Gain extends RegularCaseObject
 
   abstract class WithSuffix(verb: Verb, suffix: String) extends Verb {
     def inflect(verbInflection: VerbInflection, cardName: String): String = verb.inflect(verbInflection, cardName) + " " + suffix
