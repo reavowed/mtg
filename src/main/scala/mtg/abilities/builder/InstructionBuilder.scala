@@ -46,7 +46,6 @@ object InstructionBuilder
   def put(objectIdentifier: SingleIdentifier[ObjectId]) = new {
     def intoYourHand: Instruction = PutIntoHandInstruction(objectIdentifier)
   }
-  def destroy(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = DestroyInstruction(objectIdentifier)
   def exile(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = ExileInstruction(objectIdentifier)
   def put(number: Int, counterType: CounterType) = new {
     def on(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = PutCountersInstruction(number, counterType, objectIdentifier)

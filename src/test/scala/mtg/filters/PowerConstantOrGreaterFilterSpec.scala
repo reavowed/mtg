@@ -7,6 +7,7 @@ import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.actions.Destroy
 import mtg.parts.costs.ManaCost
 
 class PowerConstantOrGreaterFilterSpec extends SpecWithTestCards {
@@ -15,7 +16,7 @@ class PowerConstantOrGreaterFilterSpec extends SpecWithTestCards {
     ManaCost(0),
     Type.Instant,
     Nil,
-    destroy(target(Creature(withPower(4.orGreater)))))
+    Destroy(target(Creature(withPower(4.orGreater)))))
 
   val ThreeFive = vanillaCreature(3, 5)
   val FourTwo = vanillaCreature(4, 2)

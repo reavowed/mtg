@@ -4,6 +4,7 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Spell
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.Type.{Creature, Instant}
+import mtg.instructions.actions.Destroy
 import mtg.parts.costs.ManaCost
 
 object DefendTheCampus extends Spell(
@@ -13,4 +14,4 @@ object DefendTheCampus extends Spell(
   Nil,
   chooseOne(
     Creature(you.control)(get(1, 1)).until(endOfTurn),
-    destroy(target(Creature(withPower(4.orGreater))))))
+    Destroy(target(Creature(withPower(4.orGreater))))))

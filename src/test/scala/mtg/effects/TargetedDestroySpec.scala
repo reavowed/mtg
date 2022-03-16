@@ -8,15 +8,16 @@ import mtg.core.types.Type.Creature
 import mtg.core.zones.Zone
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.actions.Destroy
 import mtg.parts.costs.ManaCost
 
-class TargetedDestroyInstructionSpec extends SpecWithTestCards {
+class TargetedDestroySpec extends SpecWithTestCards {
   object TestCard extends Spell(
     "Card",
     ManaCost(0),
     Type.Instant,
     Nil,
-    destroy(target(Creature)))
+    Destroy(target(Creature)))
 
   val VanillaOneOne = vanillaCreature(1, 1)
 
