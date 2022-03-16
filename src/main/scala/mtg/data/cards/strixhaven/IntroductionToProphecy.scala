@@ -1,11 +1,10 @@
 package mtg.data.cards.strixhaven
 
-import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.Spell
 import mtg.cards.text.InstructionSentence
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
-import mtg.instructions.actions.DrawACard
+import mtg.instructions.actions.{DrawACard, Scry}
 import mtg.parts.costs.ManaCost
 
 object IntroductionToProphecy extends Spell(
@@ -13,4 +12,4 @@ object IntroductionToProphecy extends Spell(
   ManaCost(3),
   Type.Sorcery,
   Seq(Lesson),
-  InstructionSentence.MultiClause(scry(2), DrawACard))
+  InstructionSentence.MultiClause(Scry(2), DrawACard))

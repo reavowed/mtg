@@ -8,7 +8,7 @@ import mtg.effects.condition.ConditionDefinition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
-import mtg.instructions.actions.{Reveal, ScryInstruction, ShuffleInstruction}
+import mtg.instructions.actions.{Reveal, Scry, ShuffleInstruction}
 import mtg.instructions.basic.{AddManaInstruction, DealDamageInstruction, DestroyInstruction, ExileInstruction, GainLifeInstruction, PutCountersInstruction, PutIntoHandInstruction, SearchLibraryInstruction}
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.parts.counters.CounterType
@@ -55,6 +55,5 @@ object InstructionBuilder
     def on(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = PutCountersInstruction(number, counterType, objectIdentifier)
   }
   def shuffle: Instruction = ShuffleInstruction
-  def scry(number: Int): Instruction = ScryInstruction(number)
   def add(manaSymbol: ManaSymbol): Instruction = AddManaInstruction(manaSymbol)
 }

@@ -5,18 +5,22 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
-import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
+import mtg.instructions.{Instruction, InstructionChoice, InstructionResult, IntransitiveVerbInstruction}
+import mtg.text.{Verb, VerbInflection}
 import mtg.utils.ParsingUtils
 
-case class ScryInstruction(number: Int) extends Instruction {
-  override def getText(cardName: String): String = s"scry $number"
-  override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    val player = resolutionContext.controllingPlayer
-    val library = gameState.gameObjectState.libraries(player)
+case class Scry(number: Int) extends IntransitiveVerbInstruction with Verb.RegularCaseObject {
+  override def thirdPerson: String = "scries"
+  override def inflect(verbInflection: VerbInflection, cardName: String): String = {
+    super.inflect(verbInflection, cardName) + " " + number
+  }
+  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+    val library = gameState.gameObjectState.libraries(playerId)
     val cardsBeingScryed = library.take(number).map(_.objectId)
-    ScryChoice(player, cardsBeingScryed, resolutionContext)
+    ScryChoice(playerId, cardsBeingScryed, resolutionContext)
   }
 }
+
 case class ScryChoice(
     playerChoosing: PlayerId,
     cardsBeingScryed: Seq[ObjectId],
@@ -33,7 +37,7 @@ case class ScryChoice(
       cardsOnBottom <- ParsingUtils.splitStringAsIds(serializedCardsOnBottom)
       if (cardsOnTop ++ cardsOnBottom).toSet == cardsBeingScryed.toSet
     } yield (
-      Some(ScryEvent(playerChoosing, cardsOnTop, cardsOnBottom)),
+      Some(ScryAction(playerChoosing, cardsOnTop, cardsOnBottom)),
       resolutionContext
     )
   }
@@ -41,7 +45,7 @@ case class ScryChoice(
   override def temporarilyVisibleObjects: Seq[ObjectId] = cardsBeingScryed
 }
 
-case class ScryEvent(
+case class ScryAction(
   player: PlayerId,
   cardsOnTop: Seq[ObjectId],
   cardsOnBottom: Seq[ObjectId]

@@ -6,11 +6,16 @@ trait Verb {
   def inflect(verbInflection: VerbInflection, cardName: String): String
 }
 object Verb {
-  trait RegularCaseObject extends Verb with CaseObjectWithName {
+  trait Simple extends Verb {
+    def root: String
+    def thirdPerson: String = root + "s"
     override def inflect(verbInflection: VerbInflection, cardName: String): String = verbInflection match {
-      case VerbInflection.Present(VerbPerson.Third, VerbNumber.Singular) => name.toLowerCase + "s"
-      case _ => name.toLowerCase
+      case VerbInflection.Present(VerbPerson.Third, VerbNumber.Singular) => thirdPerson
+      case _ => root
     }
+  }
+  trait RegularCaseObject extends Verb.Simple with CaseObjectWithName {
+    override def root: String = name.toLowerCase
   }
 
   case object Draw extends RegularCaseObject
