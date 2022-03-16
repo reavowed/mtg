@@ -6,7 +6,7 @@ import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
 import mtg.core.types.Type.Land
-import mtg.instructions.actions.DrawACard
+import mtg.instructions.actions.{DrawACard, Exile}
 import mtg.parts.costs.ManaCost
 
 object IntroductionToAnnihilation extends Spell(
@@ -15,5 +15,5 @@ object IntroductionToAnnihilation extends Spell(
   Type.Sorcery,
   Seq(Lesson),
   SimpleInstructionParagraph(
-    exile(target(permanent(non(Land)))),
+    Exile(target(permanent(non(Land)))),
     DrawACard(it.s(controller))))

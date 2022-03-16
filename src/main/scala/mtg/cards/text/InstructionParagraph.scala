@@ -1,6 +1,7 @@
 package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, SpellAbility}
+import mtg.cards.text.InstructionParagraph.fromSingleInstruction
 import mtg.instructions.{Instruction, IntransitiveVerbInstruction}
 
 sealed trait InstructionParagraph extends TextParagraph {
@@ -9,6 +10,7 @@ sealed trait InstructionParagraph extends TextParagraph {
 object InstructionParagraph {
   implicit def fromSingleVerb(intransitiveVerbInstruction: IntransitiveVerbInstruction): SimpleInstructionParagraph = fromSingleInstruction(intransitiveVerbInstruction.imperative)
   implicit def fromSingleInstruction(instruction: Instruction): SimpleInstructionParagraph = SimpleInstructionParagraph(InstructionSentence.SingleClause(instruction))
+  implicit def seqFromSingleVerb(intransitiveVerbInstruction: IntransitiveVerbInstruction): Seq[SimpleInstructionParagraph] = Seq(fromSingleVerb(intransitiveVerbInstruction))
   implicit def seqFromSingleInstruction(instruction: Instruction): Seq[SimpleInstructionParagraph] = Seq(fromSingleInstruction(instruction))
   implicit def seqFromSingleSentence(sentence: InstructionSentence): Seq[SimpleInstructionParagraph] = Seq(SimpleInstructionParagraph(sentence))
   implicit def seqFromSingleParagraph(paragraph: InstructionParagraph): Seq[InstructionParagraph] = Seq(paragraph)
@@ -40,5 +42,6 @@ object InstructionSentence {
       clausesText.mkString(", ") + "."
     }
   }
+  implicit def fromSingleVerb(intransitiveVerbInstruction: IntransitiveVerbInstruction): InstructionSentence = instructionToSentence(intransitiveVerbInstruction.imperative)
   implicit def instructionToSentence(instruction: Instruction): InstructionSentence = SingleClause(instruction)
 }
