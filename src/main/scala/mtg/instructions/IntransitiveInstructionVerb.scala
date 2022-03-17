@@ -7,7 +7,6 @@ import mtg.game.state.GameState
 import mtg.text.{Verb, VerbInflection}
 
 trait IntransitiveInstructionVerb extends Verb {
-  def baseVerb: Verb = this
   def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
 
   def imperative: Instruction = IntransitiveInstructionVerb.Imperative(this)
