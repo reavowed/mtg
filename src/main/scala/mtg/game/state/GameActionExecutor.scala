@@ -4,7 +4,7 @@ import mtg.abilities.TriggeredAbility
 import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
-import mtg.effects.condition.EventCondition
+import mtg.effects.condition.Condition
 import mtg.game.priority.PriorityChoice
 
 import scala.annotation.tailrec
@@ -205,19 +205,13 @@ object GameActionExecutor {
 
   private def getTriggeringAbilities(action: GameUpdate, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
     gameStateAfterAction.gameObjectState.activeTriggeredAbilities.filter {
-      _.getCondition(gameStateAfterAction) match {
-        case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(action, gameStateAfterAction)
-      }
+      _.getCondition(gameStateAfterAction).matchesEvent(action, gameStateAfterAction)
     }.toSeq
   }
 
   private def getEndedEffects(action: InternalGameAction, gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
     gameStateAfterAction.gameObjectState.floatingActiveContinuousEffects.filter(effect => {
-      def matchesCondition = effect.endCondition match {
-        case eventCondition: EventCondition =>
-          eventCondition.matchesEvent(action, gameStateAfterAction)
-      }
+      def matchesCondition = effect.endCondition.matchesEvent(action, gameStateAfterAction)
       def objectIsGone = effect.effect.asOptionalInstanceOf[CharacteristicOrControlChangingContinuousEffect]
         .exists(e => !gameStateAfterAction.gameObjectState.allObjects.exists(_.objectId == e.affectedObject))
       matchesCondition || objectIsGone
