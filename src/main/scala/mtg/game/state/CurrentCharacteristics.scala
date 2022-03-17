@@ -1,7 +1,7 @@
 package mtg.game.state
 
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
-import mtg.game.objects.PermanentObject
+import mtg.game.objects.{PermanentObject, StackObject}
 
 object CurrentCharacteristics {
   def getState(objectId: ObjectId, gameState: GameState): ObjectWithState = {
@@ -11,6 +11,7 @@ object CurrentCharacteristics {
     getState(objectId, gameState).characteristics
   }
   def getPermanentObject(objectId: ObjectId, gameState: GameState): Option[PermanentObject] = gameState.gameObjectState.battlefield.find(_.objectId == objectId)
+  def getStackObject(objectId: ObjectId, gameState: GameState): Option[StackObject] = gameState.gameObjectState.stack.find(_.objectId == objectId)
 
   def getName(objectOrPlayer: ObjectOrPlayerId, gameState: GameState): String = objectOrPlayer match {
         case objectId: ObjectId =>

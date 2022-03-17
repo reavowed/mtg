@@ -32,6 +32,8 @@ case class Card(owner: PlayerId, printing: CardPrinting) extends UnderlyingObjec
   override def toString: String = s"${baseCharacteristics.name} ${printing.set}-${printing.collectorNumber}"
 }
 
+case class CopyOfSpell(baseCharacteristics: Characteristics, owner: PlayerId) extends UnderlyingObject
+
 case class AbilityOnTheStack(
     abilityDefinition: ActivatedOrTriggeredAbilityDefinition,
     source: ObjectId,

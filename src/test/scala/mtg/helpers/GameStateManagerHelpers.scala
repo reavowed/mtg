@@ -86,8 +86,8 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
       passUntil(_.gameObjectState.stack.isEmpty)
     }
     def resolveNext(): Unit = {
-      val stackSize = gameStateManager.gameState.gameObjectState.stack.size
-      passUntil(_.gameObjectState.stack.size < stackSize)
+      val objectToResolveId = gameStateManager.gameState.gameObjectState.stack.last.objectId
+      passUntil(gameState => !gameState.gameObjectState.stack.exists(_.objectId == objectToResolveId))
     }
 
     def priorityActions: Seq[PriorityAction] = {
