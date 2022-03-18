@@ -1,7 +1,7 @@
 package mtg.abilities
 
 import mtg.abilities.builder.InstructionBuilder._
-import mtg.cards.patterns.Creature
+import mtg.cards.patterns.CreatureCard
 import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol.{Green, Red}
@@ -13,19 +13,19 @@ import mtg.parts.costs.{ManaCost, TapSymbol}
 
 class ManaAbilitySpec extends SpecWithTestCards {
 
-  val CreatureWithManaAbility = new Creature(
+  val CreatureWithManaAbility = new CreatureCard(
     "Creature with Mana Ability",
     ManaCost(0),
     Nil,
     Seq(activatedAbility(TapSymbol)(Add(Green))),
     (1, 1))
-  val CreatureWithAbilityThatDrawsACard = new Creature(
+  val CreatureWithAbilityThatDrawsACard = new CreatureCard(
     "Creature with Ability that Doesn't Add Mana",
     ManaCost(0),
     Nil,
     Seq(activatedAbility(TapSymbol)(DrawACard)),
     (1, 1))
-  val CreatureWithAbilityThatAddsManaButTargets = new Creature(
+  val CreatureWithAbilityThatAddsManaButTargets = new CreatureCard(
     "Creature with Ability that Adds Mana but Targets",
     ManaCost(0),
     Nil,

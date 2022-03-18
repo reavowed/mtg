@@ -1,6 +1,6 @@
 package mtg.game.actions
 
-import mtg.cards.patterns.{Creature, Spell}
+import mtg.cards.patterns.{CreatureCard, SpellCard}
 import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
@@ -8,8 +8,8 @@ import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 
 class CastSpellTimingSpec extends SpecWithTestCards {
-  val Creature = new Creature("Creature", ManaCost(0), Nil, Nil, (1, 1))
-  val Sorcery = new Spell("Sorcery", ManaCost(0), Type.Sorcery, Nil, Nil)
+  val Creature = new CreatureCard("Creature", ManaCost(0), Nil, Nil, (1, 1))
+  val Sorcery = new SpellCard("Sorcery", ManaCost(0), Type.Sorcery, Nil, Nil)
   override def testCards = Seq(Creature, Sorcery)
 
   "cast spell action" should {

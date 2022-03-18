@@ -1,7 +1,7 @@
 package mtg.templates
 
 import mtg.abilities.builder.InstructionBuilder._
-import mtg.cards.patterns.Spell
+import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.helpers.SpecWithTestCards
@@ -10,7 +10,7 @@ import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice
 
 class ModalSpec extends SpecWithTestCards {
-  object TestCard extends Spell(
+  object TestCard extends SpellCard(
     "Modal Card",
     ManaCost(1),
     Type.Instant,

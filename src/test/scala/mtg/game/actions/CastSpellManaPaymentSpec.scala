@@ -1,6 +1,6 @@
 package mtg.game.actions
 
-import mtg.cards.patterns.Creature
+import mtg.cards.patterns.CreatureCard
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
 import mtg.core.symbols.ManaSymbol.White
@@ -13,8 +13,8 @@ import mtg.stack.adding
 import mtg.stack.adding.PayManaChoice
 
 class CastSpellManaPaymentSpec extends SpecWithTestCards {
-  val WhiteCreature = new Creature("Creature", ManaCost(White), Nil, Nil, (1, 1))
-  val FourCreature = new Creature("Creature", ManaCost(4), Nil, Nil, (1, 1))
+  val WhiteCreature = new CreatureCard("Creature", ManaCost(White), Nil, Nil, (1, 1))
+  val FourCreature = new CreatureCard("Creature", ManaCost(4), Nil, Nil, (1, 1))
   override def testCards = Seq(WhiteCreature, FourCreature)
 
   "casting a creature that costs {W}" should {

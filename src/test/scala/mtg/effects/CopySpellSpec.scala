@@ -1,7 +1,7 @@
 package mtg.effects
 
 import mtg.abilities.builder.InstructionBuilder._
-import mtg.cards.patterns.Spell
+import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.game.objects.CopyOfSpell
 import mtg.game.turns.TurnPhase
@@ -10,13 +10,13 @@ import mtg.instructions.actions.{Copy, GainLife}
 import mtg.parts.costs.ManaCost
 
 class CopySpellSpec extends SpecWithTestCards {
-  object TestCopyCard extends Spell(
+  object TestCopyCard extends SpellCard(
     "Copy Card",
     ManaCost(0),
     Type.Instant,
     Nil,
     Copy(target(spell)))
-  object TestGainOneLifeCard extends Spell(
+  object TestGainOneLifeCard extends SpellCard(
     "Lifegain Card",
     ManaCost(0),
     Type.Instant,

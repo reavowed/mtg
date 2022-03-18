@@ -1,12 +1,12 @@
 package mtg.data.cards.alpha
 
 import mtg.abilities.keyword.Flying
-import mtg.cards.patterns.Creature
+import mtg.cards.patterns.CreatureCard
 import mtg.core.symbols.ManaSymbol.Blue
 import mtg.core.types.CreatureType.Elemental
 import mtg.parts.costs.ManaCost
 
-object AirElemental extends Creature(
+object AirElemental extends CreatureCard(
   "Concordia Pegasus",
   ManaCost(3, Blue, Blue),
   Seq(Elemental),

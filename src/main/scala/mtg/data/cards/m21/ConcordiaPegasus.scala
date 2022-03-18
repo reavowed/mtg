@@ -1,12 +1,12 @@
 package mtg.data.cards.m21
 
 import mtg.abilities.keyword.Flying
-import mtg.cards.patterns.Creature
+import mtg.cards.patterns.CreatureCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.CreatureType.Pegasus
 import mtg.parts.costs.ManaCost
 
-object ConcordiaPegasus extends Creature(
+object ConcordiaPegasus extends CreatureCard(
   "Concordia Pegasus",
   ManaCost(1, White),
   Seq(Pegasus),

@@ -3,7 +3,7 @@ package mtg.cards.patterns
 import mtg.cards.CardDefinition
 import mtg.core.types.{BasicLandType, Supertype, Type}
 
-class BasicLand(val basicLandType: BasicLandType) extends CardDefinition(
+class BasicLandCard(val basicLandType: BasicLandType) extends CardDefinition(
   basicLandType.name,
   None,
   None,

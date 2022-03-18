@@ -1,12 +1,12 @@
 package mtg.game.actions
 
-import mtg.cards.patterns.Creature
+import mtg.cards.patterns.CreatureCard
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 
 class CastCreatureSpec extends SpecWithTestCards {
-  val Creature = new Creature("Creature", ManaCost(), Nil, Nil, (1, 1))
+  val Creature = new CreatureCard("Creature", ManaCost(), Nil, Nil, (1, 1))
   override def testCards = Seq(Creature)
 
   "casting a creature" should {

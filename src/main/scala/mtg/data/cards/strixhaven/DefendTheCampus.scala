@@ -1,13 +1,13 @@
 package mtg.data.cards.strixhaven
 
 import mtg.abilities.builder.InstructionBuilder._
-import mtg.cards.patterns.Spell
+import mtg.cards.patterns.SpellCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.Type.{Creature, Instant}
 import mtg.instructions.actions.Destroy
 import mtg.parts.costs.ManaCost
 
-object DefendTheCampus extends Spell(
+object DefendTheCampus extends SpellCard(
   "Defend the Campus",
   ManaCost(3, White),
   Instant,

@@ -3,12 +3,12 @@ package mtg.cards.patterns
 import mtg.core.types.CreatureType
 import mtg.parts.costs.ManaCost
 
-class VanillaCreature(
+class VanillaCreatureCard(
     name: String,
     manaCost: ManaCost,
     subtypes: Seq[CreatureType],
     powerAndToughness: (Int, Int))
-  extends Creature(
+  extends CreatureCard(
     name,
     manaCost,
     subtypes,

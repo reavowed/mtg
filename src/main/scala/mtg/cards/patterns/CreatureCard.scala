@@ -5,7 +5,7 @@ import mtg.cards.{CardDefinition, PowerAndToughness}
 import mtg.core.types.{CreatureType, Type}
 import mtg.parts.costs.ManaCost
 
-class Creature(
+class CreatureCard(
     name: String,
     manaCost: ManaCost,
     subtypes: Seq[CreatureType],

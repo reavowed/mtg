@@ -5,7 +5,7 @@ import mtg.cards.text.InstructionParagraph
 import mtg.core.types.{SpellType, Type}
 import mtg.parts.costs.ManaCost
 
-class Spell(
+class SpellCard(
     name: String,
     manaCost: ManaCost,
     `type`: Type.InstantOrSorcery,

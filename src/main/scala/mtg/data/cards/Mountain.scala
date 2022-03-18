@@ -1,6 +1,6 @@
 package mtg.data.cards
 
-import mtg.cards.patterns.BasicLand
+import mtg.cards.patterns.BasicLandCard
 import mtg.core.types.BasicLandType
 
-object Mountain extends BasicLand(BasicLandType.Mountain)
+object Mountain extends BasicLandCard(BasicLandType.Mountain)

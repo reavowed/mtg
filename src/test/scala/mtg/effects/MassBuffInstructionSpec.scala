@@ -2,7 +2,7 @@ package mtg.effects
 
 import mtg.TestCards.vanillaCreature
 import mtg.abilities.builder.InstructionBuilder._
-import mtg.cards.patterns.Spell
+import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
@@ -10,7 +10,7 @@ import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 
 class MassBuffInstructionSpec extends SpecWithTestCards {
-  object TestCard extends Spell(
+  object TestCard extends SpellCard(
     "Card",
     ManaCost(0),
     Type.Instant,
