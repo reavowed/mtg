@@ -1,7 +1,7 @@
 package mtg.instructions
 
 import mtg.core.ObjectId
-import mtg.effects.condition.ConditionDefinition
+import mtg.effects.condition.Condition
 import mtg.effects.identifiers.MultipleIdentifier
 import mtg.effects.StackObjectResolutionContext
 import mtg.actions.CreateContinousEffectsAction
@@ -12,7 +12,7 @@ import mtg.text.{Sentence, VerbPhraseTemplate}
 case class CreateCharacteristicOrControlChangingContinuousEffectInstruction(
     objectIdentifier: MultipleIdentifier[ObjectId],
     effectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription],
-    conditionDefinition: ConditionDefinition)
+    condition: Condition)
   extends Instruction
 {
   override def getText(cardName: String): String = {
@@ -20,17 +20,16 @@ case class CreateCharacteristicOrControlChangingContinuousEffectInstruction(
       objectIdentifier.getNounPhrase(cardName),
       VerbPhraseTemplate.List(effectDescriptions.map(_.getVerbPhraseTemplate(cardName)))
         .withSuffix("until")
-        .withSuffix(conditionDefinition.getText(cardName))
+        .withSuffix(condition.getText(cardName))
     ).text
   }
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     val (objectIds, finalContext) = objectIdentifier.getAll(gameState, resolutionContext)
-    val condition = conditionDefinition.getCondition(gameState, finalContext)
     val effects = for {
       objectId <- objectIds
       effectDescription <- effectDescriptions
     } yield effectDescription.getEffect(objectId)
-    (CreateContinousEffectsAction(effects, condition), finalContext)
+    (CreateContinousEffectsAction(effects, resolutionContext, condition), finalContext)
   }
 }

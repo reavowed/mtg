@@ -204,14 +204,14 @@ object GameActionExecutor {
   }
 
   private def getTriggeringAbilities(action: GameUpdate, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
-    gameStateAfterAction.gameObjectState.activeTriggeredAbilities.filter {
-      _.getCondition(gameStateAfterAction).matchesEvent(action, gameStateAfterAction)
-    }.toSeq
+    gameStateAfterAction.gameObjectState.activeTriggeredAbilities
+      .filter(_.conditionMatchesEvent(action, gameStateAfterAction))
+      .toSeq
   }
 
   private def getEndedEffects(action: InternalGameAction, gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
     gameStateAfterAction.gameObjectState.floatingActiveContinuousEffects.filter(effect => {
-      def matchesCondition = effect.endCondition.matchesEvent(action, gameStateAfterAction)
+      def matchesCondition = effect.matchesEndCondition(action, gameStateAfterAction)
       def objectIsGone = effect.effect.asOptionalInstanceOf[CharacteristicOrControlChangingContinuousEffect]
         .exists(e => !gameStateAfterAction.gameObjectState.allObjects.exists(_.objectId == e.affectedObject))
       matchesCondition || objectIsGone

@@ -1,7 +1,7 @@
 package mtg.abilities.builder
 
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
-import mtg.effects.condition.ConditionDefinition
+import mtg.effects.condition.Condition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
 import mtg.instructions.basic._
@@ -23,7 +23,7 @@ object InstructionBuilder
       def damageTo(recipientIdentifier: SingleIdentifier[ObjectOrPlayerId]): Instruction = DealDamageInstruction(objectIdentifier, recipientIdentifier, amount)
   }
   case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription]) {
-      def until(conditionDefinition: ConditionDefinition): Instruction = CreateCharacteristicOrControlChangingContinuousEffectInstruction(objectIdentifier, continuousEffectDescriptions, conditionDefinition)
+      def until(condition: Condition): Instruction = CreateCharacteristicOrControlChangingContinuousEffectInstruction(objectIdentifier, continuousEffectDescriptions, condition)
   }
 
   implicit class ObjectSingleIdentifierExtension(objectIdentifier: SingleIdentifier[ObjectId]) {

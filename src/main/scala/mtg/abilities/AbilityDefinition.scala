@@ -4,7 +4,7 @@ import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, TextPar
 import mtg.continuousEffects.ContinuousEffect
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
-import mtg.effects.condition.ConditionDefinition
+import mtg.effects.condition.Condition
 import mtg.game.state.ObjectWithState
 import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
@@ -44,7 +44,7 @@ case class ActivatedAbilityDefinition(
 }
 
 case class TriggeredAbilityDefinition(
-    condition: ConditionDefinition,
+    condition: Condition,
     instructions: InstructionParagraph)
   extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
 {

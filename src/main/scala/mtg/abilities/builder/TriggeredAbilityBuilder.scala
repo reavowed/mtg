@@ -2,8 +2,8 @@ package mtg.abilities.builder
 
 import mtg.abilities.TriggeredAbilityDefinition
 import mtg.cards.text.InstructionParagraph
-import mtg.effects.condition.ConditionDefinition
+import mtg.effects.condition.Condition
 
 trait TriggeredAbilityBuilder {
-  def at(conditionDefinition: ConditionDefinition, paragraph: InstructionParagraph) = TriggeredAbilityDefinition(conditionDefinition, paragraph)
+  def at(condition: Condition, paragraph: InstructionParagraph) = TriggeredAbilityDefinition(condition, paragraph)
 }

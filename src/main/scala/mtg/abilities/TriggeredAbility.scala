@@ -4,10 +4,12 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game.objects.AbilityOnTheStack
-import mtg.game.state.{CurrentCharacteristics, GameState}
+import mtg.game.state.{CurrentCharacteristics, GameState, GameUpdate}
 
 case class TriggeredAbility(definition: TriggeredAbilityDefinition, sourceId: ObjectId, ownerId: PlayerId) {
-  def getCondition(gameState: GameState): Condition = definition.condition.getCondition(gameState, EffectContext(this))
+  def conditionMatchesEvent(action: GameUpdate, gameState: GameState): Boolean = {
+    definition.condition.matchesEvent(action, gameState, EffectContext(this))
+  }
   def toAbilityOnTheStack: AbilityOnTheStack = AbilityOnTheStack(definition, sourceId, ownerId)
   def getText(gameState: GameState): String = {
     definition.getText(CurrentCharacteristics.getName(gameState.gameObjectState.getCurrentOrLastKnownState(sourceId)))

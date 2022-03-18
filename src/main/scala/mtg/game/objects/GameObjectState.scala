@@ -7,6 +7,7 @@ import mtg.continuousEffects.{ContinuousEffect, FloatingActiveContinuousEffect}
 import mtg.core.zones.Zone
 import mtg.core.zones.Zone.BasicZone
 import mtg.core.{ManaType, ObjectId, PlayerId}
+import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game._
 import mtg.game.state.{DerivedState, ObjectWithState}
@@ -142,8 +143,8 @@ case class GameObjectState(
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)
   }
 
-  def addEffects(continuousEffects: Seq[ContinuousEffect], endCondition: Condition): GameObjectState = {
-    updateEffects(_ ++ continuousEffects.map(FloatingActiveContinuousEffect(_, endCondition)))
+  def addEffects(continuousEffects: Seq[ContinuousEffect], context: EffectContext, endCondition: Condition): GameObjectState = {
+    updateEffects(_ ++ continuousEffects.map(FloatingActiveContinuousEffect(_, context, endCondition)))
   }
   def updateEffects(f: Seq[FloatingActiveContinuousEffect] => Seq[FloatingActiveContinuousEffect]): GameObjectState = {
     copy(floatingActiveContinuousEffects = f(floatingActiveContinuousEffects))
