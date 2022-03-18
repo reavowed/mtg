@@ -14,7 +14,7 @@ case class SearchLibraryInstruction(objectFilter: Filter[ObjectId]) extends Inst
     val player = resolutionContext.controllingPlayer
     val possibleChoices = gameState.gameObjectState.libraries(player).view
       .map(_.objectId)
-      .filter(objectFilter.matches(_, resolutionContext, gameState))
+      .filter((t: ObjectId) => objectFilter.matches(t, gameState, resolutionContext))
       .toSeq
     SearchLibraryChoice(player, possibleChoices, resolutionContext)
   }

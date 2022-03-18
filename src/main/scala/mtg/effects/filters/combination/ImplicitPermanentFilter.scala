@@ -9,8 +9,8 @@ import mtg.game.state.GameState
 import mtg.text.NounPhraseTemplate
 
 class ImplicitPermanentFilter(t: Type) extends Filter[ObjectId] {
-  override def matches(objectId: ObjectId, effectContext: EffectContext, gameState: GameState): Boolean = {
-    PermanentFilter.matches(objectId, effectContext, gameState) && TypeFilter(t).matches(objectId, effectContext, gameState)
+  override def matches(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
+    PermanentFilter.matches(objectId, gameState, effectContext) && TypeFilter(t).matches(objectId, gameState, effectContext)
   }
 
   override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = t match {
@@ -20,6 +20,6 @@ class ImplicitPermanentFilter(t: Type) extends Filter[ObjectId] {
       NounPhraseTemplate.Simple(otherType.name.toLowerCase)
   }
 
-  override def getAll(effectContext: EffectContext, gameState: GameState): Set[ObjectId] = PermanentFilter.getAll(effectContext, gameState)
+  override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectId] = PermanentFilter.getAll(gameState, effectContext)
     .filter(gameState.gameObjectState.getCurrentOrLastKnownState(_).characteristics.types.contains(t))
 }

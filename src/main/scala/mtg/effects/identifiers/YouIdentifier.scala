@@ -6,7 +6,7 @@ import mtg.game.state.GameState
 import mtg.text.{NounPhrase, NounPhrases, VerbPerson}
 
 object YouIdentifier extends StaticIdentifier[PlayerId] {
-  override def get(effectContext: EffectContext, gameState: GameState): PlayerId = effectContext.controllingPlayer
+  override def get(gameState: GameState, effectContext: EffectContext): PlayerId = effectContext.controllingPlayer
   override def getNounPhrase(cardName: String): NounPhrase = NounPhrases.You
   override def person: VerbPerson = VerbPerson.Second
 }

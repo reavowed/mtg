@@ -7,11 +7,11 @@ import mtg.game.state.{CurrentCharacteristics, GameState}
 import mtg.text.{NounPhraseTemplate, Nouns}
 
 object PermanentFilter extends Filter[ObjectId] {
-  override def matches(objectId: ObjectId, effectContext: EffectContext, gameState: GameState): Boolean = {
+  override def matches(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
     CurrentCharacteristics.getPermanentObject(objectId, gameState).nonEmpty
   }
 
   override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = Nouns.Permanent
 
-  override def getAll(effectContext: EffectContext, gameState: GameState): Set[ObjectId] = gameState.gameObjectState.battlefield.map(_.objectId).toSet
+  override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectId] = gameState.gameObjectState.battlefield.map(_.objectId).toSet
 }

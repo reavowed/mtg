@@ -15,6 +15,6 @@ case class BeginningOfCombatCondition(playerIdentifier: StaticIdentifier[PlayerI
       " turn"
   }
   override def matchesEvent(eventToMatch: GameUpdate, gameState: GameState, effectContext: EffectContext): Boolean = {
-    eventToMatch == ExecuteStep(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == playerIdentifier.get(effectContext, gameState)
+    eventToMatch == ExecuteStep(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == playerIdentifier.get(gameState, effectContext)
   }
 }

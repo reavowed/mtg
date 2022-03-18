@@ -7,8 +7,8 @@ import mtg.game.state.GameState
 import mtg.text.NounPhraseTemplate
 
 class PrefixFilter[T <: ObjectOrPlayerId](prefixFilters: Seq[PartialFilter[T]], mainFilter: Filter[T]) extends Filter[T] {
-  override def matches(t: T, effectContext: EffectContext, gameState: GameState): Boolean = {
-    prefixFilters.forall(_.matches(t, effectContext, gameState)) && mainFilter.matches(t, effectContext, gameState)
+  override def matches(t: T, gameState: GameState, effectContext: EffectContext): Boolean = {
+    prefixFilters.forall(_.matches(t, gameState, effectContext)) && mainFilter.matches(t, gameState, effectContext)
   }
 
   override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = {
@@ -16,6 +16,6 @@ class PrefixFilter[T <: ObjectOrPlayerId](prefixFilters: Seq[PartialFilter[T]], 
       .withPrefix(prefixFilters.map(_.getText(cardName)).mkString(" "))
   }
 
-  override def getAll(effectContext: EffectContext, gameState: GameState): Set[T] = mainFilter.getAll(effectContext, gameState)
-    .filter(o => prefixFilters.forall(f => f.matches(o, effectContext, gameState)))
+  override def getAll(gameState: GameState, effectContext: EffectContext): Set[T] = mainFilter.getAll(gameState, effectContext)
+    .filter(o => prefixFilters.forall(f => f.matches(o, gameState, effectContext)))
 }

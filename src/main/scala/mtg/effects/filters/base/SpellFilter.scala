@@ -8,7 +8,7 @@ import mtg.game.state.{CurrentCharacteristics, GameState}
 import mtg.text.{NounPhraseTemplate, Nouns}
 
 object SpellFilter extends Filter[ObjectId] {
-  override def matches(objectId: ObjectId, effectContext: EffectContext, gameState: GameState): Boolean = {
+  override def matches(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
     CurrentCharacteristics.getStackObject(objectId, gameState).exists(isSpell)
   }
   private def isSpell(stackObject: StackObject): Boolean = {
@@ -17,5 +17,5 @@ object SpellFilter extends Filter[ObjectId] {
 
   override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = Nouns.Spell
 
-  override def getAll(effectContext: EffectContext, gameState: GameState): Set[ObjectId] = gameState.gameObjectState.stack.filter(isSpell).map(_.objectId).toSet
+  override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectId] = gameState.gameObjectState.stack.filter(isSpell).map(_.objectId).toSet
 }
