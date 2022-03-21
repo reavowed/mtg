@@ -25,7 +25,7 @@ class CopySpellSpec extends SpecWithTestCards {
     ManaCost(0),
     Type.Instant,
     Nil,
-    you(GainLife(1)))
+    You(GainLife(1)))
 
   object TestCopyTriggerArtifact extends ArtifactCard(
     "Copy Trigger Artifact",
