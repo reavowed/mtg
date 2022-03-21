@@ -6,11 +6,12 @@ import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.effects.condition.Condition
 import mtg.game.state.ObjectWithState
+import mtg.instructions.TextComponent
 import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
 import mtg.utils.TextUtils._
 
-sealed abstract class AbilityDefinition {
+sealed abstract class AbilityDefinition extends TextComponent {
   def functionalZones: Set[ZoneType] = Set(ZoneType.Battlefield)
   def isFunctional(objectWithAbility: ObjectWithState): Boolean = {
     getFunctionalZones(objectWithAbility).contains(objectWithAbility.gameObject.zone.zoneType)
@@ -21,7 +22,6 @@ sealed abstract class AbilityDefinition {
     else
       Set(ZoneType.Battlefield)
   }
-  def getText(cardName: String): String
   def getQuotedDescription(cardName: String): String = "\"" + getText(cardName) + "\""
 }
 

@@ -6,8 +6,8 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game.state.{GameState, GameUpdate}
-import mtg.instructions.{Instruction, IntransitiveEventMatchingVerb, TransitiveEventMatchingVerb}
 import mtg.instructions.nouns.IndefiniteNounPhrase
+import mtg.instructions.{IntransitiveEventMatchingVerb, TransitiveEventMatchingVerb}
 
 case class When(playerPhrase: IndefiniteNounPhrase[PlayerId], verb: IntransitiveEventMatchingVerb) extends Condition {
   def getText(cardName: String): String = "when " + playerPhrase.getText(cardName)

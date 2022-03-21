@@ -5,7 +5,7 @@ import mtg.effects.targets.TargetIdentifier
 import mtg.game.state.GameState
 import mtg.instructions.actions.Add
 
-trait Instruction {
+trait Instruction extends TextComponent {
   def targetIdentifiers: Seq[TargetIdentifier[_]] = {
     def helper(refs: Seq[Any], targets: Seq[TargetIdentifier[_]]): Seq[TargetIdentifier[_]] = {
       refs match {
@@ -36,8 +36,6 @@ trait Instruction {
     }
     helper(Seq(this))
   }
-
-  def getText(cardName: String): String
 
   def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
 }

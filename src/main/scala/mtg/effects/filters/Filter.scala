@@ -3,11 +3,11 @@ package mtg.effects.filters
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
+import mtg.instructions.TextComponent
 import mtg.text.NounPhraseTemplate
 
-trait PartialFilter[T <: ObjectOrPlayerId] {
+trait PartialFilter[T <: ObjectOrPlayerId] extends TextComponent {
   def matches(t: T, gameState: GameState, effectContext: EffectContext): Boolean
-  def getText(cardName: String): String
 }
 
 trait Filter[T <: ObjectOrPlayerId] {

@@ -1,9 +1,9 @@
 package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, KeywordAbility}
+import mtg.instructions.TextComponent
 
-trait TextParagraph {
-  def getText(cardName: String): String
+trait TextParagraph extends TextComponent {
   def abilityDefinitions: Seq[AbilityDefinition]
 }
 
