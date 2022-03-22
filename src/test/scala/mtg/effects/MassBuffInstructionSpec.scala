@@ -7,6 +7,7 @@ import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 
 class MassBuffInstructionSpec extends SpecWithTestCards {
@@ -15,7 +16,7 @@ class MassBuffInstructionSpec extends SpecWithTestCards {
     ManaCost(0),
     Type.Instant,
     Nil,
-    Creature(you.control)(get(1, 1)).until(endOfTurn))
+    Creature(You.control)(get(1, 1)).until(endOfTurn))
 
   val VanillaOneOne = vanillaCreature(1, 1)
   val VanillaTwoTwo = vanillaCreature(2, 2)

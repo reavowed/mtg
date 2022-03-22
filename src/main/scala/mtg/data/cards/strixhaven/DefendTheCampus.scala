@@ -5,6 +5,7 @@ import mtg.cards.patterns.SpellCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.Type.{Creature, Instant}
 import mtg.instructions.actions.Destroy
+import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 
 object DefendTheCampus extends SpellCard(
@@ -13,5 +14,5 @@ object DefendTheCampus extends SpellCard(
   Instant,
   Nil,
   chooseOne(
-    Creature(you.control)(get(1, 1)).until(endOfTurn),
+    Creature(You.control)(get(1, 1)).until(endOfTurn),
     Destroy(target(Creature(withPower(4.orGreater))))))

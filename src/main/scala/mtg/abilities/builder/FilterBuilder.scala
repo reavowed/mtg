@@ -5,11 +5,11 @@ import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.filters.base._
 import mtg.effects.filters.combination.{ImplicitPermanentFilter, NegatedCharacteristicFilter, PrefixFilter, SuffixFilter}
 import mtg.effects.filters.{Filter, PartialFilter}
-import mtg.effects.identifiers.StaticIdentifier
 import mtg.effects.numbers.NumberMatcher
+import mtg.instructions.nouns.StaticSingleIdentifyingNounPhrase
 
 trait FilterBuilder extends FilterBuilder.LowPriority {
-  implicit class PlayerIdentifierExtensions(playerIdentifier: StaticIdentifier[PlayerId]) {
+  implicit class PlayerIdentifierExtensions(playerIdentifier: StaticSingleIdentifyingNounPhrase[PlayerId]) {
     def control: PartialFilter[ObjectId] = ControllerFilter(playerIdentifier)
   }
   implicit class FilterExtensions[T <: ObjectOrPlayerId](filter: Filter[T]) {

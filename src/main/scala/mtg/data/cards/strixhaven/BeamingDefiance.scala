@@ -5,6 +5,7 @@ import mtg.abilities.keyword.Hexproof
 import mtg.cards.patterns.SpellCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.Type.{Creature, Instant}
+import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 
 object BeamingDefiance extends SpellCard(
@@ -12,5 +13,5 @@ object BeamingDefiance extends SpellCard(
   ManaCost(1, White),
   Instant,
   Nil,
-  target(Creature(you.control))(gets(+2, +2), gains(Hexproof)).until(endOfTurn)
+  target(Creature(You.control))(gets(+2, +2), gains(Hexproof)).until(endOfTurn)
 )
