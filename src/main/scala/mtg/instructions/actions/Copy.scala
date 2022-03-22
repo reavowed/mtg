@@ -9,7 +9,7 @@ import mtg.instructions.nouns.IndefiniteNounPhrase
 import mtg.instructions.{InstructionResult, TransitiveEventMatchingVerb, TransitiveInstructionVerb}
 import mtg.text.Verb
 
-case object Copy extends Verb.RegularCaseObject with TransitiveInstructionVerb with TransitiveEventMatchingVerb {
+case object Copy extends Verb.RegularCaseObject with TransitiveInstructionVerb[PlayerId] with TransitiveEventMatchingVerb {
   override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     (CopySpellAction(playerId, objectId), resolutionContext)
   }

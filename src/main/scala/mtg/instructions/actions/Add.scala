@@ -8,7 +8,7 @@ import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb}
 import mtg.text.Verb
 
-case class Add(symbols: ManaSymbol*) extends Verb.WithSuffix(Verb.Add, symbols.map(_.text).mkString) with IntransitiveInstructionVerb {
+case class Add(symbols: ManaSymbol*) extends Verb.WithSuffix(Verb.Add, symbols.map(_.text).mkString) with IntransitiveInstructionVerb[PlayerId] {
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     (AddManaAction(playerId, symbols), resolutionContext)
   }

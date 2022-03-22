@@ -2,15 +2,16 @@ package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, SpellAbility}
 import mtg.cards.text.InstructionParagraph.fromSingleInstruction
+import mtg.core.PlayerId
 import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
 
 sealed trait InstructionParagraph extends TextParagraph {
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(SpellAbility(this))
 }
 object InstructionParagraph {
-  implicit def fromSingleVerb(intransitiveVerbInstruction: IntransitiveInstructionVerb): SimpleInstructionParagraph = fromSingleInstruction(intransitiveVerbInstruction.imperative)
+  implicit def fromSingleVerb(intransitiveVerbInstruction: IntransitiveInstructionVerb[PlayerId]): SimpleInstructionParagraph = fromSingleInstruction(IntransitiveInstructionVerb.Imperative(intransitiveVerbInstruction))
   implicit def fromSingleInstruction(instruction: Instruction): SimpleInstructionParagraph = SimpleInstructionParagraph(InstructionSentence.SingleClause(instruction))
-  implicit def seqFromSingleVerb(intransitiveVerbInstruction: IntransitiveInstructionVerb): Seq[SimpleInstructionParagraph] = Seq(fromSingleVerb(intransitiveVerbInstruction))
+  implicit def seqFromSingleVerb(intransitiveVerbInstruction: IntransitiveInstructionVerb[PlayerId]): Seq[SimpleInstructionParagraph] = Seq(fromSingleVerb(intransitiveVerbInstruction))
   implicit def seqFromSingleInstruction(instruction: Instruction): Seq[SimpleInstructionParagraph] = Seq(fromSingleInstruction(instruction))
   implicit def seqFromSingleSentence(sentence: InstructionSentence): Seq[SimpleInstructionParagraph] = Seq(SimpleInstructionParagraph(sentence))
   implicit def seqFromSingleParagraph(paragraph: InstructionParagraph): Seq[InstructionParagraph] = Seq(paragraph)
@@ -41,6 +42,6 @@ object InstructionSentence {
       clausesText.mkString(", ") + "."
     }
   }
-  implicit def fromSingleVerb(intransitiveVerbInstruction: IntransitiveInstructionVerb): InstructionSentence = instructionToSentence(intransitiveVerbInstruction.imperative)
-  implicit def instructionToSentence(instruction: Instruction): InstructionSentence = SingleClause(instruction)
+  implicit def fromSingleVerb(intransitiveVerbInstruction: IntransitiveInstructionVerb[PlayerId]): InstructionSentence = fromSingleInstruction(IntransitiveInstructionVerb.Imperative(intransitiveVerbInstruction))
+  implicit def fromSingleInstruction(instruction: Instruction): InstructionSentence = SingleClause(instruction)
 }

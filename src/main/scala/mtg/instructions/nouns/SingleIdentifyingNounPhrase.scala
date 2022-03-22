@@ -15,8 +15,8 @@ trait SingleIdentifyingNounPhrase[T] extends TextComponent {
 
 object SingleIdentifyingNounPhrase {
   implicit class PlayerNounExtensions(playerNoun: SingleIdentifyingNounPhrase[PlayerId]) {
-    def apply(intransitiveInstructionVerb: IntransitiveInstructionVerb): Instruction = {
-      IntransitiveInstructionVerb.WithPlayer(playerNoun, intransitiveInstructionVerb)
+    def apply(intransitiveInstructionVerb: IntransitiveInstructionVerb[PlayerId]): Instruction = {
+      IntransitiveInstructionVerb.WithSubject(playerNoun, intransitiveInstructionVerb)
     }
   }
 }

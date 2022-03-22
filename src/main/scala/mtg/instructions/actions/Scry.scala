@@ -9,7 +9,7 @@ import mtg.instructions.{Instruction, InstructionChoice, InstructionResult, Intr
 import mtg.text.{Verb, VerbInflection}
 import mtg.utils.ParsingUtils
 
-case class Scry(number: Int) extends IntransitiveInstructionVerb with Verb.RegularCaseObject {
+case class Scry(number: Int) extends IntransitiveInstructionVerb[PlayerId] with Verb.RegularCaseObject {
   override def thirdPerson: String = "scries"
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
     super.inflect(verbInflection, cardName) + " " + number

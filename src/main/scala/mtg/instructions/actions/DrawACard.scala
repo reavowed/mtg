@@ -7,7 +7,7 @@ import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb}
 import mtg.text.Verb
 
-case object DrawACard extends Verb.WithSuffix(Verb.Draw, "a card") with IntransitiveInstructionVerb {
+case object DrawACard extends Verb.WithSuffix(Verb.Draw, "a card") with IntransitiveInstructionVerb[PlayerId] {
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     (DrawCardAction(playerId), resolutionContext)
   }

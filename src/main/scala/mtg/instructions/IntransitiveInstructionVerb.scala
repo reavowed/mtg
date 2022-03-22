@@ -7,29 +7,27 @@ import mtg.game.state.GameState
 import mtg.instructions.nouns.SingleIdentifyingNounPhrase
 import mtg.text.{Verb, VerbInflection}
 
-trait IntransitiveInstructionVerb extends Verb {
-  def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
-
-  def imperative: Instruction = IntransitiveInstructionVerb.Imperative(this)
+trait IntransitiveInstructionVerb[SubjectType] extends Verb {
+  def resolve(subject: SubjectType, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
 }
 
 object IntransitiveInstructionVerb {
-  implicit def toInstruction(intransitiveVerbInstruction: IntransitiveInstructionVerb): Instruction = {
-    intransitiveVerbInstruction.imperative
+  implicit def toInstruction(intransitiveVerbInstruction: IntransitiveInstructionVerb[PlayerId]): Instruction = {
+    Imperative(intransitiveVerbInstruction)
   }
 
-  case class Imperative(instructionVerb: IntransitiveInstructionVerb) extends Instruction {
+  case class Imperative(instructionVerb: IntransitiveInstructionVerb[PlayerId]) extends Instruction {
     override def getText(cardName: String): String = instructionVerb.inflect(VerbInflection.Imperative, cardName)
     override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
       instructionVerb.resolve(resolutionContext.controllingPlayer, gameState, resolutionContext)
     }
   }
-  case class WithPlayer(playerNoun: SingleIdentifyingNounPhrase[PlayerId], instructionVerb: IntransitiveInstructionVerb) extends Instruction {
+  case class WithSubject[SubjectType](subjectNoun: SingleIdentifyingNounPhrase[SubjectType], instructionVerb: IntransitiveInstructionVerb[SubjectType]) extends Instruction {
     override def getText(cardName: String): String = {
-      playerNoun.getText(cardName) + " " + instructionVerb.inflect(VerbInflection.Present(playerNoun.person, playerNoun.number), cardName)
+      subjectNoun.getText(cardName) + " " + instructionVerb.inflect(VerbInflection.Present(subjectNoun.person, subjectNoun.number), cardName)
     }
     override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-      val (playerId, contextAfterPlayer) = playerNoun.identify(gameState, resolutionContext)
+      val (playerId, contextAfterPlayer) = subjectNoun.identify(gameState, resolutionContext)
       instructionVerb.resolve(playerId, gameState, contextAfterPlayer)
     }
   }
