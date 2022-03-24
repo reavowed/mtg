@@ -7,7 +7,7 @@ import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, TransitiveInstructionVerb}
 import mtg.text.Verb
 
-case object Destroy extends Verb.RegularCaseObject with TransitiveInstructionVerb[PlayerId] {
+case object Destroy extends Verb.RegularCaseObject with TransitiveInstructionVerb[PlayerId, ObjectId] {
   override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     (DestroyAction(objectId), resolutionContext)
   }
