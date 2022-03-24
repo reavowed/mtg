@@ -4,6 +4,8 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.symbols.ManaSymbol.Red
 import mtg.core.types.Type
+import mtg.instructions.actions.DealDamage
+import mtg.instructions.nouns.CardName
 import mtg.parts.costs.ManaCost
 
 object LightningBolt extends SpellCard(
@@ -11,4 +13,4 @@ object LightningBolt extends SpellCard(
   ManaCost(Red),
   Type.Instant,
   Nil,
-  cardName.deals(3).damageTo(anyTarget))
+  CardName(DealDamage(3)(anyTarget)))

@@ -20,6 +20,7 @@ object Verb {
 
   case object Add extends RegularCaseObject
   case object Control extends RegularCaseObject
+  case object Deal extends RegularCaseObject
   case object Draw extends RegularCaseObject
   case object Gain extends RegularCaseObject
 

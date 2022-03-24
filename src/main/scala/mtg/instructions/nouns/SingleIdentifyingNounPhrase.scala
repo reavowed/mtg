@@ -1,6 +1,5 @@
 package mtg.instructions.nouns
 
-import mtg.core.PlayerId
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
@@ -11,12 +10,8 @@ trait SingleIdentifyingNounPhrase[T] extends TextComponent {
   def getPossessiveText(cardName: String): String = getText(cardName) + "'s"
   def person: VerbPerson
   def number: VerbNumber
-}
 
-object SingleIdentifyingNounPhrase {
-  implicit class PlayerNounExtensions(playerNoun: SingleIdentifyingNounPhrase[PlayerId]) {
-    def apply(intransitiveInstructionVerb: IntransitiveInstructionVerb[PlayerId]): Instruction = {
-      IntransitiveInstructionVerb.WithSubject(playerNoun, intransitiveInstructionVerb)
-    }
+  def apply(verb: IntransitiveInstructionVerb[T]): Instruction = {
+    IntransitiveInstructionVerb.WithSubject(this, verb)
   }
 }

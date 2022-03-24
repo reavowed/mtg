@@ -5,8 +5,8 @@ import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.GainLife
-import mtg.instructions.nouns.You
+import mtg.instructions.actions.{DealDamage, GainLife}
+import mtg.instructions.nouns.{CardName, You}
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice
 
@@ -18,8 +18,7 @@ class ModalSpec extends SpecWithTestCards {
     Nil,
     chooseOne(
       You(GainLife(3)),
-      cardName.deals(3).damageTo(anyTarget))
-  )
+      CardName(DealDamage(3)(anyTarget))))
 
   override def testCards = Seq(TestCard)
 

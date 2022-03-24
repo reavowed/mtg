@@ -20,16 +20,10 @@ object InstructionBuilder
     with TriggeredAbilityBuilder
     with ParagraphBuilder
 {
-  case class DealInstructionBuilder(objectIdentifier: SingleIdentifier[ObjectId], amount: Int) {
-      def damageTo(recipientIdentifier: SingleIdentifier[ObjectOrPlayerId]): Instruction = DealDamageInstruction(objectIdentifier, recipientIdentifier, amount)
-  }
   case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription]) {
       def until(condition: Condition): Instruction = CreateCharacteristicOrControlChangingContinuousEffectInstruction(objectIdentifier, continuousEffectDescriptions, condition)
   }
 
-  implicit class ObjectSingleIdentifierExtension(objectIdentifier: SingleIdentifier[ObjectId]) {
-    def deals(amount: Int): DealInstructionBuilder = DealInstructionBuilder(objectIdentifier, amount)
-  }
   implicit class ObjectMultipleIdentifierExtension(objectIdentifier: MultipleIdentifier[ObjectId]) {
     def apply(continuousEffectDescriptions: CharacteristicOrControlChangingContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectIdentifier, continuousEffectDescriptions)
   }
