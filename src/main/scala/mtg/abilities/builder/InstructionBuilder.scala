@@ -1,14 +1,12 @@
 package mtg.abilities.builder
 
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.core.ObjectId
 import mtg.effects.condition.Condition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier, SingleIdentifier}
 import mtg.instructions.basic._
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.instructions.nouns.SingleIdentifyingNounPhrase
-import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction, IntransitiveInstructionVerb}
-import mtg.parts.counters.CounterType
+import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
 
 object InstructionBuilder
   extends FilterBuilder
@@ -33,8 +31,5 @@ object InstructionBuilder
   def searchYourLibraryForA(objectFilter: Filter[ObjectId]): Instruction = SearchLibraryInstruction(objectFilter)
   def put(objectIdentifier: SingleIdentifier[ObjectId]) = new {
     def intoYourHand: Instruction = PutIntoHandInstruction(objectIdentifier)
-  }
-  def put(number: Int, counterType: CounterType) = new {
-    def on(objectIdentifier: SingleIdentifier[ObjectId]): Instruction = PutCountersInstruction(number, counterType, objectIdentifier)
   }
 }

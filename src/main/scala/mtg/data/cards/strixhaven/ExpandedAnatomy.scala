@@ -7,6 +7,7 @@ import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
+import mtg.instructions.actions.PutCounters
 import mtg.parts.costs.ManaCost
 import mtg.parts.counters.PlusOnePlusOneCounter
 
@@ -16,6 +17,6 @@ object ExpandedAnatomy extends SpellCard(
   Type.Sorcery,
   Seq(Lesson),
   SimpleInstructionParagraph(
-    put(2, PlusOnePlusOneCounter).on(target(Creature)),
+    PutCounters(2, PlusOnePlusOneCounter)(target(Creature)),
     it(gains(Vigilance)).until(endOfTurn))
 )
