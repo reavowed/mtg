@@ -1,22 +1,24 @@
-package mtg.instructions.basic
+package mtg.instructions.actions
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.filters.Filter
 import mtg.effects.StackObjectResolutionContext
+import mtg.effects.filters.Filter
 import mtg.game.state.{GameState, InternalGameAction}
-import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
+import mtg.instructions.{InstructionChoice, InstructionResult, IntransitiveInstructionVerb}
+import mtg.text.{Verb, VerbInflection}
 import mtg.utils.TextUtils._
 
-case class SearchLibraryInstruction(objectFilter: Filter[ObjectId]) extends Instruction {
-  override def getText(cardName: String): String = "search your library for " + objectFilter.getNounPhraseTemplate(cardName).singular.withArticle
-  override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    val player = resolutionContext.controllingPlayer
-    val possibleChoices = gameState.gameObjectState.libraries(player).view
+case class SearchYourLibraryFor(objectFilter: Filter[ObjectId]) extends IntransitiveInstructionVerb[PlayerId] {
+  override def inflect(verbInflection: VerbInflection, cardName: String): String = {
+    Verb.Search.inflect(verbInflection, cardName) + " your library for " + objectFilter.getNounPhraseTemplate(cardName).singular.withArticle
+  }
+  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+    val possibleChoices = gameState.gameObjectState.libraries(playerId).view
       .map(_.objectId)
       .filter((t: ObjectId) => objectFilter.matches(t, gameState, resolutionContext))
       .toSeq
-    SearchLibraryChoice(player, possibleChoices, resolutionContext)
+    SearchLibraryChoice(playerId, possibleChoices, resolutionContext)
   }
 }
 

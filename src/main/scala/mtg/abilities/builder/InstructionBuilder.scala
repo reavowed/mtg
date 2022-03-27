@@ -4,7 +4,6 @@ import mtg.core.ObjectId
 import mtg.effects.condition.Condition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier}
-import mtg.instructions.basic._
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
 
@@ -27,6 +26,4 @@ object InstructionBuilder
   }
 
   implicit class ObjectFilterExtension(objectFilter: Filter[ObjectId]) extends ObjectMultipleIdentifierExtension(FilterIdentifier(objectFilter))
-
-  def searchYourLibraryForA(objectFilter: Filter[ObjectId]): Instruction = SearchLibraryInstruction(objectFilter)
 }

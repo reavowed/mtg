@@ -7,7 +7,7 @@ import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Supertype.Basic
 import mtg.core.types.Type
 import mtg.core.types.Type.Land
-import mtg.instructions.actions.{GainLife, PutIntoYourHand, Reveal, Shuffle}
+import mtg.instructions.actions.{GainLife, PutIntoYourHand, Reveal, SearchYourLibraryFor, Shuffle}
 import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 
@@ -17,5 +17,5 @@ object EnvironmentalSciences extends SpellCard(
   Type.Sorcery,
   Seq(Lesson),
   SimpleInstructionParagraph(
-    InstructionSentence.MultiClause(searchYourLibraryForA(card(Basic, Land)), Reveal(it), PutIntoYourHand(it), Shuffle),
+    InstructionSentence.MultiClause(SearchYourLibraryFor(card(Basic, Land)), Reveal(it), PutIntoYourHand(it), Shuffle),
     You(GainLife(2))))
