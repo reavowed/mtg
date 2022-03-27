@@ -7,14 +7,14 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
 import mtg.stack.adding._
 
-case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
+case class CastSpellAction(playerId: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
   override def objectId: ObjectId = objectToCast.gameObject.objectId
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(MoveToStackAction(objectId, player)),
+      WrappedOldUpdates(MoveToStackAction(objectId, playerId)),
       steps)
   }
   private def steps(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
@@ -25,7 +25,7 @@ case class CastSpellAction(player: PlayerId, objectToCast: ObjectWithState) exte
         ChooseModes(spellId),
         ChooseTargets(spellId),
         PayManaCosts.ForSpell(spellId),
-        FinishCasting(spellId)),
+        FinishCasting(playerId, spellId)),
       ())(gameState)
   }
 }
