@@ -29,7 +29,7 @@ object VerbPhraseTemplate {
     def plural: String = join(_.plural)
 
     private def join(f: VerbPhraseTemplate => String): String = {
-      children.map(f).toCommaList
+      children.map(f).toCommaList("and")
     }
   }
 }
