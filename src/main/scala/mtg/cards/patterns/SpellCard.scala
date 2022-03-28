@@ -21,3 +21,8 @@ class SpellCard(
     textParagraphs,
     None,
     None)
+{
+  def this(name: String, manaCost: ManaCost, `type`: Type.InstantOrSorcery, textParagraphs: Seq[InstructionParagraph]) = {
+    this(name, manaCost, `type`, Nil, textParagraphs)
+  }
+}

@@ -12,7 +12,6 @@ object DefendTheCampus extends SpellCard(
   "Defend the Campus",
   ManaCost(3, White),
   Instant,
-  Nil,
   chooseOne(
     Creature(You.control)(get(1, 1)).until(endOfTurn),
     Destroy(target(Creature(withPower(4.orGreater))))))

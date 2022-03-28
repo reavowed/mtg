@@ -12,5 +12,4 @@ object LightningBolt extends SpellCard(
   "Lightning Bolt",
   ManaCost(Red),
   Type.Instant,
-  Nil,
   CardName(DealDamage(3)(anyTarget)))

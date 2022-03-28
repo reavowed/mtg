@@ -12,6 +12,5 @@ object BeamingDefiance extends SpellCard(
   "Beaming Defiance",
   ManaCost(1, White),
   Instant,
-  Nil,
   target(Creature(You.control))(gets(+2, +2), gains(Hexproof)).until(endOfTurn)
 )
