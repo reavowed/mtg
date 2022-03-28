@@ -23,6 +23,7 @@ object Verb {
   case object Deal extends RegularCaseObject
   case object Draw extends RegularCaseObject
   case object Gain extends RegularCaseObject
+  case object Get extends RegularCaseObject
   case object Put extends RegularCaseObject
   case object Search extends RegularCaseObject
 

@@ -1,13 +1,14 @@
 package mtg.instructions
 
+import mtg.actions.CreateContinousEffectsAction
 import mtg.core.ObjectId
+import mtg.effects.StackObjectResolutionContext
 import mtg.effects.condition.Condition
 import mtg.effects.identifiers.MultipleIdentifier
-import mtg.effects.StackObjectResolutionContext
-import mtg.actions.CreateContinousEffectsAction
 import mtg.game.state.GameState
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.text.{Sentence, VerbPhraseTemplate}
+import mtg.text.VerbInflection
+import mtg.utils.TextUtils._
 
 case class CreateCharacteristicOrControlChangingContinuousEffectInstruction(
     objectIdentifier: MultipleIdentifier[ObjectId],
@@ -16,12 +17,12 @@ case class CreateCharacteristicOrControlChangingContinuousEffectInstruction(
   extends Instruction
 {
   override def getText(cardName: String): String = {
-    Sentence.NounAndVerb(
-      objectIdentifier.getNounPhrase(cardName),
-      VerbPhraseTemplate.List(effectDescriptions.map(_.getVerbPhraseTemplate(cardName)))
-        .withSuffix("until")
-        .withSuffix(condition.getText(cardName))
-    ).text
+    Seq(
+      objectIdentifier.getText(cardName),
+      effectDescriptions.map(_.inflect(VerbInflection.Present(objectIdentifier.person, objectIdentifier.number), cardName)).toCommaList("and"),
+      "until",
+      condition.getText(cardName)
+    ).mkString(" ")
   }
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {

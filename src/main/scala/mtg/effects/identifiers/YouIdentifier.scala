@@ -3,10 +3,11 @@ package mtg.effects.identifiers
 import mtg.core.PlayerId
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
-import mtg.text.{NounPhrase, NounPhrases, VerbPerson}
+import mtg.text.VerbPerson
 
 object YouIdentifier extends StaticIdentifier[PlayerId] {
-  override def get(gameState: GameState, effectContext: EffectContext): PlayerId = effectContext.controllingPlayer
-  override def getNounPhrase(cardName: String): NounPhrase = NounPhrases.You
+  override def getText(cardName: String): String = "you"
+  override def getPossessiveText(cardName: String): String = "your"
   override def person: VerbPerson = VerbPerson.Second
+  override def get(gameState: GameState, effectContext: EffectContext): PlayerId = effectContext.controllingPlayer
 }

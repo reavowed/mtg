@@ -6,16 +6,15 @@ import mtg.effects.filters.Filter
 import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
-import mtg.text.{GrammaticalNumber, NounPhrase}
+import mtg.text.VerbPerson
 
 import scala.reflect.ClassTag
 
 class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) extends SingleIdentifier[T] {
-  override def getNounPhrase(cardName: String): NounPhrase = {
-    NounPhrase.Templated(
-      filter.getNounPhraseTemplate(cardName).withPrefix("target"),
-      GrammaticalNumber.Singular)
+  override def getText(cardName: String): String = {
+    filter.getNounPhraseTemplate(cardName).withPrefix("target").singular
   }
+  override def person: VerbPerson = VerbPerson.Third
 
   override def get(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
     resolutionContext.popTarget.mapLeft(_.asInstanceOf[T])
