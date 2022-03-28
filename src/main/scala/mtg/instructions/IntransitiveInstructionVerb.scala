@@ -27,7 +27,7 @@ object IntransitiveInstructionVerb {
       subjectNoun.getText(cardName) + " " + instructionVerb.inflect(VerbInflection.Present(subjectNoun.person, subjectNoun.number), cardName)
     }
     override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-      val (playerId, contextAfterPlayer) = subjectNoun.identify(gameState, resolutionContext)
+      val (playerId, contextAfterPlayer) = subjectNoun.identifySingle(gameState, resolutionContext)
       instructionVerb.resolve(playerId, gameState, contextAfterPlayer)
     }
   }

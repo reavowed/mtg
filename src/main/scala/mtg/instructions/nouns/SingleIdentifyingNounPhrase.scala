@@ -2,14 +2,15 @@ package mtg.instructions.nouns
 
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
-import mtg.text.{VerbNumber, VerbPerson}
+import mtg.instructions.{Instruction, IntransitiveInstructionVerb}
+import mtg.text.VerbNumber
 
-trait SingleIdentifyingNounPhrase[T] extends TextComponent {
-  def identify(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext)
-  def getPossessiveText(cardName: String): String = getText(cardName) + "'s"
-  def person: VerbPerson
-  def number: VerbNumber
+trait SingleIdentifyingNounPhrase[T] extends SetIdentifyingNounPhrase[T] {
+  def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext)
+  override def identifyAll(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Set[T], StackObjectResolutionContext) = {
+    identifySingle(gameState, resolutionContext).mapLeft(Set(_))
+  }
+  override def number: VerbNumber = VerbNumber.Singular
 
   def apply(verb: IntransitiveInstructionVerb[T]): Instruction = {
     IntransitiveInstructionVerb.WithSubject(this, verb)

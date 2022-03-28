@@ -5,7 +5,7 @@ import mtg.game.state.GameState
 
 trait StaticSingleIdentifyingNounPhrase[T] extends SingleIdentifyingNounPhrase[T] {
   def identify(gameState: GameState, effectContext: EffectContext): T
-  override def identify(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
+  override def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
     (identify(gameState, resolutionContext), resolutionContext)
   }
 }
