@@ -26,7 +26,7 @@ case class CreateCharacteristicOrControlChangingContinuousEffectInstruction(
   }
 
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    val (objectIds, finalContext) = objectIdentifier.getAll(gameState, resolutionContext)
+    val (objectIds, finalContext) = objectIdentifier.identifyAll(gameState, resolutionContext)
     val effects = for {
       objectId <- objectIds
       effectDescription <- effectDescriptions

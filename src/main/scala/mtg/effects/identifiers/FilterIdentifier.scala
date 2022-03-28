@@ -10,7 +10,7 @@ case class FilterIdentifier[T <: ObjectOrPlayerId](filter: Filter[T]) extends Mu
   override def getText(cardName: String): String = filter.getNounPhraseTemplate(cardName).plural
   override def person: VerbPerson = VerbPerson.Third
   override def number: VerbNumber = VerbNumber.Plural
-  override def getAll(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Seq[T], StackObjectResolutionContext) = {
+  override def identifyAll(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Seq[T], StackObjectResolutionContext) = {
     (filter.getAll(gameState, resolutionContext).toSeq, resolutionContext)
   }
 }

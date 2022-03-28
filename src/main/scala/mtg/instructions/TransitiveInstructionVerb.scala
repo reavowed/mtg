@@ -28,7 +28,7 @@ case class TransitiveInstructionVerbWithObject[SubjectType, ObjectType](
     }
   }
   override def resolve(subject: SubjectType, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    val (objectId, contextAfterObjects) = objectIdentifier.get(gameState, resolutionContext)
+    val (objectId, contextAfterObjects) = objectIdentifier.identifySingle(gameState, resolutionContext)
     transitiveVerbInstruction.resolve(subject, objectId, gameState, contextAfterObjects)
   }
 }

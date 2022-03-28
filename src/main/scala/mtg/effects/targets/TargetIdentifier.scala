@@ -16,7 +16,7 @@ class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) exte
   }
   override def person: VerbPerson = VerbPerson.Third
 
-  override def get(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
+  override def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
     resolutionContext.popTarget.mapLeft(_.asInstanceOf[T])
   }
   def getValidChoices(source: StackObjectWithState, gameState: GameState, effectContext: EffectContext): Seq[ObjectOrPlayerId] = {
