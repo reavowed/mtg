@@ -44,11 +44,11 @@ case class ActivatedAbilityDefinition(
 }
 
 case class TriggeredAbilityDefinition(
-    condition: Condition,
+    triggerCondition: TriggerCondition,
     instructions: InstructionParagraph)
   extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
 {
-  override def getText(cardName: String): String = "At " + condition.getText(cardName) + ", " + instructions.getText(cardName).uncapitalize
+  override def getText(cardName: String): String = triggerCondition.getText(cardName).capitalize + ", " + instructions.getText(cardName).uncapitalize
   override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 }
 

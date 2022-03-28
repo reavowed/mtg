@@ -16,7 +16,7 @@ trait Noun {
 
 object Noun {
   trait RegularCaseObject extends Noun with CaseObjectWithName {
-    override def getSingular(cardName: String): String = name
+    override def getSingular(cardName: String): String = name.toLowerCase
     override def getPlural(cardName: String): String = name + "s"
   }
   case class WithAdjective(adjective: Adjective, noun: Noun) extends Noun {

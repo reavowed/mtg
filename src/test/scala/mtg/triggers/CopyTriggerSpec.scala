@@ -7,7 +7,7 @@ import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.instructions.actions.{Copy, DrawACard}
 import mtg.instructions.articles.A
-import mtg.instructions.conditions.When
+import mtg.instructions.conditions.Whenever
 import mtg.instructions.nouns.{Spell, You}
 import mtg.parts.costs.ManaCost
 
@@ -16,7 +16,7 @@ class CopyTriggerSpec extends SpecWithTestCards {
   object TestCopyTriggerArtifact extends ArtifactCard(
     "Copy Trigger Artifact",
     ManaCost(0),
-    When(You, Copy, A(Spell))(DrawACard))
+    Whenever(You, Copy, A(Spell))(DrawACard))
 
   override def testCards = Seq(TestCopyCard, TestGainOneLifeCard, TestCopyTriggerArtifact)
 

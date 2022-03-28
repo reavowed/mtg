@@ -6,6 +6,7 @@ import mtg.cards.patterns.CreatureCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.CreatureType.{Bird, Cleric}
 import mtg.core.types.Type.Creature
+import mtg.instructions.conditions.At
 import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 
@@ -15,6 +16,6 @@ object CombatProfessor extends CreatureCard(
   Seq(Bird, Cleric),
   Seq(
     Flying,
-    at(beginningOfCombat(you), target(Creature(You.control))(gets(1, 0), gains(Vigilance)).until(endOfTurn))),
+    At(beginningOfCombat(you))(target(Creature(You.control))(gets(1, 0), gains(Vigilance)).until(endOfTurn))),
   (2, 3)
 )

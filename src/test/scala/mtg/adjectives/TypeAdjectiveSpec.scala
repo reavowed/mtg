@@ -4,7 +4,7 @@ import mtg.cards.patterns.{ArtifactCard, SpellCard}
 import mtg.helpers.SpecWithTestCards
 import mtg.instructions.actions.{Cast, DrawACard}
 import mtg.instructions.articles.A
-import mtg.instructions.conditions.When
+import mtg.instructions.conditions.Whenever
 import mtg.instructions.nouns.{Spell, You}
 import mtg.parts.costs.ManaCost
 import mtg.core.types.Type.Instant
@@ -19,9 +19,15 @@ class TypeAdjectiveSpec extends SpecWithTestCards {
   object TestCastInstantTriggerArtifact extends ArtifactCard(
     "Cast Trigger Artifact",
     ManaCost(0),
-    When(You, Cast, A(Instant(Spell)))(DrawACard))
+    Whenever(You, Cast, A(Instant(Spell)))(DrawACard))
 
   override def testCards = Seq(TestInstantCard, TestSorceryCard, TestCastInstantTriggerArtifact)
+
+  "card with a trigger with an instant type filter" should {
+    "have correct oracle text" in {
+      TestCastInstantTriggerArtifact.text mustEqual "Whenever you cast an instant spell, draw a card."
+    }
+  }
 
   "cast trigger with instant type filter" should {
     "be triggered by casting an instant" in {

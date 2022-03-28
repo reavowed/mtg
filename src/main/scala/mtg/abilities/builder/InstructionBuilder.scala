@@ -14,7 +14,6 @@ object InstructionBuilder
     with ConditionBuilder
     with NumberBuilder
     with ContinuousEffectBuilder
-    with TriggeredAbilityBuilder
     with ParagraphBuilder
 {
   case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription]) {

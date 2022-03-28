@@ -8,7 +8,7 @@ import mtg.game.state.{CurrentCharacteristics, GameState, GameUpdate}
 
 case class TriggeredAbility(definition: TriggeredAbilityDefinition, sourceId: ObjectId, ownerId: PlayerId) {
   def conditionMatchesEvent(action: GameUpdate, gameState: GameState): Boolean = {
-    definition.condition.matchesEvent(action, gameState, EffectContext(this))
+    definition.triggerCondition.condition.matchesEvent(action, gameState, EffectContext(this))
   }
   def toAbilityOnTheStack: AbilityOnTheStack = AbilityOnTheStack(definition, sourceId, ownerId)
   def getText(gameState: GameState): String = {

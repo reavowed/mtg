@@ -7,7 +7,7 @@ import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.instructions.actions.{Cast, Copy, DrawACard}
 import mtg.instructions.articles.A
-import mtg.instructions.conditions.When
+import mtg.instructions.conditions.Whenever
 import mtg.instructions.nouns.{Spell, You}
 import mtg.parts.costs.ManaCost
 
@@ -16,7 +16,7 @@ class CastTriggerSpec extends SpecWithTestCards {
   object TestCastTriggerArtifact extends ArtifactCard(
     "Cast Trigger Artifact",
     ManaCost(0),
-    When(You, Cast, A(Spell))(DrawACard))
+    Whenever(You, Cast, A(Spell))(DrawACard))
 
   override def testCards = Seq(TestGainOneLifeCard, TestCastTriggerArtifact)
 
