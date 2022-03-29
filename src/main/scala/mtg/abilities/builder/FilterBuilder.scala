@@ -17,7 +17,6 @@ trait FilterBuilder {
   implicit def typeToFilter(t: Type): PartialFilter[ObjectId] = TypeFilter(t)
   implicit def supertypeToFilter(supertype: Supertype): PartialFilter[ObjectId] = SupertypeFilter(supertype)
 
-  def card(filters: PartialFilter[ObjectId]*): Filter[ObjectId] = new PrefixFilter[ObjectId](filters, CardFilter)
   def permanent(filters: PartialFilter[ObjectId]*): Filter[ObjectId] = new PrefixFilter[ObjectId](filters, PermanentFilter)
 
   def non(t: Type) = NegatedCharacteristicFilter(TypeFilter(t))

@@ -5,16 +5,17 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.filters.Filter
 import mtg.game.state.{GameState, InternalGameAction}
+import mtg.instructions.nouns.Noun
 import mtg.instructions.{InstructionChoice, InstructionResult, IntransitiveInstructionVerb}
 import mtg.text.{Verb, VerbInflection}
 import mtg.utils.TextUtils._
 
-case class SearchYourLibraryFor(objectFilter: Filter[ObjectId]) extends IntransitiveInstructionVerb[PlayerId] {
+case class SearchYourLibraryFor(noun: Noun[ObjectId]) extends IntransitiveInstructionVerb[PlayerId] {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
-    Verb.Search.inflect(verbInflection, cardName) + " your library for " + objectFilter.getSingular(cardName).withArticle
+    Verb.Search.inflect(verbInflection, cardName) + " your library for " + noun.getSingular(cardName).withArticle
   }
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    val possibleChoices = objectFilter.getAll(gameState, resolutionContext).intersect(gameState.gameObjectState.libraries(playerId).map(_.objectId))
+    val possibleChoices = noun.getAll(gameState, resolutionContext).intersect(gameState.gameObjectState.libraries(playerId).map(_.objectId))
     SearchLibraryChoice(playerId, possibleChoices, resolutionContext)
   }
 }
