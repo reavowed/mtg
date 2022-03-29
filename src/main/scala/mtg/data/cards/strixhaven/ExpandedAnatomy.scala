@@ -1,6 +1,7 @@
 package mtg.data.cards.strixhaven
 
 import mtg.abilities.builder.InstructionBuilder._
+import mtg.abilities.builder.TypeConversions._
 import mtg.abilities.keyword.Vigilance
 import mtg.cards.patterns.SpellCard
 import mtg.cards.text.SimpleInstructionParagraph
@@ -8,7 +9,7 @@ import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.instructions.nounPhrases.{It, Target}
-import mtg.instructions.verbs.PutCounters
+import mtg.instructions.verbs.{Gain, PutCounters}
 import mtg.parts.costs.ManaCost
 import mtg.parts.counters.PlusOnePlusOneCounter
 
@@ -19,5 +20,4 @@ object ExpandedAnatomy extends SpellCard(
   Seq(Lesson),
   SimpleInstructionParagraph(
     PutCounters(2, PlusOnePlusOneCounter)(Target(Creature)),
-    It(gains(Vigilance)).until(endOfTurn))
-)
+    It(Gain(Vigilance), endOfTurn)))

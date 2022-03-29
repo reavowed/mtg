@@ -40,8 +40,4 @@ object Noun {
       noun.describes(objectId, gameState, effectContext) && suffixDescriptor.describes(objectId, gameState, effectContext)
     }
   }
-
-  implicit class ObjectNounExtensions(noun: Noun[ObjectId]) {
-    def apply(suffixDescriptor: SuffixDescriptor): Noun[ObjectId] = Noun.WithSuffix(noun, suffixDescriptor)
-  }
 }

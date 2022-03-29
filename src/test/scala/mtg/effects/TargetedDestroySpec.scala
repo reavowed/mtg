@@ -1,7 +1,7 @@
 package mtg.effects
 
 import mtg.TestCards.vanillaCreature
-import mtg.abilities.builder.InstructionBuilder._
+import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
