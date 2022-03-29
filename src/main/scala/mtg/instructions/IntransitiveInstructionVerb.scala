@@ -7,7 +7,7 @@ import mtg.game.state.GameState
 import mtg.instructions.nouns.SingleIdentifyingNounPhrase
 import mtg.text.{Verb, VerbInflection}
 
-trait IntransitiveInstructionVerb[SubjectType] extends Verb {
+trait IntransitiveInstructionVerb[-SubjectType] extends Verb {
   def resolve(subject: SubjectType, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
 }
 

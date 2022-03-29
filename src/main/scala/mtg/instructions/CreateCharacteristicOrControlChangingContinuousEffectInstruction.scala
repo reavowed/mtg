@@ -4,14 +4,14 @@ import mtg.actions.CreateContinousEffectsAction
 import mtg.core.ObjectId
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.condition.Condition
-import mtg.effects.identifiers.MultipleIdentifier
 import mtg.game.state.GameState
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
+import mtg.instructions.nouns.SetIdentifyingNounPhrase
 import mtg.text.VerbInflection
 import mtg.utils.TextUtils._
 
 case class CreateCharacteristicOrControlChangingContinuousEffectInstruction(
-    objectIdentifier: MultipleIdentifier[ObjectId],
+    objectIdentifier: SetIdentifyingNounPhrase[ObjectId],
     effectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription],
     condition: Condition)
   extends Instruction

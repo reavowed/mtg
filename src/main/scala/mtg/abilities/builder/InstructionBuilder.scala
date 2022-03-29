@@ -5,6 +5,7 @@ import mtg.effects.condition.Condition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier}
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
+import mtg.instructions.nouns.SetIdentifyingNounPhrase
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
 
 object InstructionBuilder
@@ -16,11 +17,11 @@ object InstructionBuilder
     with ContinuousEffectBuilder
     with ParagraphBuilder
 {
-  case class ContinuousEffectBuilder(objectIdentifier: MultipleIdentifier[ObjectId], continuousEffectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription]) {
+  case class ContinuousEffectBuilder(objectIdentifier: SetIdentifyingNounPhrase[ObjectId], continuousEffectDescriptions: Seq[CharacteristicOrControlChangingContinuousEffectDescription]) {
       def until(condition: Condition): Instruction = CreateCharacteristicOrControlChangingContinuousEffectInstruction(objectIdentifier, continuousEffectDescriptions, condition)
   }
 
-  implicit class ObjectMultipleIdentifierExtension(objectIdentifier: MultipleIdentifier[ObjectId]) {
+  implicit class ObjectMultipleIdentifierExtension(objectIdentifier: SetIdentifyingNounPhrase[ObjectId]) {
     def apply(continuousEffectDescriptions: CharacteristicOrControlChangingContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectIdentifier, continuousEffectDescriptions)
   }
 
