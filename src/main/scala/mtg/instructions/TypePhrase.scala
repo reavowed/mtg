@@ -17,7 +17,7 @@ case class TypePhrase(types: Type*) extends Noun[ObjectId] with Adjective with D
     apply(Permanent).getAll(gameState, effectContext)
   }
   override def describes(characteristics: Characteristics, gameState: GameState, effectContext: EffectContext): Boolean = {
-    types.forall(characteristics.types.contains)
+    types.exists(characteristics.types.contains)
   }
 
   def apply(verb: CharacteristicChangingVerb, endCondition: Condition): Instruction = {
