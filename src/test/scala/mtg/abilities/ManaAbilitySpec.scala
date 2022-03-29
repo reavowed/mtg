@@ -6,6 +6,7 @@ import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
+import mtg.effects.targets.AnyTarget
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.instructions.verbs.{Add, DealDamage, DrawACard}
@@ -30,7 +31,7 @@ class ManaAbilitySpec extends SpecWithTestCards {
     "Creature with Ability that Adds Mana but Targets",
     ManaCost(0),
     Nil,
-    Seq(activatedAbility(TapSymbol)(SimpleInstructionParagraph(CardName(DealDamage(1)(anyTarget)), Add(Red)))),
+    Seq(activatedAbility(TapSymbol)(SimpleInstructionParagraph(CardName(DealDamage(1)(AnyTarget)), Add(Red)))),
     (1, 1))
 
   override def testCards = Seq(CreatureWithManaAbility, CreatureWithAbilityThatDrawsACard, CreatureWithAbilityThatAddsManaButTargets)

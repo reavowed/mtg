@@ -6,6 +6,7 @@ import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
 import mtg.core.types.Type.Land
+import mtg.effects.targets.Target
 import mtg.instructions.verbs.{DrawACard, Exile}
 import mtg.instructions.nouns.{Controller, It}
 import mtg.parts.costs.ManaCost
@@ -16,5 +17,5 @@ object IntroductionToAnnihilation extends SpellCard(
   Type.Sorcery,
   Seq(Lesson),
   SimpleInstructionParagraph(
-    Exile(target(permanent(non(Land)))),
+    Exile(Target(permanent(non(Land)))),
     Controller(It)(DrawACard)))

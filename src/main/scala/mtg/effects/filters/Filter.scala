@@ -11,10 +11,7 @@ trait PartialFilter[T <: ObjectOrPlayerId] extends TextComponent {
   def matches(t: T, gameState: GameState, effectContext: EffectContext): Boolean
 }
 
-trait Filter[T <: ObjectOrPlayerId] extends Noun[T] {
-  def getSingular(cardName: String): String
-  def describes(t: T, gameState: GameState, effectContext: EffectContext): Boolean
-}
+trait Filter[T <: ObjectOrPlayerId] extends Noun[T]
 
 object Filter {
   implicit class ExtendedObjectFilter(objectFilter: Filter[ObjectId]) extends Filter[ObjectOrPlayerId] {

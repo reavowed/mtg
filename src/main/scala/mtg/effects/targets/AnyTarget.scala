@@ -5,7 +5,7 @@ import mtg.core.types.Type
 import mtg.effects.filters.AnyPlayerFilter
 import mtg.effects.filters.combination.{Or, ImplicitPermanentFilter}
 
-case object AnyTarget extends TargetIdentifier[ObjectOrPlayerId](Or(
+object AnyTarget extends Target[ObjectOrPlayerId](Or(
     new ImplicitPermanentFilter(Type.Creature),
     new ImplicitPermanentFilter(Type.Planeswalker),
     AnyPlayerFilter)

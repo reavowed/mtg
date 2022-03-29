@@ -6,6 +6,7 @@ import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.core.zones.Zone
+import mtg.effects.targets.Target
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.instructions.verbs.Destroy
@@ -17,7 +18,7 @@ class TargetedDestroySpec extends SpecWithTestCards {
     ManaCost(0),
     Type.Instant,
     Nil,
-    Destroy(target(Creature)))
+    Destroy(Target(Creature)))
 
   val VanillaOneOne = vanillaCreature(1, 1)
 

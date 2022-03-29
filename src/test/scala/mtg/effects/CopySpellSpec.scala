@@ -3,6 +3,7 @@ package mtg.effects
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
+import mtg.effects.targets.Target
 import mtg.game.objects.{AbilityOnTheStack, CopyOfSpell}
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
@@ -56,7 +57,7 @@ object CopySpellSpec {
     ManaCost(0),
     Type.Instant,
     Nil,
-    Copy(target(spell)))
+    Copy(Target(spell)))
   object TestGainOneLifeCard extends SpellCard(
     "Lifegain Card",
     ManaCost(0),

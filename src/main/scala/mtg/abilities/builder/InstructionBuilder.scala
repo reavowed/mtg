@@ -11,7 +11,6 @@ import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectIn
 object InstructionBuilder
   extends FilterBuilder
     with IdentifierBuilder
-    with TargetBuilder
     with ConditionBuilder
     with NumberBuilder
     with ContinuousEffectBuilder

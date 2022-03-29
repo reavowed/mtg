@@ -1,15 +1,15 @@
 package mtg.instructions
 
 import mtg.effects.StackObjectResolutionContext
-import mtg.effects.targets.TargetIdentifier
+import mtg.effects.targets.Target
 import mtg.game.state.GameState
 import mtg.instructions.verbs.Add
 
 trait Instruction extends TextComponent {
-  def targetIdentifiers: Seq[TargetIdentifier[_]] = {
-    def helper(refs: Seq[Any], targets: Seq[TargetIdentifier[_]]): Seq[TargetIdentifier[_]] = {
+  def targetIdentifiers: Seq[Target[_]] = {
+    def helper(refs: Seq[Any], targets: Seq[Target[_]]): Seq[Target[_]] = {
       refs match {
-        case (targetIdentifier: TargetIdentifier[_]) +: tail =>
+        case (targetIdentifier: Target[_]) +: tail =>
           helper(tail, targets :+ targetIdentifier)
         case (product: Product) +: tail =>
           helper(product.productIterator.toSeq ++ tail, targets)

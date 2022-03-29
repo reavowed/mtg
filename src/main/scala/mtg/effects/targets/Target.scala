@@ -1,7 +1,7 @@
 package mtg.effects.targets
 
 import mtg.continuousEffects.TargetPreventionEffect
-import mtg.core.ObjectOrPlayerId
+import mtg.core.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.filters.Filter
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
@@ -10,7 +10,7 @@ import mtg.text.VerbPerson
 
 import scala.reflect.ClassTag
 
-class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) extends SingleIdentifyingNounPhrase[T] {
+class Target[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) extends SingleIdentifyingNounPhrase[T] {
   override def getText(cardName: String): String = {
     "target " + filter.getSingular(cardName)
   }
@@ -30,8 +30,9 @@ class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) exte
   }
 }
 
-object TargetIdentifier {
-  def getAll(stackObjectWithState: StackObjectWithState): Seq[TargetIdentifier[_]] = {
+object Target {
+  def apply(filter: Filter[ObjectId]): Target[ObjectId] = new Target(filter)
+  def getAll(stackObjectWithState: StackObjectWithState): Seq[Target[_]] = {
     stackObjectWithState.applicableEffectParagraphs.flatMap(_.instructions).flatMap(_.targetIdentifiers)
   }
 }
