@@ -1,11 +1,15 @@
 package mtg.cards.text
 
-import mtg.abilities.{AbilityDefinition, KeywordAbility, SpellAbility}
+import mtg.abilities.{AbilityDefinition, AbilityParagraph, KeywordAbility, SpellAbility}
 import mtg.core.PlayerId
 import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
 
 trait TextParagraph extends TextComponent {
   def abilityDefinitions: Seq[AbilityDefinition]
+}
+trait SingleAbilityTextParagraph extends TextParagraph {
+  def abilityDefinition: AbilityParagraph
+  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(abilityDefinition)
 }
 
 object TextParagraph {

@@ -1,7 +1,7 @@
 package mtg.cards.text
-import mtg.abilities.{AbilityDefinition, AbilityParagraph}
+import mtg.abilities.AbilityParagraph
 
-case class AbilityWordParagraph(abilityWord: String, paragraph: AbilityParagraph) extends TextParagraph {
-  override def getText(cardName: String): String = abilityWord + " — " + paragraph.getText(cardName)
-  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(paragraph)
+case class AbilityWordParagraph(abilityWord: String, innerAbilityParagraph: AbilityParagraph) extends SingleAbilityTextParagraph {
+  override def getText(cardName: String): String = abilityWord + " — " + innerAbilityParagraph.getText(cardName)
+  override def abilityDefinition: AbilityParagraph = innerAbilityParagraph
 }

@@ -1,6 +1,6 @@
 package mtg.abilities
 
-import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, TextParagraph}
+import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, SingleAbilityTextParagraph, TextParagraph}
 import mtg.continuousEffects.ContinuousEffect
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
@@ -27,8 +27,8 @@ sealed trait StaticAbility extends AbilityDefinition {
   def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect]
 }
 
-sealed trait AbilityParagraph extends AbilityDefinition with TextParagraph {
-  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
+sealed trait AbilityParagraph extends AbilityDefinition with SingleAbilityTextParagraph {
+  override def abilityDefinition: AbilityParagraph = this
 }
 
 sealed trait ActivatedOrTriggeredAbilityDefinition extends AbilityParagraph {
