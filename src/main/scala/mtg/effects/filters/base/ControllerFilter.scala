@@ -4,7 +4,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.effects.filters.PartialFilter
 import mtg.game.state.GameState
-import mtg.instructions.nouns.StaticSingleIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase
 import mtg.text.{Sentence, Verb, VerbInflection, Verbs}
 
 case class ControllerFilter(playerNoun: StaticSingleIdentifyingNounPhrase[PlayerId]) extends PartialFilter[ObjectId] {

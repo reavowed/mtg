@@ -6,9 +6,8 @@ import mtg.cards.patterns.CreatureCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.CreatureType.{Bird, Cleric}
 import mtg.core.types.Type.Creature
-import mtg.effects.targets.Target
 import mtg.instructions.conditions.At
-import mtg.instructions.nouns.You
+import mtg.instructions.nounPhrases.{Target, You}
 import mtg.parts.costs.ManaCost
 
 object CombatProfessor extends CreatureCard(

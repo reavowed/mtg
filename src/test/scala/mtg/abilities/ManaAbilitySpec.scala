@@ -6,11 +6,10 @@ import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
-import mtg.effects.targets.AnyTarget
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.{Add, DealDamage, DrawACard}
-import mtg.instructions.nouns.CardName
 import mtg.parts.costs.{ManaCost, TapSymbol}
 
 class ManaAbilitySpec extends SpecWithTestCards {

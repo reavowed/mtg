@@ -7,7 +7,7 @@ import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.nouns.You
+import mtg.instructions.nounPhrases.You
 import mtg.parts.costs.ManaCost
 
 class MassBuffInstructionSpec extends SpecWithTestCards {

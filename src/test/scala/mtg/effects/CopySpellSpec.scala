@@ -3,12 +3,12 @@ package mtg.effects
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
-import mtg.effects.targets.Target
 import mtg.game.objects.{AbilityOnTheStack, CopyOfSpell}
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.nounPhrases
+import mtg.instructions.nounPhrases.{Target, You}
 import mtg.instructions.verbs.{Copy, GainLife}
-import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 
 class CopySpellSpec extends SpecWithTestCards {
@@ -63,6 +63,6 @@ object CopySpellSpec {
     ManaCost(0),
     Type.Instant,
     Nil,
-    You(GainLife(1)))
+    nounPhrases.You(GainLife(1)))
 
 }

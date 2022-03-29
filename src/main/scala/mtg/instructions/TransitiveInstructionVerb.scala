@@ -2,7 +2,7 @@ package mtg.instructions
 
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.nouns.SingleIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
 import mtg.text.{Verb, VerbInflection}
 
 trait TransitiveInstructionVerb[SubjectType, ObjectType] extends Verb {

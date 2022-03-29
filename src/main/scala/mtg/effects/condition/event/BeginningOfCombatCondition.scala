@@ -6,7 +6,7 @@ import mtg.effects.condition.Condition
 import mtg.game.state.{GameState, GameUpdate}
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnEvents.ExecuteStep
-import mtg.instructions.nouns.StaticSingleIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase
 
 case class BeginningOfCombatCondition(playerPhrase: StaticSingleIdentifyingNounPhrase[PlayerId]) extends Condition {
   override def getText(cardName: String): String = {

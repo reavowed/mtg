@@ -5,7 +5,7 @@ import mtg.helpers.SpecWithTestCards
 import mtg.instructions.verbs.{Cast, DrawACard}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
-import mtg.instructions.nouns.{Spell, You}
+import mtg.instructions.nouns.Spell
 import mtg.parts.costs.ManaCost
 import mtg.core.types.Type.{Instant, Sorcery}
 import mtg.abilities.builder.TypeConversions._
@@ -13,6 +13,7 @@ import mtg.core.types.Type
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
 import mtg.instructions.joiners.Or
+import mtg.instructions.nounPhrases.You
 
 class TypeAdjectiveSpec extends SpecWithTestCards {
   object TestInstantCard extends SpellCard("Test Instant", ManaCost(0), Type.Instant, Nil)

@@ -4,7 +4,7 @@ import mtg.core.PlayerId
 import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game.state.{GameState, GameUpdate}
-import mtg.instructions.nouns.{IndefiniteNounPhrase, SingleIdentifyingNounPhrase}
+import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.text.{Verb, VerbInflection}
 
 trait IntransitiveEventMatchingVerb extends Verb {

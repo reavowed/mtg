@@ -1,8 +1,8 @@
 package mtg.instructions
 
 import mtg.effects.StackObjectResolutionContext
-import mtg.effects.targets.Target
 import mtg.game.state.GameState
+import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Add
 
 trait Instruction extends TextComponent {

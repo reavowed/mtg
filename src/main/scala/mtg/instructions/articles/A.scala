@@ -3,7 +3,8 @@ package mtg.instructions.articles
 import mtg.core.ObjectId
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
-import mtg.instructions.nouns.{IndefiniteNounPhrase, Noun}
+import mtg.instructions.nounPhrases.IndefiniteNounPhrase
+import mtg.instructions.nouns.Noun
 import mtg.text.{VerbNumber, VerbPerson}
 import mtg.utils.TextUtils._
 

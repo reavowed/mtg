@@ -5,7 +5,7 @@ import mtg.effects.EffectContext
 import mtg.game.state.{GameState, GameUpdate}
 import mtg.instructions.TransitiveEventMatchingVerb
 import mtg.instructions.adjectives.Adjective
-import mtg.instructions.nouns.IndefiniteNounPhrase
+import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.text.VerbInflection
 import mtg.utils.TextUtils._
 

@@ -4,7 +4,7 @@ import mtg.core.ObjectOrPlayerId
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.filters.Filter
 import mtg.game.state.GameState
-import mtg.instructions.nouns.SetIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.SetIdentifyingNounPhrase
 import mtg.text.{VerbNumber, VerbPerson}
 
 import scala.reflect.ClassTag

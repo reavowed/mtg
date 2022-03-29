@@ -3,7 +3,7 @@ package mtg.instructions
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state.{GameState, GameUpdate}
-import mtg.instructions.nouns.IndefiniteNounPhrase
+import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.text.{Verb, VerbInflection}
 
 trait TransitiveEventMatchingVerb extends Verb {

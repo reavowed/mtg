@@ -5,7 +5,7 @@ import mtg.effects.condition.Condition
 import mtg.effects.filters.Filter
 import mtg.effects.identifiers.FilterIdentifier
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.instructions.nouns.SetIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.SetIdentifyingNounPhrase
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
 
 object InstructionBuilder

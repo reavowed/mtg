@@ -8,7 +8,8 @@ import mtg.helpers.SpecWithTestCards
 import mtg.instructions.verbs.{Cast, Copy, DrawACard}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
-import mtg.instructions.nouns.{Spell, You}
+import mtg.instructions.nounPhrases.You
+import mtg.instructions.nouns.Spell
 import mtg.parts.costs.ManaCost
 
 class CastTriggerSpec extends SpecWithTestCards {

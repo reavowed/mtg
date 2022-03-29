@@ -5,8 +5,7 @@ import mtg.abilities.keyword.Hexproof
 import mtg.cards.patterns.SpellCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.Type.{Creature, Instant}
-import mtg.effects.targets.Target
-import mtg.instructions.nouns.You
+import mtg.instructions.nounPhrases.{Target, You}
 import mtg.parts.costs.ManaCost
 
 object BeamingDefiance extends SpellCard(

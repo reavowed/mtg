@@ -6,7 +6,7 @@ import mtg.effects.filters.base._
 import mtg.effects.filters.combination.{ImplicitPermanentFilter, NegatedCharacteristicFilter, PrefixFilter, SuffixFilter}
 import mtg.effects.filters.{Filter, PartialFilter}
 import mtg.effects.numbers.NumberMatcher
-import mtg.instructions.nouns.StaticSingleIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase
 
 trait FilterBuilder extends FilterBuilder.LowPriority {
   implicit class PlayerIdentifierExtensions(playerIdentifier: StaticSingleIdentifyingNounPhrase[PlayerId]) {

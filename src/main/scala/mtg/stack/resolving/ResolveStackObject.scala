@@ -2,10 +2,10 @@ package mtg.stack.resolving
 
 import mtg.actions.moveZone.{MoveToBattlefieldAction, MoveToGraveyardAction}
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
-import mtg.effects.targets.Target
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.history.LogEvent
 import mtg.game.state._
+import mtg.instructions.nounPhrases.Target
 import mtg.stack.adding.TypeChecks
 
 case class ResolveStackObject(stackObject: StackObject) extends ExecutableGameAction[Unit] {

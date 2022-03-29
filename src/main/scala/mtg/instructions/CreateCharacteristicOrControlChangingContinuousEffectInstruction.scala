@@ -6,7 +6,7 @@ import mtg.effects.StackObjectResolutionContext
 import mtg.effects.condition.Condition
 import mtg.game.state.GameState
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.instructions.nouns.SetIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.SetIdentifyingNounPhrase
 import mtg.text.VerbInflection
 import mtg.utils.TextUtils._
 

@@ -5,7 +5,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.effects.filters.Filter
 import mtg.game.state.{GameState, GameUpdate}
-import mtg.instructions.nouns.IndefiniteNounPhrase
+import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.instructions.{InstructionResult, TransitiveEventMatchingVerb, TransitiveInstructionVerb}
 import mtg.text.Verb
 

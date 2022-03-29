@@ -4,10 +4,10 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.data.cards.Plains
-import mtg.effects.targets.AnyTarget
 import mtg.helpers.SpecWithTestCards
+import mtg.instructions.nounPhrases
+import mtg.instructions.nounPhrases.{AnyTarget, CardName, You}
 import mtg.instructions.verbs.{DealDamage, GainLife}
-import mtg.instructions.nouns.{CardName, You}
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice
 
@@ -18,7 +18,7 @@ class ModalSpec extends SpecWithTestCards {
     Type.Instant,
     Nil,
     chooseOne(
-      You(GainLife(3)),
+      nounPhrases.You(GainLife(3)),
       CardName(DealDamage(3)(AnyTarget))))
 
   override def testCards = Seq(TestCard)

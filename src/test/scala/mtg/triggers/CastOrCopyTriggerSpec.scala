@@ -9,7 +9,8 @@ import mtg.instructions.verbs.{Cast, Copy, DrawACard}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
 import mtg.instructions.joiners.Or
-import mtg.instructions.nouns.{Spell, You}
+import mtg.instructions.nounPhrases.You
+import mtg.instructions.nouns.Spell
 import mtg.parts.costs.ManaCost
 
 class CastOrCopyTriggerSpec extends SpecWithTestCards {

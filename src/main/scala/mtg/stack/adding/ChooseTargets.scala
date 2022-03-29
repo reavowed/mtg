@@ -2,8 +2,8 @@ package mtg.stack.adding
 
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.EffectContext
-import mtg.effects.targets.Target
 import mtg.game.state._
+import mtg.instructions.nounPhrases.Target
 
 case class ChooseTargets(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {

@@ -3,7 +3,7 @@ package mtg.instructions
 import mtg.abilities.TriggerCondition
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.condition.Condition
-import mtg.instructions.nouns.IndefiniteNounPhrase
+import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.utils.CaseObjectWithName
 
 trait TriggerWord extends CaseObjectWithName {

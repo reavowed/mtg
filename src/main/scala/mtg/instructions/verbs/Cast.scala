@@ -4,7 +4,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state.{GameState, GameUpdate}
 import mtg.instructions.TransitiveEventMatchingVerb
-import mtg.instructions.nouns.IndefiniteNounPhrase
+import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.stack.adding.FinishCasting
 import mtg.text.Verb
 
