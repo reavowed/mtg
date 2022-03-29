@@ -16,7 +16,7 @@ case class SearchYourLibraryFor(objectFilter: Filter[ObjectId]) extends Intransi
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     val possibleChoices = gameState.gameObjectState.libraries(playerId).view
       .map(_.objectId)
-      .filter((t: ObjectId) => objectFilter.matches(t, gameState, resolutionContext))
+      .filter((t: ObjectId) => objectFilter.describes(t, gameState, resolutionContext))
       .toSeq
     SearchLibraryChoice(playerId, possibleChoices, resolutionContext)
   }

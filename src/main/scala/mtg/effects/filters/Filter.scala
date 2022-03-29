@@ -13,7 +13,7 @@ trait PartialFilter[T <: ObjectOrPlayerId] extends TextComponent {
 trait Filter[T <: ObjectOrPlayerId] {
   def getSingular(cardName: String): String
   def getPlural(cardName: String): String = getSingular(cardName) + "s"
-  def matches(t: T, gameState: GameState, effectContext: EffectContext): Boolean
+  def describes(t: T, gameState: GameState, effectContext: EffectContext): Boolean
   def getAll(gameState: GameState, effectContext: EffectContext): Set[T]
 }
 
@@ -21,9 +21,9 @@ object Filter {
   implicit class ExtendedObjectFilter(objectFilter: Filter[ObjectId]) extends Filter[ObjectOrPlayerId] {
     override def getSingular(cardName: String): String = objectFilter.getSingular(cardName)
     override def getPlural(cardName: String): String = objectFilter.getPlural(cardName)
-    override def matches(objectOrPlayer: ObjectOrPlayerId, gameState: GameState, effectContext: EffectContext): Boolean = {
+    override def describes(objectOrPlayer: ObjectOrPlayerId, gameState: GameState, effectContext: EffectContext): Boolean = {
       objectOrPlayer match {
-        case objectId: ObjectId => objectFilter.matches(objectId, gameState, effectContext)
+        case objectId: ObjectId => objectFilter.describes(objectId, gameState, effectContext)
         case _: PlayerId => false
       }
     }
@@ -32,10 +32,10 @@ object Filter {
   implicit class ExtendedPlayerFilter(playerFilter: Filter[PlayerId]) extends Filter[ObjectOrPlayerId] {
     override def getSingular(cardName: String): String = playerFilter.getSingular(cardName)
     override def getPlural(cardName: String): String = playerFilter.getPlural(cardName)
-    override def matches(objectOrPlayer: ObjectOrPlayerId, gameState: GameState, effectContext: EffectContext): Boolean = {
+    override def describes(objectOrPlayer: ObjectOrPlayerId, gameState: GameState, effectContext: EffectContext): Boolean = {
       objectOrPlayer match {
         case _: ObjectId => false
-        case player: PlayerId => playerFilter.matches(player, gameState, effectContext)
+        case player: PlayerId => playerFilter.describes(player, gameState, effectContext)
       }
     }
     override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectOrPlayerId] = playerFilter.getAll(gameState, effectContext).recast[ObjectOrPlayerId]

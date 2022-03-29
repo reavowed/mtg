@@ -8,7 +8,7 @@ import mtg.text.{NounPhraseTemplate, Nouns}
 
 object PermanentFilter extends Filter[ObjectId] {
   override def getSingular(cardName: String): String = "permanent"
-  override def matches(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
+  override def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
     CurrentCharacteristics.getPermanentObject(objectId, gameState).nonEmpty
   }
   override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectId] = gameState.gameObjectState.battlefield.map(_.objectId).toSet

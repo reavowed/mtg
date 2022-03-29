@@ -7,6 +7,6 @@ import mtg.game.state.GameState
 
 case object Spell extends Noun.RegularCaseObject[ObjectId] {
   override def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
-    SpellFilter.matches(objectId, gameState, effectContext)
+    SpellFilter.describes(objectId, gameState, effectContext)
   }
 }

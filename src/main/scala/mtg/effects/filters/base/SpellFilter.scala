@@ -9,7 +9,7 @@ import mtg.text.{NounPhraseTemplate, Nouns}
 
 object SpellFilter extends Filter[ObjectId] {
   override def getSingular(cardName: String): String = "spell"
-  override def matches(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
+  override def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
     CurrentCharacteristics.getStackObject(objectId, gameState).exists(isSpell)
   }
   private def isSpell(stackObject: StackObject): Boolean = {
