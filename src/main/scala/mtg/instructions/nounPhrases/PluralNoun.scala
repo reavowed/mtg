@@ -13,9 +13,6 @@ case class PluralNoun[T <: ObjectOrPlayerId : ClassTag](noun: Noun[T]) extends S
   override def person: VerbPerson = VerbPerson.Third
   override def number: VerbNumber = VerbNumber.Plural
   override def identifyAll(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Seq[T], StackObjectResolutionContext) = {
-    val matches = (gameState.gameData.playersInTurnOrder ++ gameState.gameObjectState.allObjects.map(_.objectId))
-      .ofType[T]
-      .filter(noun.describes(_, gameState, resolutionContext))
-    (matches, resolutionContext)
+    (noun.getAll(gameState, resolutionContext), resolutionContext)
   }
 }

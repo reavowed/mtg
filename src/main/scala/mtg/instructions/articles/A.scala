@@ -13,6 +13,6 @@ case class A(noun: Noun[ObjectId]) extends IndefiniteNounPhrase[ObjectId] {
   override def person: VerbPerson = VerbPerson.Third
   override def number: VerbNumber = VerbNumber.Singular
   override def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
-    noun.describes(objectId, gameState, effectContext)
+    noun.getAll(gameState, effectContext).contains(objectId)
   }
 }

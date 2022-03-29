@@ -14,10 +14,7 @@ case class SearchYourLibraryFor(objectFilter: Filter[ObjectId]) extends Intransi
     Verb.Search.inflect(verbInflection, cardName) + " your library for " + objectFilter.getSingular(cardName).withArticle
   }
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    val possibleChoices = gameState.gameObjectState.libraries(playerId).view
-      .map(_.objectId)
-      .filter((t: ObjectId) => objectFilter.describes(t, gameState, resolutionContext))
-      .toSeq
+    val possibleChoices = objectFilter.getAll(gameState, resolutionContext).intersect(gameState.gameObjectState.libraries(playerId).map(_.objectId))
     SearchLibraryChoice(playerId, possibleChoices, resolutionContext)
   }
 }

@@ -25,7 +25,7 @@ class Target[T <: ObjectOrPlayerId : ClassTag](noun: Noun[T]) extends SingleIden
       .toSeq
   }
   def isValidTarget(source: StackObjectWithState, possibleTarget: ObjectOrPlayerId, gameState: GameState, effectContext: EffectContext): Boolean = {
-    possibleTarget.asOptionalInstanceOf[T].exists((t: T) => noun.describes(t, gameState, effectContext)) &&
+    noun.getAll(gameState, effectContext).contains(possibleTarget) &&
       !gameState.gameObjectState.activeContinuousEffects.ofType[TargetPreventionEffect].exists(_.preventsTarget(source, possibleTarget, gameState))
   }
 }
