@@ -8,7 +8,7 @@ import mtg.core.types.Type.Creature
 import mtg.core.zones.Zone
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.Destroy
+import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
 class TargetedDestroySpec extends SpecWithTestCards {

@@ -1,14 +1,15 @@
-package mtg.instructions.actions
+package mtg.instructions.verbs
 
-import mtg.actions.GainLifeAction
+import mtg.actions.AddManaAction
 import mtg.core.PlayerId
+import mtg.core.symbols.ManaSymbol
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb}
 import mtg.text.Verb
 
-case class GainLife(amount: Int) extends Verb.WithSuffix(Verb.Gain, s"$amount life") with IntransitiveInstructionVerb[PlayerId] {
+case class Add(symbols: ManaSymbol*) extends Verb.WithSuffix(Verb.Add, symbols.map(_.text).mkString) with IntransitiveInstructionVerb[PlayerId] {
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    (GainLifeAction(playerId, amount), resolutionContext)
+    (AddManaAction(playerId, symbols), resolutionContext)
   }
 }

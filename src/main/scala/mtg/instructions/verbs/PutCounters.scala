@@ -1,10 +1,10 @@
-package mtg.instructions.actions
+package mtg.instructions.verbs
 
 import mtg.actions.PutCountersAction
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.actions.PutCounters.getCounterDescription
+import mtg.instructions.verbs.PutCounters.getCounterDescription
 import mtg.instructions.{InstructionResult, TransitiveInstructionVerb}
 import mtg.parts.counters.CounterType
 import mtg.text.Verb

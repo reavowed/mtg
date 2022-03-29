@@ -1,4 +1,4 @@
-package mtg.instructions.actions
+package mtg.instructions.verbs
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}

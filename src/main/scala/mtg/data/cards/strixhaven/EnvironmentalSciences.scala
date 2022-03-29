@@ -7,7 +7,7 @@ import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Supertype.Basic
 import mtg.core.types.Type
 import mtg.core.types.Type.Land
-import mtg.instructions.actions.{GainLife, PutIntoYourHand, Reveal, SearchYourLibraryFor, Shuffle}
+import mtg.instructions.verbs.{GainLife, PutIntoYourHand, Reveal, SearchYourLibraryFor, Shuffle}
 import mtg.instructions.nouns.{It, You}
 import mtg.parts.costs.ManaCost
 

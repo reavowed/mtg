@@ -55,7 +55,7 @@ object DerivedState {
   }
 
   private def createIntrinsicManaAbility(manaSymbol: ManaSymbol): ActivatedAbilityDefinition = {
-    ActivatedAbilityDefinition(Seq(TapSymbol), instructions.actions.Add(manaSymbol))
+    ActivatedAbilityDefinition(Seq(TapSymbol), instructions.verbs.Add(manaSymbol))
   }
   private val intrinsicManaAbilitiesByLandType = Map(
     BasicLandType.Plains -> ManaSymbol.White,

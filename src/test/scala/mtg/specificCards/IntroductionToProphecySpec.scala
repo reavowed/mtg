@@ -4,7 +4,7 @@ import mtg.SpecWithGameStateManager
 import mtg.data.cards.strixhaven.IntroductionToProphecy
 import mtg.data.cards.{Island, Plains, Swamp}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.instructions.actions.ScryChoice
+import mtg.instructions.verbs.ScryChoice
 
 class IntroductionToProphecySpec extends SpecWithGameStateManager {
   "Introduction to Prophecy" should {

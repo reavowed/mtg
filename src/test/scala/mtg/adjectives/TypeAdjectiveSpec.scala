@@ -2,7 +2,7 @@ package mtg.adjectives
 
 import mtg.cards.patterns.{ArtifactCard, CreatureCard, SpellCard}
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.{Cast, DrawACard}
+import mtg.instructions.verbs.{Cast, DrawACard}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
 import mtg.instructions.nouns.{Spell, You}

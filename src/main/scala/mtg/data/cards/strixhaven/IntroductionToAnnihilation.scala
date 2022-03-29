@@ -6,7 +6,7 @@ import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
 import mtg.core.types.Type.Land
-import mtg.instructions.actions.{DrawACard, Exile}
+import mtg.instructions.verbs.{DrawACard, Exile}
 import mtg.instructions.nouns.{Controller, It}
 import mtg.parts.costs.ManaCost
 

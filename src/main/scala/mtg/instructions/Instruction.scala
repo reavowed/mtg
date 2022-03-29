@@ -3,7 +3,7 @@ package mtg.instructions
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.targets.TargetIdentifier
 import mtg.game.state.GameState
-import mtg.instructions.actions.Add
+import mtg.instructions.verbs.Add
 
 trait Instruction extends TextComponent {
   def targetIdentifiers: Seq[TargetIdentifier[_]] = {

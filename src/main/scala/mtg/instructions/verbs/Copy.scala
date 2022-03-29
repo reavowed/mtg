@@ -1,4 +1,4 @@
-package mtg.instructions.actions
+package mtg.instructions.verbs
 
 import mtg.actions.CopySpellAction
 import mtg.core.{ObjectId, PlayerId}

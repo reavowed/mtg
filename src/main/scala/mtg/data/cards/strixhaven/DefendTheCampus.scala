@@ -4,7 +4,7 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.symbols.ManaSymbol.White
 import mtg.core.types.Type.{Creature, Instant}
-import mtg.instructions.actions.Destroy
+import mtg.instructions.verbs.Destroy
 import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 

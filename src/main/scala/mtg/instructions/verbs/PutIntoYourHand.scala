@@ -1,4 +1,4 @@
-package mtg.instructions.actions
+package mtg.instructions.verbs
 
 import mtg.actions.moveZone.MoveToHandAction
 import mtg.core.{ObjectId, PlayerId}

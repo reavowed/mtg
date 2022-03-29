@@ -8,7 +8,7 @@ import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.{Add, DealDamage, DrawACard}
+import mtg.instructions.verbs.{Add, DealDamage, DrawACard}
 import mtg.instructions.nouns.CardName
 import mtg.parts.costs.{ManaCost, TapSymbol}
 

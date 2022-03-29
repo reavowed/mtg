@@ -6,7 +6,7 @@ import mtg.core.types.Type
 import mtg.game.objects.{AbilityOnTheStack, CopyOfSpell}
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.{Copy, GainLife}
+import mtg.instructions.verbs.{Copy, GainLife}
 import mtg.instructions.nouns.You
 import mtg.parts.costs.ManaCost
 

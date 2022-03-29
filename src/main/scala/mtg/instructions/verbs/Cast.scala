@@ -1,4 +1,4 @@
-package mtg.instructions.actions
+package mtg.instructions.verbs
 
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext

@@ -4,7 +4,7 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.symbols.ManaSymbol.Red
 import mtg.core.types.Type
-import mtg.instructions.actions.DealDamage
+import mtg.instructions.verbs.DealDamage
 import mtg.instructions.nouns.CardName
 import mtg.parts.costs.ManaCost
 

@@ -4,7 +4,7 @@ import mtg.cards.patterns.SpellCard
 import mtg.cards.text.InstructionSentence
 import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
-import mtg.instructions.actions.{DrawACard, Scry}
+import mtg.instructions.verbs.{DrawACard, Scry}
 import mtg.parts.costs.ManaCost
 
 object IntroductionToProphecy extends SpellCard(

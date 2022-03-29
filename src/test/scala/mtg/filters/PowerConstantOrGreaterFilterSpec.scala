@@ -7,7 +7,7 @@ import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.Destroy
+import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
 class PowerConstantOrGreaterFilterSpec extends SpecWithTestCards {

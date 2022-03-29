@@ -5,7 +5,7 @@ import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.{DealDamage, GainLife}
+import mtg.instructions.verbs.{DealDamage, GainLife}
 import mtg.instructions.nouns.{CardName, You}
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice

@@ -5,7 +5,7 @@ import mtg.effects.CopySpellSpec.{TestCopyCard, TestGainOneLifeCard}
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
-import mtg.instructions.actions.{Copy, DrawACard}
+import mtg.instructions.verbs.{Copy, DrawACard}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
 import mtg.instructions.nouns.{Spell, You}
