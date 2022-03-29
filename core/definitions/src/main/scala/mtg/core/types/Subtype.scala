@@ -24,11 +24,13 @@ object CreatureType {
   object Crocodile extends CreatureType
   object Elemental extends CreatureType
   object Elf extends CreatureType
+  object Human extends CreatureType
   object Pegasus extends CreatureType
   object Soldier extends CreatureType
   object Spider extends CreatureType
   object Spirit extends CreatureType
   object Warrior extends CreatureType
+  object Wizard extends CreatureType
 }
 
 sealed class SpellType extends Subtype
