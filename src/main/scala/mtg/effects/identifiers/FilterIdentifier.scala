@@ -7,11 +7,16 @@ import mtg.game.state.GameState
 import mtg.instructions.nouns.SetIdentifyingNounPhrase
 import mtg.text.{VerbNumber, VerbPerson}
 
-case class FilterIdentifier[T <: ObjectOrPlayerId](filter: Filter[T]) extends SetIdentifyingNounPhrase[T] {
+import scala.reflect.ClassTag
+
+case class FilterIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) extends SetIdentifyingNounPhrase[T] {
   override def getText(cardName: String): String = filter.getPlural(cardName)
   override def person: VerbPerson = VerbPerson.Third
   override def number: VerbNumber = VerbNumber.Plural
   override def identifyAll(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Seq[T], StackObjectResolutionContext) = {
-    (filter.getAll(gameState, resolutionContext).toSeq, resolutionContext)
+    val matches = (gameState.gameData.playersInTurnOrder ++ gameState.gameObjectState.allObjects.map(_.objectId))
+      .ofType[T]
+      .filter(filter.describes(_, gameState, resolutionContext))
+    (matches, resolutionContext)
   }
 }

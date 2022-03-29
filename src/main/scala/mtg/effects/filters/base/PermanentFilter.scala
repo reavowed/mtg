@@ -11,5 +11,4 @@ object PermanentFilter extends Filter[ObjectId] {
   override def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
     CurrentCharacteristics.getPermanentObject(objectId, gameState).nonEmpty
   }
-  override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectId] = gameState.gameObjectState.battlefield.map(_.objectId).toSet
 }

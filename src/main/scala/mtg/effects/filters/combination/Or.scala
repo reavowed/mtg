@@ -13,6 +13,4 @@ case class Or[T <: ObjectOrPlayerId](innerFilters: Filter[T]*) extends Filter[T]
   override def describes(t: T, gameState: GameState, effectContext: EffectContext): Boolean = {
     innerFilters.exists(_.describes(t, gameState, effectContext))
   }
-
-  override def getAll(gameState: GameState, effectContext: EffectContext): Set[T] = innerFilters.map(_.getAll(gameState, effectContext)).reduce(_ ++ _)
 }

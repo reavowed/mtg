@@ -12,6 +12,4 @@ case class SuffixFilter[T <: ObjectOrPlayerId](mainFilter: Filter[T], suffixFilt
   override def describes(t: T, gameState: GameState, effectContext: EffectContext): Boolean = {
     suffixFilters.forall(_.matches(t, gameState, effectContext)) && mainFilter.describes(t, gameState, effectContext)
   }
-  override def getAll(gameState: GameState, effectContext: EffectContext): Set[T] = mainFilter.getAll(gameState, effectContext)
-    .filter(o => suffixFilters.forall(f => f.matches(o, gameState, effectContext)))
 }

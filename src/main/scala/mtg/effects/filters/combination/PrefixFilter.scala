@@ -12,6 +12,4 @@ class PrefixFilter[T <: ObjectOrPlayerId](prefixFilters: Seq[PartialFilter[T]], 
   override def describes(t: T, gameState: GameState, effectContext: EffectContext): Boolean = {
     prefixFilters.forall(_.matches(t, gameState, effectContext)) && mainFilter.describes(t, gameState, effectContext)
   }
-  override def getAll(gameState: GameState, effectContext: EffectContext): Set[T] = mainFilter.getAll(gameState, effectContext)
-    .filter(o => prefixFilters.forall(f => f.matches(o, gameState, effectContext)))
 }

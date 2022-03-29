@@ -14,6 +14,4 @@ class ImplicitPermanentFilter(t: Type) extends Filter[ObjectId] {
   override def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
     PermanentFilter.describes(objectId, gameState, effectContext) && TypeFilter(t).matches(objectId, gameState, effectContext)
   }
-  override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectId] = PermanentFilter.getAll(gameState, effectContext)
-    .filter(gameState.gameObjectState.getCurrentOrLastKnownState(_).characteristics.types.contains(t))
 }

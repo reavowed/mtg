@@ -14,7 +14,6 @@ trait PartialFilter[T <: ObjectOrPlayerId] extends TextComponent {
 trait Filter[T <: ObjectOrPlayerId] extends Noun[T] {
   def getSingular(cardName: String): String
   def describes(t: T, gameState: GameState, effectContext: EffectContext): Boolean
-  def getAll(gameState: GameState, effectContext: EffectContext): Set[T]
 }
 
 object Filter {
@@ -27,7 +26,6 @@ object Filter {
         case _: PlayerId => false
       }
     }
-    override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectOrPlayerId] = objectFilter.getAll(gameState, effectContext).recast[ObjectOrPlayerId]
   }
   implicit class ExtendedPlayerFilter(playerFilter: Filter[PlayerId]) extends Filter[ObjectOrPlayerId] {
     override def getSingular(cardName: String): String = playerFilter.getSingular(cardName)
@@ -38,6 +36,5 @@ object Filter {
         case player: PlayerId => playerFilter.describes(player, gameState, effectContext)
       }
     }
-    override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectOrPlayerId] = playerFilter.getAll(gameState, effectContext).recast[ObjectOrPlayerId]
   }
 }
