@@ -8,6 +8,7 @@ import mtg.core.types.SpellType.Lesson
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.instructions.actions.PutCounters
+import mtg.instructions.nouns.It
 import mtg.parts.costs.ManaCost
 import mtg.parts.counters.PlusOnePlusOneCounter
 
@@ -18,5 +19,5 @@ object ExpandedAnatomy extends SpellCard(
   Seq(Lesson),
   SimpleInstructionParagraph(
     PutCounters(2, PlusOnePlusOneCounter)(target(Creature)),
-    it(gains(Vigilance)).until(endOfTurn))
+    It(gains(Vigilance)).until(endOfTurn))
 )

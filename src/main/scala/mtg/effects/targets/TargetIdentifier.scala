@@ -3,14 +3,14 @@ package mtg.effects.targets
 import mtg.continuousEffects.TargetPreventionEffect
 import mtg.core.ObjectOrPlayerId
 import mtg.effects.filters.Filter
-import mtg.effects.identifiers.SingleIdentifier
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
+import mtg.instructions.nouns.SingleIdentifyingNounPhrase
 import mtg.text.VerbPerson
 
 import scala.reflect.ClassTag
 
-class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) extends SingleIdentifier[T] {
+class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) extends SingleIdentifyingNounPhrase[T] {
   override def getText(cardName: String): String = {
     filter.getNounPhraseTemplate(cardName).withPrefix("target").singular
   }

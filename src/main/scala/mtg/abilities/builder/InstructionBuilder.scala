@@ -3,7 +3,7 @@ package mtg.abilities.builder
 import mtg.core.ObjectId
 import mtg.effects.condition.Condition
 import mtg.effects.filters.Filter
-import mtg.effects.identifiers.{FilterIdentifier, MultipleIdentifier}
+import mtg.effects.identifiers.FilterIdentifier
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
 import mtg.instructions.nouns.SetIdentifyingNounPhrase
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}

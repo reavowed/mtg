@@ -16,6 +16,6 @@ object CombatProfessor extends CreatureCard(
   Seq(Bird, Cleric),
   Seq(
     Flying,
-    At(beginningOfCombat(you))(target(Creature(You.control))(gets(1, 0), gains(Vigilance)).until(endOfTurn))),
+    At(beginningOfCombat(You))(target(Creature(You.control))(gets(1, 0), gains(Vigilance)).until(endOfTurn))),
   (2, 3)
 )
