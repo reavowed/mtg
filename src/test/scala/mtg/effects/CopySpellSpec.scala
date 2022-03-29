@@ -8,6 +8,7 @@ import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases
 import mtg.instructions.nounPhrases.{Target, You}
+import mtg.instructions.nouns.Spell
 import mtg.instructions.verbs.{Copy, GainLife}
 import mtg.parts.costs.ManaCost
 
@@ -57,7 +58,7 @@ object CopySpellSpec {
     ManaCost(0),
     Type.Instant,
     Nil,
-    Copy(Target(spell)))
+    Copy(Target(Spell)))
   object TestGainOneLifeCard extends SpellCard(
     "Lifegain Card",
     ManaCost(0),

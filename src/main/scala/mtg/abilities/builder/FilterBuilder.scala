@@ -22,7 +22,6 @@ trait FilterBuilder extends FilterBuilder.LowPriority {
 
   def card(filters: PartialFilter[ObjectId]*): Filter[ObjectId] = new PrefixFilter[ObjectId](filters, CardFilter)
   def permanent(filters: PartialFilter[ObjectId]*): Filter[ObjectId] = new PrefixFilter[ObjectId](filters, PermanentFilter)
-  def spell: Filter[ObjectId] = SpellFilter
 
   def non(t: Type) = NegatedCharacteristicFilter(TypeFilter(t))
 
