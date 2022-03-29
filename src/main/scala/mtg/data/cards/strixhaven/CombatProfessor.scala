@@ -9,6 +9,8 @@ import mtg.core.types.Type.Creature
 import mtg.instructions.conditions.At
 import mtg.instructions.nounPhrases.{Target, You}
 import mtg.parts.costs.ManaCost
+import mtg.abilities.builder.TypeConversions._
+import mtg.instructions.verbs.Control
 
 object CombatProfessor extends CreatureCard(
   "Combat Professor",
@@ -16,6 +18,6 @@ object CombatProfessor extends CreatureCard(
   Seq(Bird, Cleric),
   Seq(
     Flying,
-    At(beginningOfCombat(You))(Target(Creature(You.control))(gets(1, 0), gains(Vigilance)).until(endOfTurn))),
+    At(beginningOfCombat(You))(Target(Creature(You(Control)))(gets(1, 0), gains(Vigilance)).until(endOfTurn))),
   (2, 3)
 )

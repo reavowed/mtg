@@ -2,12 +2,14 @@ package mtg.effects
 
 import mtg.TestCards.vanillaCreature
 import mtg.abilities.builder.InstructionBuilder._
+import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases.You
+import mtg.instructions.verbs.Control
 import mtg.parts.costs.ManaCost
 
 class MassBuffInstructionSpec extends SpecWithTestCards {
@@ -16,7 +18,7 @@ class MassBuffInstructionSpec extends SpecWithTestCards {
     ManaCost(0),
     Type.Instant,
     Nil,
-    Creature(You.control)(get(1, 1)).until(endOfTurn))
+    Creature(You(Control))(get(1, 1)).until(endOfTurn))
 
   val VanillaOneOne = vanillaCreature(1, 1)
   val VanillaTwoTwo = vanillaCreature(2, 2)
