@@ -1,9 +1,9 @@
 package mtg.abilities.builder
 
-import mtg.effects.numbers.{ConstantOrGreaterMatcher, NumberMatcher}
+import mtg.instructions.numbers.{ConstantOrGreaterMatcher, NumberPhrase}
 
 trait NumberBuilder {
   implicit class IntExtensions(number: Int) {
-    def orGreater: NumberMatcher = ConstantOrGreaterMatcher(number)
+    def orGreater: NumberPhrase = ConstantOrGreaterMatcher(number)
   }
 }
