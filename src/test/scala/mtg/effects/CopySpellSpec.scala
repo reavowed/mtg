@@ -1,20 +1,18 @@
 package mtg.effects
 
-import mtg.abilities.builder.InstructionBuilder._
+import mtg.SpecWithGameStateManager
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
-import mtg.game.objects.{AbilityOnTheStack, CopyOfSpell}
+import mtg.game.objects.CopyOfSpell
 import mtg.game.turns.TurnPhase
-import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases
-import mtg.instructions.nounPhrases.{Target, You}
+import mtg.instructions.nounPhrases.Target
 import mtg.instructions.nouns.Spell
 import mtg.instructions.verbs.{Copy, GainLife}
 import mtg.parts.costs.ManaCost
 
-class CopySpellSpec extends SpecWithTestCards {
+class CopySpellSpec extends SpecWithGameStateManager {
   import CopySpellSpec._
-  override def testCards = Seq(TestCopyCard, TestGainOneLifeCard)
 
   "copying a spell" should {
     "duplicate a simple spell" in {

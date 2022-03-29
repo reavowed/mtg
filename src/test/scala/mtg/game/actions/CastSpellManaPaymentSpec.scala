@@ -1,5 +1,6 @@
 package mtg.game.actions
 
+import mtg.SpecWithGameStateManager
 import mtg.cards.patterns.CreatureCard
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
@@ -7,15 +8,12 @@ import mtg.core.symbols.ManaSymbol.White
 import mtg.data.cards.Plains
 import mtg.game.state.Choice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
-import mtg.stack.adding
 import mtg.stack.adding.PayManaChoice
 
-class CastSpellManaPaymentSpec extends SpecWithTestCards {
+class CastSpellManaPaymentSpec extends SpecWithGameStateManager {
   val WhiteCreature = new CreatureCard("Creature", ManaCost(White), Nil, Nil, (1, 1))
   val FourCreature = new CreatureCard("Creature", ManaCost(4), Nil, Nil, (1, 1))
-  override def testCards = Seq(WhiteCreature, FourCreature)
 
   "casting a creature that costs {W}" should {
     "offer payment choice with no mana in pool" in {

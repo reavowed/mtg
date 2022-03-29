@@ -1,21 +1,21 @@
 package mtg.adjectives
 
-import mtg.cards.patterns.{ArtifactCard, CreatureCard, SpellCard}
-import mtg.helpers.SpecWithTestCards
-import mtg.instructions.verbs.{Cast, DrawACard}
-import mtg.instructions.articles.A
-import mtg.instructions.conditions.Whenever
-import mtg.instructions.nouns.Spell
-import mtg.parts.costs.ManaCost
-import mtg.core.types.Type.{Instant, Sorcery}
+import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.TypeConversions._
+import mtg.cards.patterns.{ArtifactCard, CreatureCard, SpellCard}
 import mtg.core.types.Type
+import mtg.core.types.Type.{Instant, Sorcery}
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
+import mtg.instructions.articles.A
+import mtg.instructions.conditions.Whenever
 import mtg.instructions.joiners.Or
 import mtg.instructions.nounPhrases.You
+import mtg.instructions.nouns.Spell
+import mtg.instructions.verbs.{Cast, DrawACard}
+import mtg.parts.costs.ManaCost
 
-class TypeAdjectiveSpec extends SpecWithTestCards {
+class TypeAdjectiveSpec extends SpecWithGameStateManager {
   object TestInstantCard extends SpellCard("Test Instant", ManaCost(0), Type.Instant, Nil)
   object TestSorceryCard extends SpellCard("Test Sorcery", ManaCost(0), Type.Sorcery, Nil)
   object TestCreatureCard extends CreatureCard("Test Creature", ManaCost(0), Nil, Nil, (1, 1))
@@ -27,8 +27,6 @@ class TypeAdjectiveSpec extends SpecWithTestCards {
     "Cast Trigger Artifact",
     ManaCost(0),
     Whenever(You, Cast, A(Or(Instant, Sorcery)(Spell)))(DrawACard))
-
-  override def testCards = Seq(TestInstantCard, TestSorceryCard, TestCreatureCard, TestCastInstantTriggerArtifact, TestCastInstantOrSorceryTriggerArtifact)
 
   "card with a trigger with an instant type filter" should {
     "have correct oracle text" in {

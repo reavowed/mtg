@@ -1,5 +1,6 @@
 package mtg.effects
 
+import mtg.SpecWithGameStateManager
 import mtg.TestCards.vanillaCreature
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
@@ -7,12 +8,11 @@ import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
-import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases.You
 import mtg.instructions.verbs.{Control, Get}
 import mtg.parts.costs.ManaCost
 
-class MassBuffInstructionSpec extends SpecWithTestCards {
+class MassBuffInstructionSpec extends SpecWithGameStateManager {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),
@@ -22,8 +22,6 @@ class MassBuffInstructionSpec extends SpecWithTestCards {
 
   val VanillaOneOne = vanillaCreature(1, 1)
   val VanillaTwoTwo = vanillaCreature(2, 2)
-
-  override def testCards = Seq(TestCard, VanillaOneOne, VanillaTwoTwo)
 
   "mass buff effect" should {
     "have correct oracle text" in {

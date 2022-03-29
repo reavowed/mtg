@@ -1,17 +1,14 @@
 package mtg.game.actions
 
+import mtg.SpecWithGameStateManager
 import mtg.cards.patterns.CreatureCard
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.helpers.SpecWithTestCards
 import mtg.parts.costs.ManaCost
 
-class CastCreatureSpec extends SpecWithTestCards {
+class CastCreatureSpec extends SpecWithGameStateManager {
   val Creature = new CreatureCard("Creature", ManaCost(), Nil, Nil, (1, 1))
-  override def testCards = Seq(Creature)
 
   "casting a creature" should {
-
-
     "move the card to the battlefield on resolution" in {
       val initialState = emptyGameObjectState.setHand(playerOne, Seq(Creature))
 

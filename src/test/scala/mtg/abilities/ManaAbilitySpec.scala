@@ -1,5 +1,6 @@
 package mtg.abilities
 
+import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.CreatureCard
 import mtg.cards.text.SimpleInstructionParagraph
@@ -7,12 +8,11 @@ import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol.{Green, Red}
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase
-import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.{Add, DealDamage, DrawACard}
 import mtg.parts.costs.{ManaCost, TapSymbol}
 
-class ManaAbilitySpec extends SpecWithTestCards {
+class ManaAbilitySpec extends SpecWithGameStateManager {
 
   val CreatureWithManaAbility = new CreatureCard(
     "Creature with Mana Ability",
@@ -32,8 +32,6 @@ class ManaAbilitySpec extends SpecWithTestCards {
     Nil,
     Seq(activatedAbility(TapSymbol)(SimpleInstructionParagraph(CardName(DealDamage(1)(AnyTarget)), Add(Red)))),
     (1, 1))
-
-  override def testCards = Seq(CreatureWithManaAbility, CreatureWithAbilityThatDrawsACard, CreatureWithAbilityThatAddsManaButTargets)
 
   "mana ability" >> {
     "on land" should {

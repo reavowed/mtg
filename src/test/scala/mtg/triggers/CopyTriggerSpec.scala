@@ -1,25 +1,23 @@
 package mtg.triggers
 
+import mtg.SpecWithGameStateManager
 import mtg.cards.patterns.ArtifactCard
 import mtg.effects.CopySpellSpec.{TestCopyCard, TestGainOneLifeCard}
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
-import mtg.helpers.SpecWithTestCards
-import mtg.instructions.verbs.{Copy, DrawACard}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
 import mtg.instructions.nounPhrases.You
 import mtg.instructions.nouns.Spell
+import mtg.instructions.verbs.{Copy, DrawACard}
 import mtg.parts.costs.ManaCost
 
-class CopyTriggerSpec extends SpecWithTestCards {
+class CopyTriggerSpec extends SpecWithGameStateManager {
 
   object TestCopyTriggerArtifact extends ArtifactCard(
     "Copy Trigger Artifact",
     ManaCost(0),
     Whenever(You, Copy, A(Spell))(DrawACard))
-
-  override def testCards = Seq(TestCopyCard, TestGainOneLifeCard, TestCopyTriggerArtifact)
 
   "a copy trigger" should {
     "trigger off copying a spell"  in {

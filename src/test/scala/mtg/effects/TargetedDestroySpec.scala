@@ -1,5 +1,6 @@
 package mtg.effects
 
+import mtg.SpecWithGameStateManager
 import mtg.TestCards.vanillaCreature
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
@@ -7,12 +8,11 @@ import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.core.zones.Zone
 import mtg.game.turns.TurnPhase
-import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
-class TargetedDestroySpec extends SpecWithTestCards {
+class TargetedDestroySpec extends SpecWithGameStateManager {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),
@@ -21,8 +21,6 @@ class TargetedDestroySpec extends SpecWithTestCards {
     Destroy(Target(Creature)))
 
   val VanillaOneOne = vanillaCreature(1, 1)
-
-  override def testCards = Seq(TestCard, VanillaOneOne)
 
   "destroy effect" should {
     "have correct oracle text" in {

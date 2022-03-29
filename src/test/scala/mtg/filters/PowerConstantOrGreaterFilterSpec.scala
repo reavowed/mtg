@@ -1,5 +1,6 @@
 package mtg.filters
 
+import mtg.SpecWithGameStateManager
 import mtg.TestCards.vanillaCreature
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
@@ -7,13 +8,12 @@ import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
-import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.suffixDescriptors.WithPower
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
-class PowerConstantOrGreaterFilterSpec extends SpecWithTestCards {
+class PowerConstantOrGreaterFilterSpec extends SpecWithGameStateManager {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),
@@ -24,8 +24,6 @@ class PowerConstantOrGreaterFilterSpec extends SpecWithTestCards {
   val ThreeFive = vanillaCreature(3, 5)
   val FourTwo = vanillaCreature(4, 2)
   val FiveFive = vanillaCreature(5, 5)
-
-  override def testCards = Seq(TestCard, ThreeFive, FourTwo, FiveFive)
 
   "power X or greater filter" should {
     "have correct oracle text" in {

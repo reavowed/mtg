@@ -1,17 +1,17 @@
 package mtg.templates
 
+import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.data.cards.Plains
-import mtg.helpers.SpecWithTestCards
 import mtg.instructions.nounPhrases
-import mtg.instructions.nounPhrases.{AnyTarget, CardName, You}
+import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.{DealDamage, GainLife}
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.ModeChoice
 
-class ModalSpec extends SpecWithTestCards {
+class ModalSpec extends SpecWithGameStateManager {
   object TestCard extends SpellCard(
     "Modal Card",
     ManaCost(1),
@@ -20,8 +20,6 @@ class ModalSpec extends SpecWithTestCards {
     chooseOne(
       nounPhrases.You(GainLife(3)),
       CardName(DealDamage(3)(AnyTarget))))
-
-  override def testCards = Seq(TestCard)
 
   "modal card" should {
     "have correct oracle text" in {
