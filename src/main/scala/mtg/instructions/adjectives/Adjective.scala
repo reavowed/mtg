@@ -8,7 +8,7 @@ import mtg.instructions.Descriptor
 import mtg.instructions.nouns.Noun
 
 trait Adjective extends Descriptor[ObjectId] {
-  def apply(noun: Noun): Noun = Noun.WithAdjective(this, noun)
+  def apply(noun: Noun[ObjectId]): Noun[ObjectId] = Noun.WithAdjective(this, noun)
 }
 
 object Adjective {
