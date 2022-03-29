@@ -18,4 +18,11 @@ object Adjective {
       characteristics.types.contains(t)
     }
   }
+  case class Non(adjective: Adjective) extends Adjective {
+    override def getText(cardName: String): String = "non" + adjective.getText(cardName)
+    override def describes(obj: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
+      !adjective.describes(obj, gameState, effectContext)
+    }
+
+  }
 }
