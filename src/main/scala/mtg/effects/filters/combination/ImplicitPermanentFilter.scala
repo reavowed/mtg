@@ -6,7 +6,6 @@ import mtg.effects.EffectContext
 import mtg.effects.filters.Filter
 import mtg.effects.filters.base.{PermanentFilter, TypeFilter}
 import mtg.game.state.GameState
-import mtg.text.NounPhraseTemplate
 
 class ImplicitPermanentFilter(t: Type) extends Filter[ObjectId] {
   override def getSingular(cardName: String): String = t.name.toLowerCase

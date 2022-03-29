@@ -2,10 +2,9 @@ package mtg.abilities.builder
 
 import mtg.core.ObjectId
 import mtg.effects.condition.Condition
-import mtg.effects.filters.Filter
-import mtg.effects.identifiers.FilterIdentifier
 import mtg.instructions.descriptions.CharacteristicOrControlChangingContinuousEffectDescription
-import mtg.instructions.nounPhrases.SetIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.{PluralNoun, SetIdentifyingNounPhrase}
+import mtg.instructions.nouns.Noun
 import mtg.instructions.{CreateCharacteristicOrControlChangingContinuousEffectInstruction, Instruction}
 
 object InstructionBuilder
@@ -20,9 +19,8 @@ object InstructionBuilder
       def until(condition: Condition): Instruction = CreateCharacteristicOrControlChangingContinuousEffectInstruction(objectIdentifier, continuousEffectDescriptions, condition)
   }
 
-  implicit class ObjectMultipleIdentifierExtension(objectIdentifier: SetIdentifyingNounPhrase[ObjectId]) {
-    def apply(continuousEffectDescriptions: CharacteristicOrControlChangingContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectIdentifier, continuousEffectDescriptions)
+  implicit class ObjectSetPhraseExtension(objectPhrase: SetIdentifyingNounPhrase[ObjectId]) {
+    def apply(continuousEffectDescriptions: CharacteristicOrControlChangingContinuousEffectDescription*): ContinuousEffectBuilder = ContinuousEffectBuilder(objectPhrase, continuousEffectDescriptions)
   }
-
-  implicit class ObjectFilterExtension(objectFilter: Filter[ObjectId]) extends ObjectMultipleIdentifierExtension(FilterIdentifier(objectFilter))
+  implicit class NounExtension(noun: Noun[ObjectId]) extends ObjectSetPhraseExtension(PluralNoun(noun))
 }
