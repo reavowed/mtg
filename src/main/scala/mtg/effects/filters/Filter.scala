@@ -4,15 +4,15 @@ import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
 import mtg.instructions.TextComponent
+import mtg.instructions.nouns.Noun
 import mtg.text.NounPhraseTemplate
 
 trait PartialFilter[T <: ObjectOrPlayerId] extends TextComponent {
   def matches(t: T, gameState: GameState, effectContext: EffectContext): Boolean
 }
 
-trait Filter[T <: ObjectOrPlayerId] {
+trait Filter[T <: ObjectOrPlayerId] extends Noun[T] {
   def getSingular(cardName: String): String
-  def getPlural(cardName: String): String = getSingular(cardName) + "s"
   def describes(t: T, gameState: GameState, effectContext: EffectContext): Boolean
   def getAll(gameState: GameState, effectContext: EffectContext): Set[T]
 }
