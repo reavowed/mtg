@@ -3,7 +3,6 @@ package mtg.instructions.verbs
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
-import mtg.effects.filters.Filter
 import mtg.game.state.{GameState, InternalGameAction}
 import mtg.instructions.nouns.Noun
 import mtg.instructions.{InstructionChoice, InstructionResult, IntransitiveInstructionVerb}

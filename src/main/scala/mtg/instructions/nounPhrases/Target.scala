@@ -2,7 +2,6 @@ package mtg.instructions.nounPhrases
 
 import mtg.continuousEffects.TargetPreventionEffect
 import mtg.core.{ObjectId, ObjectOrPlayerId}
-import mtg.effects.filters.Filter
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
 import mtg.instructions.nouns.Noun

@@ -3,7 +3,6 @@ package mtg.instructions.verbs
 import mtg.actions.CopySpellAction
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
-import mtg.effects.filters.Filter
 import mtg.game.state.{GameState, GameUpdate}
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.instructions.{InstructionResult, TransitiveEventMatchingVerb, TransitiveInstructionVerb}
