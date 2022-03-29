@@ -20,6 +20,7 @@ object Strixhaven extends Set(
     CardInSetData(CombatProfessor, 11),
     CardInSetData(DefendTheCampus, 12),
     CardInSetData(EagerFirstYear, 16),
+    CardInSetData(Expel, 18),
     CardInSetData(SpinedKarok, 143),
     CardInSetData(Plains, 366),
     CardInSetData(Plains, 367),
