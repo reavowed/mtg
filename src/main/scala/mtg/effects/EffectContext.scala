@@ -4,7 +4,7 @@ import mtg.abilities.TriggeredAbility
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.{GameState, StackObjectWithState}
 
-class EffectContext(val sourceId: ObjectId, val controllingPlayer: PlayerId)
+class EffectContext(val cardNameObjectId: ObjectId, val controllingPlayer: PlayerId)
 
 object EffectContext {
   def apply(triggeredAbility: TriggeredAbility): EffectContext = {

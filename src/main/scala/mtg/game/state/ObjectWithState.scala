@@ -2,7 +2,7 @@ package mtg.game.state
 
 import mtg.abilities.AbilityDefinition
 import mtg.cards.text.{InstructionParagraph, ModalInstructionParagraph, SimpleInstructionParagraph}
-import mtg.core.PlayerId
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects.{AbilityOnTheStack, BasicGameObject, Card, CopyOfSpell, GameObject, PermanentObject, StackObject}
 
 import scala.annotation.tailrec
@@ -14,14 +14,15 @@ sealed abstract class ObjectWithState {
   def updateCharacteristics(f: Characteristics => Characteristics): ObjectWithState
   def addAbility(abilityDefinition: AbilityDefinition): ObjectWithState
 
+  def cardNameObjectId: ObjectId = gameObject.underlyingObject match {
+    case _: Card | _: CopyOfSpell =>
+      gameObject.objectId
+    case AbilityOnTheStack(_, sourceId, _) =>
+      sourceId
+  }
   def getText(gameState: GameState): String = {
-    val sourceName = gameObject.underlyingObject match {
-      case Card(_, _) | CopyOfSpell(_, _) =>
-        CurrentCharacteristics.getName(this)
-      case AbilityOnTheStack(_, sourceId, _) =>
-        CurrentCharacteristics.getName(gameState.gameObjectState.getCurrentOrLastKnownState(sourceId))
-    }
-    characteristics.getText(sourceName)
+    val cardName = CurrentCharacteristics.getName(gameState.gameObjectState.getCurrentOrLastKnownState(cardNameObjectId))
+    characteristics.getText(cardName)
   }
 }
 sealed abstract class TypedObjectWithState[T <: ObjectWithState] extends ObjectWithState {

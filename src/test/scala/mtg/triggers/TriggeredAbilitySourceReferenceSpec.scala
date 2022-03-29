@@ -35,5 +35,18 @@ class TriggeredAbilitySourceReferenceSpec extends SpecWithTestCards {
       manager.gameState.gameObjectState.derivedState.stackObjectStates(stackObject.objectId).getText(manager.gameState) mustEqual
         "Test Creature gets +1/+1 until end of turn."
     }
+
+    "apply effects to its source" in {
+      val initialState = emptyGameObjectState
+        .setBattlefield(playerOne, TestCreature)
+
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilStep(TurnStep.BeginningOfCombatStep)
+      manager.resolveNext()
+
+
+      manager.getState(manager.getCard(TestCreature)).characteristics.power must beSome(2)
+      manager.getState(manager.getCard(TestCreature)).characteristics.toughness must beSome(2)
+    }
   }
 }

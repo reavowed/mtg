@@ -2,14 +2,15 @@ package mtg.effects
 
 import mtg.abilities.ManaAbility
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.game.objects.{AbilityOnTheStack, Card, CopyOfSpell}
 import mtg.game.state.{GameState, StackObjectWithState}
 
 case class StackObjectResolutionContext(
-    override val sourceId: ObjectId,
+    override val cardNameObjectId: ObjectId,
     override val controllingPlayer: PlayerId,
     identifiedObjects: Seq[ObjectOrPlayerId],
     targets: Seq[ObjectOrPlayerId])
-  extends EffectContext(sourceId, controllingPlayer)
+  extends EffectContext(cardNameObjectId, controllingPlayer)
 {
   def addIdentifiedObject(objectId: ObjectOrPlayerId): StackObjectResolutionContext = copy(identifiedObjects = identifiedObjects :+ objectId)
   def popTarget: (ObjectOrPlayerId, StackObjectResolutionContext) = {
@@ -20,7 +21,7 @@ case class StackObjectResolutionContext(
 object StackObjectResolutionContext {
   def forSpellOrAbility(spellWithState: StackObjectWithState, gameState: GameState): StackObjectResolutionContext = {
     StackObjectResolutionContext(
-      spellWithState.gameObject.objectId,
+      spellWithState.cardNameObjectId,
       spellWithState.controller,
       Nil,
       spellWithState.gameObject.targets)

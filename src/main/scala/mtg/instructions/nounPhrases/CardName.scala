@@ -11,10 +11,10 @@ object CardName extends IndefiniteNounPhrase[ObjectId] with SingleIdentifyingNou
   override def person: VerbPerson = VerbPerson.Third
 
   override def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (ObjectId, StackObjectResolutionContext) = {
-    (resolutionContext.sourceId, resolutionContext.addIdentifiedObject(resolutionContext.sourceId))
+    (resolutionContext.cardNameObjectId, resolutionContext.addIdentifiedObject(resolutionContext.cardNameObjectId))
   }
 
   override def describes(t: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
-    t == effectContext.sourceId
+    t == effectContext.cardNameObjectId
   }
 }
