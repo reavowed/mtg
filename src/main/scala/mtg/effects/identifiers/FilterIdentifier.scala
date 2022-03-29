@@ -8,7 +8,7 @@ import mtg.instructions.nouns.SetIdentifyingNounPhrase
 import mtg.text.{VerbNumber, VerbPerson}
 
 case class FilterIdentifier[T <: ObjectOrPlayerId](filter: Filter[T]) extends SetIdentifyingNounPhrase[T] {
-  override def getText(cardName: String): String = filter.getNounPhraseTemplate(cardName).plural
+  override def getText(cardName: String): String = filter.getPlural(cardName)
   override def person: VerbPerson = VerbPerson.Third
   override def number: VerbNumber = VerbNumber.Plural
   override def identifyAll(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Seq[T], StackObjectResolutionContext) = {

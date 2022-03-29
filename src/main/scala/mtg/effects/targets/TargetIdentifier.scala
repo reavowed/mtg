@@ -12,7 +12,7 @@ import scala.reflect.ClassTag
 
 class TargetIdentifier[T <: ObjectOrPlayerId : ClassTag](filter: Filter[T]) extends SingleIdentifyingNounPhrase[T] {
   override def getText(cardName: String): String = {
-    filter.getNounPhraseTemplate(cardName).withPrefix("target").singular
+    "target " + filter.getSingular(cardName)
   }
   override def person: VerbPerson = VerbPerson.Third
 

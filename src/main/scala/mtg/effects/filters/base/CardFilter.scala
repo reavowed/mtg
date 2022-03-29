@@ -8,12 +8,10 @@ import mtg.game.state.GameState
 import mtg.text.{NounPhraseTemplate, Nouns}
 
 object CardFilter extends Filter[ObjectId] {
+  override def getSingular(cardName: String): String = "card"
   override def matches(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
     gameState.gameObjectState.allObjects.find(_.objectId == objectId).exists(_.underlyingObject.isInstanceOf[Card])
   }
-
-  override def getNounPhraseTemplate(cardName: String): NounPhraseTemplate = Nouns.Card
-
   override def getAll(gameState: GameState, effectContext: EffectContext): Set[ObjectId] = {
     gameState.gameObjectState.allObjects
       .filter(_.underlyingObject.isInstanceOf[Card])

@@ -9,7 +9,7 @@ import mtg.utils.CaseObjectWithName
 
 trait Noun {
   def getSingular(cardName: String): String
-  def getPlural(cardName: String): String
+  def getPlural(cardName: String): String = getSingular(cardName) + "s"
   
   def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean
 }
@@ -17,7 +17,6 @@ trait Noun {
 object Noun {
   trait RegularCaseObject extends Noun with CaseObjectWithName {
     override def getSingular(cardName: String): String = name.toLowerCase
-    override def getPlural(cardName: String): String = name + "s"
   }
   case class WithAdjective(adjective: Adjective, noun: Noun) extends Noun {
     override def getSingular(cardName: String): String = adjective.getText(cardName) + " " + noun.getSingular(cardName)

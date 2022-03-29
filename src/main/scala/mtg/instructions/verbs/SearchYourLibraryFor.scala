@@ -11,7 +11,7 @@ import mtg.utils.TextUtils._
 
 case class SearchYourLibraryFor(objectFilter: Filter[ObjectId]) extends IntransitiveInstructionVerb[PlayerId] {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
-    Verb.Search.inflect(verbInflection, cardName) + " your library for " + objectFilter.getNounPhraseTemplate(cardName).singular.withArticle
+    Verb.Search.inflect(verbInflection, cardName) + " your library for " + objectFilter.getSingular(cardName).withArticle
   }
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     val possibleChoices = gameState.gameObjectState.libraries(playerId).view
