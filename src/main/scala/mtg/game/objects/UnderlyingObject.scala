@@ -1,6 +1,6 @@
 package mtg.game.objects
 
-import mtg.abilities.ActivatedOrTriggeredAbilityDefinition
+import mtg.abilities.{ActivatedOrTriggeredAbilityDefinition, SpellAbility}
 import mtg.cards.CardPrinting
 import mtg.core.{ObjectId, PlayerId}
 import mtg.core.symbols.ManaSymbol
@@ -48,7 +48,7 @@ case class AbilityOnTheStack(
     Nil,
     Nil,
     Nil,
-    Seq(abilityDefinition.instructions),
+    Seq(SpellAbility(abilityDefinition.instructions)),
     None,
     None,
     None)

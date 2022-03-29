@@ -4,14 +4,12 @@ import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, TextPar
 import mtg.continuousEffects.ContinuousEffect
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
-import mtg.effects.condition.Condition
 import mtg.game.state.ObjectWithState
 import mtg.instructions.TextComponent
 import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
-import mtg.utils.TextUtils._
 
-sealed abstract class AbilityDefinition extends TextComponent {
+sealed trait AbilityDefinition extends TextComponent {
   def functionalZones: Set[ZoneType] = Set(ZoneType.Battlefield)
   def isFunctional(objectWithAbility: ObjectWithState): Boolean = {
     getFunctionalZones(objectWithAbility).contains(objectWithAbility.gameObject.zone.zoneType)
@@ -25,17 +23,24 @@ sealed abstract class AbilityDefinition extends TextComponent {
   def getQuotedDescription(cardName: String): String = "\"" + getText(cardName) + "\""
 }
 
-sealed trait ActivatedOrTriggeredAbilityDefinition extends AbilityDefinition {
+sealed trait StaticAbility extends AbilityDefinition {
+  def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect]
+}
+
+sealed trait AbilityParagraph extends AbilityDefinition with TextParagraph {
+  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
+}
+
+sealed trait ActivatedOrTriggeredAbilityDefinition extends AbilityParagraph {
   def instructions: InstructionParagraph
 }
 
 case class ActivatedAbilityDefinition(
     costs: Seq[Cost],
     instructions: InstructionParagraph)
-  extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
+  extends ActivatedOrTriggeredAbilityDefinition
 {
   override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + instructions.getText(cardName)
-  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 
   def isManaAbility: Boolean = {
     instructions.asOptionalInstanceOf[SimpleInstructionParagraph]
@@ -46,21 +51,16 @@ case class ActivatedAbilityDefinition(
 case class TriggeredAbilityDefinition(
     triggerCondition: TriggerCondition,
     instructions: InstructionParagraph)
-  extends ActivatedOrTriggeredAbilityDefinition with TextParagraph
+  extends ActivatedOrTriggeredAbilityDefinition
 {
   override def getText(cardName: String): String = triggerCondition.getText(cardName).capitalize + ", " + instructions.getUncapitalizedText(cardName)
-  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(this)
 }
 
-trait KeywordAbility extends AbilityDefinition with CaseObjectWithName {
+trait KeywordAbility extends StaticAbility with CaseObjectWithName {
   override def getText(cardName: String): String = name.toLowerCase
   override def getQuotedDescription(cardName: String): String = name.toLowerCase
 }
 
-case class SpellAbility(instructions: InstructionParagraph) extends AbilityDefinition {
+case class SpellAbility(instructions: InstructionParagraph) extends AbilityParagraph {
   override def getText(cardName: String): String = instructions.getText(cardName)
-}
-
-abstract class StaticAbility extends AbilityDefinition {
-  def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect]
 }

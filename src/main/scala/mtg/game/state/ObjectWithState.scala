@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.abilities.AbilityDefinition
+import mtg.abilities.{AbilityDefinition, SpellAbility}
 import mtg.cards.text.{InstructionParagraph, ModalInstructionParagraph, SimpleInstructionParagraph}
 import mtg.core.PlayerId
 import mtg.game.objects.{BasicGameObject, GameObject, PermanentObject, StackObject}
@@ -49,19 +49,19 @@ case class StackObjectWithState(
   override def controllerOrOwner: PlayerId = controller
   override def updateCharacteristics(f: Characteristics => Characteristics): StackObjectWithState = copy(characteristics = f(characteristics))
 
-  def applicableEffectParagraphs: Seq[SimpleInstructionParagraph] = {
+  def applicableInstructionParagraphs: Seq[SimpleInstructionParagraph] = {
     @tailrec
-    def getApplicableEffectParagraphs(chosenModes: Seq[Int], remainingParagraphs: Seq[InstructionParagraph], resultsSoFar: Seq[SimpleInstructionParagraph]): Seq[SimpleInstructionParagraph] = {
+    def getApplicableInstructionParagraphs(chosenModes: Seq[Int], remainingParagraphs: Seq[InstructionParagraph], resultsSoFar: Seq[SimpleInstructionParagraph]): Seq[SimpleInstructionParagraph] = {
       remainingParagraphs match {
         case (simpleSpellEffectParagraph: SimpleInstructionParagraph) +: tail =>
-          getApplicableEffectParagraphs(chosenModes, tail, resultsSoFar :+ simpleSpellEffectParagraph)
+          getApplicableInstructionParagraphs(chosenModes, tail, resultsSoFar :+ simpleSpellEffectParagraph)
         case (modalEffectParagraph: ModalInstructionParagraph) +: tail =>
-          getApplicableEffectParagraphs(chosenModes.tail, tail, resultsSoFar :+ modalEffectParagraph.modes(chosenModes.head))
+          getApplicableInstructionParagraphs(chosenModes.tail, tail, resultsSoFar :+ modalEffectParagraph.modes(chosenModes.head))
         case Nil =>
           resultsSoFar
       }
     }
-    getApplicableEffectParagraphs(gameObject.chosenModes, characteristics.rulesText.ofType[InstructionParagraph], Nil)
+    getApplicableInstructionParagraphs(gameObject.chosenModes, characteristics.instructionParagraphs, Nil)
   }
 }
 

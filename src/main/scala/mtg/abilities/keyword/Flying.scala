@@ -5,7 +5,7 @@ import mtg.continuousEffects.{BlockerRestrictionEffect, ContinuousEffect}
 import mtg.core.ObjectId
 import mtg.game.state.ObjectWithState
 
-case object Flying extends StaticAbility with KeywordAbility {
+case object Flying extends KeywordAbility {
   override def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect] = {
     Seq(FlyingEffect(objectWithAbility.gameObject.objectId))
   }

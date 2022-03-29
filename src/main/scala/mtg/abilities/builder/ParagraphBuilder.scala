@@ -9,7 +9,4 @@ trait ParagraphBuilder {
     ActivatedAbilityDefinition(costs, effectParagraph)
   }
   def chooseOne(modes: SimpleInstructionParagraph*): ModalInstructionParagraph = ModalInstructionParagraph(modes: _*)
-
-  implicit def singleKeywordAbilityAsParagraph(keywordAbility: KeywordAbility): TextParagraph = KeywordAbilityParagraph(Seq(keywordAbility))
-  implicit def singleKeywordAbilityAsParagraphSeq(keywordAbility: KeywordAbility): Seq[TextParagraph] = KeywordAbilityParagraph(Seq(keywordAbility))
 }

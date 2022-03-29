@@ -1,12 +1,9 @@
 package mtg.cards.text
 
-import mtg.abilities.{AbilityDefinition, SpellAbility}
-import mtg.cards.text.InstructionParagraph.fromSingleInstruction
 import mtg.core.PlayerId
 import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
 
-sealed trait InstructionParagraph extends TextParagraph {
-  override def abilityDefinitions: Seq[AbilityDefinition] = Seq(SpellAbility(this))
+sealed trait InstructionParagraph extends TextComponent {
   override def getText(cardName: String): String = getUncapitalizedText(cardName).capitalize
   def getUncapitalizedText(cardName: String): String
 }

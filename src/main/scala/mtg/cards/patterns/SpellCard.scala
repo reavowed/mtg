@@ -1,7 +1,7 @@
 package mtg.cards.patterns
 
 import mtg.cards.CardDefinition
-import mtg.cards.text.InstructionParagraph
+import mtg.cards.text.{InstructionParagraph, TextParagraph}
 import mtg.core.types.{SpellType, Type}
 import mtg.parts.costs.ManaCost
 
@@ -10,7 +10,7 @@ class SpellCard(
     manaCost: ManaCost,
     `type`: Type.InstantOrSorcery,
     subtypes: Seq[SpellType],
-    textParagraphs: Seq[InstructionParagraph])
+    textParagraphs: Seq[TextParagraph])
   extends CardDefinition(
     name,
     Some(manaCost),
@@ -22,7 +22,7 @@ class SpellCard(
     None,
     None)
 {
-  def this(name: String, manaCost: ManaCost, `type`: Type.InstantOrSorcery, textParagraphs: Seq[InstructionParagraph]) = {
+  def this(name: String, manaCost: ManaCost, `type`: Type.InstantOrSorcery, textParagraphs: Seq[TextParagraph]) = {
     this(name, manaCost, `type`, Nil, textParagraphs)
   }
 }

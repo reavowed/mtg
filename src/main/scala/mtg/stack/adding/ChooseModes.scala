@@ -1,5 +1,6 @@
 package mtg.stack.adding
 
+import mtg.abilities.SpellAbility
 import mtg.cards.text.{ModalInstructionParagraph, SimpleInstructionParagraph}
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state._
@@ -7,7 +8,7 @@ import mtg.game.state._
 case class ChooseModes(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
-    stackObjectWithState.characteristics.rulesText.ofType[ModalInstructionParagraph].headOption match {
+    stackObjectWithState.characteristics.instructionParagraphs.ofType[ModalInstructionParagraph].headOption match {
       case Some(modalEffectParagraph) =>
         PartialGameActionResult.ChildWithCallback(
           ModeChoice(stackObjectWithState.controller, stackObjectId, modalEffectParagraph.modes),

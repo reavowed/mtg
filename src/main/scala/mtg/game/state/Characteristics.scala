@@ -1,8 +1,8 @@
 package mtg.game.state
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import mtg.abilities.AbilityDefinition
-import mtg.cards.text.TextParagraph
+import mtg.abilities.{AbilityDefinition, SpellAbility}
+import mtg.cards.text.{InstructionParagraph, TextParagraph}
 import mtg.core.colors.{Color, ColorIndicator}
 import mtg.core.types.{Subtype, Supertype, Type}
 import mtg.parts.costs.ManaCost
@@ -21,6 +21,7 @@ case class Characteristics(
   toughness: Option[Int],
   loyalty: Option[Int])
 {
+  def instructionParagraphs: Seq[InstructionParagraph] = rulesText.ofType[SpellAbility].map(_.instructions)
   def getText: String = rulesText.map(_.getText(name.getOrElse("this object"))).mkString("\n")
 }
 

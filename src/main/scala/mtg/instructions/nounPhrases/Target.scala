@@ -32,6 +32,6 @@ class Target[T <: ObjectOrPlayerId : ClassTag](noun: Noun[T]) extends SingleIden
 object Target {
   def apply(filter: Noun[ObjectId]): Target[ObjectId] = new Target(filter)
   def getAll(stackObjectWithState: StackObjectWithState): Seq[Target[_]] = {
-    stackObjectWithState.applicableEffectParagraphs.flatMap(_.instructions).flatMap(_.targetIdentifiers)
+    stackObjectWithState.applicableInstructionParagraphs.flatMap(_.instructions).flatMap(_.targetIdentifiers)
   }
 }

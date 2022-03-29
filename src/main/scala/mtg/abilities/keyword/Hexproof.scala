@@ -5,7 +5,7 @@ import mtg.continuousEffects.{ContinuousEffect, TargetPreventionEffect}
 import mtg.core.{ObjectId, ObjectOrPlayerId}
 import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
 
-case object Hexproof extends StaticAbility with KeywordAbility {
+case object Hexproof extends KeywordAbility {
   override def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect] = Seq(HexproofEffect(objectWithAbility.gameObject.objectId))
 }
 

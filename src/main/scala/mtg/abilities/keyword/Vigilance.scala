@@ -6,7 +6,7 @@ import mtg.core.ObjectId
 import mtg.game.state.{GameState, GameUpdate, InternalGameAction, ObjectWithState}
 import mtg.game.turns.turnBasedActions.TapAttacker
 
-case object Vigilance extends StaticAbility with KeywordAbility {
+case object Vigilance extends KeywordAbility {
   override def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect] = Seq(VigilanceEffect(objectWithAbility.gameObject.objectId))
 }
 
