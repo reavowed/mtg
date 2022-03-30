@@ -1,8 +1,8 @@
 package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
-import mtg.data.cards.strixhaven.IntroductionToProphecy
-import mtg.data.cards.{Island, Plains, Swamp}
+import mtg.data.sets.alpha.cards.{Island, Plains, Swamp}
+import mtg.data.sets.strixhaven.cards.IntroductionToProphecy
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.instructions.verbs.ScryChoice
 

@@ -1,12 +1,10 @@
 package mtg.turns
 
-import mtg.{SpecWithGameStateManager, TestCardCreation}
-import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
-import mtg.data.cards.{Forest, Plains}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep
 import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.DealDamage
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class CleanupSpec extends SpecWithGameStateManager with TestCardCreation {
   val Creature = vanillaCreature(2, 2)

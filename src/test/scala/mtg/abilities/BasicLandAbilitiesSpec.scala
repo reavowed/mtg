@@ -4,7 +4,7 @@ import mtg.SpecWithGameStateManager
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
 import mtg.core.zones.Zone
-import mtg.data.cards.Plains
+import mtg.data.sets.alpha.cards.Plains
 import mtg.game.objects.GameObject
 import mtg.game.priority.actions.ActivateAbilityAction
 import mtg.game.state.ObjectWithState

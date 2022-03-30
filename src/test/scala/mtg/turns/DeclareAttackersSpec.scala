@@ -3,7 +3,7 @@ package mtg.turns
 import mtg.abilities.keyword.Vigilance
 import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.core.zones.Zone
-import mtg.data.cards.Plains
+import mtg.data.sets.alpha.cards.Plains
 import mtg.game.priority.PriorityChoice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep

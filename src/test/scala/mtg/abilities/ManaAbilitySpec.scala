@@ -6,7 +6,7 @@ import mtg.cards.patterns.CreatureCard
 import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol.{Green, Red}
-import mtg.data.cards.Plains
+import mtg.data.sets.alpha.cards.Plains
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.{Add, DealDamage, DrawACard}

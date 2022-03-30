@@ -3,8 +3,8 @@ package mtg.specificCards
 import mtg.SpecWithGameStateManager
 import mtg.abilities.AbilityDefinition
 import mtg.abilities.keyword.Vigilance
-import mtg.data.cards.alpha.SavannahLions
-import mtg.data.cards.strixhaven.{AgelessGuardian, CombatProfessor}
+import mtg.data.sets.alpha.cards.SavannahLions
+import mtg.data.sets.strixhaven.cards.{AgelessGuardian, CombatProfessor}
 import mtg.game.turns.TurnStep
 
 class CombatProfessorSpec extends SpecWithGameStateManager {

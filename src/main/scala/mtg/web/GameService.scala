@@ -3,11 +3,10 @@ package mtg.web
 import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.core.PlayerId
 import mtg.core.zones.Zone
-import mtg.data.cards.alpha.LightningBolt
-import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.m21.ConcordiaPegasus
-import mtg.data.cards.strixhaven.{BeamingDefiance, CombatProfessor, DefendTheCampus, Expel}
-import mtg.data.cards.{Mountain, Plains}
+import mtg.data.sets.alpha.cards.{LightningBolt, Mountain, Plains}
+import mtg.data.sets.coreSet2021.cards.ConcordiaPegasus
+import mtg.data.sets.kaldheim.cards.GrizzledOutrider
+import mtg.data.sets.strixhaven.cards.{BeamingDefiance, EnvironmentalSciences}
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
 import mtg.game.state.{GameState, GameStateManager}
 import mtg.game.turns.turnEvents.ExecuteTurn
@@ -44,7 +43,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.gameState
     val updatedGameState = initialGameState
-      .addCardToHand(playerOne, Expel)
+      .addCardToHand(playerOne, EnvironmentalSciences)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)

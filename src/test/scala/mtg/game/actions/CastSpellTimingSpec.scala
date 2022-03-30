@@ -1,6 +1,6 @@
 package mtg.game.actions
 
-import mtg.data.cards.Plains
+import mtg.data.sets.alpha.cards.Plains
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.{SpecWithGameStateManager, TestCardCreation}
 

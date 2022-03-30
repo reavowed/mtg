@@ -1,7 +1,7 @@
 package mtg.game.state
 
 import mtg.SpecWithGameStateManager
-import mtg.data.cards.Plains
+import mtg.data.sets.alpha.cards.Plains
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 
 class ManaPoolSpec extends SpecWithGameStateManager {

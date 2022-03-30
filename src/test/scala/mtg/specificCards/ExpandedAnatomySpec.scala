@@ -3,10 +3,9 @@ package mtg.specificCards
 import mtg.SpecWithGameStateManager
 import mtg.abilities.AbilityDefinition
 import mtg.abilities.keyword.Vigilance
-import mtg.data.cards.alpha.SavannahLions
-import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.strixhaven.{ExpandedAnatomy, SpinedKarok}
-import mtg.data.cards.{Forest, Plains}
+import mtg.data.sets.alpha.cards.{Forest, Plains, SavannahLions}
+import mtg.data.sets.kaldheim.cards.GrizzledOutrider
+import mtg.data.sets.strixhaven.cards.{ExpandedAnatomy, SpinedKarok}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.counters.PlusOnePlusOneCounter
 

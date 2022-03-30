@@ -2,8 +2,7 @@ package mtg.game
 
 import mtg.SpecWithGameStateManager
 import mtg.core.zones.Zone
-import mtg.data.cards.Mountain
-import mtg.data.cards.alpha.LightningBolt
+import mtg.data.sets.alpha.cards.{LightningBolt, Mountain}
 import mtg.game.state.{GameStateManager, Stops}
 import mtg.game.turns.TurnPhase.{CombatPhase, PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.TurnStep.BeginningOfCombatStep

@@ -2,7 +2,7 @@ package mtg
 
 import mtg.core.PlayerId
 import mtg.core.zones.Zone
-import mtg.data.sets.Strixhaven
+import mtg.data.sets.strixhaven.Strixhaven
 import mtg.game.objects._
 import mtg.game.state.GameState
 import mtg.game._

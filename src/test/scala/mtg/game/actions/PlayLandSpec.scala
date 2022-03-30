@@ -2,7 +2,7 @@ package mtg.game.actions
 
 import mtg._
 import mtg.cards.CardDefinition
-import mtg.data.cards.{Forest, Plains}
+import mtg.data.sets.alpha.cards.{Forest, Plains}
 import mtg.game.priority.actions.PlayLandAction
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase.PrecombatMainPhase

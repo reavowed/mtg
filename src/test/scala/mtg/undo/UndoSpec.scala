@@ -2,7 +2,7 @@ package mtg.undo
 
 import mtg.SpecWithGameStateManager
 import mtg.core.PlayerId
-import mtg.data.cards.Plains
+import mtg.data.sets.alpha.cards.Plains
 import mtg.game.state.{GameStateManager, UndoHelper}
 import mtg.game.turns.TurnPhase
 

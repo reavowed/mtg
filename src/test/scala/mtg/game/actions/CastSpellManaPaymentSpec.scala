@@ -5,7 +5,7 @@ import mtg.cards.patterns.CreatureCard
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
 import mtg.core.symbols.ManaSymbol.White
-import mtg.data.cards.Plains
+import mtg.data.sets.alpha.cards.Plains
 import mtg.game.state.Choice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.costs.ManaCost
