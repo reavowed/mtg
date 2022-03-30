@@ -50,15 +50,38 @@ object DeclareAttackers extends ExecutableGameAction[Unit] {
   def getDefendingPlayer(gameState: GameState): PlayerId = {
     gameState.playersInApnapOrder.filter(_ != gameState.activePlayer).single
   }
+
   def getAttackDeclarations(gameState: GameState): Seq[AttackDeclaration] = {
     gameState.gameHistory.gameEventsThisTurn.decisions[DeclaredAttackers]
       .toSeq
       .flatMap(_.attackDeclarations)
   }
+  def getAttackers(gameState: GameState): Seq[ObjectId] = {
+    getAttackDeclarations(gameState)
+      .map(_.attacker)
+      .filter(isStillInCombat(_, gameState))
+  }
+  def isStillInCombat(permanentId: ObjectId, gameState: GameState): Boolean = {
+    !wasRemovedFromCombat(permanentId, gameState)
+  }
+  def wasRemovedFromCombat(permanentId: ObjectId, gameState: GameState): Boolean = {
+    // TODO: Implement fully
+    if (!gameState.currentPhase.contains(TurnPhase.CombatPhase))
+      true
+    else if (!gameState.gameObjectState.battlefield.exists(_.objectId == permanentId))
+      true
+    else
+      false
+  }
+  def getAttackedPlayer(attacker: ObjectId, gameState: GameState): PlayerId = {
+    getAttackDeclarations(gameState)
+      .filter(_.attacker == attacker)
+      .single
+      .attackedPlayer
+  }
 
   def isAttacking(objectId: ObjectId, gameState: GameState): Boolean = {
-    def wasDeclaredAttacker = getAttackDeclarations(gameState).exists(_.attacker == objectId)
-    wasDeclaredAttacker && gameState.currentPhase.contains(TurnPhase.CombatPhase)
+    getAttackers(gameState).contains(objectId)
   }
 }
 

@@ -1,6 +1,10 @@
 package mtg.turns
 
-import mtg.SpecWithGameStateManager
+import mtg.abilities.builder.TypeConversions._
+import mtg.cards.patterns.SpellCard
+import mtg.core.types.Type
+import mtg.core.types.Type.Creature
+import mtg.{SpecWithGameStateManager, TestCards}
 import mtg.core.zones.Zone
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
@@ -8,87 +12,89 @@ import mtg.data.cards.{Forest, Plains}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnBasedActions.AssignCombatDamageChoice
+import mtg.instructions.nounPhrases.Target
+import mtg.instructions.verbs.Destroy
+import mtg.parts.costs.ManaCost
 
 class CombatDamageSpec extends SpecWithGameStateManager {
-    // TODO: be skipped if no attackers
+  val VanillaOneThree = TestCards.vanillaCreature(1, 3)
+  val VanillaTwoFour = TestCards.vanillaCreature(2, 4)
+  val VanillaThreeThree = TestCards.vanillaCreature(3, 3)
+  val VanillaFiveFive = TestCards.vanillaCreature(5, 5)
+
+  // TODO: be skipped if no attackers
+
   "an unblocked creature should deal combat damage to defending player" in {
     val initialState = gameObjectStateWithInitialLibrariesAndHands
-      .setHand(playerOne, Seq(AgelessGuardian))
-      .setBattlefield(playerOne, Seq(Plains, Plains))
+      .setBattlefield(playerOne, VanillaOneThree)
 
     val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
-    manager.passUntilPhase(PrecombatMainPhase)
-
-    // Tap mana and cast creature
-    manager.activateFirstAbility(playerOne, Plains)
-    manager.activateFirstAbility(playerOne, Plains)
-    manager.castSpell(playerOne, AgelessGuardian)
-
-    manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-    manager.attackWith(playerOne, AgelessGuardian)
+    manager.passUntilStep(TurnStep.DeclareAttackersStep)
+    manager.attackWith(playerOne, VanillaOneThree)
     manager.passUntilStep(TurnStep.CombatDamageStep)
 
     manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 19
   }
 
-  "a blocked creature and its blocker should deal damage to each other" in {
-    val initialState = gameObjectStateWithInitialLibrariesAndHands
-      .setHand(playerOne, AgelessGuardian)
-      .setBattlefield(playerOne, Plains, 2)
-      .setHand(playerTwo, SpinedKarok)
-      .setBattlefield(playerTwo, Forest, 3)
+  "a blocked attacker" should {
+    "deal damage to and be dealt damage by its blocker" in {
+      val initialState = gameObjectStateWithInitialLibrariesAndHands
+        .setBattlefield(playerOne, VanillaOneThree)
+        .setBattlefield(playerTwo, VanillaTwoFour)
 
-    val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(playerOne, VanillaOneThree)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block(playerTwo, VanillaTwoFour, VanillaOneThree)
+      manager.passUntilStep(TurnStep.CombatDamageStep)
 
-    // Cast attacker
-    manager.passUntilPhase(PrecombatMainPhase)
-    manager.activateAbilities(playerOne, Plains, 2)
-    manager.castSpell(playerOne, AgelessGuardian)
+      manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
+      manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
+      manager.getPermanent(VanillaOneThree).markedDamage mustEqual 2
+      manager.getPermanent(VanillaTwoFour).markedDamage mustEqual 1
+    }
 
-    // Cast blocker
-    manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-    manager.activateAbilities(playerTwo, Forest, 3)
-    manager.castSpell(playerTwo, SpinedKarok)
+    "not deal excess damage to player if it doesn't have trample" in {
+      val initialState = gameObjectStateWithInitialLibrariesAndHands
+        .setBattlefield(playerOne, VanillaFiveFive)
+        .setBattlefield(playerTwo, VanillaTwoFour)
 
-    manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-    manager.attackWith(playerOne, AgelessGuardian)
-    manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-    manager.block(playerTwo, SpinedKarok, AgelessGuardian)
-    manager.passUntilStep(TurnStep.CombatDamageStep)
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(playerOne, VanillaFiveFive)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block(playerTwo, VanillaTwoFour, VanillaFiveFive)
+      manager.passUntilStep(TurnStep.CombatDamageStep)
 
-    manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
-    manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
-    manager.getPermanent(AgelessGuardian).markedDamage mustEqual 2
-    manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
-  }
+      manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
+      manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
+    }
 
-  "a blocked creature without trample should not deal excess damage to player" in {
-    val initialState = gameObjectStateWithInitialLibrariesAndHands
-      .setHand(playerOne, GrizzledOutrider)
-      .setBattlefield(playerOne, Forest, 5)
-      .setHand(playerTwo, AgelessGuardian)
-      .setBattlefield(playerTwo, Plains, 2)
+    "not deal damage if its blocker is removed from combat" in {
+      val DestroySpell = new SpellCard(
+        "Destroy Spell",
+        ManaCost(0),
+        Type.Instant,
+        Destroy(Target(Creature)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands
+        .setBattlefield(playerOne, VanillaOneThree)
+        .setHand(playerOne, DestroySpell)
+        .setBattlefield(playerTwo, VanillaTwoFour)
 
-    val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(playerOne, VanillaOneThree)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block(playerTwo, VanillaTwoFour, VanillaOneThree)
+      manager.castSpell(playerOne, DestroySpell)
+      manager.chooseCard(playerOne, VanillaTwoFour)
+      manager.passUntilStep(TurnStep.CombatDamageStep)
 
-    // Cast attacker
-    manager.passUntilPhase(PrecombatMainPhase)
-    manager.activateAbilities(playerOne, Forest, 5)
-    manager.castSpell(playerOne, GrizzledOutrider)
-
-    // Cast blocker
-    manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-    manager.activateAbilities(playerTwo, Plains, 2)
-    manager.castSpell(playerTwo, AgelessGuardian)
-
-    manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-    manager.attackWith(playerOne, GrizzledOutrider)
-    manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-    manager.block(playerTwo, AgelessGuardian, GrizzledOutrider)
-    manager.passUntilStep(TurnStep.CombatDamageStep)
-
-    manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
-    manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
+      manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
+      manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
+      manager.getPermanent(VanillaOneThree).markedDamage mustEqual 0
+    }
   }
 
   "an attacking creature blocked by two creatures" should {
@@ -274,6 +280,33 @@ class CombatDamageSpec extends SpecWithGameStateManager {
       manager.currentChoice must beSome(bePriorityChoice)
       Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(AgelessGuardian))
       manager.getPermanent(SpinedKarok).markedDamage mustEqual 0
+    }
+
+    "deal full damage to the remaining blocker if one blocker is removed" in {
+      val DestroySpell = new SpellCard(
+        "Destroy Spell",
+        ManaCost(0),
+        Type.Instant,
+        Destroy(Target(Creature)))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands
+        .setBattlefield(playerOne, VanillaThreeThree)
+        .setHand(playerOne, DestroySpell)
+        .setBattlefield(playerTwo, Seq(VanillaOneThree, VanillaTwoFour))
+
+      val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(playerOne, VanillaThreeThree)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block(playerTwo, (VanillaOneThree, VanillaThreeThree), (VanillaTwoFour, VanillaThreeThree))
+      manager.orderBlocks(playerOne, VanillaOneThree, VanillaTwoFour)
+      manager.castSpell(playerOne, DestroySpell)
+      manager.chooseCard(playerOne, VanillaOneThree)
+      manager.passUntilStep(TurnStep.CombatDamageStep)
+
+      manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
+      manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 20
+      manager.getPermanent(VanillaTwoFour).markedDamage mustEqual 3
+
     }
   }
 }

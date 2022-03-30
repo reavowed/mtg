@@ -8,10 +8,12 @@ import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
 import mtg.utils.ParsingUtils
 
+import scala.collection.View
+
 object DeclareBlockers extends ExecutableGameAction[Unit] {
   override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
     val defendingPlayer = DeclareAttackers.getDefendingPlayer(gameState)
-    val attackers = DeclareAttackers.getAttackDeclarations(gameState).map(_.attacker)
+    val attackers = DeclareAttackers.getAttackers(gameState)
     val possibleBlockers = getPossibleBlockers(defendingPlayer, attackers, gameState)
     if (attackers.nonEmpty && possibleBlockers.nonEmpty) {
       PartialGameActionResult.ChildWithCallback(
@@ -51,9 +53,13 @@ object DeclareBlockers extends ExecutableGameAction[Unit] {
       .toSeq
       .flatMap(_.blockDeclarations)
   }
+  def getBlockers(gameState: GameState): Seq[ObjectId] = {
+    getBlockDeclarations(gameState)
+      .map(_.blocker)
+      .filter(DeclareAttackers.isStillInCombat(_, gameState))
+  }
   def isBlocking(objectId: ObjectId, gameState: GameState): Boolean = {
-    def wasDeclaredBlocker = getBlockDeclarations(gameState).exists(_.blocker == objectId)
-    wasDeclaredBlocker && gameState.currentPhase.contains(TurnPhase.CombatPhase)
+    getBlockers(gameState).contains(objectId)
   }
 
   def getBlockerOrderings(gameState: GameState): Seq[BlockerOrdering] = {
@@ -74,15 +80,17 @@ object DeclareBlockers extends ExecutableGameAction[Unit] {
     }
   }
   def getOrderingOfBlockersForAttacker(attacker: ObjectId, gameState: GameState): Option[Seq[ObjectId]] = {
-    getBlockerOrderings(gameState).find(_.attacker == attacker).map(_.blockersInOrder)
+    getBlockerOrderings(gameState)
+      .find(_.attacker == attacker)
+      .map(_.blockersInOrder)
       .orElse(getDefaultBlockerOrdering(attacker, gameState))
+      .map(_.filter(DeclareAttackers.isStillInCombat(_, gameState)))
   }
-
-  def getOrderingOfAttackersForBlocker(blocker: ObjectId, gameState: GameState): Option[Seq[ObjectId]] = {
+  def getAttackerForBlocker(blocker: ObjectId, gameState: GameState): Option[ObjectId] = {
     getBlockDeclarations(gameState)
       .find(_.blocker == blocker)
-      .filter(_ => isBlocking(blocker, gameState))
-      .map(d => Seq(d.attacker).filter(DeclareAttackers.isAttacking(_, gameState)))
+      .map(_.attacker)
+      .filter(DeclareAttackers.isStillInCombat(_, gameState))
   }
 }
 

@@ -29,8 +29,8 @@ object VisibleGameObject {
     if (DeclareAttackers.isAttacking(gameObject.objectId, gameState)) {
       builder.addOne(("attacking", true))
     }
-    DeclareBlockers.getOrderingOfAttackersForBlocker(gameObject.objectId, gameState).foreach(attackers =>
-      builder.addOne(("blocking", attackers))
+    DeclareBlockers.getAttackerForBlocker(gameObject.objectId, gameState).foreach(attacker =>
+      builder.addOne(("blocking", attacker))
     )
     builder.result()
   }
