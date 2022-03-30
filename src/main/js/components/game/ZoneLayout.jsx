@@ -43,9 +43,10 @@ export default function ZoneLayout() {
                                 <div className="d-flex h-100 ml-2">
                                     <div className="flex-grow-0">
                                         <div className="d-flex flex-column h-100">
-                                            <Graveyard className="flex-grow-0 mt-2" player={opponent}/>
-                                            <Library className="flex-grow-0 mt-2" player={opponent}/>
-                                            <Exile className="flex-grow-0 mt-2" player={opponent}/>
+                                            <div className="flex-grow-1"/>
+                                            <Graveyard className="flex-grow-0 flex-shrink-0 mt-2" player={opponent}/>
+                                            <Library className="flex-grow-0 flex-shrink-0 mt-2" player={opponent}/>
+                                            <Exile className="flex-grow-0 flex-shrink-0 mt-2" player={opponent}/>
                                             <div className="flex-grow-1"/>
                                         </div>
                                     </div>
@@ -73,9 +74,10 @@ export default function ZoneLayout() {
                                     <div className="flex-grow-0">
                                         <div className="d-flex flex-column h-100">
                                             <div className="flex-grow-1"/>
-                                            <Exile className="flex-grow-0 mb-2" player={player}/>
-                                            <Library className="flex-grow-0 mb-2" player={player}/>
-                                            <Graveyard className="flex-grow-0 mb-2" player={player}/>
+                                            <Exile className="flex-grow-0 flex-shrink-0 mb-2" player={player}/>
+                                            <Library className="flex-grow-0 flex-shrink-0 mb-2" player={player}/>
+                                            <Graveyard className="flex-grow-0 flex-shrink-0 mb-2" player={player}/>
+                                            <div className="flex-grow-1"/>
                                         </div>
                                     </div>
                                     <div className="flex-grow-1">

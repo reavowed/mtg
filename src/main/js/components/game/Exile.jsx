@@ -9,10 +9,15 @@ export default function Exile({player, className, ...props}) {
     const exile = gameState.exile[player]
     const exileSize = _.isNumber(exile) ? exile : exile.length;
     const topCard = exileSize > 0 && exile[exileSize - 1];
-    return exileSize > 0 ?
+    const zoneElement = exileSize > 0 ?
         <div className={addClass(className, "zoneWithCount exile")} {...props}>
             <CardImage card={topCard} key={topCard.objectId} />
             <span className="zoneCount">{exileSize}</span>
         </div> :
         <div className={addClass(className, "exileOutline")} {...props}/>;
+
+    return <div className="zoneContainer">
+        <div className="zoneLabel">Exile</div>
+        {zoneElement}
+    </div>
 }
