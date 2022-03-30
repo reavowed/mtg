@@ -29,7 +29,7 @@ class MassGetSpec extends SpecWithGameStateManager with TestCardCreation {
     "apply filter correctly" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, TestCard)
-        .setBattlefield(playerOne, Seq(VanillaOneOne, VanillaTwoTwo))
+        .setBattlefield(playerOne, VanillaOneOne, VanillaTwoTwo)
         .setBattlefield(playerTwo, VanillaOneOne)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -44,7 +44,7 @@ class MassGetSpec extends SpecWithGameStateManager with TestCardCreation {
 
     "only apply to initial set of objects" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestCard, VanillaOneOne))
+        .setHand(playerOne, TestCard, VanillaOneOne)
         .setBattlefield(playerOne, VanillaTwoTwo)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

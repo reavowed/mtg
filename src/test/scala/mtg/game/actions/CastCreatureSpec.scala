@@ -10,7 +10,7 @@ class CastCreatureSpec extends SpecWithGameStateManager {
 
   "casting a creature" should {
     "move the card to the battlefield on resolution" in {
-      val initialState = emptyGameObjectState.setHand(playerOne, Seq(Creature))
+      val initialState = emptyGameObjectState.setHand(playerOne, Creature)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)

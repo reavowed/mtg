@@ -12,9 +12,9 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
   "Introduction to Annihilation" should {
     "target any non-land permanent" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToAnnihilation, GrizzledOutrider))
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, Plains, Plains, SavannahLions))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+        .setHand(playerOne, IntroductionToAnnihilation, GrizzledOutrider)
+        .setBattlefield(playerOne, Plains, Plains, Plains, Plains, Plains, SavannahLions)
+        .setBattlefield(playerTwo, Forest, Forest, Forest, SpinedKarok)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -28,9 +28,9 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
 
     "exile its target" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToAnnihilation, GrizzledOutrider))
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, Plains, Plains, SavannahLions))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+        .setHand(playerOne, IntroductionToAnnihilation, GrizzledOutrider)
+        .setBattlefield(playerOne, Plains, Plains, Plains, Plains, Plains, SavannahLions)
+        .setBattlefield(playerTwo, Forest, Forest, Forest, SpinedKarok)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -45,10 +45,10 @@ class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
 
     "draw its target's controller a card" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToAnnihilation, GrizzledOutrider))
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, Plains, Plains, SavannahLions))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
-        .setLibrary(playerTwo, Seq(Forest))
+        .setHand(playerOne, IntroductionToAnnihilation, GrizzledOutrider)
+        .setBattlefield(playerOne, Plains, Plains, Plains, Plains, Plains, SavannahLions)
+        .setBattlefield(playerTwo, Forest, Forest, Forest, SpinedKarok)
+        .setLibrary(playerTwo, Forest)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)

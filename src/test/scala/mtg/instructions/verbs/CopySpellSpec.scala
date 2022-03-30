@@ -15,7 +15,7 @@ class CopySpellSpec extends SpecWithGameStateManager {
 
   "copying a spell" should {
     "duplicate a simple spell" in {
-      val initialState = emptyGameObjectState.setHand(playerOne, Seq(TestCopyCard, TestGainOneLifeCard))
+      val initialState = emptyGameObjectState.setHand(playerOne, TestCopyCard, TestGainOneLifeCard)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
@@ -32,7 +32,7 @@ class CopySpellSpec extends SpecWithGameStateManager {
 
   "a copied spell" should {
     "have the same effects" in {
-      val initialState = emptyGameObjectState.setHand(playerOne, Seq(TestCopyCard, TestGainOneLifeCard))
+      val initialState = emptyGameObjectState.setHand(playerOne, TestCopyCard, TestGainOneLifeCard)
 
       val initialLifeTotal = initialState.lifeTotals(playerOne)
 

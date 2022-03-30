@@ -29,8 +29,8 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
       gameStateManager.gameState.gameObjectState.getPermanent(cardDefinition)
     }
-    def getPermanent(cardDefinition: CardDefinition, owner: PlayerId): PermanentObject = {
-      gameStateManager.gameState.gameObjectState.getPermanent(cardDefinition, owner)
+    def getPermanent(cardDefinition: CardDefinition, controller: PlayerId): PermanentObject = {
+      gameStateManager.gameState.gameObjectState.getPermanent(cardDefinition, controller)
     }
     def getCard(cardDefinition: CardDefinition): GameObject = {
       gameStateManager.gameState.gameObjectState.getCard(cardDefinition)
@@ -40,6 +40,9 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
     }
     def getCard(zone: Zone, cardDefinition: CardDefinition): GameObject = {
       gameStateManager.gameState.gameObjectState.getCard(zone, cardDefinition)
+    }
+    def getCard(cardDefinition: CardDefinition, owner: PlayerId): GameObject = {
+      gameStateManager.gameState.gameObjectState.getCard(cardDefinition, owner)
     }
     def getState(gameObject: GameObject): ObjectWithState = {
       gameStateManager.gameState.gameObjectState.derivedState.allObjectStates(gameObject.objectId)
@@ -132,19 +135,22 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
         .filter(_.objectToCast.gameObject.isCard(cardDefinition)).head
       gameStateManager.handleDecision(abilityAction.optionText, player)
     }
-    def attackWith(player: PlayerId, cardDefinitions: CardDefinition*): Unit = {
-      gameStateManager.handleDecision(cardDefinitions.map(d => getCard(Zone.Battlefield, d).objectId.toString).mkString(" "), player)
+    def attackWith(cardDefinitions: CardDefinition*): Unit = {
+      val player = gameStateManager.gameState.activePlayer
+      gameStateManager.handleDecision(cardDefinitions.map(d => getPermanent(d, player).objectId.toString).mkString(" "), player)
     }
-    def block(player: PlayerId, blocker: CardDefinition, attacker: CardDefinition): Unit = {
-      block(player, (blocker, attacker))
+    def block(blocker: CardDefinition, attacker: CardDefinition): Unit = {
+      block((blocker, attacker))
     }
-    def block(player: PlayerId, blockers: (CardDefinition, CardDefinition)*): Unit = {
+    def block(blockers: (CardDefinition, CardDefinition)*): Unit = {
+      val attackingPlayer = gameStateManager.gameState.activePlayer
+      val blockingPlayer = gameStateManager.gameState.playersInApnapOrder(1)
       val serializedDecision = blockers.map { case (blocker, attacker) =>
-        getCard(Zone.Battlefield, blocker).objectId.toString + " " +
-          getCard(Zone.Battlefield, attacker).objectId.toString + " "
+        getPermanent(blocker, blockingPlayer).objectId.toString + " " +
+          getCard(attacker, attackingPlayer).objectId.toString + " "
       }.mkString(" ")
 
-      gameStateManager.handleDecision(serializedDecision, player)
+      gameStateManager.handleDecision(serializedDecision, blockingPlayer)
     }
     def orderBlocks(player: PlayerId, blockers: CardDefinition*): Unit = {
       val serializedDecision = blockers.map { blocker =>
@@ -173,6 +179,9 @@ trait GameStateManagerHelpers extends GameObjectHelpers with GameObjectStateHelp
 
   def getId(cardDefinition: CardDefinition)(implicit gameStateManager: GameStateManager): ObjectId = {
     gameStateManager.getCard(cardDefinition).objectId
+  }
+  def getPermanentId(cardDefinition: CardDefinition, controller: PlayerId)(implicit gameStateManager: GameStateManager): ObjectId = {
+    gameStateManager.getPermanent(cardDefinition, controller).objectId
   }
 
   implicit def gameStateFromManager(implicit gameStateManager: GameStateManager): GameState = gameStateManager.gameState

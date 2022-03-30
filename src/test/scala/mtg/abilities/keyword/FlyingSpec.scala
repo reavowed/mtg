@@ -17,7 +17,7 @@ class FlyingSpec extends SpecWithGameStateManager {
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, ConcordiaPegasus)
+      manager.attackWith( ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
 
       manager.currentChoice should beSome(bePriorityChoice)
@@ -25,12 +25,12 @@ class FlyingSpec extends SpecWithGameStateManager {
 
     "only offer blocks for an attacker with flying to creatures with flying or reach" in {
       val initialState = emptyGameObjectState
-        .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
-        .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
+        .setBattlefield(playerOne, ConcordiaPegasus, SpinedKarok)
+        .setBattlefield(playerTwo, AirElemental, AgelessGuardian, GnottvoldRecluse)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, ConcordiaPegasus, SpinedKarok)
+      manager.attackWith(ConcordiaPegasus, SpinedKarok)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
 
       manager.currentChoice must beSome(beAnInstanceOf[DeclareBlockersChoice])
@@ -42,44 +42,44 @@ class FlyingSpec extends SpecWithGameStateManager {
 
     "allow a creature with flying to block another creature with flying" in {
       val initialState = emptyGameObjectState
-        .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
-        .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
+        .setBattlefield(playerOne, ConcordiaPegasus, SpinedKarok)
+        .setBattlefield(playerTwo, AirElemental, AgelessGuardian, GnottvoldRecluse)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, ConcordiaPegasus)
+      manager.attackWith(ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, AirElemental, ConcordiaPegasus)
+      manager.block(AirElemental, ConcordiaPegasus)
 
       manager.currentChoice must beSome(bePriorityChoice)
     }
 
     "allow a creature with reach to block another creature with flying" in {
       val initialState = emptyGameObjectState
-        .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
-        .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
+        .setBattlefield(playerOne, ConcordiaPegasus, SpinedKarok)
+        .setBattlefield(playerTwo, AirElemental, AgelessGuardian, GnottvoldRecluse)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, ConcordiaPegasus)
+      manager.attackWith(ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, GnottvoldRecluse, ConcordiaPegasus)
+      manager.block(GnottvoldRecluse, ConcordiaPegasus)
 
       manager.currentChoice must beSome(bePriorityChoice)
     }
 
     "not allow a creature without flying or reach to block a creature with flying" in {
       val initialState = emptyGameObjectState
-        .setBattlefield(playerOne, Seq(ConcordiaPegasus, SpinedKarok))
-        .setBattlefield(playerTwo, Seq(AirElemental, AgelessGuardian, GnottvoldRecluse))
+        .setBattlefield(playerOne, ConcordiaPegasus, SpinedKarok)
+        .setBattlefield(playerTwo, AirElemental, AgelessGuardian, GnottvoldRecluse)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, ConcordiaPegasus)
+      manager.attackWith(ConcordiaPegasus)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
 
       val stateBeforeBlock = manager.gameState
-      manager.block(playerTwo, AgelessGuardian, ConcordiaPegasus)
+      manager.block(AgelessGuardian, ConcordiaPegasus)
 
       manager.gameState mustEqual stateBeforeBlock
     }

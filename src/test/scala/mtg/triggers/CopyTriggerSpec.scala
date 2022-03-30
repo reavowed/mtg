@@ -22,7 +22,7 @@ class CopyTriggerSpec extends SpecWithGameStateManager {
   "a copy trigger" should {
     "trigger off copying a spell"  in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestCopyCard, TestGainOneLifeCard))
+        .setHand(playerOne, TestCopyCard, TestGainOneLifeCard)
         .setBattlefield(playerOne, TestCopyTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

@@ -30,9 +30,9 @@ class LethalDamageStateBasedActionSpec extends SpecWithGameStateManager {
       manager.castSpell(playerTwo, AgelessGuardian)
 
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, GrizzledOutrider)
+      manager.attackWith(GrizzledOutrider)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, AgelessGuardian, GrizzledOutrider)
+      manager.block(AgelessGuardian, GrizzledOutrider)
       manager.passUntilStep(TurnStep.CombatDamageStep)
 
       Zone.Battlefield(manager.gameState) must not(contain(beCardObject(AgelessGuardian)))

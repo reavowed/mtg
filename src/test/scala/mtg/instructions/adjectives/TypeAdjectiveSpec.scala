@@ -37,7 +37,7 @@ class TypeAdjectiveSpec extends SpecWithGameStateManager {
   "cast trigger with instant type filter" should {
     "be triggered by casting an instant" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestInstantCard))
+        .setHand(playerOne, TestInstantCard)
         .setBattlefield(playerOne, TestCastInstantTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -52,7 +52,7 @@ class TypeAdjectiveSpec extends SpecWithGameStateManager {
 
     "not be triggered by casting a sorcery" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestSorceryCard))
+        .setHand(playerOne, TestSorceryCard)
         .setBattlefield(playerOne, TestCastInstantTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -64,7 +64,7 @@ class TypeAdjectiveSpec extends SpecWithGameStateManager {
 
     "not be triggered by casting a creature" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestCreatureCard))
+        .setHand(playerOne, TestCreatureCard)
         .setBattlefield(playerOne, TestCastInstantTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -78,7 +78,7 @@ class TypeAdjectiveSpec extends SpecWithGameStateManager {
   "cast trigger with instant or sorcery type filter" should {
     "be triggered by casting an instant" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestInstantCard))
+        .setHand(playerOne, TestInstantCard)
         .setBattlefield(playerOne, TestCastInstantOrSorceryTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -93,7 +93,7 @@ class TypeAdjectiveSpec extends SpecWithGameStateManager {
 
     "be triggered by casting a sorcery" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestSorceryCard))
+        .setHand(playerOne, TestSorceryCard)
         .setBattlefield(playerOne, TestCastInstantOrSorceryTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -108,7 +108,7 @@ class TypeAdjectiveSpec extends SpecWithGameStateManager {
 
     "not be triggered by casting a creature" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestCreatureCard))
+        .setHand(playerOne, TestCreatureCard)
         .setBattlefield(playerOne, TestCastInstantOrSorceryTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

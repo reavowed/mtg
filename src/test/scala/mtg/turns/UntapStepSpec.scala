@@ -8,7 +8,7 @@ import mtg.game.turns.TurnPhase.PrecombatMainPhase
 class UntapStepSpec extends SpecWithGameStateManager {
   "untap step" should {
     "untap only tapped permanents the active player controls" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Seq(Plains)).setHand(playerTwo, Seq(Forest))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains).setHand(playerTwo, Forest)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)

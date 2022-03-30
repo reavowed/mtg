@@ -14,7 +14,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
-        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+        .setLibrary(playerOne, Island, Plains, AgelessGuardian)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -26,7 +26,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
-        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+        .setLibrary(playerOne, Island, Plains, AgelessGuardian)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -44,7 +44,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
-        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+        .setLibrary(playerOne, Island, Plains, AgelessGuardian)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -60,7 +60,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
-        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+        .setLibrary(playerOne, Island, Plains, AgelessGuardian)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -77,7 +77,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
-        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+        .setLibrary(playerOne, Island, Plains, AgelessGuardian)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -93,7 +93,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
-        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+        .setLibrary(playerOne, Island, Plains, AgelessGuardian)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -111,7 +111,7 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setBattlefield(playerOne, Forest, 2)
         .setHand(playerOne, EnvironmentalSciences)
-        .setLibrary(playerOne, Seq(Island, Plains, AgelessGuardian))
+        .setLibrary(playerOne, Island, Plains, AgelessGuardian)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)

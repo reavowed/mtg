@@ -32,7 +32,7 @@ class PowerConstantOrGreaterFilterSpec extends SpecWithGameStateManager with Tes
     "move the creature to the graveyard" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, TestCard)
-        .setBattlefield(playerTwo, Seq(ThreeFive, FourTwo, FiveFive))
+        .setBattlefield(playerTwo, ThreeFive, FourTwo, FiveFive)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)

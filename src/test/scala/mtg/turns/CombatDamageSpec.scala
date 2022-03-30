@@ -30,7 +30,7 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
     val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
     manager.passUntilStep(TurnStep.DeclareAttackersStep)
-    manager.attackWith(playerOne, VanillaOneThree)
+    manager.attackWith(VanillaOneThree)
     manager.passUntilStep(TurnStep.CombatDamageStep)
 
     manager.gameState.gameObjectState.lifeTotals(playerTwo) mustEqual 19
@@ -44,9 +44,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, VanillaOneThree)
+      manager.attackWith(VanillaOneThree)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, VanillaTwoFour, VanillaOneThree)
+      manager.block(VanillaTwoFour, VanillaOneThree)
       manager.passUntilStep(TurnStep.CombatDamageStep)
 
       manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
@@ -62,9 +62,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, VanillaFiveFive)
+      manager.attackWith(VanillaFiveFive)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, VanillaTwoFour, VanillaFiveFive)
+      manager.block(VanillaTwoFour, VanillaFiveFive)
       manager.passUntilStep(TurnStep.CombatDamageStep)
 
       manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual 20
@@ -84,9 +84,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, VanillaOneThree)
+      manager.attackWith(VanillaOneThree)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, VanillaTwoFour, VanillaOneThree)
+      manager.block(VanillaTwoFour, VanillaOneThree)
       manager.castSpell(playerOne, DestroySpell)
       manager.chooseCard(playerOne, VanillaTwoFour)
       manager.passUntilStep(TurnStep.CombatDamageStep)
@@ -102,7 +102,7 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, AgelessGuardian)
         .setBattlefield(playerOne, Plains, 2)
-        .setHand(playerTwo, Seq(SpinedKarok, GrizzledOutrider))
+        .setHand(playerTwo, SpinedKarok, GrizzledOutrider)
         .setBattlefield(playerTwo, Forest, 8)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
@@ -121,9 +121,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       // Attack and block
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, AgelessGuardian)
+      manager.attackWith(AgelessGuardian)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, (SpinedKarok, AgelessGuardian), (GrizzledOutrider, AgelessGuardian))
+      manager.block((SpinedKarok, AgelessGuardian), (GrizzledOutrider, AgelessGuardian))
       manager.orderBlocks(playerOne, SpinedKarok, GrizzledOutrider)
 
       // Go to damage
@@ -139,8 +139,8 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, GrizzledOutrider)
         .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
+        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
+        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
@@ -158,9 +158,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       // Attack and block
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, GrizzledOutrider)
+      manager.attackWith(GrizzledOutrider)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, (SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
+      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
       manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
 
       // Go to damage
@@ -174,8 +174,8 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, GrizzledOutrider)
         .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
+        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
+        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
@@ -193,9 +193,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       // Attack and block
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, GrizzledOutrider)
+      manager.attackWith(GrizzledOutrider)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, (SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
+      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
       manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
 
       // Go to damage
@@ -210,8 +210,8 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, GrizzledOutrider)
         .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
+        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
+        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
@@ -229,9 +229,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       // Attack and block
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, GrizzledOutrider)
+      manager.attackWith(GrizzledOutrider)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, (SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
+      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
       manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
 
       // Go to damage
@@ -248,8 +248,8 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, GrizzledOutrider)
         .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, Seq(AgelessGuardian, SpinedKarok))
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest))
+        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
+        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       // Cast attacker
@@ -267,9 +267,9 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
       // Attack and block
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, GrizzledOutrider)
+      manager.attackWith(GrizzledOutrider)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, (SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
+      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
       manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
 
       // Go to damage
@@ -291,13 +291,13 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setBattlefield(playerOne, VanillaThreeThree)
         .setHand(playerOne, DestroySpell)
-        .setBattlefield(playerTwo, Seq(VanillaOneThree, VanillaTwoFour))
+        .setBattlefield(playerTwo, VanillaOneThree, VanillaTwoFour)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, VanillaThreeThree)
+      manager.attackWith(VanillaThreeThree)
       manager.passUntilStep(TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, (VanillaOneThree, VanillaThreeThree), (VanillaTwoFour, VanillaThreeThree))
+      manager.block((VanillaOneThree, VanillaThreeThree), (VanillaTwoFour, VanillaThreeThree))
       manager.orderBlocks(playerOne, VanillaOneThree, VanillaTwoFour)
       manager.castSpell(playerOne, DestroySpell)
       manager.chooseCard(playerOne, VanillaOneThree)

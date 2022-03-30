@@ -13,7 +13,7 @@ class CastSpellTimingSpec extends SpecWithGameStateManager {
 
   "cast spell action" should {
     "be available for a creature card in hand at sorcery speed" in {
-      val initialState = emptyGameObjectState.setHand(playerOne, Seq(Creature))
+      val initialState = emptyGameObjectState.setHand(playerOne, Creature)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -22,7 +22,7 @@ class CastSpellTimingSpec extends SpecWithGameStateManager {
     }
 
     "not be available for a creature card in hand in upkeep" in {
-      val initialState = emptyGameObjectState.setHand(playerOne, Seq(Creature))
+      val initialState = emptyGameObjectState.setHand(playerOne, Creature)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withNoAvailableSpells)
@@ -30,8 +30,8 @@ class CastSpellTimingSpec extends SpecWithGameStateManager {
 
     "not be available for a creature card in hand if there is something on the stack" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(Creature, Sorcery))
-        .setBattlefield(playerOne, Seq(Plains, Plains))
+        .setHand(playerOne, Creature, Sorcery)
+        .setBattlefield(playerOne, Plains, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -43,7 +43,7 @@ class CastSpellTimingSpec extends SpecWithGameStateManager {
     }
 
     "not be available for a creature card for the non-active player" in {
-      val initialState = emptyGameObjectState.setHand(playerTwo, Seq(Creature))
+      val initialState = emptyGameObjectState.setHand(playerTwo, Creature)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)

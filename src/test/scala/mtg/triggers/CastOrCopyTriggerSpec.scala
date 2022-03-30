@@ -23,7 +23,7 @@ class CastOrCopyTriggerSpec extends SpecWithGameStateManager {
   "a cast or copy trigger" should {
     "trigger off casting a spell"  in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestGainOneLifeCard))
+        .setHand(playerOne, TestGainOneLifeCard)
         .setBattlefield(playerOne, TestCastOrCopyTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -38,7 +38,7 @@ class CastOrCopyTriggerSpec extends SpecWithGameStateManager {
 
     "trigger off copying a spell"  in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestGainOneLifeCard, TestCopyCard))
+        .setHand(playerOne, TestGainOneLifeCard, TestCopyCard)
         .setBattlefield(playerOne, TestCastOrCopyTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

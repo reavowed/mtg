@@ -24,11 +24,14 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
     def getPermanent(cardDefinition: CardDefinition): PermanentObject = {
       gameObjectState.battlefield.getCard(cardDefinition)
     }
-    def getPermanent(cardDefinition: CardDefinition, owner: PlayerId): PermanentObject = {
-      gameObjectState.battlefield.getMatching(o => o.isCard(cardDefinition) && o.owner == owner)
+    def getPermanent(cardDefinition: CardDefinition, controller: PlayerId): PermanentObject = {
+      gameObjectState.battlefield.getMatching(o => o.isCard(cardDefinition) && gameObjectState.derivedState.permanentStates(o.objectId).controller == controller)
     }
     def getCard(cardDefinition: CardDefinition): GameObject = {
       gameObjectState.allObjects.getCard(cardDefinition)
+    }
+    def getCard(cardDefinition: CardDefinition, owner: PlayerId): GameObject = {
+      gameObjectState.allObjects.getMatching(o => o.isCard(cardDefinition) && o.owner == owner)
     }
     def getCards(cardDefinitions: CardDefinition*): Seq[GameObject] = {
       cardDefinitions.map(getCard)
@@ -62,11 +65,8 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
     }
 
     class ZoneSetter(setZone: (PlayerId, Seq[CardDefinition]) => GameObjectState) {
-      def apply(playerIdentifier: PlayerId, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
+      def apply(playerIdentifier: PlayerId, cardDefinitions: CardDefinition*): GameObjectState = {
         setZone(playerIdentifier, cardDefinitions)
-      }
-      def apply(playerIdentifier: PlayerId, cardDefinition: CardDefinition): GameObjectState = {
-        setZone(playerIdentifier, Seq(cardDefinition))
       }
       def apply(playerIdentifier: PlayerId, cardDefinition: CardDefinition, number: Int): GameObjectState = {
         setZone(playerIdentifier, Seq.fill(number)(cardDefinition))

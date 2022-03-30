@@ -24,12 +24,12 @@ class TappedAdjectiveSpec extends SpecWithGameStateManager with TestCardCreation
   "target with tapped modifier" should {
     "only allow choosing a tapped creature" in {
       val initialState = emptyGameObjectState
-        .setHand(playerTwo, Seq(TestCard))
-        .setBattlefield(playerOne, Seq(TestCreatureOne, TestCreatureTwo))
+        .setHand(playerTwo, TestCard)
+        .setBattlefield(playerOne, TestCreatureOne, TestCreatureTwo)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, TestCreatureOne)
+      manager.attackWith(TestCreatureOne)
       manager.passPriority(playerOne)
       manager.castSpell(playerTwo, TestCard)
 

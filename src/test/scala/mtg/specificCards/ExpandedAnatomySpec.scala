@@ -14,8 +14,8 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
   "Expanded Anatomy" should {
     "be castable with target" in {
       val initialState = emptyGameObjectState
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
-        .setHand(playerOne, Seq(ExpandedAnatomy))
+        .setBattlefield(playerOne, Plains, Plains, Plains, SavannahLions)
+        .setHand(playerOne, ExpandedAnatomy)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -25,9 +25,9 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
 
     "allow targeting any creature on the battlefield" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(ExpandedAnatomy, GrizzledOutrider))
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+        .setHand(playerOne, ExpandedAnatomy, GrizzledOutrider)
+        .setBattlefield(playerOne, Plains, Plains, Plains, SavannahLions)
+        .setBattlefield(playerTwo, Forest, Forest, Forest, SpinedKarok)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -40,9 +40,9 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
 
     "put counters on targeted creature" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(ExpandedAnatomy))
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+        .setHand(playerOne, ExpandedAnatomy)
+        .setBattlefield(playerOne, Plains, Plains, Plains, SavannahLions)
+        .setBattlefield(playerTwo, Forest, Forest, Forest, SpinedKarok)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -58,9 +58,9 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
 
     "grants the creature vigilance" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(ExpandedAnatomy))
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+        .setHand(playerOne, ExpandedAnatomy)
+        .setBattlefield(playerOne, Plains, Plains, Plains, SavannahLions)
+        .setBattlefield(playerTwo, Forest, Forest, Forest, SpinedKarok)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -74,9 +74,9 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
 
     "not grant the creature vigilance after the current turn" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(ExpandedAnatomy))
-        .setBattlefield(playerOne, Seq(Plains, Plains, Plains, SavannahLions))
-        .setBattlefield(playerTwo, Seq(Forest, Forest, Forest, SpinedKarok))
+        .setHand(playerOne, ExpandedAnatomy)
+        .setBattlefield(playerOne, Plains, Plains, Plains, SavannahLions)
+        .setBattlefield(playerTwo, Forest, Forest, Forest, SpinedKarok)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)

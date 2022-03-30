@@ -18,8 +18,8 @@ class CastSpellManaPaymentSpec extends SpecWithGameStateManager {
   "casting a creature that costs {W}" should {
     "offer payment choice with no mana in pool" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(WhiteCreature))
-        .setBattlefield(playerOne, Seq(Plains))
+        .setHand(playerOne, WhiteCreature)
+        .setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -31,8 +31,8 @@ class CastSpellManaPaymentSpec extends SpecWithGameStateManager {
 
     "autopay mana added while paying costs" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(WhiteCreature))
-        .setBattlefield(playerOne, Seq(Plains))
+        .setHand(playerOne, WhiteCreature)
+        .setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -49,8 +49,8 @@ class CastSpellManaPaymentSpec extends SpecWithGameStateManager {
 
     "autopay full cost with correct mana in pool on casting" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(WhiteCreature))
-        .setBattlefield(playerOne, Seq(Plains))
+        .setHand(playerOne, WhiteCreature)
+        .setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -72,7 +72,7 @@ class CastSpellManaPaymentSpec extends SpecWithGameStateManager {
   "casting a creature that costs {4}" should {
     "auto cast with four mana in pool" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(FourCreature))
+        .setHand(playerOne, FourCreature)
         .setBattlefield(playerOne, Plains, 4)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -89,7 +89,7 @@ class CastSpellManaPaymentSpec extends SpecWithGameStateManager {
 
     "partially pay with two mana in pool" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(FourCreature))
+        .setHand(playerOne, FourCreature)
         .setBattlefield(playerOne, Plains, 4)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

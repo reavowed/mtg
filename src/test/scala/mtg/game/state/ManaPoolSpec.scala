@@ -7,7 +7,7 @@ import mtg.game.turns.TurnPhase.PrecombatMainPhase
 class ManaPoolSpec extends SpecWithGameStateManager {
   "mana pool" should {
     "empty at the end of a step" in {
-      val initialState = emptyGameObjectState.setBattlefield(playerOne, Seq(Plains))
+      val initialState = emptyGameObjectState.setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Plains)
@@ -21,7 +21,7 @@ class ManaPoolSpec extends SpecWithGameStateManager {
     }
 
     "empty at the end of a phase" in {
-      val initialState = emptyGameObjectState.setBattlefield(playerOne, Seq(Plains))
+      val initialState = emptyGameObjectState.setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)

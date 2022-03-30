@@ -11,8 +11,8 @@ class CombatProfessorSpec extends SpecWithGameStateManager {
   "Combat Professor" should {
     "trigger at start of combat" in {
       val initialState = emptyGameObjectState
-        .setBattlefield(playerOne, Seq(CombatProfessor, SavannahLions))
-        .setBattlefield(playerTwo, Seq(AgelessGuardian))
+        .setBattlefield(playerOne, CombatProfessor, SavannahLions)
+        .setBattlefield(playerTwo, AgelessGuardian)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.BeginningOfCombatStep)
@@ -22,8 +22,8 @@ class CombatProfessorSpec extends SpecWithGameStateManager {
 
     "grant trigger effect" in {
       val initialState = emptyGameObjectState
-        .setBattlefield(playerOne, Seq(CombatProfessor, SavannahLions))
-        .setBattlefield(playerTwo, Seq(AgelessGuardian))
+        .setBattlefield(playerOne, CombatProfessor, SavannahLions)
+        .setBattlefield(playerTwo, AgelessGuardian)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.BeginningOfCombatStep)

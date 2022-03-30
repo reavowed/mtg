@@ -34,7 +34,7 @@ class DrawCardSpec extends SpecWithGameStateManager {
     "do nothing if library is empty" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, TestCard)
-        .setLibrary(playerOne, Nil)
+        .setLibrary(playerOne, Nil: _*)
       val event = DrawCardAction(playerOne)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

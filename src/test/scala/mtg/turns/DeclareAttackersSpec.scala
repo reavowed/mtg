@@ -14,8 +14,8 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
   "declare attackers" should {
     "not allow a creature that was cast this turn to attack" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, Seq(AgelessGuardian))
-        .setBattlefield(playerOne, Seq(Plains, Plains))
+        .setHand(playerOne, AgelessGuardian)
+        .setBattlefield(playerOne, Plains, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -32,8 +32,8 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
 
     "allow a creature that was cast last turn to attack" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, Seq(AgelessGuardian))
-        .setBattlefield(playerOne, Seq(Plains, Plains))
+        .setHand(playerOne, AgelessGuardian)
+        .setBattlefield(playerOne, Plains, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -57,7 +57,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, AgelessGuardian)
+      manager.attackWith(AgelessGuardian)
 
       manager.getCard(Zone.Battlefield, AgelessGuardian) must beTapped
     }
@@ -68,7 +68,7 @@ class DeclareAttackersSpec extends SpecWithGameStateManager {
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, AlpineWatchdog)
+      manager.attackWith(AlpineWatchdog)
 
       manager.getCard(Zone.Battlefield, AlpineWatchdog) must not(beTapped)
     }

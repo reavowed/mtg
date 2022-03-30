@@ -22,7 +22,7 @@ class CastTriggerSpec extends SpecWithGameStateManager {
   "a cast trigger" should {
     "trigger off casting a spell"  in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(TestGainOneLifeCard))
+        .setHand(playerOne, TestGainOneLifeCard)
         .setBattlefield(playerOne, TestCastTriggerArtifact)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

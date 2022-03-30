@@ -10,9 +10,9 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
   "Introduction to Prophecy" should {
     "scry the top two" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToProphecy))
+        .setHand(playerOne, IntroductionToProphecy)
         .setBattlefield(playerOne, Plains, 3)
-        .setLibrary(playerOne, Seq(Plains, Island, Swamp))
+        .setLibrary(playerOne, Plains, Island, Swamp)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
       manager.passUntilPhase(PrecombatMainPhase)
@@ -26,9 +26,9 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
 
     "reorder the top two" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToProphecy))
+        .setHand(playerOne, IntroductionToProphecy)
         .setBattlefield(playerOne, Plains, 3)
-        .setLibrary(playerOne, Seq(Plains, Island, Swamp))
+        .setLibrary(playerOne, Plains, Island, Swamp)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       val plainsId = playerOne.library(manager.gameState)(0).objectId
       val islandId = playerOne.library(manager.gameState)(1).objectId
@@ -45,9 +45,9 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
 
     "put one on bottom" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToProphecy))
+        .setHand(playerOne, IntroductionToProphecy)
         .setBattlefield(playerOne, Plains, 3)
-        .setLibrary(playerOne, Seq(Plains, Island, Swamp))
+        .setLibrary(playerOne, Plains, Island, Swamp)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       val plainsId = playerOne.library(manager.gameState)(0).objectId
       val islandId = playerOne.library(manager.gameState)(1).objectId
@@ -64,9 +64,9 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
 
     "put both on bottom" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToProphecy))
+        .setHand(playerOne, IntroductionToProphecy)
         .setBattlefield(playerOne, Plains, 3)
-        .setLibrary(playerOne, Seq(Plains, Island, Swamp))
+        .setLibrary(playerOne, Plains, Island, Swamp)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       val plainsId = playerOne.library(manager.gameState)(0).objectId
       val islandId = playerOne.library(manager.gameState)(1).objectId
@@ -83,9 +83,9 @@ class IntroductionToProphecySpec extends SpecWithGameStateManager {
 
     "scry one if only one card in library" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, Seq(IntroductionToProphecy))
+        .setHand(playerOne, IntroductionToProphecy)
         .setBattlefield(playerOne, Plains, 3)
-        .setLibrary(playerOne, Seq(Swamp))
+        .setLibrary(playerOne, Swamp)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       val swampId = playerOne.library(manager.gameState)(0).objectId
 

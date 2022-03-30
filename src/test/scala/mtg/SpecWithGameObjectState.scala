@@ -29,13 +29,15 @@ trait SpecWithGameObjectState
 
   def setInitialHandAndLibrary(gameObjectState: GameObjectState): GameObjectState = {
     gameObjectState
-      .setHand(playerOne, playerOneInitialHand)
-      .setLibrary(playerOne, playerOneInitialLibrary)
-      .setHand(playerTwo, playerTwoInitialHand)
-      .setLibrary(playerTwo, playerTwoInitialLibrary)
+      .setHand(playerOne, playerOneInitialHand: _*)
+      .setLibrary(playerOne, playerOneInitialLibrary: _*)
+      .setHand(playerTwo, playerTwoInitialHand: _*)
+      .setLibrary(playerTwo, playerTwoInitialLibrary: _*)
   }
 
-  val gameObjectStateWithInitialLibrariesOnly = emptyGameObjectState.setLibrary(playerOne, playerOneAllCards).setLibrary(playerTwo, playerTwoAllCards)
+  val gameObjectStateWithInitialLibrariesOnly = emptyGameObjectState
+    .setLibrary(playerOne, playerOneAllCards: _*)
+    .setLibrary(playerTwo, playerTwoAllCards: _*)
   val gameObjectStateWithInitialLibrariesAndHands = setInitialHandAndLibrary(emptyGameObjectState)
 
   implicit class PlayerOps(playerIdentifier: PlayerId) {

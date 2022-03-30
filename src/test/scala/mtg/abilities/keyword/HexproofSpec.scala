@@ -14,7 +14,7 @@ class HexproofSpec extends SpecWithGameStateManager {
       val initialState = emptyGameObjectState
         .setHand(playerOne, LightningBolt)
         .setBattlefield(playerOne, Mountain)
-        .setBattlefield(playerTwo, Seq(WardscaleCrocodile, AgelessGuardian))
+        .setBattlefield(playerTwo, WardscaleCrocodile, AgelessGuardian)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.activateAbility(playerOne, Mountain)
@@ -28,7 +28,7 @@ class HexproofSpec extends SpecWithGameStateManager {
         .setHand(playerOne, LightningBolt)
         .setBattlefield(playerOne, Mountain)
         .setHand(playerTwo, BeamingDefiance)
-        .setBattlefield(playerTwo, Seq(Plains, Plains, SavannahLions))
+        .setBattlefield(playerTwo, Plains, Plains, SavannahLions)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)

@@ -28,9 +28,9 @@ class CleanupSpec extends SpecWithGameStateManager {
       manager.castSpell(playerTwo, SpinedKarok)
 
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, AgelessGuardian)
+      manager.attackWith(AgelessGuardian)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, SpinedKarok, AgelessGuardian)
+      manager.block(SpinedKarok, AgelessGuardian)
 
       manager.passUntilStep(TurnStep.EndStep)
       manager.getPermanent(AgelessGuardian).markedDamage mustEqual 2

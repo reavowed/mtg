@@ -24,7 +24,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
   }
   "basic land cards" should {
     "have an appropriate mana ability" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -35,7 +35,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     }
 
     "be tappable for mana by their controller" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -47,7 +47,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     }
 
     "not be tappable for mana by a player who doesn't control them" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -57,7 +57,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     }
 
     "tap for mana" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -69,7 +69,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     }
 
     "not tap for mana twice" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Seq(Plains))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -79,7 +79,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
     }
 
     "return priority to NAP after tapping for mana" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerTwo, Seq(Plains))
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setBattlefield(playerTwo, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)

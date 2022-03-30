@@ -10,7 +10,7 @@ class BeamingDefianceSpec extends SpecWithGameStateManager {
     "only target controller's creature" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, BeamingDefiance)
-        .setBattlefield(playerOne, Seq(SavannahLions, Plains, Plains))
+        .setBattlefield(playerOne, SavannahLions, Plains, Plains)
         .setBattlefield(playerTwo, AgelessGuardian)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
@@ -23,7 +23,7 @@ class BeamingDefianceSpec extends SpecWithGameStateManager {
     "grant p/t bonus" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, BeamingDefiance)
-        .setBattlefield(playerOne, Seq(SavannahLions, Plains, Plains))
+        .setBattlefield(playerOne, SavannahLions, Plains, Plains)
         .setBattlefield(playerTwo, AgelessGuardian)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)

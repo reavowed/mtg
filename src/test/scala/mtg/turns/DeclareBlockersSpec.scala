@@ -56,7 +56,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager with TestCardCreation
       manager.castSpell(playerTwo, SpinedKarok)
 
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, AgelessGuardian)
+      manager.attackWith(AgelessGuardian)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
 
       manager.currentChoice must beSome(beAnInstanceOf[DeclareBlockersChoice])
@@ -67,7 +67,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager with TestCardCreation
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, AgelessGuardian)
         .setBattlefield(playerOne, Plains, 2)
-        .setHand(playerTwo, Seq(SpinedKarok))
+        .setHand(playerTwo, SpinedKarok)
         .setBattlefield(playerTwo, Forest, 3)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
@@ -83,9 +83,9 @@ class DeclareBlockersSpec extends SpecWithGameStateManager with TestCardCreation
 
       // Attack and block
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, AgelessGuardian)
+      manager.attackWith(AgelessGuardian)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, SpinedKarok, AgelessGuardian)
+      manager.block(SpinedKarok, AgelessGuardian)
 
       manager.currentChoice must beSome(not(beAnInstanceOf[OrderBlockersChoice]))
     }
@@ -94,7 +94,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager with TestCardCreation
       val initialState = gameObjectStateWithInitialLibrariesAndHands
         .setHand(playerOne, AgelessGuardian)
         .setBattlefield(playerOne, Plains, 2)
-        .setHand(playerTwo, Seq(SpinedKarok, GrizzledOutrider))
+        .setHand(playerTwo, SpinedKarok, GrizzledOutrider)
         .setBattlefield(playerTwo, Forest, 8)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
@@ -113,9 +113,9 @@ class DeclareBlockersSpec extends SpecWithGameStateManager with TestCardCreation
 
       // Attack and block
       manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, AgelessGuardian)
+      manager.attackWith(AgelessGuardian)
       manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(playerTwo, (SpinedKarok, AgelessGuardian), (GrizzledOutrider, AgelessGuardian))
+      manager.block((SpinedKarok, AgelessGuardian), (GrizzledOutrider, AgelessGuardian))
 
       manager.currentChoice must beSome(beAnInstanceOf[OrderBlockersChoice])
       manager.currentChoice.get.asInstanceOf[OrderBlockersChoice].playerToAct mustEqual playerOne
@@ -139,7 +139,7 @@ class DeclareBlockersSpec extends SpecWithGameStateManager with TestCardCreation
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilStep(TurnStep.DeclareAttackersStep)
-      manager.attackWith(playerOne, VanillaOneOne)
+      manager.attackWith(VanillaOneOne)
       manager.passPriority(playerOne)
       manager.castSpell(playerTwo, DestroySpell)
       manager.chooseCard(playerTwo, VanillaOneOne)
