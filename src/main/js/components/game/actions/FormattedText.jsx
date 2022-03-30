@@ -1,4 +1,4 @@
-export function ActionText({text}) {
+export function FormattedText({text}) {
     const elements = [];
     while (text !== "") {
         if (text.startsWith("{")) {

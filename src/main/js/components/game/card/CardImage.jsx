@@ -2,6 +2,7 @@ import {forwardRef} from "preact/compat";
 import {useContext, useEffect, useState} from "preact/hooks";
 import ScryfallService from "../../../contexts/ScryfallService";
 import {addClass} from "../../../utils/element-utils";
+import {FormattedText} from "../actions/FormattedText";
 import ManaCost from "./ManaCost";
 
 export default forwardRef(function CardImage({card, className, children, showManaCost, showText, ...props}, ref) {
@@ -21,7 +22,7 @@ export default forwardRef(function CardImage({card, className, children, showMan
                         </div>
                     </div>
                     <img className="cardImage" src={artUrl} />
-                    {showText && <div className="cardText">{card.text}</div>}
+                    {showText && <div className="cardText"><FormattedText text={card.text}/></div>}
                     {(card.characteristics && (card.characteristics.power || card.characteristics.toughness)) &&
                         <div className="powerToughnessLozenge">{card.characteristics.power}/{card.characteristics.toughness}</div>
                     }

@@ -3,7 +3,7 @@ import _ from "lodash";
 import {useCallback, useContext, useEffect, useState} from "preact/hooks";
 import ActionManager from "../../../contexts/ActionManager";
 import DecisionMaker from "../../../contexts/DecisionMaker";
-import {ActionText} from "./ActionText";
+import {FormattedText} from "./FormattedText";
 
 export function ActionMenu({actions, event}) {
     const decisionMaker = useContext(DecisionMaker);
@@ -11,7 +11,7 @@ export function ActionMenu({actions, event}) {
                 style={{display: "block", position: "fixed", top: event.pageY, left: event.pageX}}>
         {actions.map(action => <a class="dropdown-item" href="#" key={action.optionText}
                                   onclick={() => decisionMaker.makeDecision(action.optionText)}>
-            <ActionText text={action.displayText}/>
+            <FormattedText text={action.displayText}/>
         </a>)}
     </div>
 }
