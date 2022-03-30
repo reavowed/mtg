@@ -2,21 +2,21 @@ package mtg.game.actions
 
 import mtg._
 import mtg.cards.CardDefinition
-import mtg.data.cards.strixhaven.AgelessGuardian
-import mtg.data.cards.{Forest, Plains, Swamp}
+import mtg.data.cards.{Forest, Plains}
 import mtg.game.priority.actions.PlayLandAction
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import org.specs2.matcher.Matcher
 
-class PlayLandSpec extends SpecWithGameStateManager {
+class PlayLandSpec extends SpecWithGameStateManager with TestCardCreation {
+  val VanillaCreature = vanillaCreature(1, 1)
   def bePlayLandAction(land: CardDefinition): Matcher[PlayLandAction] = {
     {(playLandAction: PlayLandAction) => playLandAction.land.gameObject} ^^ beCardObject(land)
   }
 
   "land actions with priority" should {
     "be available for all lands in hand in main phase of own turn with empty stack" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains, Forest, AgelessGuardian)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains, Forest)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -27,7 +27,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
     }
 
     "not be available on another player's turn" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, Plains, Forest, AgelessGuardian)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerTwo, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -37,7 +37,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
     }
 
     "not be available if player has already played a land this turn" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains, Forest, AgelessGuardian)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains, Forest)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -48,8 +48,8 @@ class PlayLandSpec extends SpecWithGameStateManager {
 
     "be available for all lands in hand if player has not played a land this turn" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, Plains, Forest, AgelessGuardian)
-        .setLibrary(playerOne, Swamp)
+        .setHand(playerOne, Plains)
+        .setLibrary(playerOne, Forest)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -58,12 +58,12 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.passUntilPhase(PrecombatMainPhase)
 
       manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne)
-        .withAvailableLands(contain(exactly(bePlayLandAction(Forest), bePlayLandAction(Swamp)))))
+        .withAvailableLands(contain(exactly(bePlayLandAction(Forest)))))
     }
 
     "not be available in upkeep" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, Plains, Forest, AgelessGuardian)
+        .setHand(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
@@ -72,16 +72,13 @@ class PlayLandSpec extends SpecWithGameStateManager {
 
     "not be available if stack is non-empty" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, AgelessGuardian, Plains)
-        .setBattlefield(playerOne, Plains, Plains)
+        .setHand(playerOne, VanillaCreature, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
       // Tap mana and cast spell
-      manager.activateFirstAbility(playerOne, Plains)
-      manager.activateFirstAbility(playerOne, Plains)
-      manager.castSpell(playerOne, AgelessGuardian)
+      manager.castSpell(playerOne, VanillaCreature)
 
       manager.currentChoice must beSome(bePriorityChoice.forPlayer(playerOne).withAvailableLands(beEmpty))
     }
@@ -95,7 +92,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
 
   "playing a land as a special action" should {
     "move the land to the battlefield" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains, Forest, AgelessGuardian)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
@@ -105,7 +102,7 @@ class PlayLandSpec extends SpecWithGameStateManager {
       manager.gameState.gameObjectState.hands(playerOne) must not(contain(beCardObject(Plains)))
     }
     "log an event" in {
-      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains, Forest, AgelessGuardian)
+      val initialState = gameObjectStateWithInitialLibrariesAndHands.setHand(playerOne, Plains, Forest, VanillaCreature)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)

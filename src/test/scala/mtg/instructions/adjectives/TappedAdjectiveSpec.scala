@@ -12,12 +12,7 @@ import mtg.parts.costs.ManaCost
 import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class TappedAdjectiveSpec extends SpecWithGameStateManager with TestCardCreation {
-  object TestCard extends SpellCard(
-    "Card",
-    ManaCost(0),
-    Type.Instant,
-    Nil,
-    Destroy(Target(Tapped(Creature))))
+  val TestCard = simpleInstantSpell(Destroy(Target(Tapped(Creature))))
   val TestCreatureOne = vanillaCreature(1, 1)
   val TestCreatureTwo = vanillaCreature(2, 2)
 

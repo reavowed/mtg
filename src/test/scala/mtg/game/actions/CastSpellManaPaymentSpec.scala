@@ -1,6 +1,6 @@
 package mtg.game.actions
 
-import mtg.SpecWithGameStateManager
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.cards.patterns.CreatureCard
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
@@ -11,9 +11,9 @@ import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.costs.ManaCost
 import mtg.stack.adding.PayManaChoice
 
-class CastSpellManaPaymentSpec extends SpecWithGameStateManager {
-  val WhiteCreature = new CreatureCard("Creature", ManaCost(White), Nil, Nil, (1, 1))
-  val FourCreature = new CreatureCard("Creature", ManaCost(4), Nil, Nil, (1, 1))
+class CastSpellManaPaymentSpec extends SpecWithGameStateManager with TestCardCreation {
+  val WhiteCreature = vanillaCreature(ManaCost(White), (1, 1))
+  val FourCreature = vanillaCreature(ManaCost(4), (1, 1))
 
   "casting a creature that costs {W}" should {
     "offer payment choice with no mana in pool" in {

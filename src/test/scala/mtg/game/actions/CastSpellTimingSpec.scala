@@ -1,15 +1,12 @@
 package mtg.game.actions
 
-import mtg.SpecWithGameStateManager
-import mtg.cards.patterns.{CreatureCard, SpellCard}
-import mtg.core.types.Type
 import mtg.data.cards.Plains
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
-class CastSpellTimingSpec extends SpecWithGameStateManager {
-  val Creature = new CreatureCard("Creature", ManaCost(0), Nil, Nil, (1, 1))
-  val Sorcery = new SpellCard("Sorcery", ManaCost(0), Type.Sorcery, Nil, Nil)
+class CastSpellTimingSpec extends SpecWithGameStateManager with TestCardCreation {
+  val Creature = vanillaCreature(1, 1)
+  val Sorcery = simpleSorcerySpell(Nil)
 
   "cast spell action" should {
     "be available for a creature card in hand at sorcery speed" in {

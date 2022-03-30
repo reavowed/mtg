@@ -1,23 +1,18 @@
 package mtg.triggers
 
-import mtg.SpecWithGameStateManager
-import mtg.cards.patterns.ArtifactCard
-import mtg.instructions.verbs.CopySpellSpec.TestGainOneLifeCard
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
 import mtg.instructions.nounPhrases.You
 import mtg.instructions.nouns.Spell
-import mtg.instructions.verbs.{Cast, DrawACard}
+import mtg.instructions.verbs.{Cast, DrawACard, GainLife}
 import mtg.parts.costs.ManaCost
 
-class CastTriggerSpec extends SpecWithGameStateManager {
-
-  object TestCastTriggerArtifact extends ArtifactCard(
-    "Cast Trigger Artifact",
-    ManaCost(0),
-    Whenever(You, Cast, A(Spell))(DrawACard))
+class CastTriggerSpec extends SpecWithGameStateManager with TestCardCreation {
+  val TestGainOneLifeCard = simpleInstantSpell(You(GainLife(1)))
+  val TestCastTriggerArtifact = artifactWithTrigger(Whenever(You, Cast, A(Spell))(DrawACard))
 
   "a cast trigger" should {
     "trigger off casting a spell"  in {

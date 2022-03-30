@@ -11,30 +11,24 @@ import mtg.instructions.nounPhrases.You
 import mtg.parts.costs.ManaCost
 
 class MassGetSpec extends SpecWithGameStateManager with TestCardCreation {
-  object TestCard extends SpellCard(
-    "Card",
-    ManaCost(0),
-    Type.Instant,
-    Nil,
-    Creature(You(Control))(Get(1, 1), endOfTurn))
-
+  val BuffSpell = simpleInstantSpell(Creature(You(Control))(Get(1, 1), endOfTurn))
   val VanillaOneOne = vanillaCreature(1, 1)
   val VanillaTwoTwo = vanillaCreature(2, 2)
 
   "mass buff effect" should {
     "have correct oracle text" in {
-      TestCard.text mustEqual "Creatures you control get +1/+1 until end of turn."
+      BuffSpell.text mustEqual "Creatures you control get +1/+1 until end of turn."
     }
 
     "apply filter correctly" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, TestCard)
+        .setHand(playerOne, BuffSpell)
         .setBattlefield(playerOne, VanillaOneOne, VanillaTwoTwo)
         .setBattlefield(playerTwo, VanillaOneOne)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
-      manager.castSpell(playerOne, TestCard)
+      manager.castSpell(playerOne, BuffSpell)
       manager.resolveNext()
 
       manager.getPermanent(VanillaOneOne, playerOne) must havePowerAndToughness(2, 2)
@@ -44,12 +38,12 @@ class MassGetSpec extends SpecWithGameStateManager with TestCardCreation {
 
     "only apply to initial set of objects" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, TestCard, VanillaOneOne)
+        .setHand(playerOne, BuffSpell, VanillaOneOne)
         .setBattlefield(playerOne, VanillaTwoTwo)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
-      manager.castSpell(playerOne, TestCard)
+      manager.castSpell(playerOne, BuffSpell)
       manager.resolveNext()
       manager.castSpell(playerOne, VanillaOneOne)
       manager.resolveNext()

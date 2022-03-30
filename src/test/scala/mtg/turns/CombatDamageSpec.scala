@@ -4,21 +4,18 @@ import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
-import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.core.zones.Zone
-import mtg.data.cards.kaldheim.GrizzledOutrider
-import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
-import mtg.data.cards.{Forest, Plains}
-import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnBasedActions.AssignCombatDamageChoice
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
   val VanillaOneThree = vanillaCreature(1, 3)
   val VanillaTwoFour = vanillaCreature(2, 4)
+  val VanillaZeroThree = vanillaCreature(0, 3)
   val VanillaThreeThree = vanillaCreature(3, 3)
   val VanillaFiveFive = vanillaCreature(5, 5)
 
@@ -100,68 +97,38 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
   "an attacking creature blocked by two creatures" should {
     "not have to assign damage if it cannot deal excess damage to the first blocking creature" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, AgelessGuardian)
-        .setBattlefield(playerOne, Plains, 2)
-        .setHand(playerTwo, SpinedKarok, GrizzledOutrider)
-        .setBattlefield(playerTwo, Forest, 8)
+        .setBattlefield(playerOne, VanillaOneThree)
+        .setBattlefield(playerTwo, VanillaTwoFour, VanillaZeroThree)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
-      // Cast attacker
-      manager.passUntilPhase(PrecombatMainPhase)
-      manager.activateAbilities(playerOne, Plains, 2)
-      manager.castSpell(playerOne, AgelessGuardian)
-
-      // Cast blockers
-      manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-      manager.activateAbilities(playerTwo, Forest, 3)
-      manager.castSpell(playerTwo, SpinedKarok)
-      manager.passUntilStackEmpty()
-      manager.activateAbilities(playerTwo, Forest, 5)
-      manager.castSpell(playerTwo, GrizzledOutrider)
-
       // Attack and block
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(AgelessGuardian)
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block((SpinedKarok, AgelessGuardian), (GrizzledOutrider, AgelessGuardian))
-      manager.orderBlocks(playerOne, SpinedKarok, GrizzledOutrider)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(VanillaOneThree)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block((VanillaTwoFour, VanillaOneThree), (VanillaZeroThree, VanillaOneThree))
+      manager.orderBlocks(playerOne, VanillaTwoFour, VanillaZeroThree)
 
       // Go to damage
       manager.passUntilStep(TurnStep.CombatDamageStep)
 
       // Assert
       manager.currentChoice must beSome(bePriorityChoice)
-      manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
-      manager.getPermanent(GrizzledOutrider).markedDamage mustEqual 0
+      manager.getPermanent(VanillaTwoFour).markedDamage mustEqual 1
+      manager.getPermanent(VanillaZeroThree).markedDamage mustEqual 0
     }
 
     "have to assign damage if it can deal excess damage to the first blocking creature" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, GrizzledOutrider)
-        .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
+        .setBattlefield(playerOne, VanillaFiveFive)
+        .setBattlefield(playerTwo, VanillaTwoFour, VanillaZeroThree)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
-      // Cast attacker
-      manager.passUntilPhase(PrecombatMainPhase)
-      manager.activateAbilities(playerOne, Forest, 5)
-      manager.castSpell(playerOne, GrizzledOutrider)
-
-      // Cast blockers
-      manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-      manager.activateAbilities(playerTwo, Forest, 3)
-      manager.castSpell(playerTwo, SpinedKarok)
-      manager.passUntilStackEmpty()
-      manager.activateAbilities(playerTwo, Plains, 2)
-      manager.castSpell(playerTwo, AgelessGuardian)
-
       // Attack and block
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(GrizzledOutrider)
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
-      manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(VanillaFiveFive)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block((VanillaTwoFour, VanillaFiveFive), (VanillaZeroThree, VanillaFiveFive))
+      manager.orderBlocks(playerOne, VanillaTwoFour, VanillaZeroThree)
 
       // Go to damage
       manager.passUntilStep(TurnStep.CombatDamageStep)
@@ -172,35 +139,20 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
     "not be allowed to assign less than lethal damage to the first blocker" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, GrizzledOutrider)
-        .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
+        .setBattlefield(playerOne, VanillaFiveFive)
+        .setBattlefield(playerTwo, VanillaTwoFour, VanillaZeroThree)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
-      // Cast attacker
-      manager.passUntilPhase(PrecombatMainPhase)
-      manager.activateAbilities(playerOne, Forest, 5)
-      manager.castSpell(playerOne, GrizzledOutrider)
-
-      // Cast blockers
-      manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-      manager.activateAbilities(playerTwo, Forest, 3)
-      manager.castSpell(playerTwo, SpinedKarok)
-      manager.passUntilStackEmpty()
-      manager.activateAbilities(playerTwo, Plains, 2)
-      manager.castSpell(playerTwo, AgelessGuardian)
-
       // Attack and block
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(GrizzledOutrider)
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
-      manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(VanillaFiveFive)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block((VanillaTwoFour, VanillaFiveFive), (VanillaZeroThree, VanillaFiveFive))
+      manager.orderBlocks(playerOne, VanillaTwoFour, VanillaZeroThree)
 
       // Go to damage
       manager.passUntilStep(TurnStep.CombatDamageStep)
-      manager.assignDamage(playerOne, (AgelessGuardian, 1), (SpinedKarok, 4))
+      manager.assignDamage(playerOne, (VanillaTwoFour, 2), (VanillaZeroThree, 3))
 
       // Assert
       manager.currentChoice must beSome(beAnInstanceOf[AssignCombatDamageChoice])
@@ -208,78 +160,48 @@ class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
 
     "be allowed to assign lethal damage to the first blocker and excess damage to the second" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, GrizzledOutrider)
-        .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
+        .setBattlefield(playerOne, VanillaFiveFive)
+        .setBattlefield(playerTwo, VanillaTwoFour, VanillaZeroThree)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
-      // Cast attacker
-      manager.passUntilPhase(PrecombatMainPhase)
-      manager.activateAbilities(playerOne, Forest, 5)
-      manager.castSpell(playerOne, GrizzledOutrider)
-
-      // Cast blockers
-      manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-      manager.activateAbilities(playerTwo, Forest, 3)
-      manager.castSpell(playerTwo, SpinedKarok)
-      manager.passUntilStackEmpty()
-      manager.activateAbilities(playerTwo, Plains, 2)
-      manager.castSpell(playerTwo, AgelessGuardian)
-
       // Attack and block
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(GrizzledOutrider)
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
-      manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(VanillaFiveFive)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block((VanillaTwoFour, VanillaFiveFive), (VanillaZeroThree, VanillaFiveFive))
+      manager.orderBlocks(playerOne, VanillaTwoFour, VanillaZeroThree)
 
       // Go to damage
       manager.passUntilStep(TurnStep.CombatDamageStep)
-      manager.assignDamage(playerOne, (AgelessGuardian, 4), (SpinedKarok, 1))
+      manager.assignDamage(playerOne, (VanillaTwoFour, 4), (VanillaZeroThree, 1))
 
       // Assert
       manager.currentChoice must beSome(bePriorityChoice)
-      Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(AgelessGuardian))
-      manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
+      Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(VanillaTwoFour))
+      manager.getPermanent(VanillaZeroThree).markedDamage mustEqual 1
     }
 
     "be allowed to assign more than lethal damage to the first blocker" in {
       val initialState = gameObjectStateWithInitialLibrariesAndHands
-        .setHand(playerOne, GrizzledOutrider)
-        .setBattlefield(playerOne, Forest, 5)
-        .setHand(playerTwo, AgelessGuardian, SpinedKarok)
-        .setBattlefield(playerTwo, Seq.fill(2)(Plains) ++ Seq.fill(3)(Forest): _*)
+        .setBattlefield(playerOne, VanillaFiveFive)
+        .setBattlefield(playerTwo, VanillaTwoFour, VanillaZeroThree)
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
 
-      // Cast attacker
-      manager.passUntilPhase(PrecombatMainPhase)
-      manager.activateAbilities(playerOne, Forest, 5)
-      manager.castSpell(playerOne, GrizzledOutrider)
-
-      // Cast blockers
-      manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-      manager.activateAbilities(playerTwo, Forest, 3)
-      manager.castSpell(playerTwo, SpinedKarok)
-      manager.passUntilStackEmpty()
-      manager.activateAbilities(playerTwo, Plains, 2)
-      manager.castSpell(playerTwo, AgelessGuardian)
-
       // Attack and block
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(GrizzledOutrider)
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block((SpinedKarok, GrizzledOutrider), (AgelessGuardian, GrizzledOutrider))
-      manager.orderBlocks(playerOne, AgelessGuardian, SpinedKarok)
+      manager.passUntilStep(TurnStep.DeclareAttackersStep)
+      manager.attackWith(VanillaFiveFive)
+      manager.passUntilStep(TurnStep.DeclareBlockersStep)
+      manager.block((VanillaTwoFour, VanillaFiveFive), (VanillaZeroThree, VanillaFiveFive))
+      manager.orderBlocks(playerOne, VanillaTwoFour, VanillaZeroThree)
 
       // Go to damage
       manager.passUntilStep(TurnStep.CombatDamageStep)
-      manager.assignDamage(playerOne, (AgelessGuardian, 5), (SpinedKarok, 0))
+      manager.assignDamage(playerOne, (VanillaTwoFour, 5), (VanillaZeroThree, 0))
 
       // Assert
       manager.currentChoice must beSome(bePriorityChoice)
-      Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(AgelessGuardian))
-      manager.getPermanent(SpinedKarok).markedDamage mustEqual 0
+      Zone.Graveyard(playerTwo)(manager.gameState) must contain(beCardObject(VanillaTwoFour))
+      manager.getPermanent(VanillaZeroThree).markedDamage mustEqual 0
     }
 
     "deal full damage to the remaining blocker if one blocker is removed" in {

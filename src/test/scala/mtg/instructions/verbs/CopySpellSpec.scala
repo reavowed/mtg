@@ -1,17 +1,17 @@
 package mtg.instructions.verbs
 
-import mtg.SpecWithGameStateManager
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.game.objects.CopyOfSpell
 import mtg.game.turns.TurnPhase
-import mtg.instructions.nounPhrases
-import mtg.instructions.nounPhrases.Target
+import mtg.instructions.nounPhrases.{Target, You}
 import mtg.instructions.nouns.Spell
 import mtg.parts.costs.ManaCost
 
-class CopySpellSpec extends SpecWithGameStateManager {
-  import CopySpellSpec._
+class CopySpellSpec extends SpecWithGameStateManager with TestCardCreation {
+  val TestCopyCard = simpleInstantSpell(Copy(Target(Spell)))
+  val TestGainOneLifeCard = simpleInstantSpell(You(GainLife(1)))
 
   "copying a spell" should {
     "duplicate a simple spell" in {
@@ -46,21 +46,4 @@ class CopySpellSpec extends SpecWithGameStateManager {
       manager.gameState.gameObjectState.lifeTotals(playerOne) mustEqual initialLifeTotal + 2
     }
   }
-
-}
-
-object CopySpellSpec {
-  object TestCopyCard extends SpellCard(
-    "Copy Card",
-    ManaCost(0),
-    Type.Instant,
-    Nil,
-    Copy(Target(Spell)))
-  object TestGainOneLifeCard extends SpellCard(
-    "Lifegain Card",
-    ManaCost(0),
-    Type.Instant,
-    Nil,
-    nounPhrases.You(GainLife(1)))
-
 }

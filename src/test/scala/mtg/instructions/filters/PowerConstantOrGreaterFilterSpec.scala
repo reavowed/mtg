@@ -1,24 +1,16 @@
 package mtg.instructions.filters
 
-import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
-import mtg.cards.patterns.SpellCard
-import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.suffixDescriptors.WithPower
 import mtg.instructions.verbs.Destroy
-import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class PowerConstantOrGreaterFilterSpec extends SpecWithGameStateManager with TestCardCreation {
-  object TestCard extends SpellCard(
-    "Card",
-    ManaCost(0),
-    Type.Instant,
-    Nil,
-    Destroy(Target(Creature(WithPower(4.orGreater)))))
+  val TestCard = simpleInstantSpell(Destroy(Target(Creature(WithPower(4.orGreater)))))
 
   val ThreeFive = vanillaCreature(3, 5)
   val FourTwo = vanillaCreature(4, 2)

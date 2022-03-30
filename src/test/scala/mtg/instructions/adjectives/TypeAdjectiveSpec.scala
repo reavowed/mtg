@@ -1,6 +1,6 @@
 package mtg.instructions.adjectives
 
-import mtg.SpecWithGameStateManager
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.{ArtifactCard, CreatureCard, SpellCard}
 import mtg.core.types.Type
@@ -15,18 +15,12 @@ import mtg.instructions.nouns.Spell
 import mtg.instructions.verbs.{Cast, DrawACard}
 import mtg.parts.costs.ManaCost
 
-class TypeAdjectiveSpec extends SpecWithGameStateManager {
-  object TestInstantCard extends SpellCard("Test Instant", ManaCost(0), Type.Instant, Nil)
-  object TestSorceryCard extends SpellCard("Test Sorcery", ManaCost(0), Type.Sorcery, Nil)
-  object TestCreatureCard extends CreatureCard("Test Creature", ManaCost(0), Nil, Nil, (1, 1))
-  object TestCastInstantTriggerArtifact extends ArtifactCard(
-    "Cast Trigger Artifact",
-    ManaCost(0),
-    Whenever(You, Cast, A(Instant(Spell)))(DrawACard))
-  object TestCastInstantOrSorceryTriggerArtifact extends ArtifactCard(
-    "Cast Trigger Artifact",
-    ManaCost(0),
-    Whenever(You, Cast, A(Or(Instant, Sorcery)(Spell)))(DrawACard))
+class TypeAdjectiveSpec extends SpecWithGameStateManager with TestCardCreation {
+  val TestInstantCard = simpleInstantSpell(Nil)
+  val TestSorceryCard = simpleSorcerySpell(Nil)
+  val TestCreatureCard = vanillaCreature(1, 1)
+  val TestCastInstantTriggerArtifact = artifactWithTrigger(Whenever(You, Cast, A(Instant(Spell)))(DrawACard))
+  val TestCastInstantOrSorceryTriggerArtifact = artifactWithTrigger(Whenever(You, Cast, A(Or(Instant, Sorcery)(Spell)))(DrawACard))
 
   "card with a trigger with an instant type filter" should {
     "have correct oracle text" in {

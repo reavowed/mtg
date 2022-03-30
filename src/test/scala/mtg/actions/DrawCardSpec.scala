@@ -1,19 +1,11 @@
 package mtg.actions
 
-import mtg.SpecWithGameStateManager
-import mtg.cards.patterns.SpellCard
-import mtg.core.types.Type
 import mtg.game.turns.TurnPhase
 import mtg.instructions.verbs.DrawACard
-import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
-class DrawCardSpec extends SpecWithGameStateManager {
-  object TestCard extends SpellCard(
-    "Card",
-    ManaCost(0),
-    Type.Instant,
-    Nil,
-    DrawACard)
+class DrawCardSpec extends SpecWithGameStateManager with TestCardCreation {
+  val TestCard = simpleInstantSpell(DrawACard)
 
   "draw card event" should {
     "move the top card of the library to the hand" in {

@@ -1,48 +1,48 @@
 package mtg.abilities.keyword
 
-import mtg.SpecWithGameStateManager
+import mtg.abilities.builder.InstructionBuilder.endOfTurn
+import mtg.abilities.builder.TypeConversions._
+import mtg.core.types.Type.Creature
 import mtg.core.zones.Zone
-import mtg.data.cards.alpha.{LightningBolt, SavannahLions}
-import mtg.data.cards.strixhaven.{AgelessGuardian, BeamingDefiance}
-import mtg.data.cards.warofthespark.WardscaleCrocodile
-import mtg.data.cards.{Mountain, Plains}
 import mtg.game.turns.TurnPhase
+import mtg.instructions.nounPhrases.Target
+import mtg.instructions.verbs.{Destroy, Gain}
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
-class HexproofSpec extends SpecWithGameStateManager {
+class HexproofSpec extends SpecWithGameStateManager with TestCardCreation {
+  val CreatureWithHexproof = zeroManaCreature(Hexproof, (1, 1))
+  val VanillaCreature = vanillaCreature(1, 1)
+  val TargetedSpell = simpleInstantSpell(Destroy(Target(Creature)))
+  val SpellGrantingHexproof = simpleInstantSpell(Target(Creature)(Gain(Hexproof), endOfTurn))
+
   "hexproof" should {
     "prevent a creature from being targeted" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, LightningBolt)
-        .setBattlefield(playerOne, Mountain)
-        .setBattlefield(playerTwo, WardscaleCrocodile, AgelessGuardian)
+        .setHand(playerOne, TargetedSpell)
+        .setBattlefield(playerTwo, CreatureWithHexproof, VanillaCreature)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
-      manager.activateAbility(playerOne, Mountain)
-      manager.castSpell(playerOne, LightningBolt)
+      manager.castSpell(playerOne, TargetedSpell)
 
-      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(AgelessGuardian, playerOne, playerTwo))
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(VanillaCreature))
     }
 
     "prevent a spell from resolving if granted after cast" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, LightningBolt)
-        .setBattlefield(playerOne, Mountain)
-        .setHand(playerTwo, BeamingDefiance)
-        .setBattlefield(playerTwo, Plains, Plains, SavannahLions)
+        .setHand(playerOne, TargetedSpell)
+        .setHand(playerTwo, SpellGrantingHexproof)
+        .setBattlefield(playerTwo, VanillaCreature)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
-      manager.activateAbility(playerOne, Mountain)
-      manager.castSpell(playerOne, LightningBolt)
-      manager.chooseCard(playerOne, SavannahLions)
+      manager.castSpell(playerOne, TargetedSpell)
+      manager.chooseCard(playerOne, VanillaCreature)
       manager.passPriority(playerOne)
-      manager.activateAbilities(playerTwo, Plains, 2)
-      manager.castSpell(playerTwo, BeamingDefiance)
-      manager.chooseCard(playerTwo, SavannahLions)
+      manager.castSpell(playerTwo, SpellGrantingHexproof)
+      manager.chooseCard(playerTwo, VanillaCreature)
       manager.passUntilStackEmpty()
 
-      manager.getCard(SavannahLions).zone mustEqual Zone.Battlefield
-      manager.getPermanent(SavannahLions).markedDamage mustEqual 0
+      manager.getCard(VanillaCreature).zone mustEqual Zone.Battlefield
     }
 
     // TODO: hexproof on players

@@ -1,23 +1,18 @@
 package mtg.triggers
 
-import mtg.SpecWithGameStateManager
-import mtg.cards.patterns.ArtifactCard
-import mtg.instructions.verbs.CopySpellSpec.{TestCopyCard, TestGainOneLifeCard}
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
-import mtg.instructions.nounPhrases.You
+import mtg.instructions.nounPhrases.{Target, You}
 import mtg.instructions.nouns.Spell
-import mtg.instructions.verbs.{Copy, DrawACard}
-import mtg.parts.costs.ManaCost
+import mtg.instructions.verbs.{Copy, DrawACard, GainLife}
 
-class CopyTriggerSpec extends SpecWithGameStateManager {
-
-  object TestCopyTriggerArtifact extends ArtifactCard(
-    "Copy Trigger Artifact",
-    ManaCost(0),
-    Whenever(You, Copy, A(Spell))(DrawACard))
+class CopyTriggerSpec extends SpecWithGameStateManager with TestCardCreation {
+  val TestCopyCard = simpleInstantSpell(Copy(Target(Spell)))
+  val TestGainOneLifeCard = simpleInstantSpell(You(GainLife(1)))
+  val TestCopyTriggerArtifact = artifactWithTrigger(Whenever(You, Copy, A(Spell))(DrawACard))
 
   "a copy trigger" should {
     "trigger off copying a spell"  in {

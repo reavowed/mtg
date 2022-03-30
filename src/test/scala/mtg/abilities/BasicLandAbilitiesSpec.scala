@@ -9,7 +9,6 @@ import mtg.game.objects.GameObject
 import mtg.game.priority.actions.ActivateAbilityAction
 import mtg.game.state.ObjectWithState
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.instructions.verbs
 import mtg.instructions.verbs.Add
 import mtg.parts.costs.TapSymbol
 import org.specs2.matcher.Matcher
@@ -31,7 +30,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
 
       val plainsObject = manager.getCard(Zone.Battlefield, Plains)
       val plainsState = manager.getState(plainsObject)
-      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), verbs.Add(ManaSymbol.White)))
+      plainsState.characteristics.abilities must contain(ActivatedAbilityDefinition(Seq(TapSymbol), Add(ManaSymbol.White)))
     }
 
     "be tappable for mana by their controller" in {

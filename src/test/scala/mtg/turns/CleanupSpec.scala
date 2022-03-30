@@ -1,44 +1,32 @@
 package mtg.turns
 
-import mtg.SpecWithGameStateManager
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
 import mtg.data.cards.{Forest, Plains}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep
+import mtg.instructions.nounPhrases.{AnyTarget, CardName}
+import mtg.instructions.verbs.DealDamage
 
-class CleanupSpec extends SpecWithGameStateManager {
+class CleanupSpec extends SpecWithGameStateManager with TestCardCreation {
+  val Creature = vanillaCreature(2, 2)
+  val DamageSpell = simpleInstantSpell(CardName(DealDamage(1)(AnyTarget)))
+
   "cleanup step" should {
     "wear off damage" in {
       val initialState = emptyGameObjectState
-        .setHand(playerOne, AgelessGuardian)
-        .setBattlefield(playerOne, Plains, 2)
-        .setHand(playerTwo, SpinedKarok)
-        .setBattlefield(playerTwo, Forest, 3)
+        .setHand(playerOne, DamageSpell)
+        .setBattlefield(playerTwo, Creature)
 
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
-
-      // Cast attacker
       manager.passUntilPhase(PrecombatMainPhase)
-      manager.activateAbilities(playerOne, Plains, 2)
-      manager.castSpell(playerOne, AgelessGuardian)
-
-      // Cast blocker
-      manager.passUntilTurnAndPhase(2, PrecombatMainPhase)
-      manager.activateAbilities(playerTwo, Forest, 3)
-      manager.castSpell(playerTwo, SpinedKarok)
-
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareAttackersStep)
-      manager.attackWith(AgelessGuardian)
-      manager.passUntilTurnAndStep(3, TurnStep.DeclareBlockersStep)
-      manager.block(SpinedKarok, AgelessGuardian)
+      manager.castSpell(playerOne, DamageSpell)
+      manager.chooseCard(playerOne, Creature)
 
       manager.passUntilStep(TurnStep.EndStep)
-      manager.getPermanent(AgelessGuardian).markedDamage mustEqual 2
-      manager.getPermanent(SpinedKarok).markedDamage mustEqual 1
-
-      manager.passUntilTurn(4)
-      manager.getPermanent(AgelessGuardian).markedDamage mustEqual 0
-      manager.getPermanent(SpinedKarok).markedDamage mustEqual 0
+      manager.getPermanent(Creature).markedDamage mustEqual 1
+      manager.passUntilTurn(2)
+      manager.getPermanent(Creature).markedDamage mustEqual 0
     }
   }
 

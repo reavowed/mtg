@@ -1,12 +1,10 @@
 package mtg.game.actions
 
-import mtg.SpecWithGameStateManager
-import mtg.cards.patterns.CreatureCard
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
-class CastCreatureSpec extends SpecWithGameStateManager {
-  val Creature = new CreatureCard("Creature", ManaCost(), Nil, Nil, (1, 1))
+class CastCreatureSpec extends SpecWithGameStateManager with TestCardCreation {
+  val Creature = vanillaCreature(1, 1)
 
   "casting a creature" should {
     "move the card to the battlefield on resolution" in {
