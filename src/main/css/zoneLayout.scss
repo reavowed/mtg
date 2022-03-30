@@ -1,5 +1,8 @@
-.library {
+.zoneWithCount {
   position: relative;
+}
+
+.library {
   height: 113px;
   width: 129px;
   overflow: hidden;
@@ -21,16 +24,20 @@
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
-.graveyard {
-  position: relative;
-}
-
-.graveyardOutline {
+@mixin zoneOutline($imageUrl) {
   height: 113px;
   width: 129px;
   border: 1px solid black;
   border-radius: 5px;
-  background-image: url('../img/graveyard.png');
+  background-image: url($imageUrl);
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.graveyardOutline {
+  @include zoneOutline('../img/graveyard.png')
+}
+
+.exileOutline {
+  @include zoneOutline('../img/exile.png')
 }

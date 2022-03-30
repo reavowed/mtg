@@ -6,7 +6,7 @@ import CardBack from "./card/CardBack";
 export default function Library({player, className, ...props}) {
     const gameState = useContext(GameState);
     const library = gameState.libraries[player]
-    return <div className={addClass(className, "library")} {...props}>
+    return <div className={addClass(className, "zoneWithCount library")} {...props}>
         <CardBack />
         <span className="zoneCount">{library.length}</span>
     </div>

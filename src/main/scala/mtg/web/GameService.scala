@@ -6,7 +6,7 @@ import mtg.core.zones.Zone
 import mtg.data.cards.alpha.LightningBolt
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.m21.ConcordiaPegasus
-import mtg.data.cards.strixhaven.{BeamingDefiance, CombatProfessor, DefendTheCampus}
+import mtg.data.cards.strixhaven.{BeamingDefiance, CombatProfessor, DefendTheCampus, Expel}
 import mtg.data.cards.{Mountain, Plains}
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
 import mtg.game.state.{GameState, GameStateManager}
@@ -44,13 +44,12 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.gameState
     val updatedGameState = initialGameState
-      .addCardToHand(playerOne, DefendTheCampus)
+      .addCardToHand(playerOne, Expel)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, ConcordiaPegasus)
-      .addCardToBattlefield(playerOne, CombatProfessor)
       .addCardToBattlefield(playerTwo, Plains)
       .addCardToBattlefield(playerTwo, Plains)
       .addCardToBattlefield(playerTwo, ConcordiaPegasus)

@@ -10,7 +10,7 @@ export default function Graveyard({player, className, ...props}) {
     const graveyardSize = _.isNumber(graveyard) ? graveyard : graveyard.length;
     const topCard = graveyardSize > 0 && graveyard[graveyardSize - 1];
     return graveyardSize > 0 ?
-        <div className={addClass(className, "graveyard")} {...props}>
+        <div className={addClass(className, "zoneWithCount graveyard")} {...props}>
             <CardImage card={topCard} key={topCard.objectId} />
             <span className="zoneCount">{graveyardSize}</span>
         </div> :

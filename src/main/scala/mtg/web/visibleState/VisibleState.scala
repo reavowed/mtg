@@ -18,6 +18,7 @@ case class VisibleState(
   libraries: Map[PlayerId, Seq[PossiblyHiddenGameObject]],
   battlefield: Map[PlayerId, Seq[VisibleGameObject]],
   graveyards: Map[PlayerId, Seq[VisibleGameObject]],
+  exile: Map[PlayerId, Seq[VisibleGameObject]],
   stack: Seq[VisibleGameObject],
   manaPools: Map[PlayerId, Seq[ManaObject]],
   currentChoice: Option[CurrentChoice],
@@ -34,6 +35,10 @@ object VisibleState {
       def canSeeObject(gameObject: GameObject): Boolean = canSeeZone || currentChoice.exists(_.temporarilyVisibleObjects.contains(gameObject.objectId))
       contents.map(gameObject => if (canSeeObject(gameObject)) getObject(gameObject) else HiddenGameObject)
     }
+    def groupZone(zone: Seq[GameObject], groupBy: VisibleGameObject => PlayerId): Map[PlayerId, Seq[VisibleGameObject]] = {
+      val baseMap = zone.view.map(getObject).toSeq.groupBy(groupBy)
+      gameState.gameData.playersInTurnOrder.foldLeft(baseMap) { (map, player) => map.updatedWith(player)(_.orElse(Some(Nil))) }
+    }
     VisibleState(
       playerIdentifier,
       gameState.gameData,
@@ -43,8 +48,9 @@ object VisibleState {
       gameState.gameObjectState.lifeTotals,
       gameState.gameObjectState.hands.map { case (player, contents) => player -> getHiddenZoneContents(Zone.Hand(player), contents) },
       gameState.gameObjectState.libraries.map { case (player, contents) => player -> getHiddenZoneContents(Zone.Library(player), contents) },
-      gameState.gameObjectState.battlefield.view.map(getObject).toSeq.groupBy(_.controller.get),
+      groupZone(gameState.gameObjectState.battlefield, _.controller.get),
       gameState.gameObjectState.graveyards.view.mapValues(_.map(getObject)).toMap,
+      groupZone(gameState.gameObjectState.exile, _.owner),
       gameState.gameObjectState.stack.map(getObject),
       gameState.gameObjectState.manaPools,
       currentChoice.map(CurrentChoice(_, gameState)),
