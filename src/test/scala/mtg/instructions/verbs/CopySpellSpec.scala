@@ -1,4 +1,4 @@
-package mtg.effects
+package mtg.instructions.verbs
 
 import mtg.SpecWithGameStateManager
 import mtg.cards.patterns.SpellCard
@@ -8,7 +8,6 @@ import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.nouns.Spell
-import mtg.instructions.verbs.{Copy, GainLife}
 import mtg.parts.costs.ManaCost
 
 class CopySpellSpec extends SpecWithGameStateManager {

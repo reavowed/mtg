@@ -1,45 +1,45 @@
-package mtg.effects
+package mtg.instructions.filters
 
 import mtg.SpecWithGameStateManager
 import mtg.TestCards.vanillaCreature
+import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
-import mtg.core.zones.Zone
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.Target
+import mtg.instructions.suffixDescriptors.WithPower
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
-class TargetedDestroySpec extends SpecWithGameStateManager {
+class PowerConstantOrGreaterFilterSpec extends SpecWithGameStateManager {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),
     Type.Instant,
     Nil,
-    Destroy(Target(Creature)))
+    Destroy(Target(Creature(WithPower(4.orGreater)))))
 
-  val VanillaOneOne = vanillaCreature(1, 1)
+  val ThreeFive = vanillaCreature(3, 5)
+  val FourTwo = vanillaCreature(4, 2)
+  val FiveFive = vanillaCreature(5, 5)
 
-  "destroy effect" should {
+  "power X or greater filter" should {
     "have correct oracle text" in {
-      TestCard.text mustEqual "Destroy target creature."
+      TestCard.text mustEqual "Destroy target creature with power 4 or greater."
     }
 
     "move the creature to the graveyard" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, TestCard)
-        .setBattlefield(playerTwo, VanillaOneOne)
+        .setBattlefield(playerTwo, Seq(ThreeFive, FourTwo, FiveFive))
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, TestCard)
-      manager.chooseCard(playerOne, VanillaOneOne)
-      manager.resolveNext()
 
-      Zone.Battlefield(manager.gameState) must beEmpty
-      playerTwo.graveyard(manager.gameState) must contain(exactly(beCardObject(VanillaOneOne)))
+      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(FourTwo, FiveFive))
     }
   }
 }

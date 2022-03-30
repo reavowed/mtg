@@ -1,4 +1,4 @@
-package mtg.adjectives
+package mtg.instructions.adjectives
 
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard

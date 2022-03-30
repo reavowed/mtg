@@ -1,4 +1,4 @@
-package mtg.effects
+package mtg.instructions.verbs
 
 import mtg.SpecWithGameStateManager
 import mtg.TestCards.vanillaCreature
@@ -9,10 +9,9 @@ import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.You
-import mtg.instructions.verbs.{Control, Get}
 import mtg.parts.costs.ManaCost
 
-class MassBuffInstructionSpec extends SpecWithGameStateManager {
+class MassGetSpec extends SpecWithGameStateManager {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),

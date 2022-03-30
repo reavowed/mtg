@@ -2,7 +2,7 @@ package mtg.triggers
 
 import mtg.SpecWithGameStateManager
 import mtg.cards.patterns.ArtifactCard
-import mtg.effects.CopySpellSpec.TestGainOneLifeCard
+import mtg.instructions.verbs.CopySpellSpec.TestGainOneLifeCard
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
 import mtg.instructions.articles.A

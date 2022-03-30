@@ -1,45 +1,44 @@
-package mtg.filters
+package mtg.instructions.verbs
 
 import mtg.SpecWithGameStateManager
 import mtg.TestCards.vanillaCreature
-import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
+import mtg.core.zones.Zone
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.Target
-import mtg.instructions.suffixDescriptors.WithPower
-import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
-class PowerConstantOrGreaterFilterSpec extends SpecWithGameStateManager {
+class DestroySpec extends SpecWithGameStateManager {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),
     Type.Instant,
     Nil,
-    Destroy(Target(Creature(WithPower(4.orGreater)))))
+    Destroy(Target(Creature)))
 
-  val ThreeFive = vanillaCreature(3, 5)
-  val FourTwo = vanillaCreature(4, 2)
-  val FiveFive = vanillaCreature(5, 5)
+  val VanillaOneOne = vanillaCreature(1, 1)
 
-  "power X or greater filter" should {
+  "destroy effect" should {
     "have correct oracle text" in {
-      TestCard.text mustEqual "Destroy target creature with power 4 or greater."
+      TestCard.text mustEqual "Destroy target creature."
     }
 
     "move the creature to the graveyard" in {
       val initialState = emptyGameObjectState
         .setHand(playerOne, TestCard)
-        .setBattlefield(playerTwo, Seq(ThreeFive, FourTwo, FiveFive))
+        .setBattlefield(playerTwo, VanillaOneOne)
 
       implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, TestCard)
+      manager.chooseCard(playerOne, VanillaOneOne)
+      manager.resolveNext()
 
-      manager.currentChoice must beSome(beTargetChoice.forPlayer(playerOne).withAvailableTargets(FourTwo, FiveFive))
+      Zone.Battlefield(manager.gameState) must beEmpty
+      playerTwo.graveyard(manager.gameState) must contain(exactly(beCardObject(VanillaOneOne)))
     }
   }
 }

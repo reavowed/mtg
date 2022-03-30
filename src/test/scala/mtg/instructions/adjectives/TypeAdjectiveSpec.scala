@@ -1,4 +1,4 @@
-package mtg.adjectives
+package mtg.instructions.adjectives
 
 import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.TypeConversions._
