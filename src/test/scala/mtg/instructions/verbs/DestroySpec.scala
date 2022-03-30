@@ -1,7 +1,6 @@
 package mtg.instructions.verbs
 
-import mtg.SpecWithGameStateManager
-import mtg.TestCards.vanillaCreature
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
@@ -11,7 +10,7 @@ import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.Target
 import mtg.parts.costs.ManaCost
 
-class DestroySpec extends SpecWithGameStateManager {
+class DestroySpec extends SpecWithGameStateManager with TestCardCreation {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),

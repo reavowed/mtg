@@ -9,17 +9,17 @@ import mtg.instructions.adjectives.Tapped
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
-import mtg.{SpecWithGameStateManager, TestCards}
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
-class TappedAdjectiveSpec extends SpecWithGameStateManager {
+class TappedAdjectiveSpec extends SpecWithGameStateManager with TestCardCreation {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),
     Type.Instant,
     Nil,
     Destroy(Target(Tapped(Creature))))
-  val TestCreatureOne = TestCards.vanillaCreature(1, 1)
-  val TestCreatureTwo = TestCards.vanillaCreature(2, 2)
+  val TestCreatureOne = vanillaCreature(1, 1)
+  val TestCreatureTwo = vanillaCreature(2, 2)
 
   "target with tapped modifier" should {
     "only allow choosing a tapped creature" in {

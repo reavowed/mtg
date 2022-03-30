@@ -1,7 +1,6 @@
 package mtg.instructions.filters
 
-import mtg.SpecWithGameStateManager
-import mtg.TestCards.vanillaCreature
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
@@ -13,7 +12,7 @@ import mtg.instructions.suffixDescriptors.WithPower
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
-class PowerConstantOrGreaterFilterSpec extends SpecWithGameStateManager {
+class PowerConstantOrGreaterFilterSpec extends SpecWithGameStateManager with TestCardCreation {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),

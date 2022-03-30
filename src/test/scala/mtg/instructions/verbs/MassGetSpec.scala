@@ -1,7 +1,6 @@
 package mtg.instructions.verbs
 
-import mtg.SpecWithGameStateManager
-import mtg.TestCards.vanillaCreature
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
@@ -11,7 +10,7 @@ import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.You
 import mtg.parts.costs.ManaCost
 
-class MassGetSpec extends SpecWithGameStateManager {
+class MassGetSpec extends SpecWithGameStateManager with TestCardCreation {
   object TestCard extends SpellCard(
     "Card",
     ManaCost(0),

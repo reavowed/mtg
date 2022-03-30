@@ -14,11 +14,11 @@ import mtg.game.turns.turnBasedActions.{DeclareBlockersChoice, OrderBlockersChoi
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
-import mtg.{SpecWithGameStateManager, TestCards}
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
-class DeclareBlockersSpec extends SpecWithGameStateManager {
-  val VanillaOneOne = TestCards.vanillaCreature(1, 1)
-  val VanillaTwoTwo = TestCards.vanillaCreature(2, 2)
+class DeclareBlockersSpec extends SpecWithGameStateManager with TestCardCreation {
+  val VanillaOneOne = vanillaCreature(1, 1)
+  val VanillaTwoTwo = vanillaCreature(2, 2)
 
   "declare blockers step" should {
     // TODO: implement

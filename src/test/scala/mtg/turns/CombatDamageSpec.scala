@@ -4,7 +4,7 @@ import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
 import mtg.core.types.Type.Creature
-import mtg.{SpecWithGameStateManager, TestCards}
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.core.zones.Zone
 import mtg.data.cards.kaldheim.GrizzledOutrider
 import mtg.data.cards.strixhaven.{AgelessGuardian, SpinedKarok}
@@ -16,11 +16,11 @@ import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Destroy
 import mtg.parts.costs.ManaCost
 
-class CombatDamageSpec extends SpecWithGameStateManager {
-  val VanillaOneThree = TestCards.vanillaCreature(1, 3)
-  val VanillaTwoFour = TestCards.vanillaCreature(2, 4)
-  val VanillaThreeThree = TestCards.vanillaCreature(3, 3)
-  val VanillaFiveFive = TestCards.vanillaCreature(5, 5)
+class CombatDamageSpec extends SpecWithGameStateManager with TestCardCreation {
+  val VanillaOneThree = vanillaCreature(1, 3)
+  val VanillaTwoFour = vanillaCreature(2, 4)
+  val VanillaThreeThree = vanillaCreature(3, 3)
+  val VanillaFiveFive = vanillaCreature(5, 5)
 
   // TODO: be skipped if no attackers
 
