@@ -5,7 +5,7 @@ import mtg.cards.CardDefinition
 import mtg.cards.patterns.{ArtifactCard, CreatureCard, SpellCard}
 import mtg.cards.text.TextParagraph
 import mtg.core.types.Type.Instant
-import mtg.core.types.{CreatureType, Type}
+import mtg.core.types.{CreatureType, SpellType, Type}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
 import mtg.instructions.nounPhrases.You
@@ -35,14 +35,16 @@ trait TestCardCreation {
   def vanillaCreature(manaCost: ManaCost, powerAndToughness: (Int, Int)): CardDefinition = creature(manaCost, Nil, Nil, powerAndToughness)
   def vanillaCreature(power: Int, toughness: Int): CardDefinition = zeroManaCreature(Nil, (power, toughness))
 
-  def simpleSpell(t: Type.InstantOrSorcery, textParagraphs: Seq[TextParagraph]) = new SpellCard(
+  def simpleSpell(t: Type.InstantOrSorcery, subtypes: Seq[SpellType], textParagraphs: Seq[TextParagraph]): SpellCard = new SpellCard(
     getNewCardName(),
     ManaCost(0),
     t,
-    Nil,
+    subtypes,
     textParagraphs)
+  def simpleSpell(t: Type.InstantOrSorcery, textParagraphs: Seq[TextParagraph]): SpellCard = simpleSpell(t, Nil, textParagraphs)
   def simpleInstantSpell(textParagraphs: Seq[TextParagraph]): CardDefinition = simpleSpell(Type.Instant, textParagraphs)
   def simpleSorcerySpell(textParagraphs: Seq[TextParagraph]): CardDefinition = simpleSpell(Type.Sorcery, textParagraphs)
+  def simpleSorcerySpell(subtypes: Seq[SpellType], textParagraphs: Seq[TextParagraph]): CardDefinition = simpleSpell(Type.Sorcery, subtypes, textParagraphs)
 
   def artifactWithTrigger(triggeredAbilityDefinition: TriggeredAbilityDefinition): CardDefinition = new ArtifactCard(
     getNewCardName(),

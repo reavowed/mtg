@@ -78,6 +78,9 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
       Focus[GameObjectState](_.battlefield).modify(_.filter(_.defaultController != playerIdentifier))(gameObjectState)
         .addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
     )
+    def setSideboard(playerId: PlayerId, cardDefinitions: CardDefinition*) = {
+      gameObjectState.copy(sideboards = gameObjectState.sideboards.updated(playerId, cardDefinitions.map(getCardPrinting)))
+    }
   }
 
 }
