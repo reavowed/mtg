@@ -1,4 +1,4 @@
-package mtg.specificCards
+package mtg.sets.strixhaven.cards
 
 import mtg.SpecWithGameStateManager
 import mtg.abilities.AbilityDefinition
@@ -7,7 +7,6 @@ import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.counters.PlusOnePlusOneCounter
 import mtg.sets.alpha.cards.{Forest, Plains, SavannahLions}
 import mtg.sets.kaldheim.cards.GrizzledOutrider
-import mtg.sets.strixhaven.cards.{ExpandedAnatomy, SpinedKarok}
 
 class ExpandedAnatomySpec extends SpecWithGameStateManager {
   "Expanded Anatomy" should {

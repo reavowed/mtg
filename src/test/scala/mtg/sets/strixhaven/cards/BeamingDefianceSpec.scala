@@ -1,8 +1,7 @@
-package mtg.specificCards
+package mtg.sets.strixhaven.cards
 
 import mtg.SpecWithGameStateManager
 import mtg.sets.alpha.cards.{Plains, SavannahLions}
-import mtg.sets.strixhaven.cards.{AgelessGuardian, BeamingDefiance}
 
 class BeamingDefianceSpec extends SpecWithGameStateManager {
   "Beaming Defiance" should {
