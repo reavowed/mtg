@@ -29,7 +29,7 @@ case class Card(owner: PlayerId, printing: CardPrinting) extends UnderlyingObjec
       powerAndToughness.map(_.baseToughness),
       loyalty)
   }
-  override def toString: String = s"${baseCharacteristics.name} ${printing.set}-${printing.collectorNumber}"
+  override def toString: String = printing.toString
 }
 
 case class CopyOfSpell(baseCharacteristics: Characteristics, owner: PlayerId) extends UnderlyingObject
