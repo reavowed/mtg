@@ -2,11 +2,11 @@ package mtg
 
 import mtg.core.PlayerId
 import mtg.core.zones.Zone
-import mtg.data.sets.strixhaven.Strixhaven
+import mtg.game._
 import mtg.game.objects._
 import mtg.game.state.GameState
-import mtg.game._
 import mtg.helpers.{GameObjectHelpers, GameObjectStateHelpers}
+import mtg.sets.strixhaven.Strixhaven
 import org.specs2.mutable.SpecificationLike
 
 trait SpecWithGameObjectState

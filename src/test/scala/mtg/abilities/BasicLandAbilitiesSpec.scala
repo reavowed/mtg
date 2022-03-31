@@ -4,13 +4,13 @@ import mtg.SpecWithGameStateManager
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
 import mtg.core.zones.Zone
-import mtg.data.sets.alpha.cards.Plains
 import mtg.game.objects.GameObject
 import mtg.game.priority.actions.ActivateAbilityAction
 import mtg.game.state.ObjectWithState
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.instructions.verbs.Add
 import mtg.parts.costs.TapSymbol
+import mtg.sets.alpha.cards.Plains
 import org.specs2.matcher.Matcher
 
 class BasicLandAbilitiesSpec extends SpecWithGameStateManager {

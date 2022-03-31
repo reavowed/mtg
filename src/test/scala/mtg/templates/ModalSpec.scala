@@ -4,11 +4,11 @@ import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
 import mtg.core.types.Type
-import mtg.data.sets.alpha.cards.Plains
 import mtg.instructions.nounPhrases
 import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.{DealDamage, GainLife}
 import mtg.parts.costs.ManaCost
+import mtg.sets.alpha.cards.Plains
 import mtg.stack.adding.ModeChoice
 
 class ModalSpec extends SpecWithGameStateManager {

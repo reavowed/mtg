@@ -2,8 +2,8 @@ package mtg.turns
 
 import mtg.SpecWithGameStateManager
 import mtg.core.zones.Zone
-import mtg.data.sets.alpha.cards.{Forest, Plains}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
+import mtg.sets.alpha.cards.{Forest, Plains}
 
 class UntapStepSpec extends SpecWithGameStateManager {
   "untap step" should {

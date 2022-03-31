@@ -1,13 +1,12 @@
 package mtg.turns
 
 import mtg.abilities.keyword.Vigilance
-import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.core.zones.Zone
-import mtg.data.sets.alpha.cards.Plains
 import mtg.game.priority.PriorityChoice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnBasedActions.DeclareAttackersChoice
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class DeclareAttackersSpec extends SpecWithGameStateManager with TestCardCreation {
   val VanillaCreature = vanillaCreature(1, 3)

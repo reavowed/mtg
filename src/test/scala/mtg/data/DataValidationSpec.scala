@@ -2,7 +2,7 @@ package mtg.data
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
-import mtg.data.sets.alpha.cards._
+import mtg.sets.alpha.cards._
 import org.specs2.mutable.Specification
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 

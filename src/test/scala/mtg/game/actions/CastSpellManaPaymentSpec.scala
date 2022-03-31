@@ -1,15 +1,14 @@
 package mtg.game.actions
 
-import mtg.{SpecWithGameStateManager, TestCardCreation}
-import mtg.cards.patterns.CreatureCard
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
 import mtg.core.symbols.ManaSymbol.White
-import mtg.data.sets.alpha.cards.Plains
 import mtg.game.state.Choice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.costs.ManaCost
+import mtg.sets.alpha.cards.Plains
 import mtg.stack.adding.PayManaChoice
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class CastSpellManaPaymentSpec extends SpecWithGameStateManager with TestCardCreation {
   val WhiteCreature = vanillaCreature(ManaCost(White), (1, 1))

@@ -2,10 +2,10 @@ package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
 import mtg.core.zones.Zone
-import mtg.data.sets.alpha.cards.{Forest, Island, Plains}
-import mtg.data.sets.strixhaven.cards.{AgelessGuardian, EnvironmentalSciences}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.instructions.verbs.SearchLibraryChoice
+import mtg.sets.alpha.cards.{Forest, Island, Plains}
+import mtg.sets.strixhaven.cards.{AgelessGuardian, EnvironmentalSciences}
 import mtg.stack.resolving.ResolveInstructionChoice
 
 class EnvironmentalSciencesSpec extends SpecWithGameStateManager {

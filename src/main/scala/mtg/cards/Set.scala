@@ -17,7 +17,7 @@ case class Set(name: String, code: String, releaseDate: LocalDate, cardDataList:
 
 object Set {
   val All: Seq[Set] = {
-    val subtypes = new Reflections("mtg.data.sets").getSubTypesOf(classOf[mtg.cards.Set]).asScala.toSeq
+    val subtypes = new Reflections("mtg.sets").getSubTypesOf(classOf[mtg.cards.Set]).asScala.toSeq
     val rootMirror = scala.reflect.runtime.universe.runtimeMirror(getClass.getClassLoader)
     val sets = subtypes.map(t => rootMirror.reflectModule(rootMirror.classSymbol(t).module.asModule).instance).map(_.asInstanceOf[Set])
     sets.sortBy(_.releaseDate)(implicitly[Ordering[LocalDate]].reverse)

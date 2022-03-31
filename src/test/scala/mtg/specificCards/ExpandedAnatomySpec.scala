@@ -3,11 +3,11 @@ package mtg.specificCards
 import mtg.SpecWithGameStateManager
 import mtg.abilities.AbilityDefinition
 import mtg.abilities.keyword.Vigilance
-import mtg.data.sets.alpha.cards.{Forest, Plains, SavannahLions}
-import mtg.data.sets.kaldheim.cards.GrizzledOutrider
-import mtg.data.sets.strixhaven.cards.{ExpandedAnatomy, SpinedKarok}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.counters.PlusOnePlusOneCounter
+import mtg.sets.alpha.cards.{Forest, Plains, SavannahLions}
+import mtg.sets.kaldheim.cards.GrizzledOutrider
+import mtg.sets.strixhaven.cards.{ExpandedAnatomy, SpinedKarok}
 
 class ExpandedAnatomySpec extends SpecWithGameStateManager {
   "Expanded Anatomy" should {

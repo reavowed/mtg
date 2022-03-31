@@ -1,7 +1,7 @@
 package mtg.helpers
 
 import mtg.cards.{CardDefinition, CardPrinting}
-import mtg.data.sets.strixhaven.Strixhaven
+import mtg.sets.strixhaven.Strixhaven
 
 trait CardHelpers {
   def getCardPrinting(cardDefinition: CardDefinition): CardPrinting = {

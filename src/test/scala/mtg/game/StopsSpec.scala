@@ -2,12 +2,12 @@ package mtg.game
 
 import mtg.SpecWithGameStateManager
 import mtg.core.zones.Zone
-import mtg.data.sets.alpha.cards.{LightningBolt, Mountain}
 import mtg.game.state.{GameStateManager, Stops}
 import mtg.game.turns.TurnPhase.{CombatPhase, PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.TurnStep.BeginningOfCombatStep
 import mtg.game.turns.turnEvents.ExecuteTurn
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
+import mtg.sets.alpha.cards.{LightningBolt, Mountain}
 
 class StopsSpec extends SpecWithGameStateManager {
   "stops" should {

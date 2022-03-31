@@ -2,10 +2,10 @@ package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
 import mtg.core.zones.Zone
-import mtg.data.sets.alpha.cards.{Forest, Plains, SavannahLions}
-import mtg.data.sets.kaldheim.cards.GrizzledOutrider
-import mtg.data.sets.strixhaven.cards.{IntroductionToAnnihilation, SpinedKarok}
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
+import mtg.sets.alpha.cards.{Forest, Plains, SavannahLions}
+import mtg.sets.kaldheim.cards.GrizzledOutrider
+import mtg.sets.strixhaven.cards.{IntroductionToAnnihilation, SpinedKarok}
 
 class IntroductionToAnnihilationSpec extends SpecWithGameStateManager {
   "Introduction to Annihilation" should {

@@ -2,8 +2,8 @@ package mtg.specificCards
 
 import mtg.SpecWithGameStateManager
 import mtg.core.zones.Zone
-import mtg.data.sets.alpha.cards.{LightningBolt, Mountain, SavannahLions}
-import mtg.data.sets.kaldheim.cards.GrizzledOutrider
+import mtg.sets.alpha.cards.{LightningBolt, Mountain, SavannahLions}
+import mtg.sets.kaldheim.cards.GrizzledOutrider
 
 class LightningBoltSpec extends SpecWithGameStateManager {
   "Lightning Bolt" should {

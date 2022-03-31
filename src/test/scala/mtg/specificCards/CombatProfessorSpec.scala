@@ -3,9 +3,9 @@ package mtg.specificCards
 import mtg.SpecWithGameStateManager
 import mtg.abilities.AbilityDefinition
 import mtg.abilities.keyword.Vigilance
-import mtg.data.sets.alpha.cards.SavannahLions
-import mtg.data.sets.strixhaven.cards.{AgelessGuardian, CombatProfessor}
 import mtg.game.turns.TurnStep
+import mtg.sets.alpha.cards.SavannahLions
+import mtg.sets.strixhaven.cards.{AgelessGuardian, CombatProfessor}
 
 class CombatProfessorSpec extends SpecWithGameStateManager {
   "Combat Professor" should {
