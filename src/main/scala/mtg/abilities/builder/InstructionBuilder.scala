@@ -1,7 +1,6 @@
 package mtg.abilities.builder
 
 object InstructionBuilder
-  extends IdentifierBuilder
-    with ConditionBuilder
+  extends ConditionBuilder
     with NumberBuilder
     with ParagraphBuilder
