@@ -30,7 +30,7 @@ case class PartiallyExecutedActionWithValue[T, S](rootAction: GameAction[T], val
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
-trait InternalGameAction extends GameUpdate {
+trait InternalGameAction extends GameAction[Unit] {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
 }

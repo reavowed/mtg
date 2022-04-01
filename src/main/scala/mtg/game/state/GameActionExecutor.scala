@@ -80,6 +80,8 @@ object GameActionExecutor {
       Some(executeCallback(rootAction, value, callback))
     case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
       executeChildAction(rootAction, childAction, callback)
+    case internalGameAction: InternalGameAction =>
+      Some(executeOldActions(Seq(internalGameAction), gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
     case WrappedOldUpdates(updates @ _*) =>
       Some(executeOldActions(updates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
     case LogEventAction(logEvent) =>
