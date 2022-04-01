@@ -4,8 +4,8 @@ import ActionManager from "../../../contexts/ActionManager";
 import CanvasManager from "../../../contexts/CanvasManager";
 import GameState from "../../../contexts/GameState";
 import {getPlural} from "../../../utils/word-helpers";
-import BannerText from "../../layout/BannerText";
-import HorizontalCenter from "../../layout/HorizontalCenter";
+import BannerText from "../../layoutUtils/BannerText";
+import HorizontalCenter from "../../layoutUtils/HorizontalCenter";
 import DecisionButton from "../DecisionButton";
 import $ from "jquery";
 

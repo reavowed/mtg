@@ -1,7 +1,7 @@
 import {useContext, useState} from "preact/hooks";
 import GameState from "../../../contexts/GameState";
 import {addClass} from "../../../utils/element-utils";
-import HorizontalCenter from "../../layout/HorizontalCenter";
+import HorizontalCenter from "../../layoutUtils/HorizontalCenter";
 import _ from "lodash";
 import CardWithText from "../card/CardWithText";
 import DecisionButton from "../DecisionButton";

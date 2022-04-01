@@ -1,6 +1,6 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
-import BannerText from "../layout/BannerText";
+import BannerText from "../layoutUtils/BannerText";
 import AssignCombatDamageChoice from "./choices/AssignCombatDamageChoice";
 import DeclareAttackersChoice from "./choices/DeclareAttackersChoice";
 import DeclareBlockersChoice from "./choices/DeclareBlockersChoice";

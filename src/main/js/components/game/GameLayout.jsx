@@ -1,6 +1,6 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
-import ScreenCenter from "../layout/ScreenCenter";
+import ScreenCenter from "../layoutUtils/ScreenCenter";
 import ActionPanel from "./ActionPanel";
 import ZoneLayout from "./ZoneLayout";
 import EventLog from "./EventLog";

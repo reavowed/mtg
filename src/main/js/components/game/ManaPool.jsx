@@ -2,7 +2,7 @@ import _ from "lodash";
 import {useCallback, useContext} from "preact/hooks";
 import ActionManager from "../../contexts/ActionManager";
 import GameState from "../../contexts/GameState";
-import HorizontalCenter from "../layout/HorizontalCenter";
+import HorizontalCenter from "../layoutUtils/HorizontalCenter";
 
 export default function ManaPool() {
     const gameState = useContext(GameState);

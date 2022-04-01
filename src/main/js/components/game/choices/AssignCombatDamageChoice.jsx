@@ -1,8 +1,8 @@
 import _ from "lodash";
 import {useContext, useState} from "preact/hooks";
 import GameState from "../../../contexts/GameState";
-import BannerText from "../../layout/BannerText";
-import HorizontalCenter from "../../layout/HorizontalCenter";
+import BannerText from "../../layoutUtils/BannerText";
+import HorizontalCenter from "../../layoutUtils/HorizontalCenter";
 import CardImage from "../card/CardImage";
 import DecisionButton from "../DecisionButton";
 

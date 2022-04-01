@@ -3,8 +3,8 @@ import {useCallback, useContext, useEffect, useState} from "preact/hooks";
 import ActionManager from "../../../contexts/ActionManager";
 import GameState from "../../../contexts/GameState";
 import {getPlural} from "../../../utils/word-helpers";
-import BannerText from "../../layout/BannerText";
-import HorizontalCenter from "../../layout/HorizontalCenter";
+import BannerText from "../../layoutUtils/BannerText";
+import HorizontalCenter from "../../layoutUtils/HorizontalCenter";
 import DecisionButton from "../DecisionButton";
 
 export default function DeclareAttackersChoice() {

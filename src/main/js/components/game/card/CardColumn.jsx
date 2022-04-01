@@ -3,7 +3,7 @@ import {createElement} from "preact";
 import {useCallback} from "preact/hooks";
 import {addClass} from "../../../utils/element-utils";
 import {useRefWithEventHandler} from "../../../utils/hook-utils";
-import VerticalCenter from "../../layout/VerticalCenter";
+import VerticalCenter from "../../layoutUtils/VerticalCenter";
 import CardWithActions from "./CardWithActions";
 
 function CardWrapper({as, ...props}) {

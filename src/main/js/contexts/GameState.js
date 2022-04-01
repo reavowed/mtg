@@ -1,6 +1,6 @@
 import {createContext} from "preact";
 import {useEffect, useState} from "preact/hooks";
-import ScreenCenter from "../components/layout/ScreenCenter";
+import ScreenCenter from "../components/layoutUtils/ScreenCenter";
 import {getCurrentPath, getJson} from "../utils/fetch-helpers";
 import SockJS from 'sockjs-client';
 import {Stomp} from 'stompjs/lib/stomp';

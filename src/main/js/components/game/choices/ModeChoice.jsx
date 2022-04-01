@@ -2,8 +2,8 @@ import PopupChoice from "./PopupChoice";
 import {useContext} from "preact/hooks";
 import GameState from "../../../contexts/GameState";
 import CardImage from "../card/CardImage";
-import HorizontalCenter from "../../layout/HorizontalCenter";
-import BannerText from "../../layout/BannerText";
+import HorizontalCenter from "../../layoutUtils/HorizontalCenter";
+import BannerText from "../../layoutUtils/BannerText";
 import DecisionMaker from "../../../contexts/DecisionMaker";
 
 export default function ModeChoice() {
