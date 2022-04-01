@@ -2,7 +2,9 @@ import {useContext, useState} from "preact/hooks";
 import GameState from "../../contexts/GameState";
 import CardRow from "../card/CardRow";
 import CardWithText from "../card/CardWithText";
+import DecisionButton from "../DecisionButton";
 import BannerText from "../layoutUtils/BannerText";
+import HorizontalCenter from "../layoutUtils/HorizontalCenter";
 import PopupChoice from "./PopupChoice";
 import distinct from "lodash/uniq"
 import find from "lodash/find"
@@ -26,5 +28,8 @@ export default function LearnChoice() {
     return <PopupChoice text="Learn">
         <BannerText>Learn</BannerText>
         <CardRow cards={validLessons} as={ChoosableLesson} />
+        <HorizontalCenter className="mt-4">
+            <DecisionButton optionToChoose={chosenLesson} disabled={!chosenLesson}>Submit</DecisionButton>
+        </HorizontalCenter>
     </PopupChoice>;
 }
