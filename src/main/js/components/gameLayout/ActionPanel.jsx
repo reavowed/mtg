@@ -1,9 +1,9 @@
 import {useContext} from "preact/hooks";
 import GameState from "../../contexts/GameState";
-import BannerText from "../layoutUtils/BannerText";
 import AssignCombatDamageChoice from "../choices/AssignCombatDamageChoice";
 import DeclareAttackersChoice from "../choices/DeclareAttackersChoice";
 import DeclareBlockersChoice from "../choices/DeclareBlockersChoice";
+import LearnChoice from "../choices/LearnChoice";
 import ModeChoice from "../choices/ModeChoice";
 import OrderBlockersChoice from "../choices/OrderBlockersChoice";
 import PayManaChoice from "../choices/PayManaChoice";
@@ -12,6 +12,7 @@ import ScryChoice from "../choices/ScryChoice";
 import SearchLibraryChoice from "../choices/SearchLibraryChoice";
 import TargetChoice from "../choices/TargetChoice";
 import TriggeredAbilityChoice from "../choices/TriggeredAbilityChoice";
+import BannerText from "../layoutUtils/BannerText";
 import ManaPool from "./ManaPool";
 
 function getChoiceDisplay(choiceType) {
@@ -38,6 +39,8 @@ function getChoiceDisplay(choiceType) {
             return <ModeChoice />
         case "PayManaChoice":
             return <PayManaChoice />
+        case "LearnChoice":
+            return <LearnChoice />
     }
 }
 
