@@ -19,8 +19,8 @@ case class GameState(
   def activePlayer: PlayerId = currentTurn.get.activePlayer
   def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
 
-  def allCurrentActions: Seq[GameUpdate] = {
-    def helper(current: GameAction[_], actions: Seq[GameUpdate]): Seq[GameUpdate] = {
+  def allCurrentActions: Seq[GameAction[_]] = {
+    def helper(current: GameAction[_], actions: Seq[GameAction[_]]): Seq[GameAction[_]] = {
       current match {
         case WrappedOldUpdates(nextUpdates@_*) =>
           actions ++ nextUpdates.headOption.toSeq

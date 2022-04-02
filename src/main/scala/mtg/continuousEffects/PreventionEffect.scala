@@ -1,12 +1,12 @@
 package mtg.continuousEffects
 
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, GameUpdate}
+import mtg.game.state.{GameAction, GameState}
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnEvents.ExecuteStep
 
 trait PreventionEffect extends ContinuousEffect {
-  def checkAction(action: GameUpdate, gameState: GameState): PreventionEffect.Result
+  def checkAction(action: GameAction[_], gameState: GameState): PreventionEffect.Result
 }
 
 object PreventionEffect {
@@ -17,9 +17,9 @@ object PreventionEffect {
   }
 
   trait SimpleCheck extends PreventionEffect {
-    def shouldPreventAction(action: GameUpdate, gameState: GameState): Boolean
+    def shouldPreventAction(action: GameAction[_], gameState: GameState): Boolean
 
-    override def checkAction(action: GameUpdate, gameState: GameState): Result = {
+    override def checkAction(action: GameAction[_], gameState: GameState): Result = {
       if (shouldPreventAction(action, gameState)) {
         Result.Prevent(None)
       } else {
@@ -29,7 +29,7 @@ object PreventionEffect {
   }
 
   object PreventFirstDrawStep extends PreventionEffect {
-    override def checkAction(action: GameUpdate, gameState: GameState): Result = {
+    override def checkAction(action: GameAction[_], gameState: GameState): Result = {
       if (gameState.currentTurnNumber == 1 && action == ExecuteStep(TurnStep.DrawStep)) {
         Result.Prevent(Some(LogEvent.SkipFirstDrawStep(gameState.activePlayer)))
       } else {

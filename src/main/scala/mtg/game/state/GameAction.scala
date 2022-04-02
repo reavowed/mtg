@@ -4,9 +4,8 @@ import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
 
-sealed trait GameUpdate
+sealed trait GameAction[+T]
 
-sealed trait GameAction[+T] extends GameUpdate
 trait ExecutableGameAction[+T] extends GameAction[T] {
   def execute()(implicit gameState: GameState): PartialGameActionResult[T]
 }

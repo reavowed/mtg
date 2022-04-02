@@ -5,7 +5,7 @@ import mtg.core.{ObjectOrPlayerId, PlayerId}
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.priority.PriorityChoice
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
-import mtg.game.state.GameUpdate
+import mtg.game.state.GameAction
 import mtg.instructions.InstructionChoice
 import mtg.stack.adding.TargetChoice
 import mtg.stack.resolving.ResolveInstructionChoice
@@ -21,12 +21,12 @@ trait GameUpdateHelpers extends SpecificationLike with GameObjectStateHelpers {
     (castSpellAction.objectToCast.gameObject == gameObject, "was given object", "was not given object")
   }
 
-  class PriorityChoiceMatcher extends Matcher[GameUpdate] {
-    private val baseMatcher: Matcher[GameUpdate] = beAnInstanceOf[PriorityChoice]
+  class PriorityChoiceMatcher extends Matcher[GameAction[_]] {
+    private val baseMatcher: Matcher[GameAction[_]] = beAnInstanceOf[PriorityChoice]
     private val otherMatchers: ListBuffer[Matcher[PriorityChoice]] = ListBuffer()
-    private def finalMatcher: Matcher[GameUpdate] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameUpdate).asInstanceOf[PriorityChoice]}))
+    private def finalMatcher: Matcher[GameAction[_]] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameAction[_]).asInstanceOf[PriorityChoice]}))
 
-    override def apply[S <: GameUpdate](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
+    override def apply[S <: GameAction[_]](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
 
     def forPlayer(playerIdentifier: PlayerId): PriorityChoiceMatcher = {
       otherMatchers.addOne(((_: PriorityChoice).playerToAct) ^^ beTypedEqualTo(playerIdentifier))
@@ -61,12 +61,12 @@ trait GameUpdateHelpers extends SpecificationLike with GameObjectStateHelpers {
     implicit def fromPlayer(playerId: PlayerId) = new TargetMagnet(playerId)
   }
 
-  class TargetChoiceMatcher extends Matcher[GameUpdate] {
-    private val baseMatcher: Matcher[GameUpdate] = beAnInstanceOf[TargetChoice]
+  class TargetChoiceMatcher extends Matcher[GameAction[_]] {
+    private val baseMatcher: Matcher[GameAction[_]] = beAnInstanceOf[TargetChoice]
     private val otherMatchers: ListBuffer[Matcher[TargetChoice]] = ListBuffer()
-    private def finalMatcher: Matcher[GameUpdate] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameUpdate).asInstanceOf[TargetChoice]}))
+    private def finalMatcher: Matcher[GameAction[_]] = otherMatchers.foldLeft(baseMatcher)((m1, m2) => m1.and(m2 ^^ {(_: GameAction[_]).asInstanceOf[TargetChoice]}))
 
-    override def apply[S <: GameUpdate](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
+    override def apply[S <: GameAction[_]](t: Expectable[S]): MatchResult[S] = finalMatcher.apply(t)
 
     def forPlayer(playerIdentifier: PlayerId): TargetChoiceMatcher = {
       otherMatchers.addOne(((_: TargetChoice).playerToAct) ^^ beTypedEqualTo(playerIdentifier))
@@ -80,6 +80,6 @@ trait GameUpdateHelpers extends SpecificationLike with GameObjectStateHelpers {
 
   def bePriorityChoice: PriorityChoiceMatcher = new PriorityChoiceMatcher
   def beTargetChoice: TargetChoiceMatcher = new TargetChoiceMatcher
-  def beInstructionChoice[T <: InstructionChoice : ClassTag](m: Matcher[T]): Matcher[GameUpdate] = beAnInstanceOf[ResolveInstructionChoice] and
-    ((_: GameUpdate).asInstanceOf[ResolveInstructionChoice].instructionChoice) ^^ (beAnInstanceOf[T] and (((_: InstructionChoice).asInstanceOf[T]) ^^ m))
+  def beInstructionChoice[T <: InstructionChoice : ClassTag](m: Matcher[T]): Matcher[GameAction[_]] = beAnInstanceOf[ResolveInstructionChoice] and
+    ((_: GameAction[_]).asInstanceOf[ResolveInstructionChoice].instructionChoice) ^^ (beAnInstanceOf[T] and (((_: InstructionChoice).asInstanceOf[T]) ^^ m))
 }

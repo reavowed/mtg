@@ -4,7 +4,6 @@ import mtg.abilities.TriggeredAbility
 import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
-import mtg.effects.condition.Condition
 import mtg.game.priority.PriorityChoice
 
 import scala.annotation.tailrec
@@ -205,7 +204,7 @@ object GameActionExecutor {
     }
   }
 
-  private def getTriggeringAbilities(action: GameUpdate, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
+  private def getTriggeringAbilities(action: GameAction[_], gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
     gameStateAfterAction.gameObjectState.activeTriggeredAbilities
       .filter(_.conditionMatchesEvent(action, gameStateAfterAction))
       .toSeq
