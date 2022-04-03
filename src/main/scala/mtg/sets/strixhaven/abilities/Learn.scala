@@ -38,7 +38,7 @@ case class LearnChoice(playerChoosing: PlayerId, possibleLessons: Seq[ObjectId])
       (WrappedOldUpdates(DiscardCardAction(playerChoosing, cardId), DrawCardAction(playerChoosing)), resolutionContext)
     }
     possibleLessons.find(_.toString == serializedDecision).map(getLesson) orElse
-      gameState.gameObjectState.hands(playerChoosing).map(_.objectId).find(_.toString == serializedDecision).map(loot)
-
+      gameState.gameObjectState.hands(playerChoosing).map(_.objectId).find(_.toString == serializedDecision).map(loot) orElse
+      Option(serializedDecision).filter(_ == "Decline").map(_ => resolutionContext)
   }
 }

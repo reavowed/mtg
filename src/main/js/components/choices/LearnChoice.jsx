@@ -12,26 +12,26 @@ import find from "lodash/find"
 
 export default function LearnChoice() {
     const gameState = useContext(GameState);
-    const [chosenLesson, setChosenLesson] = useState(null);
+    const [decision, setDecision] = useState(null);
     const [actionType, setActionType] = useState("lesson");
 
     const sideboard = gameState.sideboards[gameState.player];
     const hand = gameState.hands[gameState.player];
 
     function ChoosableCard({card, ...props}) {
-        const isChosen = card.objectId === chosenLesson;
+        const isChosen = card.objectId === decision;
         const className = isChosen ? "selected" : "selectable";
-        const onClick = () => setChosenLesson(card.objectId);
+        const onClick = () => setDecision(card.objectId);
         return <CardWithText card={card} onClick={onClick} className={className} {...props} />
     }
 
-    function ActionTypeButton({children, stateValue, ...props}) {
+    function ActionTypeButton({children, stateValue, defaultDecision = null, ...props}) {
         if (actionType === stateValue) {
             props.variant = "success";
         }
         function onClick() {
             setActionType(stateValue);
-            setChosenLesson(null);
+            setDecision(defaultDecision);
         }
         return <Button variant='primary' size='lg' onClick={onClick} {...props}>{children}</Button>
     }
@@ -44,9 +44,10 @@ export default function LearnChoice() {
         <HorizontalCenter className="mt-4">
             <ActionTypeButton stateValue="lesson">Lesson</ActionTypeButton>
             <ActionTypeButton stateValue="discard" className="ml-4">Discard</ActionTypeButton>
+            <ActionTypeButton stateValue="decline" className="ml-4" defaultDecision="Decline">Decline</ActionTypeButton>
         </HorizontalCenter>
         <HorizontalCenter className="mt-4">
-            <DecisionButton optionToChoose={chosenLesson} disabled={!chosenLesson}>Submit</DecisionButton>
+            <DecisionButton optionToChoose={decision} disabled={!decision}>Submit</DecisionButton>
         </HorizontalCenter>
     </PopupChoice>;
 }

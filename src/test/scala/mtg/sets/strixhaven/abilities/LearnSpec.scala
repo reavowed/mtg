@@ -71,6 +71,23 @@ class LearnSpec extends SpecWithGameStateManager with TestCardCreation {
       manager.gameState.gameObjectState.graveyards(playerOne) must contain(beCardObject(Plains))
       manager.gameState.gameObjectState.hands(playerOne) must contain(beCardObject(Forest))
     }
+
+    "allow declining any action" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, LearnCard, Plains)
+        .setLibrary(playerOne, Forest)
+        .setSideboard(playerOne, LessonCard)
+
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.castSpell(playerOne, LearnCard)
+      manager.resolveNext()
+      manager.handleDecision("Decline", playerOne)
+
+      manager.gameState.gameObjectState.hands(playerOne) must contain(beCardObject(Plains))
+      manager.gameState.gameObjectState.hands(playerOne) must not contain(beCardObject(LessonCard))
+      manager.gameState.gameObjectState.hands(playerOne) must not contain(beCardObject(Forest))
+    }
   }
 
 }
