@@ -32,7 +32,7 @@ object VisibleState {
     def getObject(gameObject: GameObject): VisibleGameObject = VisibleGameObject(gameObject, gameState)
     def currentChoice = gameState.allCurrentActions.lastOption.flatMap(_.asOptionalInstanceOf[Choice[_]])
     def getHiddenZoneContents(zone: Zone, contents: Seq[GameObject]): Seq[PossiblyHiddenGameObject] = {
-      val canSeeZone = zone == Zone.Hand(playerIdentifier) || currentChoice.exists(_.temporarilyVisibleZones.contains(zone))
+      val canSeeZone = zone == Zone.Hand(playerIdentifier) || zone == Zone.Sideboard(playerIdentifier) || currentChoice.exists(_.temporarilyVisibleZones.contains(zone))
       def canSeeObject(gameObject: GameObject): Boolean = canSeeZone || currentChoice.exists(_.temporarilyVisibleObjects.contains(gameObject.objectId))
       contents.map(gameObject => if (canSeeObject(gameObject)) getObject(gameObject) else HiddenGameObject)
     }
