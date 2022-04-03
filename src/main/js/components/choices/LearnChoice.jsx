@@ -12,11 +12,16 @@ import find from "lodash/find"
 
 export default function LearnChoice() {
     const gameState = useContext(GameState);
-    const [decision, setDecision] = useState(null);
-    const [actionType, setActionType] = useState("lesson");
 
     const sideboard = gameState.sideboards[gameState.player];
     const hand = gameState.hands[gameState.player];
+    const validLessons = gameState.currentChoice.details.possibleLessons.map(id => find(sideboard, card => card.objectId === id));
+
+    const canGetLesson = (validLessons.length > 0);
+    const canDiscard = (hand.length > 0);
+
+    const [decision, setDecision] = useState(null);
+    const [actionType, setActionType] = useState(canGetLesson ? "lesson" : canDiscard ? "discard" : "decline");
 
     function ChoosableCard({card, ...props}) {
         const isChosen = card.objectId === decision;
@@ -36,14 +41,13 @@ export default function LearnChoice() {
         return <Button variant='primary' size='lg' onClick={onClick} {...props}>{children}</Button>
     }
 
-    const validLessons = gameState.currentChoice.details.possibleLessons.map(id => find(sideboard, card => card.objectId === id));
 
     return <PopupChoice text="Learn">
         <BannerText>Learn</BannerText>
         <CardRow cards={actionType === "lesson" ? validLessons : actionType === "discard" ? hand : []} as={ChoosableCard} className="mt-4" />
         <HorizontalCenter className="mt-4">
-            <ActionTypeButton stateValue="lesson">Lesson</ActionTypeButton>
-            <ActionTypeButton stateValue="discard" className="ml-4">Discard</ActionTypeButton>
+            <ActionTypeButton stateValue="lesson" disabled={!canGetLesson}>Lesson</ActionTypeButton>
+            <ActionTypeButton stateValue="discard" className="ml-4" disabled={!canDiscard}>Discard</ActionTypeButton>
             <ActionTypeButton stateValue="decline" className="ml-4" defaultDecision="Decline">Decline</ActionTypeButton>
         </HorizontalCenter>
         <HorizontalCenter className="mt-4">
