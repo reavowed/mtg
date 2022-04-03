@@ -3,7 +3,7 @@ package mtg.instructions.nounPhrases
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.text.VerbPerson
+import mtg.instructions.VerbPerson
 
 case class Controller(objectNoun: SingleIdentifyingNounPhrase[ObjectId]) extends SingleIdentifyingNounPhrase[PlayerId] {
   override def getText(cardName: String): String = objectNoun.getPossessiveText(cardName) + " controller"

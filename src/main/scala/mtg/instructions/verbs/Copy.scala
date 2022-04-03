@@ -5,8 +5,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.{GameAction, GameState}
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
-import mtg.instructions.{InstructionResult, TransitiveEventMatchingVerb, TransitiveInstructionVerb}
-import mtg.text.Verb
+import mtg.instructions.{InstructionResult, TransitiveEventMatchingVerb, TransitiveInstructionVerb, Verb}
 
 case object Copy extends Verb.RegularCaseObject with TransitiveInstructionVerb[PlayerId, ObjectId] with TransitiveEventMatchingVerb {
   override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {

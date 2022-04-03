@@ -5,7 +5,6 @@ import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game.state.{GameAction, GameState}
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
-import mtg.text.{Verb, VerbInflection}
 
 trait IntransitiveEventMatchingVerb extends Verb {
   def matchesEvent(eventToMatch: GameAction[_], gameState: GameState, effectContext: EffectContext, playerPhrase: IndefiniteNounPhrase[PlayerId]): Boolean

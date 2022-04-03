@@ -7,8 +7,7 @@ import mtg.game.state.{GameAction, GameState}
 import mtg.instructions.adjectives.Adjective
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.instructions.nouns.Noun
-import mtg.instructions.{TransitiveEventMatchingVerb, TypePhrase}
-import mtg.text.VerbInflection
+import mtg.instructions.{TransitiveEventMatchingVerb, TypePhrase, VerbInflection}
 import mtg.utils.TextUtils._
 
 case object Or {

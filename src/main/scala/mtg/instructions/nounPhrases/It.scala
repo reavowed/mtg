@@ -3,7 +3,7 @@ package mtg.instructions.nounPhrases
 import mtg.core.ObjectId
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.text.VerbPerson
+import mtg.instructions.VerbPerson
 
 case object It extends SingleIdentifyingNounPhrase[ObjectId] {
   override def getText(cardName: String): String = "it"

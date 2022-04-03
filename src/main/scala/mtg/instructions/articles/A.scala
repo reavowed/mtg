@@ -5,7 +5,7 @@ import mtg.effects.EffectContext
 import mtg.game.state.GameState
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.instructions.nouns.Noun
-import mtg.text.{VerbNumber, VerbPerson}
+import mtg.instructions.{VerbNumber, VerbPerson}
 import mtg.utils.TextUtils._
 
 case class A(noun: Noun[ObjectId]) extends IndefiniteNounPhrase[ObjectId] {

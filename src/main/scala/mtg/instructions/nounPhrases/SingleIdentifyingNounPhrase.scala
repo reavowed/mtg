@@ -2,8 +2,7 @@ package mtg.instructions.nounPhrases
 
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.{Instruction, IntransitiveInstructionVerb}
-import mtg.text.VerbNumber
+import mtg.instructions.{Instruction, IntransitiveInstructionVerb, VerbNumber}
 
 trait SingleIdentifyingNounPhrase[+T] extends SetIdentifyingNounPhrase[T] {
   def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext)

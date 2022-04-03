@@ -4,7 +4,7 @@ import mtg.core.ObjectOrPlayerId
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.nouns.Noun
-import mtg.text.{VerbNumber, VerbPerson}
+import mtg.instructions.{VerbNumber, VerbPerson}
 
 import scala.reflect.ClassTag
 

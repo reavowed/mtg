@@ -3,7 +3,7 @@ package mtg.instructions.nounPhrases
 import mtg.core.PlayerId
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
-import mtg.text.VerbPerson
+import mtg.instructions.VerbPerson
 
 object You extends IndefiniteNounPhrase[PlayerId] with StaticSingleIdentifyingNounPhrase[PlayerId] {
   override def getText(cardName: String): String = "you"

@@ -3,8 +3,7 @@ package mtg.instructions.verbs
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
-import mtg.instructions.StateDescriptionVerb
-import mtg.text.Verb
+import mtg.instructions.{StateDescriptionVerb, Verb}
 
 object Control extends Verb.RegularCaseObject with StateDescriptionVerb[PlayerId] {
   override def describes(subject: PlayerId, objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {

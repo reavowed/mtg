@@ -5,9 +5,8 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.verbs.PutCounters.getCounterDescription
-import mtg.instructions.{InstructionResult, TransitiveInstructionVerb}
+import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb}
 import mtg.parts.counters.CounterType
-import mtg.text.Verb
 import mtg.utils.TextUtils
 
 case class PutCounters(number: Int, kind: CounterType)

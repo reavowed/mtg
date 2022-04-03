@@ -4,7 +4,6 @@ import mtg.core.ObjectId
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
 import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase
-import mtg.text.{Verb, VerbInflection}
 
 trait StateDescriptionVerb[SubjectType] extends Verb {
   def describes(subject: SubjectType, objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean

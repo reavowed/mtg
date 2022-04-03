@@ -5,8 +5,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
-import mtg.instructions.{Instruction, InstructionChoice, InstructionResult, IntransitiveInstructionVerb}
-import mtg.text.{Verb, VerbInflection}
+import mtg.instructions._
 import mtg.utils.ParsingUtils
 
 case class Scry(number: Int) extends IntransitiveInstructionVerb[PlayerId] with Verb.RegularCaseObject {

@@ -4,7 +4,6 @@ import mtg.core.PlayerId
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
-import mtg.text.{Verb, VerbInflection}
 
 trait IntransitiveInstructionVerb[-SubjectType] extends Verb {
   def resolve(subject: SubjectType, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult

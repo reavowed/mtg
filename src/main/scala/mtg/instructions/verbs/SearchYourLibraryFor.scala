@@ -3,10 +3,9 @@ package mtg.instructions.verbs
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.state.{GameState, InternalGameAction}
+import mtg.game.state.GameState
+import mtg.instructions._
 import mtg.instructions.nouns.Noun
-import mtg.instructions.{InstructionChoice, InstructionResult, IntransitiveInstructionVerb}
-import mtg.text.{Verb, VerbInflection}
 import mtg.utils.TextUtils._
 
 case class SearchYourLibraryFor(noun: Noun[ObjectId]) extends IntransitiveInstructionVerb[PlayerId] {

@@ -1,4 +1,4 @@
-package mtg.text
+package mtg.instructions
 
 sealed trait VerbPerson
 object VerbPerson {

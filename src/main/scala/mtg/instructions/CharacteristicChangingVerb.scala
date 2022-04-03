@@ -7,7 +7,6 @@ import mtg.effects.StackObjectResolutionContext
 import mtg.effects.condition.Condition
 import mtg.game.state.GameState
 import mtg.instructions.nounPhrases.SetIdentifyingNounPhrase
-import mtg.text.{Verb, VerbInflection}
 
 trait CharacteristicChangingVerb extends Verb {
   def getEffects(objectId: ObjectId): Seq[CharacteristicOrControlChangingContinuousEffect]
