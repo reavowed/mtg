@@ -1,4 +1,6 @@
-import {useContext, useState} from "preact/hooks";
+import "bootstrap/js/dist/popover";
+import find from "lodash/find";
+import {useContext, useEffect, useState} from "preact/hooks";
 import {Button} from "react-bootstrap";
 import GameState from "../../contexts/GameState";
 import CardRow from "../card/CardRow";
@@ -7,8 +9,7 @@ import DecisionButton from "../DecisionButton";
 import BannerText from "../layoutUtils/BannerText";
 import HorizontalCenter from "../layoutUtils/HorizontalCenter";
 import PopupChoice from "./PopupChoice";
-import distinct from "lodash/uniq"
-import find from "lodash/find"
+import $ from "jquery";
 
 export default function LearnChoice() {
     const gameState = useContext(GameState);
@@ -23,6 +24,10 @@ export default function LearnChoice() {
     const [decision, setDecision] = useState(null);
     const [actionType, setActionType] = useState(canGetLesson ? "lesson" : canDiscard ? "discard" : "decline");
 
+    useEffect(() => {
+        $('[data-toggle="popover"]').popover()
+    });
+
     function ChoosableCard({card, ...props}) {
         const isChosen = card.objectId === decision;
         const className = isChosen ? "selected" : "selectable";
@@ -30,7 +35,7 @@ export default function LearnChoice() {
         return <CardWithText card={card} onClick={onClick} className={className} {...props} />
     }
 
-    function ActionTypeButton({children, stateValue, defaultDecision = null, ...props}) {
+    function ActionTypeButton({children, stateValue, popoverText, defaultDecision = null, ...props}) {
         if (actionType === stateValue) {
             props.variant = "success";
         }
@@ -38,7 +43,12 @@ export default function LearnChoice() {
             setActionType(stateValue);
             setDecision(defaultDecision);
         }
-        return <Button variant='primary' size='lg' onClick={onClick} {...props}>{children}</Button>
+        const button = <Button variant='primary' size='lg' onClick={onClick} {...props}>{children}</Button>;
+        if (popoverText) {
+            return <span data-toggle="popover" data-trigger="hover" data-placement="auto" data-content={popoverText} data-container="body">{button}</span>;
+        } else {
+            return button;
+        }
     }
 
 
@@ -46,8 +56,8 @@ export default function LearnChoice() {
         <BannerText>Learn</BannerText>
         <CardRow cards={actionType === "lesson" ? validLessons : actionType === "discard" ? hand : []} as={ChoosableCard} className="mt-4" />
         <HorizontalCenter className="mt-4">
-            <ActionTypeButton stateValue="lesson" disabled={!canGetLesson}>Lesson</ActionTypeButton>
-            <ActionTypeButton stateValue="discard" className="ml-4" disabled={!canDiscard}>Discard</ActionTypeButton>
+            <ActionTypeButton stateValue="lesson" disabled={!canGetLesson} popoverText={!canGetLesson && "No lesson cards in sideboard to choose"}>Lesson</ActionTypeButton>
+            <ActionTypeButton stateValue="discard" className="ml-4" disabled={!canDiscard} popoverText={!canDiscard && "No cards in hand to discard"}>Discard</ActionTypeButton>
             <ActionTypeButton stateValue="decline" className="ml-4" defaultDecision="Decline">Decline</ActionTypeButton>
         </HorizontalCenter>
         <HorizontalCenter className="mt-4">
