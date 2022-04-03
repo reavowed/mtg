@@ -5,7 +5,7 @@ import mtg.core.zones.Zone
 import mtg.game.state.history.LogEvent.RevealCard
 import mtg.game.turns.TurnPhase
 import mtg.instructions.verbs.DrawACard
-import mtg.sets.alpha.cards.Plains
+import mtg.sets.alpha.cards.{Forest, Plains}
 import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class LearnSpec extends SpecWithGameStateManager with TestCardCreation {
@@ -54,6 +54,22 @@ class LearnSpec extends SpecWithGameStateManager with TestCardCreation {
 
       manager.gameState.gameObjectState.sideboards(playerOne) must not contain(beCardObject(LessonCard))
       manager.gameState.gameObjectState.hands(playerOne) must contain(beCardObject(LessonCard))
+    }
+
+    "allow discarding a card from hand to draw" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, LearnCard, Plains)
+        .setLibrary(playerOne, Forest)
+
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.castSpell(playerOne, LearnCard)
+      manager.resolveNext()
+      manager.chooseCard(playerOne, Plains)
+
+      manager.gameState.gameObjectState.hands(playerOne) must not contain(beCardObject(Plains))
+      manager.gameState.gameObjectState.graveyards(playerOne) must contain(beCardObject(Plains))
+      manager.gameState.gameObjectState.hands(playerOne) must contain(beCardObject(Forest))
     }
   }
 

@@ -10,6 +10,7 @@ import mtg.game.{GameStartingData, PlayerStartingData}
 import mtg.sets.alpha.cards.{LightningBolt, Mountain, Plains}
 import mtg.sets.coreSet2021.cards.ConcordiaPegasus
 import mtg.sets.kaldheim.cards.GrizzledOutrider
+import mtg.sets.strixhaven.Strixhaven
 import mtg.sets.strixhaven.cards.{BeamingDefiance, EnvironmentalSciences, GuidingVoice, IntroductionToProphecy}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
@@ -40,8 +41,8 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
 
   val gameStateManager: GameStateManager = {
     val gameStartingData = GameStartingData(Seq(
-      PlayerStartingData(playerOne, (Seq.fill(30)(LightningBolt) ++ Seq.fill(30)(Mountain)).map(findCardPrinting), Nil),
-      PlayerStartingData(playerTwo, (Seq.fill(30)(BeamingDefiance) ++ Seq.fill(30)(Plains)).map(findCardPrinting), Nil)))
+      PlayerStartingData(playerOne, Strixhaven.cardPrintings, Nil),
+      PlayerStartingData(playerTwo, Strixhaven.cardPrintings, Nil)))
 
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.gameState

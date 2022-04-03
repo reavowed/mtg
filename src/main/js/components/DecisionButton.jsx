@@ -1,10 +1,13 @@
 import {useContext} from "preact/hooks";
+import {Button} from "react-bootstrap";
 import DecisionMaker from "../contexts/DecisionMaker";
 
 export default function DecisionButton({optionToChoose, text, ...props}) {
     const decisionMaker = useContext(DecisionMaker);
-    return <button type="button"
-                   className="btn btn-primary btn-lg ml-2"
+    return <Button type="button"
+                   className="ml-2"
+                   variant="primary"
+                   size="lg"
                    disabled={decisionMaker.requestInProgress}
                    onclick={!props.disabled && (() => decisionMaker.makeDecision(optionToChoose))}
                    {...props}/>;

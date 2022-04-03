@@ -1,6 +1,6 @@
 package mtg.sets.strixhaven.abilities
 
-import mtg.actions.RevealAction
+import mtg.actions.{DiscardCardAction, DrawCardAction, RevealAction}
 import mtg.actions.moveZone.MoveToHandAction
 import mtg.core.types.SpellType.Lesson
 import mtg.core.{ObjectId, PlayerId}
@@ -31,10 +31,14 @@ case class LearnChoice(playerChoosing: PlayerId, possibleLessons: Seq[ObjectId])
     resolutionContext: StackObjectResolutionContext)(
     implicit gameState: GameState
   ): Option[InstructionResult] = {
-    for {
-      lessonId <- possibleLessons.find(_.toString == serializedDecision)
-    } yield {
+    def getLesson(lessonId: ObjectId): InstructionResult = {
       (WrappedOldUpdates(RevealAction(resolutionContext.controllingPlayer, lessonId), MoveToHandAction(lessonId)), resolutionContext)
     }
+    def loot(cardId: ObjectId): InstructionResult = {
+      (WrappedOldUpdates(DiscardCardAction(playerChoosing, cardId), DrawCardAction(playerChoosing)), resolutionContext)
+    }
+    possibleLessons.find(_.toString == serializedDecision).map(getLesson) orElse
+      gameState.gameObjectState.hands(playerChoosing).map(_.objectId).find(_.toString == serializedDecision).map(loot)
+
   }
 }
