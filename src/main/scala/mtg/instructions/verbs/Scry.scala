@@ -26,7 +26,11 @@ case class ScryChoice(
     cardsBeingScryed: Seq[ObjectId])
   extends InstructionChoice
 {
-  override def parseDecision(serializedDecision: String, resolutionContext: StackObjectResolutionContext): Option[InstructionResult] = {
+  override def parseDecision(
+    serializedDecision: String,
+    resolutionContext: StackObjectResolutionContext)(
+    implicit gameState: GameState
+  ): Option[InstructionResult] = {
     for {
       (serializedCardsOnTop, serializedCardsOnBottom) <- serializedDecision.split("\\|", -1).toSeq match {
         case Seq(a, b) => Some(a, b)

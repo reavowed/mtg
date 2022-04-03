@@ -25,7 +25,11 @@ case class SearchLibraryChoice(
     possibleChoices: Seq[ObjectId])
   extends InstructionChoice
 {
-  override def parseDecision(serializedDecision: String, resolutionContext: StackObjectResolutionContext): Option[InstructionResult] = {
+  override def parseDecision(
+    serializedDecision: String,
+    resolutionContext: StackObjectResolutionContext)(
+    implicit gameState: GameState
+  ): Option[InstructionResult] = {
     for {
       chosenObjectId <- possibleChoices.find(_.toString == serializedDecision)
     } yield resolutionContext.addIdentifiedObject(chosenObjectId)

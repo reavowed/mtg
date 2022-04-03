@@ -26,7 +26,11 @@ object Learn extends Instruction {
 }
 
 case class LearnChoice(playerChoosing: PlayerId, possibleLessons: Seq[ObjectId]) extends InstructionChoice {
-  override def parseDecision(serializedDecision: String, resolutionContext: StackObjectResolutionContext): Option[InstructionResult] = {
+  override def parseDecision(
+    serializedDecision: String,
+    resolutionContext: StackObjectResolutionContext)(
+    implicit gameState: GameState
+  ): Option[InstructionResult] = {
     for {
       lessonId <- possibleLessons.find(_.toString == serializedDecision)
     } yield {
