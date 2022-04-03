@@ -7,7 +7,7 @@ import mtg.game.state.InternalGameAction
 
 abstract class InstructionChoice {
   def playerChoosing: PlayerId
-  def parseDecision(serializedDecision: String): Option[(Option[InternalGameAction], StackObjectResolutionContext)]
+  def parseDecision(serializedDecision: String, resolutionContext: StackObjectResolutionContext): Option[InstructionResult]
   def temporarilyVisibleZones: Seq[Zone] = Nil
   def temporarilyVisibleObjects: Seq[ObjectId] = Nil
 }

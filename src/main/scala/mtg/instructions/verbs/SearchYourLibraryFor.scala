@@ -15,21 +15,20 @@ case class SearchYourLibraryFor(noun: Noun[ObjectId]) extends IntransitiveInstru
   }
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     val possibleChoices = noun.getAll(gameState, resolutionContext).intersect(gameState.gameObjectState.libraries(playerId).map(_.objectId))
-    SearchLibraryChoice(playerId, possibleChoices, resolutionContext)
+    SearchLibraryChoice(playerId, possibleChoices)
   }
 }
 
 // TODO: Handle a player searching another player's library
 case class SearchLibraryChoice(
     playerChoosing: PlayerId,
-    possibleChoices: Seq[ObjectId],
-    resolutionContext: StackObjectResolutionContext)
+    possibleChoices: Seq[ObjectId])
   extends InstructionChoice
 {
-  override def parseDecision(serializedDecision: String): Option[(Option[InternalGameAction], StackObjectResolutionContext)] = {
+  override def parseDecision(serializedDecision: String, resolutionContext: StackObjectResolutionContext): Option[InstructionResult] = {
     for {
       chosenObjectId <- possibleChoices.find(_.toString == serializedDecision)
-    } yield (None, resolutionContext.addIdentifiedObject(chosenObjectId))
+    } yield resolutionContext.addIdentifiedObject(chosenObjectId)
   }
   override def temporarilyVisibleZones: Seq[Zone] = Seq(Zone.Library(playerChoosing))
 }

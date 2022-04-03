@@ -16,35 +16,36 @@ case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolut
   ): PartialGameActionResult[Unit] = {
     instructions match {
       case instruction +: remainingInstructions =>
-        instruction.resolve(gameState, resolutionContext) match {
-          case InstructionResult.Event(event, newResolutionContext) =>
-            PartialGameActionResult.ChildWithCallback(
-              WrappedOldUpdates(event),
-              (_: Unit, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
-          case InstructionResult.Choice(choice) =>
-            PartialGameActionResult.ChildWithCallback(
-              ResolveInstructionChoice(choice, remainingInstructions),
-              handleDecision(remainingInstructions))
-          case InstructionResult.Log(logEvent, newResolutionContext) =>
-            PartialGameActionResult.ChildWithCallback(
-              logEvent,
-              (_: Unit, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
-        }
+        handeInstructionResult(
+          instruction.resolve(gameState, resolutionContext),
+          remainingInstructions,
+          resolutionContext)
       case Nil =>
         ()
     }
   }
 
-  private def handleDecision(
-    remainingInstructions: Seq[Instruction])(
-    decision: (Option[InternalGameAction], StackObjectResolutionContext),
-    gameState: GameState
-  ): PartialGameActionResult[Unit] = decision match {
-    case (Some(action), newResolutionContext) =>
-      PartialGameActionResult.ChildWithCallback(
-        WrappedOldUpdates(action),
-        (_: Unit, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
-    case (None, newResolutionContext) =>
-      executeInstructions(remainingInstructions, newResolutionContext)(gameState)
+  private def handeInstructionResult(
+    instructionResult: InstructionResult,
+    remainingInstructions: Seq[Instruction],
+    resolutionContext: StackObjectResolutionContext)(
+    implicit gameState: GameState
+  ): PartialGameActionResult[Unit] = {
+    instructionResult match {
+      case InstructionResult.Event(event, newResolutionContext) =>
+        PartialGameActionResult.ChildWithCallback(
+          WrappedOldUpdates(event),
+          (_: Unit, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
+      case InstructionResult.Choice(choice) =>
+        PartialGameActionResult.ChildWithCallback(
+          ResolveInstructionChoice(choice, remainingInstructions, resolutionContext),
+          (instructionResult: InstructionResult, gameState) => handeInstructionResult(instructionResult, remainingInstructions, resolutionContext)(gameState))
+      case InstructionResult.Log(logEvent, newResolutionContext) =>
+        PartialGameActionResult.ChildWithCallback(
+          logEvent,
+          (_: Unit, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
+      case InstructionResult.UpdatedContext(newResolutionContext) =>
+        executeInstructions(remainingInstructions, newResolutionContext)
+    }
   }
 }

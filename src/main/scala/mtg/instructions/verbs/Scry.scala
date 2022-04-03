@@ -17,17 +17,16 @@ case class Scry(number: Int) extends IntransitiveInstructionVerb[PlayerId] with 
   override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
     val library = gameState.gameObjectState.libraries(playerId)
     val cardsBeingScryed = library.take(number).map(_.objectId)
-    ScryChoice(playerId, cardsBeingScryed, resolutionContext)
+    ScryChoice(playerId, cardsBeingScryed)
   }
 }
 
 case class ScryChoice(
     playerChoosing: PlayerId,
-    cardsBeingScryed: Seq[ObjectId],
-    resolutionContext: StackObjectResolutionContext)
+    cardsBeingScryed: Seq[ObjectId])
   extends InstructionChoice
 {
-  override def parseDecision(serializedDecision: String): Option[(Option[InternalGameAction], StackObjectResolutionContext)] = {
+  override def parseDecision(serializedDecision: String, resolutionContext: StackObjectResolutionContext): Option[InstructionResult] = {
     for {
       (serializedCardsOnTop, serializedCardsOnBottom) <- serializedDecision.split("\\|", -1).toSeq match {
         case Seq(a, b) => Some(a, b)
@@ -37,7 +36,7 @@ case class ScryChoice(
       cardsOnBottom <- ParsingUtils.splitStringAsIds(serializedCardsOnBottom)
       if (cardsOnTop ++ cardsOnBottom).toSet == cardsBeingScryed.toSet
     } yield (
-      Some(ScryAction(playerChoosing, cardsOnTop, cardsOnBottom)),
+      ScryAction(playerChoosing, cardsOnTop, cardsOnBottom),
       resolutionContext
     )
   }
