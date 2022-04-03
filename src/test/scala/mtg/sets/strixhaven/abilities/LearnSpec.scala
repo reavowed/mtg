@@ -1,6 +1,8 @@
 package mtg.sets.strixhaven.abilities
 
 import mtg.core.types.SpellType.Lesson
+import mtg.core.zones.Zone
+import mtg.game.state.history.LogEvent.RevealCard
 import mtg.game.turns.TurnPhase
 import mtg.instructions.verbs.DrawACard
 import mtg.sets.alpha.cards.Plains
@@ -20,7 +22,38 @@ class LearnSpec extends SpecWithGameStateManager with TestCardCreation {
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
       manager.castSpell(playerOne, LearnCard)
       manager.resolveNext()
-      manager.gameState.currentChoice must beSome(beInstructionChoice[LearnChoice]((_: LearnChoice).possibleLessons must contain(exactly(getCardPrinting(LessonCard).id))))
+
+      manager.gameState.currentChoice must beSome(beInstructionChoice[LearnChoice]((_: LearnChoice).possibleLessons must
+        contain(exactly(manager.getCard(LessonCard).objectId))))
+    }
+
+    "reveal chosen lesson" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, LearnCard)
+        .setSideboard(playerOne, LessonCard, Plains)
+
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.castSpell(playerOne, LearnCard)
+      manager.resolveNext()
+      manager.chooseCard(playerOne, LessonCard)
+
+      manager.gameState.gameHistory.logEvents.map(_.logEvent) must contain(RevealCard(playerOne, LessonCard.name))
+    }
+
+    "move chosen lesson to hand" in {
+      val initialState = emptyGameObjectState
+        .setHand(playerOne, LearnCard)
+        .setSideboard(playerOne, LessonCard, Plains)
+
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.castSpell(playerOne, LearnCard)
+      manager.resolveNext()
+      manager.chooseCard(playerOne, LessonCard)
+
+      manager.gameState.gameObjectState.sideboards(playerOne) must not contain(beCardObject(LessonCard))
+      manager.gameState.gameObjectState.hands(playerOne) must contain(beCardObject(LessonCard))
     }
   }
 

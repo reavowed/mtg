@@ -32,10 +32,10 @@ case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolut
     implicit gameState: GameState
   ): PartialGameActionResult[Unit] = {
     instructionResult match {
-      case InstructionResult.Event(event, newResolutionContext) =>
+      case InstructionResult.Action(action, newResolutionContext) =>
         PartialGameActionResult.ChildWithCallback(
-          WrappedOldUpdates(event),
-          (_: Unit, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
+          action,
+          (_: Any, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
       case InstructionResult.Choice(choice) =>
         PartialGameActionResult.ChildWithCallback(
           ResolveInstructionChoice(choice, remainingInstructions, resolutionContext),
