@@ -55,6 +55,8 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
           gameObjectState.addObjectToHand(player, BasicGameObject(card, _, Zone.Hand(player)))
         case Zone.Library(player) =>
           gameObjectState.addObjectToLibrary(player, BasicGameObject(card, _, Zone.Library(player)), _.length)
+        case Zone.Sideboard(player) =>
+          gameObjectState.addObjectToSideboard(player, BasicGameObject(card, _, Zone.Sideboard(player)))
       }
     }
     def addCardsToZone(zone: Zone, owner: PlayerId, cardDefinitions: Seq[CardDefinition]): GameObjectState = {
@@ -78,9 +80,7 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
       Focus[GameObjectState](_.battlefield).modify(_.filter(_.defaultController != playerIdentifier))(gameObjectState)
         .addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
     )
-    def setSideboard(playerId: PlayerId, cardDefinitions: CardDefinition*) = {
-      gameObjectState.copy(sideboards = gameObjectState.sideboards.updated(playerId, cardDefinitions.map(getCardPrinting)))
-    }
+    def setSideboard: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Sideboard(playerIdentifier), playerIdentifier, cardDefinitions))
   }
 
 }

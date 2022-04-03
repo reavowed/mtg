@@ -15,5 +15,8 @@ object Zone {
   case object Battlefield extends Zone(ZoneType.Battlefield)
   case object Stack extends Zone(ZoneType.Stack)
   case object Exile extends BasicZone(ZoneType.Exile)
+
+  // Technically the sideboard is not a zone! However, it functions enough like one that we represent it as one here.
+  case class Sideboard(playerIdentifier: PlayerId) extends BasicZone(ZoneType.Sideboard)
 }
 

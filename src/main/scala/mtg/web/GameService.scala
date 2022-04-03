@@ -10,7 +10,7 @@ import mtg.game.{GameStartingData, PlayerStartingData}
 import mtg.sets.alpha.cards.{LightningBolt, Mountain, Plains}
 import mtg.sets.coreSet2021.cards.ConcordiaPegasus
 import mtg.sets.kaldheim.cards.GrizzledOutrider
-import mtg.sets.strixhaven.cards.{BeamingDefiance, EnvironmentalSciences}
+import mtg.sets.strixhaven.cards.{BeamingDefiance, EnvironmentalSciences, GuidingVoice, IntroductionToProphecy}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -29,6 +29,9 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     def addCardToBattlefield(player: PlayerId, cardDefinition: CardDefinition): GameState = {
       gameState.updateGameObjectState(_.addObjectToBattlefield(PermanentObject(Card(player, findCardPrinting(cardDefinition)), _, player)))
     }
+    def addCardToSideboard(player: PlayerId, cardDefinition: CardDefinition): GameState = {
+      gameState.updateGameObjectState(_.addObjectToSideboard(player, BasicGameObject(Card(player, findCardPrinting(cardDefinition)), _, Zone.Sideboard(player))))
+    }
   }
 
   val playerOne = PlayerId("P1")
@@ -43,7 +46,11 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.gameState
     val updatedGameState = initialGameState
-      .addCardToHand(playerOne, EnvironmentalSciences)
+      .addCardToHand(playerOne, GuidingVoice)
+      .addCardToSideboard(playerOne, EnvironmentalSciences)
+      .addCardToSideboard(playerOne, IntroductionToProphecy)
+      .addCardToSideboard(playerOne, LightningBolt)
+      .addCardToSideboard(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)

@@ -25,7 +25,7 @@ case class GameObjectState(
     graveyards: Map[PlayerId, Seq[BasicGameObject]],
     stack: Seq[StackObject],
     exile: Seq[BasicGameObject],
-    sideboards: Map[PlayerId, Seq[CardPrinting]],
+    sideboards: Map[PlayerId, Seq[BasicGameObject]],
     manaPools: Map[PlayerId, Seq[ManaObject]],
     lastKnownInformation: Map[ObjectId, ObjectWithState],
     floatingActiveContinuousEffects: Seq[FloatingActiveContinuousEffect],
@@ -49,6 +49,7 @@ case class GameObjectState(
   private def libraryLens(player: PlayerId): Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.libraries).at(player)(AtGuaranteed.apply)
   private def handLens(player: PlayerId): Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.hands).at(player)(AtGuaranteed.apply)
   private def graveyardLens(player: PlayerId): Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.graveyards).at(player)(AtGuaranteed.apply)
+  private def sideboardLens(player: PlayerId): Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.sideboards).at(player)(AtGuaranteed.apply)
   private val battlefieldLens: Lens[GameObjectState, Seq[PermanentObject]] = Focus[GameObjectState](_.battlefield)
   private val stackLens: Lens[GameObjectState, Seq[StackObject]] = Focus[GameObjectState](_.stack)
   private val exileLens: Lens[GameObjectState, Seq[BasicGameObject]] = Focus[GameObjectState](_.exile)
@@ -70,6 +71,9 @@ case class GameObjectState(
   }
   def addObjectToExile(objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
     addObjectToZone[BasicGameObject](exileLens, objectConstructor, _.length)
+  }
+  def addObjectToSideboard(player: PlayerId, objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
+    addObjectToZone[BasicGameObject](sideboardLens(player), objectConstructor, _.length)
   }
   private def addObjectToZone[T <: GameObject](lens: Lens[GameObjectState, Seq[T]], objectConstructor: ObjectId => T, getIndex: Seq[T] => Int): GameObjectState = {
     val newObject = objectConstructor(ObjectId(nextId))
@@ -108,6 +112,7 @@ case class GameObjectState(
       case Zone.Battlefield => copy(battlefield = zoneUpdater(battlefield))
       case Zone.Stack => copy(stack = zoneUpdater(stack))
       case Zone.Exile => copy(exile = zoneUpdater(exile))
+      case Zone.Sideboard(player) => copy(sideboards = sideboards.updated(player, zoneUpdater(sideboards(player))))
     }
   }
 
@@ -116,6 +121,7 @@ case class GameObjectState(
       case Zone.Hand(player) => Focus[GameObjectState](_.hands).at(player)(AtGuaranteed.apply)
       case Zone.Graveyard(player) => Focus[GameObjectState](_.graveyards).at(player)(AtGuaranteed.apply)
       case Zone.Exile => Focus[GameObjectState](_.exile)
+      case Zone.Sideboard(player) => Focus[GameObjectState](_.sideboards).at(player)(AtGuaranteed.apply)
   }
   def updateZone(zone: BasicZone, f: Seq[BasicGameObject] => Seq[BasicGameObject]): GameObjectState = {
     getZoneLens(zone).modify(f)(this)
@@ -127,7 +133,8 @@ case class GameObjectState(
       battlefield.view ++
       stack.view ++
       graveyards.flatMap(_._2).view ++
-      exile.view
+      exile.view ++
+      sideboards.flatMap(_._2).view
   }
   def updateObjectById(objectId: ObjectId, f: GameObject => GameObject): GameObjectState = {
     updateObject(allObjects.find(_.objectId == objectId), f)
@@ -185,7 +192,7 @@ object GameObjectState {
     }).toMap
     val sideboards = gameStartingData.playerData.map(playerStartingData => {
       import playerStartingData._
-      playerIdentifier -> sideboard
+      playerIdentifier -> sideboard.map(createGameObject(_, playerIdentifier, Zone.Sideboard(playerIdentifier)))
     }).toMap
 
     GameObjectState(
