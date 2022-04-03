@@ -12,18 +12,17 @@ import find from "lodash/find"
 export default function LearnChoice() {
     const gameState = useContext(GameState);
     const [chosenLesson, setChosenLesson] = useState(null);
-    const getId = ({artDetails: {set, collectorNumber}}) => set + "-" + collectorNumber;
+
+    const sideboard = gameState.sideboards[gameState.player];
 
     function ChoosableLesson({card, ...props}) {
-        const id = getId(card);
-        const isChosen = id === chosenLesson;
+        const isChosen = card.objectId === chosenLesson;
         const className = isChosen ? "selected" : "selectable";
-        const onClick = () => setChosenLesson(id);
+        const onClick = () => setChosenLesson(card.objectId);
         return <CardWithText card={card} onClick={onClick} className={className} {...props} />
     }
 
-    const validLessonIds = distinct(gameState.currentChoice.details.possibleLessons);
-    const validLessons = validLessonIds.map(id => find(gameState.sideboard, card => getId(card) === id));
+    const validLessons = gameState.currentChoice.details.possibleLessons.map(id => find(sideboard, card => card.objectId === id));
 
     return <PopupChoice text="Learn">
         <BannerText>Learn</BannerText>
