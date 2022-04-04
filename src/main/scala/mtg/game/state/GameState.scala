@@ -24,6 +24,10 @@ case class GameState(
       current match {
         case WrappedOldUpdates(nextUpdates@_*) =>
           actions ++ nextUpdates.headOption.toSeq
+        case PartiallyExecutedActionWithDelegate(rootAction, childAction) =>
+          helper(childAction, actions :+ rootAction)
+        case PartiallyExecutedActionWithFlatMap(rootAction, childAction, f) =>
+          helper(childAction, actions :+ rootAction)
         case PartiallyExecutedActionWithChild(rootAction, childAction, _) =>
           helper(childAction, actions :+ rootAction)
         case PartiallyExecutedActionWithValue(rootAction, _, _) =>

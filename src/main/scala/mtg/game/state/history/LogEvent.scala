@@ -1,6 +1,7 @@
 package mtg.game.state.history
 
 import mtg.core.PlayerId
+import mtg.game.state.{GameAction, LogEventAction}
 import mtg.game.turns.Turn
 
 sealed class LogEvent
@@ -26,4 +27,6 @@ object LogEvent {
   case class OrderBlockers(player: PlayerId, attackerName: String, blockerNames: Seq[String]) extends LogEvent
   case class RevealCard(player: PlayerId, cardName: String) extends LogEvent
   case class Scry(player: PlayerId, cardsOnTop: Int, cardsOnBottom: Int) extends LogEvent
+
+  implicit def asGameAction(logEvent: LogEvent): GameAction[Unit] = LogEventAction(logEvent)
 }

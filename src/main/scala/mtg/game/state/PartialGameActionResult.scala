@@ -3,11 +3,13 @@ package mtg.game.state
 sealed trait PartialGameActionResult[+T]
 object PartialGameActionResult {
   case class Value[T](value: T) extends PartialGameActionResult[T]
+  case class Delegated[T](action: GameAction[T]) extends PartialGameActionResult[T]
   case class ChildWithCallback[T, S](child: GameAction[S], callback: (S, GameState) => PartialGameActionResult[T]) extends PartialGameActionResult[T]
   case class Backup(gameState: GameState) extends PartialGameActionResult[Nothing]
   case class GameOver(gameResult: GameResult) extends PartialGameActionResult[Nothing]
 
   implicit def valueAsPartialGameActionResult[T](value: T): PartialGameActionResult[T] = Value(value)
+  implicit def actionAsPartialGameActionResult[T](action: GameAction[T]): PartialGameActionResult[T] = Delegated(action)
 
   def child[T](child: GameAction[T]): PartialGameActionResult[T] = ChildWithCallback(child, (v: T, _) => v)
   def children[T](children: GameAction[T]*): PartialGameActionResult[Seq[T]] = {
