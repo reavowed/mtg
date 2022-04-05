@@ -5,6 +5,7 @@ import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
 import mtg.game.priority.PriorityChoice
+import mtg.game.state
 
 import scala.annotation.tailrec
 
@@ -341,15 +342,15 @@ object GameActionExecutor {
         (logEvent.map(initialGameState.recordLogEvent).getOrElse(initialGameState), Nil)
       case None =>
         val actionResult = action.execute(initialGameState)
-        val gameObjectStateAfterAction = actionResult.newGameObjectState.getOrElse(initialGameState.gameObjectState)
+        val gameObjectStateAfterAction = actionResult.asOptionalInstanceOf[GameActionResult.NewGameObjectState].map(_.gameObjectState).getOrElse(initialGameState.gameObjectState)
         val gameStateAfterAction = initialGameState.updateGameObjectState(gameObjectStateAfterAction)
         val triggeredAbilities = getTriggeringAbilities(action, gameStateAfterAction)
         val endedEffects = getEndedEffects(action, gameStateAfterAction)
 
-        val finalGameObjectState = if (actionResult.newGameObjectState.isDefined || triggeredAbilities.nonEmpty || endedEffects.nonEmpty) {
+        val finalGameObjectState = if (actionResult.isInstanceOf[GameActionResult.NewGameObjectState] || triggeredAbilities.nonEmpty || endedEffects.nonEmpty) {
           gameObjectStateAfterAction
             .addWaitingTriggeredAbilities(triggeredAbilities)
-            .updateEffects(_.filter(!endedEffects.contains(_)))
+            .updateEffects(_.diff(endedEffects))
         } else {
           initialGameState.gameObjectState
         }
@@ -357,8 +358,8 @@ object GameActionExecutor {
         val newGameState = initialGameState
           .recordAction(action, ())
           .updateGameObjectState(finalGameObjectState)
-          .recordLogEvent(actionResult.logEvent)
-        (newGameState, actionResult.nextActions)
+          .recordLogEvent(action.getLogEvent(initialGameState))
+        (newGameState, actionResult.asOptionalInstanceOf[GameActionResult.MoreActions].map(_.nextActions).getOrElse(Nil))
     }
   }
 

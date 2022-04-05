@@ -132,13 +132,12 @@ case class OrderBlockersChoice(playerToAct: PlayerId, attacker: ObjectId, blocke
   }
 }
 
-case class BlockerOrdering(player: PlayerId, attacker: ObjectId, blockersInOrder: Seq[ObjectId]) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
+case class BlockerOrdering(player: PlayerId, attacker: ObjectId, blockersInOrder: Seq[ObjectId]) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     def getName(objectId: ObjectId): String = gameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name.get
     LogEvent.OrderBlockers(
       player,
       getName(attacker),
       blockersInOrder.map(getName))
   }
-  override def canBeReverted: Boolean = false
 }

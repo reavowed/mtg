@@ -54,6 +54,7 @@ case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 trait InternalGameAction extends GameAction[Unit] {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
+  def getLogEvent(gameState: GameState): Option[LogEvent] = None
 }
 
 case class WrappedOldUpdates(oldUpdates: InternalGameAction*) extends GameAction[Unit]
