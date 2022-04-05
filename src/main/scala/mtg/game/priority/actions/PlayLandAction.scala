@@ -1,5 +1,6 @@
 package mtg.game.priority.actions
 
+import mtg.actions.moveZone.MoveToBattlefieldAction
 import mtg.core.types.Type
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
@@ -18,7 +19,7 @@ case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends Prior
       ()
     } else {
       for {
-        _ <- PlayLandEvent(player, land.gameObject)
+        _ <- MoveToBattlefieldAction(land.gameObject.objectId, player)
         _ <- LogEvent.PlayedLand(player, land.characteristics.name.get)
       } yield ()
     }
@@ -38,7 +39,7 @@ object PlayLandAction {
         .toSeq
   }
   private def getNumberOfLandsPlayedThisTurn(gameState: GameState): Int = {
-    gameState.gameHistory.gameEventsThisTurn.actions.ofType[PlayLandEvent].size
+    gameState.gameHistory.gameEventsThisTurn.actions.ofType[PlayLandAction].size
   }
   private def getNumberOfLandPlaysAvailable(gameState: GameState): Int = {
     // TODO: effects such as Explore / Azusa

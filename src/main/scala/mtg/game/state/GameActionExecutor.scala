@@ -46,7 +46,7 @@ object GameActionExecutor {
     actingPlayer: PlayerId)(
     implicit gameState: GameState
   ): Option[(ProcessedGameActionResult[T], GameState)] = {
-    handleDelegatingAction[T](rootAction, childAction, handleDecisionForAction(_, serializedDecision, actingPlayer)(_))
+    handleDelegatingActionWithChild[T](rootAction, childAction, handleDecisionForAction(_, serializedDecision, actingPlayer)(_))
   }
 
   def handleDecisionForDelegateWithFlatMap[T, S](
@@ -138,10 +138,19 @@ object GameActionExecutor {
       case Some(Prevent(logEvent)) =>
         (ProcessedGameActionResult.Value(().asInstanceOf[T]), gameState.recordLogEvent(logEvent))
       case None =>
-        val actionResult = unwrapDelegateAction(action, action.delegate)
-        val triggeredAbilities = getTriggeringAbilities(action, gameState)
-        (actionResult, gameState.updateGameObjectState(_.addWaitingTriggeredAbilities(triggeredAbilities)))
+        unwrapAndRecord(action, action.delegate)
     }
+  }
+
+  private def unwrapAndRecord[T](action: DelegatingGameAction[T], childAction: GameAction[T])(implicit gameState: GameState): (ProcessedGameActionResult[T], GameState) = {
+    val actionResult = unwrapDelegateAction(action, childAction)
+    val newGameState = actionResult match {
+      case ProcessedGameActionResult.Value(v) =>
+        gameState.recordAction(action, v).updateGameObjectState(_.addWaitingTriggeredAbilities(getTriggeringAbilities(action, gameState)))
+      case _ =>
+        gameState
+    }
+    (actionResult, newGameState)
   }
 
   private def executeDelegateWithChild[T](
@@ -150,7 +159,7 @@ object GameActionExecutor {
     implicit gameState: GameState,
     stops: Stops
   ): Option[(ProcessedGameActionResult[T], GameState)] = {
-    handleDelegatingAction[T](rootAction, childAction, executeAction(_)(_, stops))
+    handleDelegatingActionWithChild[T](rootAction, childAction, executeAction(_)(_, stops))
   }
 
   private def executeDelegateWithFlatMap[T, S](
@@ -163,18 +172,13 @@ object GameActionExecutor {
     handleDelegatingActionWithFlatMap[T, S](rootAction, childAction, flatMapFunction, executeAction(_)(_, stops))
   }
 
-  private def handleDelegatingAction[T](
+  private def handleDelegatingActionWithChild[T](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[T],
     actionExecutor: (GameAction[T], GameState) => Option[(ProcessedGameActionResult[T], GameState)])(
     implicit gameState: GameState
   ): Option[(ProcessedGameActionResult[T], GameState)] = {
-    actionExecutor(childAction, gameState) map {
-      case (ProcessedGameActionResult.Action(childAction), gameState: GameState) =>
-        (unwrapDelegateAction(rootAction, childAction)(gameState), gameState)
-      case (result, gameState) =>
-        (result, gameState)
-    }
+    handleDelegatingAction(rootAction, childAction, actionExecutor, identity[ProcessedGameActionResult[T]])
   }
 
   private def handleDelegatingActionWithFlatMap[T, S](
@@ -184,16 +188,38 @@ object GameActionExecutor {
     actionExecutor: (GameAction[S], GameState) => Option[(ProcessedGameActionResult[S], GameState)])(
     implicit gameState: GameState
   ): Option[(ProcessedGameActionResult[T], GameState)] = {
-    actionExecutor(childAction, gameState) map {
-      case (ProcessedGameActionResult.Action(childAction), gameState: GameState) =>
-        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithFlatMap(rootAction, childAction, flatMapFunction)), gameState)
-      case (ProcessedGameActionResult.Value(value), gameState: GameState) =>
-        (unwrapDelegateAction(rootAction, flatMapFunction(value))(gameState), gameState)
-      case (interrupt: ProcessedGameActionResult.Interrupted, gameState) =>
-        (interrupt, gameState)
+    def transformResult(result: ProcessedGameActionResult[S]): ProcessedGameActionResult[T] = result match {
+      case ProcessedGameActionResult.Action(childAction) =>
+        ProcessedGameActionResult.Action(PartiallyExecutedActionWithFlatMap(rootAction, childAction, flatMapFunction))
+      case ProcessedGameActionResult.Value(value) =>
+        ProcessedGameActionResult.Action(flatMapFunction(value))
+      case interrupt: ProcessedGameActionResult.Interrupted =>
+        interrupt
     }
+    handleDelegatingAction(rootAction, childAction, actionExecutor, transformResult)
   }
 
+  private def handleDelegatingAction[T, S](
+    rootAction: DelegatingGameAction[T],
+    childAction: GameAction[S],
+    actionExecutor: (GameAction[S], GameState) => Option[(ProcessedGameActionResult[S], GameState)],
+    resultTransformer: ProcessedGameActionResult[S] => ProcessedGameActionResult[T])(
+    implicit gameState: GameState
+  ): Option[(ProcessedGameActionResult[T], GameState)] = {
+    actionExecutor(childAction, gameState)
+      .map(_.mapLeft(resultTransformer))
+      .map {
+        case (ProcessedGameActionResult.Value(value), gameState: GameState) =>
+          unwrapAndRecord(rootAction, ConstantAction(value))(gameState)
+        case (ProcessedGameActionResult.Action(childAction), gameState: GameState) =>
+          unwrapAndRecord(rootAction, childAction)(gameState)
+        case (result, gameState) =>
+          (result, gameState)
+      }
+  }
+
+
+  @tailrec
   private def unwrapDelegateAction[T](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[T])(
@@ -329,7 +355,7 @@ object GameActionExecutor {
         }
 
         val newGameState = initialGameState
-          .recordAction(action)
+          .recordAction(action, ())
           .updateGameObjectState(finalGameObjectState)
           .recordLogEvent(actionResult.logEvent)
         (newGameState, actionResult.nextActions)

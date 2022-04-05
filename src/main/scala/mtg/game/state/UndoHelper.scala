@@ -13,10 +13,10 @@ object UndoHelper {
     def helper(iterator: Iterator[HistoryEvent]): Option[GameState]  = {
       if (iterator.hasNext) {
         iterator.next() match {
-          case HistoryEvent.ResolvedAction(action, _) =>
-            if (action.canBeReverted) {
-              helper(iterator)
-            } else None
+          case HistoryEvent.ResolvedAction(action: InternalGameAction, _, _) if !action.canBeReverted =>
+            None
+          case HistoryEvent.ResolvedAction(_, _, _) =>
+            helper(iterator)
           case HistoryEvent.ResolvedChoice(choice, decision, stateBefore) =>
             if (choice.playerToAct == playerId && decision != PriorityDecision.Pass)
               Some(stateBefore)

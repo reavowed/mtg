@@ -48,7 +48,7 @@ case class GameState(
   def updateGameObjectState(f: GameObjectState => GameObjectState): GameState = updateGameObjectState(f(gameObjectState))
   def updateGameObjectState(newGameObjectState: Option[GameObjectState]): GameState = newGameObjectState.map(updateGameObjectState).getOrElse(this)
   def updateGameObjectState(newGameObjectState: GameObjectState): GameState = copy(gameObjectState = newGameObjectState)
-  def recordAction(action: InternalGameAction): GameState = recordHistoryEvent(ResolvedAction(action, this))
+  def recordAction[T](action: GameAction[T], result: T): GameState = recordHistoryEvent(ResolvedAction(action, result, this))
   def recordChoice[DecisionType](choice: Choice[DecisionType], decision: DecisionType): GameState = recordHistoryEvent(ResolvedChoice(choice, decision, this))
   def recordHistoryEvent(event: HistoryEvent): GameState = copy(gameHistory = gameHistory.addGameEvent(event))
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))

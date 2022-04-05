@@ -5,7 +5,7 @@ import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game.state.{GameAction, GameState}
 import mtg.game.turns.TurnStep
-import mtg.game.turns.turnEvents.ExecuteStep
+import mtg.game.turns.turnEvents.{BeginStep, ExecuteStep}
 import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase
 
 case class BeginningOfCombatCondition(playerPhrase: StaticSingleIdentifyingNounPhrase[PlayerId]) extends Condition {
@@ -15,6 +15,6 @@ case class BeginningOfCombatCondition(playerPhrase: StaticSingleIdentifyingNounP
       " turn"
   }
   override def matchesEvent(eventToMatch: GameAction[_], gameState: GameState, effectContext: EffectContext): Boolean = {
-    eventToMatch == ExecuteStep(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == playerPhrase.identify(gameState, effectContext)
+    eventToMatch == BeginStep(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == playerPhrase.identify(gameState, effectContext)
   }
 }

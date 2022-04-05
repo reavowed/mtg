@@ -25,7 +25,8 @@ object DeclareAttackers extends DelegatingGameAction[Unit] {
   }
 
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
-    gameState.gameHistory.gameEventsThisTurn.ofType[ResolvedAction]
+    gameState.gameHistory.gameEventsThisTurn.ofType[ResolvedAction[_]]
+      .filter(_.action.isInstanceOf[InternalGameAction])
       .forall(_.stateBefore.gameObjectState.derivedState.permanentStates.get(objectId).exists(_.controller == gameState.activePlayer))
   }
   private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
