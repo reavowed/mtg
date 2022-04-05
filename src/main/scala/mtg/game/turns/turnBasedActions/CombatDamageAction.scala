@@ -101,7 +101,7 @@ case class AssignCombatDamageChoice(
   }
 }
 
-case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends InternalGameAction {
+case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     Seq(DealDamageAction(source, recipient, amount))
   }

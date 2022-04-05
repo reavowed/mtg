@@ -26,7 +26,7 @@ object DeclareAttackers extends DelegatingGameAction[Unit] {
 
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
     gameState.gameHistory.gameEventsThisTurn.ofType[ResolvedAction[_]]
-      .filter(_.action.isInstanceOf[InternalGameAction])
+      .filter(_.action.isInstanceOf[GameObjectAction])
       .forall(_.stateBefore.gameObjectState.derivedState.permanentStates.get(objectId).exists(_.controller == gameState.activePlayer))
   }
   private def getPossibleAttackers(gameState: GameState): Seq[ObjectId] = {
@@ -89,7 +89,7 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
   }
 }
 
-case class TapAttacker(attacker: ObjectId) extends InternalGameAction {
+case class TapAttacker(attacker: ObjectId) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     TapObjectAction(attacker)
   }

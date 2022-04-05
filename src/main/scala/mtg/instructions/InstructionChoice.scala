@@ -3,7 +3,7 @@ package mtg.instructions
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.state.{GameState, InternalGameAction}
+import mtg.game.state.{GameState, GameObjectAction}
 
 abstract class InstructionChoice {
   def playerChoosing: PlayerId

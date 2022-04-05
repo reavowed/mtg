@@ -2,9 +2,9 @@ package mtg.actions
 
 import mtg.core.ObjectId
 import mtg.actions.moveZone.MoveToGraveyardAction
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
 
-case class DestroyAction(objectId: ObjectId) extends InternalGameAction {
+case class DestroyAction(objectId: ObjectId) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     MoveToGraveyardAction(objectId)
   }

@@ -2,9 +2,9 @@ package mtg.game.turns.turnBasedActions
 
 import mtg.core.zones.Zone
 import mtg.actions.UntapObjectAction
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
 
-case object UntapForTurn extends InternalGameAction {
+case object UntapForTurn extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     val tappedPermanents = gameState.gameObjectState.derivedState.permanentStates.values.view
       .filter(o => o.gameObject.zone == Zone.Battlefield && o.controller == gameState.activePlayer)

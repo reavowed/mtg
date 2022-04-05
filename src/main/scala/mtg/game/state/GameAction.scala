@@ -51,13 +51,13 @@ case class PartiallyExecutedActionWithValue[T, S](rootAction: GameAction[T], val
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
-trait InternalGameAction extends GameAction[Unit] {
+trait GameObjectAction extends GameAction[Unit] {
   def execute(gameState: GameState): GameActionResult
   def canBeReverted: Boolean
   def getLogEvent(gameState: GameState): Option[LogEvent] = None
 }
 
-case class WrappedOldUpdates(oldUpdates: InternalGameAction*) extends GameAction[Unit]
+case class WrappedOldUpdates(gameObjectActions: GameObjectAction*) extends GameAction[Unit]
 
 object GameAction {
   implicit class SeqExtensions[T](seq: Seq[GameAction[T]]) {

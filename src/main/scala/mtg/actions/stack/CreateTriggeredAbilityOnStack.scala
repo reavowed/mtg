@@ -2,9 +2,9 @@ package mtg.actions.stack
 
 import mtg.abilities.PendingTriggeredAbility
 import mtg.game.objects.StackObject
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
 
-case class CreateTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends InternalGameAction {
+case class CreateTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState
       .removeTriggeredAbility(pendingTriggeredAbility)

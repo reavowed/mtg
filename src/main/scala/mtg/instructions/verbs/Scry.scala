@@ -4,7 +4,7 @@ import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
 import mtg.instructions._
 import mtg.utils.ParsingUtils
 
@@ -51,7 +51,7 @@ case class ScryAction(
   player: PlayerId,
   cardsOnTop: Seq[ObjectId],
   cardsOnBottom: Seq[ObjectId]
-) extends InternalGameAction {
+) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     // TODO: Should create new game objects to hide card identities (if scrying more than one)
     gameState.gameObjectState.updateZone(Zone.Library(player), library => {

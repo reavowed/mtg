@@ -3,9 +3,9 @@ package mtg.actions
 import mtg.core.{ManaType, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
 
-case class AddManaAction(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends InternalGameAction {
+case class AddManaAction(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     manaSymbols.flatMap(getManaTypes).foldLeft(gameState.gameObjectState)(_.addMana(player, _))
   }

@@ -3,9 +3,9 @@ package mtg.actions
 import mtg.continuousEffects.ContinuousEffect
 import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
 
-case class CreateContinousEffectsAction(effects: Seq[ContinuousEffect], context: EffectContext, endCondition: Condition) extends InternalGameAction {
+case class CreateContinousEffectsAction(effects: Seq[ContinuousEffect], context: EffectContext, endCondition: Condition) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState.addEffects(effects, context, endCondition)
   }

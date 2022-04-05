@@ -9,7 +9,7 @@ object CleanupAction extends DelegatingGameAction[Unit] {
   }
 }
 
-object DamageWearsOffEvent extends InternalGameAction {
+object DamageWearsOffEvent extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     gameState.gameObjectState.battlefield.foldLeft(gameState.gameObjectState) { (state, obj) =>
       state.updatePermanentObject(obj.objectId, _.updateMarkedDamage(_ => 0))
@@ -18,7 +18,7 @@ object DamageWearsOffEvent extends InternalGameAction {
   override def canBeReverted: Boolean = true
 }
 
-object UntilEndOfTurnEffectsEnd extends InternalGameAction {
+object UntilEndOfTurnEffectsEnd extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = ()
   override def canBeReverted: Boolean = true
 }

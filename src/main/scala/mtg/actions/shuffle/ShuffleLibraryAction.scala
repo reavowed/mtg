@@ -3,11 +3,11 @@ package mtg.actions.shuffle
 import mtg.core.PlayerId
 import mtg.core.zones.Zone
 import mtg.game.objects.BasicGameObject
-import mtg.game.state.{GameActionResult, GameState, InternalGameAction}
+import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
 
 import scala.util.Random
 
-case class ShuffleLibraryAction(player: PlayerId) extends InternalGameAction {
+case class ShuffleLibraryAction(player: PlayerId) extends GameObjectAction {
   override def execute(gameState: GameState): GameActionResult = {
     val library = Zone.Library(player)
     val shuffledLibraryContents = Random.shuffle(gameState.gameObjectState.libraries(player))
