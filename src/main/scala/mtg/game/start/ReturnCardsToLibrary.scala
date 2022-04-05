@@ -1,14 +1,20 @@
 package mtg.game.start
 
 import mtg._
+import mtg.actions.moveZone.MoveToLibraryAction
 import mtg.core.PlayerId
 import mtg.game.objects.GameObject
+import mtg.game.state.history.LogEvent
 import mtg.game.state.{Choice, DelegatingGameAction, GameAction, GameState}
 
-case class ReturnCardsToLibrary(playerToAct: PlayerId, numberOfCardsToReturn: Int) extends DelegatingGameAction[Unit] {
+case class ReturnCardsToLibrary(player: PlayerId, numberOfCardsToReturn: Int) extends DelegatingGameAction[Unit] {
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
-    ChooseCardsInHand(playerToAct, numberOfCardsToReturn)
-      .flatMap(ReturnCardsToLibraryAction(playerToAct, _))
+    ChooseCardsInHand(player, numberOfCardsToReturn).flatMap(returnCards)
+  }
+
+  def returnCards(cardsToReturn: Seq[GameObject]): GameAction[Unit] = {
+    cardsToReturn.map(card => MoveToLibraryAction(card.objectId)).traverse
+      .andThen(LogEvent.ReturnCardsToLibrary(player, cardsToReturn.size))
   }
 }
 
