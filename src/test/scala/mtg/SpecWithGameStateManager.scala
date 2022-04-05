@@ -1,5 +1,6 @@
 package mtg
 
+import mtg.actions.GameResultAction
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state._
 import mtg.game.state.history.GameHistory
@@ -14,9 +15,6 @@ abstract class SpecWithGameStateManager
     with GameUpdateHelpers
     with StackObjectHelpers
 {
-  case class GameResultAction(gameResult: GameResult) extends ExecutableGameAction[Nothing] {
-    override def execute()(implicit gameState: GameState): PartialGameActionResult[Nothing] = PartialGameActionResult.GameOver(gameResult)
-  }
   case class RootWrapper(action: GameAction[Any]) extends RootGameAction {
     override def delegate(implicit gameState: GameState): GameAction[RootGameAction] = {
       for {
