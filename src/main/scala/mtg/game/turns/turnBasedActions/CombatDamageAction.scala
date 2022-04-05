@@ -1,8 +1,8 @@
 package mtg.game.turns.turnBasedActions
 
+import mtg.actions.damage.DealDamageAction
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.state._
-import mtg.parts.damage.DealDamageEvent
 import mtg.utils.ParsingUtils
 
 import scala.annotation.tailrec
@@ -103,7 +103,7 @@ case class AssignCombatDamageChoice(
 
 case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends InternalGameAction {
   override def execute(gameState: GameState): GameActionResult = {
-    Seq(DealDamageEvent(source, recipient, amount))
+    Seq(DealDamageAction(source, recipient, amount))
   }
   override def canBeReverted: Boolean = true
 }

@@ -1,5 +1,6 @@
 package mtg.stack.adding
 
+import mtg.actions.RemoveManaAction
 import mtg.core.symbols.ManaSymbol
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects.ManaObject

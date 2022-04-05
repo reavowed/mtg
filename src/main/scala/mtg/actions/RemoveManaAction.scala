@@ -1,4 +1,4 @@
-package mtg.stack.adding
+package mtg.actions
 
 import mtg.core.PlayerId
 import mtg.game.objects.ManaObject

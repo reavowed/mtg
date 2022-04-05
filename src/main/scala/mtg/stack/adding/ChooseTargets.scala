@@ -1,5 +1,6 @@
 package mtg.stack.adding
 
+import mtg.actions.stack.AddTarget
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state._
@@ -34,11 +35,4 @@ object TargetChoice {
       targetIdentifier.getText(CurrentCharacteristics.getName(stackObjectWithState)),
       targetIdentifier.getValidChoices(stackObjectWithState, gameState, EffectContext(stackObjectWithState)))
   }
-}
-
-case class AddTarget(stackObjectId: ObjectId, target: ObjectOrPlayerId) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.updateStackObject(stackObjectId, _.addTarget(target))
-  }
-  override def canBeReverted: Boolean = true
 }

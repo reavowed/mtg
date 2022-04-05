@@ -1,5 +1,6 @@
 package mtg.stack.adding
 
+import mtg.actions.stack.SetMode
 import mtg.cards.text.{ModalInstructionParagraph, SimpleInstructionParagraph}
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state._
@@ -27,11 +28,3 @@ case class ModeChoice(playerToAct: PlayerId, stackObjectId: ObjectId, modes: Seq
     } yield modeIndex
   }
 }
-
-case class SetMode(stackObjectId: ObjectId, modeIndex: Int) extends InternalGameAction {
-  override def execute(gameState: GameState): GameActionResult = {
-    gameState.gameObjectState.updateStackObject(stackObjectId, _.addMode(modeIndex))
-  }
-  override def canBeReverted: Boolean = true
-}
-
