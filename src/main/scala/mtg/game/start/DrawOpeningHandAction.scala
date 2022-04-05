@@ -1,11 +1,11 @@
 package mtg.game.start
 
-import mtg.core.PlayerId
 import mtg.actions.DrawCardsAction
-import mtg.game.state.{ExecutableGameAction, GameState, PartialGameActionResult, WrappedOldUpdates}
+import mtg.core.PlayerId
+import mtg.game.state.{DelegatingGameAction, GameAction, GameState}
 
-case class DrawOpeningHandAction(player: PlayerId) extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.child(WrappedOldUpdates(DrawCardsAction(player, gameState.gameData.startingHandSize)))
+case class DrawOpeningHandAction(player: PlayerId) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
+    DrawCardsAction(player, gameState.gameData.startingHandSize)
   }
 }

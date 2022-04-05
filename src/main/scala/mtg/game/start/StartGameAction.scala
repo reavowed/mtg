@@ -1,7 +1,7 @@
 package mtg.game.start
 
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, PartialGameActionResult, RootGameAction}
+import mtg.game.state.{GameAction, GameState, RootGameAction}
 
 object StartGameAction extends RootGameAction {
   override def delegate(implicit gameState: GameState): GameAction[RootGameAction] = {

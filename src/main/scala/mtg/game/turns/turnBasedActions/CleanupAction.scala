@@ -1,12 +1,11 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.game.state._
-import mtg.game.turns.Turn
 
-object CleanupAction extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+object CleanupAction extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     // TODO: These two actions should be simultaneous
-    PartialGameActionResult.child(WrappedOldUpdates(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd))
+    WrappedOldUpdates(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd)
   }
 }
 

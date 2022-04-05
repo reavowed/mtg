@@ -1,24 +1,21 @@
 package mtg.stack.adding
 
-import mtg.abilities.SpellAbility
 import mtg.cards.text.{ModalInstructionParagraph, SimpleInstructionParagraph}
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state._
 
-case class ChooseModes(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+case class ChooseModes(stackObjectId: ObjectId) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
     stackObjectWithState.characteristics.instructionParagraphs.ofType[ModalInstructionParagraph].headOption match {
       case Some(modalEffectParagraph) =>
-        PartialGameActionResult.ChildWithCallback(
-          ModeChoice(stackObjectWithState.controller, stackObjectId, modalEffectParagraph.modes),
-          setMode(stackObjectWithState))
+        for {
+          modeIndex <- ModeChoice(stackObjectWithState.controller, stackObjectId, modalEffectParagraph.modes)
+          _ <- SetMode(stackObjectId, modeIndex)
+        } yield ()
       case None =>
-        PartialGameActionResult.Value(())
+        ()
     }
-  }
-  private def setMode(stackObjectWithState: StackObjectWithState)(modeIndex: Int, gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.child(WrappedOldUpdates(SetMode(stackObjectWithState.gameObject.objectId, modeIndex)))
   }
 }
 

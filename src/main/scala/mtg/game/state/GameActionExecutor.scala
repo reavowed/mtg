@@ -138,14 +138,7 @@ object GameActionExecutor {
       case Some(Prevent(logEvent)) =>
         (ProcessedGameActionResult.Value(().asInstanceOf[T]), gameState.recordLogEvent(logEvent))
       case None =>
-        val actionResult = action.delegate match {
-          case ConstantAction(value) =>
-            ProcessedGameActionResult.Value(value)
-          case FlatMappedGameAction(childAction, f) =>
-            ProcessedGameActionResult.Action(PartiallyExecutedActionWithFlatMap(action, childAction, f))
-          case childAction =>
-            ProcessedGameActionResult.Action(childAction)
-        }
+        val actionResult = unwrapDelegateAction(action, action.delegate)
         val triggeredAbilities = getTriggeringAbilities(action, gameState)
         (actionResult, gameState.updateGameObjectState(_.addWaitingTriggeredAbilities(triggeredAbilities)))
     }
@@ -178,7 +171,7 @@ object GameActionExecutor {
   ): Option[(ProcessedGameActionResult[T], GameState)] = {
     actionExecutor(childAction, gameState) map {
       case (ProcessedGameActionResult.Action(childAction), gameState: GameState) =>
-        (unwrapDelegateAction(rootAction, childAction), gameState)
+        (unwrapDelegateAction(rootAction, childAction)(gameState), gameState)
       case (result, gameState) =>
         (result, gameState)
     }
@@ -195,7 +188,7 @@ object GameActionExecutor {
       case (ProcessedGameActionResult.Action(childAction), gameState: GameState) =>
         (ProcessedGameActionResult.Action(PartiallyExecutedActionWithFlatMap(rootAction, childAction, flatMapFunction)), gameState)
       case (ProcessedGameActionResult.Value(value), gameState: GameState) =>
-        (unwrapDelegateAction(rootAction, flatMapFunction(value)), gameState)
+        (unwrapDelegateAction(rootAction, flatMapFunction(value))(gameState), gameState)
       case (interrupt: ProcessedGameActionResult.Interrupted, gameState) =>
         (interrupt, gameState)
     }
@@ -203,11 +196,14 @@ object GameActionExecutor {
 
   private def unwrapDelegateAction[T](
     rootAction: DelegatingGameAction[T],
-    childAction: GameAction[T]
+    childAction: GameAction[T])(
+    implicit gameState: GameState
   ): ProcessedGameActionResult[T] = {
     childAction match {
       case ConstantAction(value) =>
         ProcessedGameActionResult.Value(value)
+      case CalculatedGameAction(f: (GameState => GameAction[T])) =>
+        unwrapDelegateAction(rootAction, f(gameState))
       case FlatMappedGameAction(childAction, f) =>
         unwrapFlatMappedDelegateAction(rootAction, childAction, f)
       case _ =>
@@ -219,11 +215,14 @@ object GameActionExecutor {
   private def unwrapFlatMappedDelegateAction[T, S](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[S],
-    f: S => GameAction[T]
+    f: S => GameAction[T])(
+    implicit gameState: GameState
   ): ProcessedGameActionResult[T] = {
     childAction match {
       case ConstantAction(value) =>
         unwrapDelegateAction(rootAction, f(value))
+      case CalculatedGameAction(g: (GameState => GameAction[S])) =>
+        unwrapFlatMappedDelegateAction(rootAction, g(gameState), f)
       case FlatMappedGameAction(childAction, g: (Any => GameAction[S])) =>
          unwrapFlatMappedDelegateAction(rootAction, childAction, (x: Any) => for { s <- g(x); t <- f(s) } yield t)
       case _ =>

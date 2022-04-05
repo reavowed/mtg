@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
 import mtg.core.{ObjectId, PlayerId}
-import mtg.game.state.{ExecutableGameAction, GameState}
+import mtg.game.state.{DelegatingGameAction, GameState}
 
 @JsonSerialize(using = classOf[PriorityAction.Serializer])
-abstract class PriorityAction extends ExecutableGameAction[Unit] {
+abstract class PriorityAction extends DelegatingGameAction[Unit] {
   def objectId: ObjectId
   def displayText: String
   def optionText: String

@@ -3,16 +3,12 @@ package mtg.game.start
 import mtg._
 import mtg.core.PlayerId
 import mtg.game.objects.GameObject
-import mtg.game.state.{Choice, ExecutableGameAction, GameState, PartialGameActionResult, WrappedOldUpdates}
+import mtg.game.state.{Choice, DelegatingGameAction, GameAction, GameState}
 
-case class ReturnCardsToLibrary(playerToAct: PlayerId, numberOfCardsToReturn: Int) extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.ChildWithCallback(
-      ChooseCardsInHand(playerToAct, numberOfCardsToReturn),
-      returnCards)
-  }
-  def returnCards(cards: Seq[GameObject], gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.child(WrappedOldUpdates(ReturnCardsToLibraryAction(playerToAct, cards)))
+case class ReturnCardsToLibrary(playerToAct: PlayerId, numberOfCardsToReturn: Int) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
+    ChooseCardsInHand(playerToAct, numberOfCardsToReturn)
+      .flatMap(ReturnCardsToLibraryAction(playerToAct, _))
   }
 }
 

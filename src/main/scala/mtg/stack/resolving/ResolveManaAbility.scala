@@ -4,12 +4,11 @@ import mtg.abilities.{ActivatedAbilityDefinition, ManaAbility}
 import mtg.cards.text.SimpleInstructionParagraph
 import mtg.core.PlayerId
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.state.{ExecutableGameAction, GameActionResult, GameState, InternalGameAction, ObjectWithState, PartialGameActionResult}
+import mtg.game.state.{DelegatingGameAction, GameAction, GameState, ObjectWithState}
 
-case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val resolutionContext = StackObjectResolutionContext.forManaAbility(ManaAbility(objectWithAbility.gameObject.objectId, player), gameState)
-    PartialGameActionResult.child(
-      ResolveInstructions(ability.instructions.asInstanceOf[SimpleInstructionParagraph].instructions, resolutionContext))
+    ResolveInstructions(ability.instructions.asInstanceOf[SimpleInstructionParagraph].instructions, resolutionContext)
   }
 }

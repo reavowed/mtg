@@ -4,7 +4,7 @@ import mtg.core.types.Type
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
+import mtg.game.state.{GameAction, GameState, ObjectWithState}
 import mtg.stack.adding.TimingChecks
 
 case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends PriorityAction {
@@ -12,14 +12,16 @@ case class PlayLandAction(player: PlayerId, land: ObjectWithState) extends Prior
   override def displayText: String = "Play"
   override def optionText: String = "Play " + land.gameObject.objectId
 
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val preventEvent = PlayLandAction.cannotPlayLands(player, gameState) || PlayLandAction.cannotPlayLand(land, player, gameState)
-    val eventOption = if (preventEvent) None else Some(PlayLandEvent(player, land.gameObject))
-    PartialGameActionResult.childrenThenValue(
-      Seq(
-        WrappedOldUpdates(eventOption.toSeq: _*),
-        LogEvent.PlayedLand(player, land.characteristics.name.get)),
-      ())
+    if (preventEvent) {
+      ()
+    } else {
+      for {
+        _ <- PlayLandEvent(player, land.gameObject)
+        _ <- LogEvent.PlayedLand(player, land.characteristics.name.get)
+      } yield ()
+    }
   }
 }
 

@@ -5,35 +5,30 @@ import mtg.core.types.Type
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state._
 import mtg.game.state.history.LogEvent
-import mtg.game.turns.TurnPhase
 import mtg.utils.ParsingUtils
 
-import scala.collection.View
-
-object DeclareBlockers extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+object DeclareBlockers extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val defendingPlayer = DeclareAttackers.getDefendingPlayer(gameState)
     val attackers = DeclareAttackers.getAttackers(gameState)
     val possibleBlockers = getPossibleBlockers(defendingPlayer, attackers, gameState)
     if (attackers.nonEmpty && possibleBlockers.nonEmpty) {
-      PartialGameActionResult.ChildWithCallback(
-        DeclareBlockersChoice(
-          defendingPlayer,
-          attackers,
-          possibleBlockers),
-        handleBlockers)
+      for {
+        declaredBlockers <- DeclareBlockersChoice(defendingPlayer, attackers, possibleBlockers)
+        _ <- OrderBlockers(declaredBlockers.blockDeclarations)
+        _ <- logBlockDeclaration(declaredBlockers)
+      } yield ()
     } else
       ()
   }
 
-  private def handleBlockers(declaredBlockers: DeclaredBlockers, gameState: GameState): PartialGameActionResult[Unit] = {
-    def getName(objectId: ObjectId): String = gameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name.get
-    val assignments = declaredBlockers.blockDeclarations.groupBy(_.attacker)
-      .map { case (id, details) => (getName(id), details.map(_.blocker).map(getName)) }
-    PartialGameActionResult.childrenThenValue(
-      Seq(OrderBlockers(declaredBlockers.blockDeclarations), LogEvent.DeclareBlockers(declaredBlockers.player, assignments)),
-      ()
-    )(gameState)
+  def logBlockDeclaration(declaredBlockers: DeclaredBlockers): GameAction[Unit] = new DelegatingGameAction[Unit] {
+    override def delegate(implicit gameState: GameState): GameAction[Unit] = {
+      def getName(objectId: ObjectId): String = gameState.gameObjectState.derivedState.permanentStates(objectId).characteristics.name.get
+      val assignments = declaredBlockers.blockDeclarations.groupBy(_.attacker)
+        .map { case (id, details) => (getName(id), details.map(_.blocker).map(getName)) }
+      LogEvent.DeclareBlockers(declaredBlockers.player, assignments)
+    }
   }
 
   private def getPossibleBlockers(defendingPlayer: PlayerId, attackers: Seq[ObjectId], gameState: GameState): Map[ObjectId, Seq[ObjectId]] = {
@@ -116,14 +111,15 @@ case class DeclareBlockersChoice(
 case class BlockDeclaration(blocker: ObjectId, attacker: ObjectId)
 case class DeclaredBlockers(player: PlayerId, blockDeclarations: Seq[BlockDeclaration])
 
-case class OrderBlockers(blockDeclarations: Seq[BlockDeclaration]) extends ExecutableGameAction[Seq[BlockerOrdering]] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Seq[BlockerOrdering]] = {
-    PartialGameActionResult.children(blockDeclarations
+case class OrderBlockers(blockDeclarations: Seq[BlockDeclaration]) extends DelegatingGameAction[Seq[BlockerOrdering]] {
+  override def delegate(implicit gameState: GameState): GameAction[Seq[BlockerOrdering]] = {
+     blockDeclarations
       .groupBy(_.attacker)
       .filter(_._2.length > 1)
       .map { case (attacker, blockDeclarations) =>
         OrderBlockersChoice(gameState.activePlayer, attacker, blockDeclarations.map(_.blocker).toSet)
-      }.toSeq: _*)
+      }
+      .toSeq.traverse
   }
 }
 

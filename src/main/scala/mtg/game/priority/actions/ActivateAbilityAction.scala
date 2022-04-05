@@ -4,7 +4,7 @@ import mtg.abilities.ActivatedAbilityDefinition
 import mtg.core.{ObjectId, PlayerId}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state._
-import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishActivating, PayCosts}
+import mtg.stack.adding._
 import mtg.stack.resolving.ResolveManaAbility
 
 case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
@@ -12,27 +12,23 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
   override def displayText: String = ability.getText(objectWithAbility.characteristics.name.getOrElse("this object"))
   override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + objectWithAbility.characteristics.abilities.indexOf(ability)
 
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     if (ability.isManaAbility) {
-      val actions = ability.costs.map(_.payForAbility(objectWithAbility)) :+ ResolveManaAbility(player, objectWithAbility, ability)
-      PartialGameActionResult.childrenThenValue(actions, ())
+      for {
+        _ <- ability.costs.map(_.payForAbility(objectWithAbility)).traverse
+        _ <- ResolveManaAbility(player, objectWithAbility, ability)
+      } yield ()
     } else {
-      PartialGameActionResult.ChildWithCallback(
-        WrappedOldUpdates(CreateActivatedAbilityOnStack(ability, objectId, player)),
-        steps)
+      for {
+        _ <- CreateActivatedAbilityOnStack(ability, objectId, player)
+        // TODO: CreateTriggeredAbilityOnStack should return ID
+        stackObjectId <- GetMostRecentStackObjectId
+        _ <- ChooseModes(stackObjectId)
+        _ <- ChooseTargets(stackObjectId)
+        _ <- PayCosts(stackObjectId)
+        _ <- FinishActivating(stackObjectId)
+      } yield ()
     }
-  }
-
-  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
-    // TODO: Should be result of MoveObjectEvent
-    val stackObjectId = gameState.gameObjectState.stack.last.objectId
-    PartialGameActionResult.childrenThenValue(
-      Seq(
-        ChooseModes(stackObjectId),
-        ChooseTargets(stackObjectId),
-        PayCosts(stackObjectId),
-        FinishActivating(stackObjectId)),
-      ())(gameState)
   }
 }
 

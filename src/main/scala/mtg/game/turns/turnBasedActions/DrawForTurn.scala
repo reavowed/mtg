@@ -2,14 +2,14 @@ package mtg.game.turns.turnBasedActions
 
 import mtg.actions.DrawCardAction
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{ExecutableGameAction, GameState, PartialGameActionResult, WrappedOldUpdates}
+import mtg.game.state.{DelegatingGameAction, GameAction, GameState}
 
-case object DrawForTurn extends ExecutableGameAction[Any] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
+case object DrawForTurn extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     // TODO: Only log event if card was drawn
-    PartialGameActionResult.children(
-      WrappedOldUpdates(DrawCardAction(gameState.activePlayer)),
-      LogEvent.DrawForTurn(gameState.activePlayer)
-    )
+    for {
+      _ <- DrawCardAction(gameState.activePlayer)
+      _ <- LogEvent.DrawForTurn(gameState.activePlayer)
+    } yield ()
   }
 }

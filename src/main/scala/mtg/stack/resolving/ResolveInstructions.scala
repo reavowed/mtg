@@ -4,8 +4,8 @@ import mtg.effects.StackObjectResolutionContext
 import mtg.game.state._
 import mtg.instructions.{Instruction, InstructionResult}
 
-case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolutionContext: StackObjectResolutionContext) extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolutionContext: StackObjectResolutionContext) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     executeInstructions(allInstructions, initialResolutionContext)
   }
 
@@ -13,39 +13,29 @@ case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolut
     instructions: Seq[Instruction],
     resolutionContext: StackObjectResolutionContext)(
     implicit gameState: GameState
-  ): PartialGameActionResult[Unit] = {
+  ): GameAction[Unit] = {
     instructions match {
       case instruction +: remainingInstructions =>
-        handeInstructionResult(
-          instruction.resolve(gameState, resolutionContext),
-          remainingInstructions,
-          resolutionContext)
+        ResolveNextInstruction(instruction, resolutionContext).flatMap(executeInstructions(remainingInstructions, _))
       case Nil =>
         ()
     }
   }
+}
 
-  private def handeInstructionResult(
-    instructionResult: InstructionResult,
-    remainingInstructions: Seq[Instruction],
-    resolutionContext: StackObjectResolutionContext)(
-    implicit gameState: GameState
-  ): PartialGameActionResult[Unit] = {
+case class ResolveNextInstruction(instruction: Instruction, resolutionContext: StackObjectResolutionContext) extends DelegatingGameAction[StackObjectResolutionContext] {
+  override def delegate(implicit gameState: GameState): GameAction[StackObjectResolutionContext] = {
+    handleResult(instruction.resolve(gameState, resolutionContext))
+  }
+
+  private def handleResult(instructionResult: InstructionResult)(implicit gameState: GameState): GameAction[StackObjectResolutionContext] = {
     instructionResult match {
       case InstructionResult.Action(action, newResolutionContext) =>
-        PartialGameActionResult.ChildWithCallback(
-          action,
-          (_: Any, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
+        action.map(_ => newResolutionContext)
       case InstructionResult.Choice(choice) =>
-        PartialGameActionResult.ChildWithCallback(
-          ResolveInstructionChoice(choice, remainingInstructions, resolutionContext),
-          (instructionResult: InstructionResult, gameState) => handeInstructionResult(instructionResult, remainingInstructions, resolutionContext)(gameState))
-      case InstructionResult.Log(logEvent, newResolutionContext) =>
-        PartialGameActionResult.ChildWithCallback(
-          logEvent,
-          (_: Unit, gameState) => executeInstructions(remainingInstructions, newResolutionContext)(gameState))
+        ResolveInstructionChoice(choice, resolutionContext).flatMap(handleResult)
       case InstructionResult.UpdatedContext(newResolutionContext) =>
-        executeInstructions(remainingInstructions, newResolutionContext)
+        newResolutionContext
     }
   }
 }

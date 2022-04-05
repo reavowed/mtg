@@ -11,6 +11,7 @@ sealed trait GameAction[+T] {
   def flatMap[S](f: T => GameAction[S]): GameAction[S] = {
     FlatMappedGameAction(this, f)
   }
+  def andThen[S](nextAction: GameAction[S]): GameAction[S] = flatMap(_ => nextAction)
 }
 
 trait ExecutableGameAction[+T] extends GameAction[T] {
@@ -21,6 +22,7 @@ trait DelegatingGameAction[+T] extends GameAction[T] {
 }
 trait RootGameAction extends DelegatingGameAction[RootGameAction]
 
+case class CalculatedGameAction[T](f: GameState => GameAction[T]) extends GameAction[T]
 case class ConstantAction[T](value: T) extends GameAction[T] {
   override def map[S](f: T => S): GameAction[S] = ConstantAction(f(value))
   override def flatMap[S](f: T => GameAction[S]): GameAction[S] = f(value)
@@ -57,14 +59,17 @@ trait InternalGameAction extends GameAction[Unit] {
 case class WrappedOldUpdates(oldUpdates: InternalGameAction*) extends GameAction[Unit]
 
 object GameAction {
-  implicit def seqAsGameAction[T](seq: Seq[GameAction[T]]): GameAction[Seq[T]] = seq match {
-    case Nil => ConstantAction(Nil)
-    case head +: tail => for {
-      t <- head
-      results <- seqAsGameAction(tail)
-    } yield t +: results
-  }
   implicit class SeqExtensions[T](seq: Seq[GameAction[T]]) {
-    def traverse: GameAction[Seq[T]] = seqAsGameAction(seq)
+    def traverse: GameAction[Seq[T]] = seq match {
+      case Nil => ConstantAction(Nil)
+      case head +: tail => for {
+        t <- head
+        results <- tail.traverse
+      } yield t +: results
+    }
   }
+  implicit def valueAsAction[T](value: T): GameAction[T] = ConstantAction(value)
+  implicit def getterAsAction[T](constructor: GameState => T): GameAction[T] = CalculatedGameAction(constructor.andThen(ConstantAction(_)))
+  implicit def constructorAsAction[T](constructor: GameState => GameAction[T]): GameAction[T] = CalculatedGameAction(constructor)
+  implicit def anyActionToUnitAction(action: GameAction[_]): GameAction[Unit] = action.map(_ => ())
 }

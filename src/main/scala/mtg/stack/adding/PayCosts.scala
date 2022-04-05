@@ -3,14 +3,16 @@ package mtg.stack.adding
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.core.ObjectId
 import mtg.game.objects.AbilityOnTheStack
-import mtg.game.state.{ExecutableGameAction, GameState, PartialGameActionResult}
+import mtg.game.state.{DelegatingGameAction, GameAction, GameState}
 
-case class PayCosts(stackObjectId: ObjectId) extends ExecutableGameAction[Any] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
+case class PayCosts(stackObjectId: ObjectId) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
     val ability = stackObjectWithState.gameObject.underlyingObject.asInstanceOf[AbilityOnTheStack]
     val source = gameState.gameObjectState.derivedState.allObjectStates(ability.source)
     val costs = ability.abilityDefinition.asInstanceOf[ActivatedAbilityDefinition].costs
-    PartialGameActionResult.children(costs.map(_.payForAbility(source)): _*)
+    for {
+      _ <- costs.map(_.payForAbility(source)).traverse
+    } yield ()
   }
 }

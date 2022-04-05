@@ -5,27 +5,19 @@ import mtg.effects.EffectContext
 import mtg.game.state._
 import mtg.instructions.nounPhrases.Target
 
-case class ChooseTargets(stackObjectId: ObjectId) extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+case class ChooseTargets(stackObjectId: ObjectId) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
     val targetIdentifiers = Target.getAll(stackObjectWithState)
-    chooseTargets(targetIdentifiers)
+    targetIdentifiers.map(chooseTarget).traverse
   }
-  private def chooseTargets(targetIdentifiers: Seq[Target[_]])(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+
+  def chooseTarget(targetIdentifier: Target[_])(implicit gameState: GameState): GameAction[_] = {
     val stackObjectWithState = gameState.gameObjectState.derivedState.stackObjectStates(stackObjectId)
-    targetIdentifiers match {
-      case nextTargetIdentifier +: remainingTargetIdentifiers =>
-        PartialGameActionResult.ChildWithCallback(
-          TargetChoice(stackObjectWithState, nextTargetIdentifier),
-          addTarget(remainingTargetIdentifiers))
-      case Nil =>
-        PartialGameActionResult.Value(())
-    }
-  }
-  private def addTarget(remainingTargetIdentifiers: Seq[Target[_]])(objectOrPlayer: ObjectOrPlayerId, gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(AddTarget(stackObjectId, objectOrPlayer)),
-      (_: Any, gameState) => chooseTargets(remainingTargetIdentifiers)(gameState))
+    for {
+      target <- TargetChoice(stackObjectWithState, targetIdentifier)
+      _ <- AddTarget(stackObjectId, target)
+    } yield ()
   }
 }
 

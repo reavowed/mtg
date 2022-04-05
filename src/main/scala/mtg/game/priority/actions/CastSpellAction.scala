@@ -4,7 +4,7 @@ import mtg.actions.moveZone.MoveToStackAction
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
 import mtg.core.{ObjectId, PlayerId}
-import mtg.game.state.{GameState, ObjectWithState, PartialGameActionResult, WrappedOldUpdates}
+import mtg.game.state.{GameAction, GameState, ObjectWithState}
 import mtg.stack.adding._
 
 case class CastSpellAction(playerId: PlayerId, objectToCast: ObjectWithState) extends PriorityAction {
@@ -12,26 +12,20 @@ case class CastSpellAction(playerId: PlayerId, objectToCast: ObjectWithState) ex
   override def displayText: String = "Cast"
   override def optionText: String = "Cast " + objectId
 
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(MoveToStackAction(objectId, playerId)),
-      steps)
-  }
-  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Unit] = {
-    // TODO: Should be result of MoveObjectEvent
-    val spellId = gameState.gameObjectState.stack.last.objectId
-    PartialGameActionResult.childrenThenValue(
-      Seq(
-        ChooseModes(spellId),
-        ChooseTargets(spellId),
-        PayManaCosts.ForSpell(spellId),
-        FinishCasting(playerId, spellId)),
-      ())(gameState)
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
+      for {
+        _ <- MoveToStackAction(objectId, playerId)
+        // TODO: CreateTriggeredAbilityOnStack should return ID
+        spellId <- GetMostRecentStackObjectId
+        _ <- ChooseModes(spellId)
+        _ <- ChooseTargets(spellId)
+        _ <- PayManaCosts.ForSpell(spellId)
+        _ <- FinishCasting(playerId, spellId)
+      } yield ()
   }
 }
 
 object CastSpellAction {
-
   def getCastableSpells(player: PlayerId, gameState: GameState): Seq[CastSpellAction] = {
     if (cannotCastSpells(player, gameState)) {
       return Nil
@@ -76,9 +70,5 @@ object CastSpellAction {
       // TODO: effects like flash
       false
     }
-  }
-
-  private def hasAnyType(objectWithState: ObjectWithState, types: Seq[Type]): Boolean = {
-    objectWithState.characteristics.types.exists(types.contains)
   }
 }

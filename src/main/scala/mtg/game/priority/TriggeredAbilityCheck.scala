@@ -4,58 +4,48 @@ import mtg.abilities.PendingTriggeredAbility
 import mtg.core.PlayerId
 import mtg.game.objects.StackObject
 import mtg.game.state._
-import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishTriggering}
+import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishTriggering, GetMostRecentStackObjectId}
 
-object TriggeredAbilityCheck extends ExecutableGameAction[Boolean] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Boolean] = {
+object TriggeredAbilityCheck extends DelegatingGameAction[Boolean] {
+  override def delegate(implicit gameState: GameState): GameAction[Boolean] = {
     if (gameState.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack.nonEmpty) {
-      putTriggeredAbilitiesOnStack(gameState.playersInApnapOrder)
+      gameState.playersInApnapOrder
+        .map(putTriggeredAbilitiesOnStackForPlayer)
+        .traverse
+        .map(_ => true)
     } else {
-      PartialGameActionResult.Value(false)
+      false
     }
   }
 
-  private def putTriggeredAbilitiesOnStack(players: Seq[PlayerId])(implicit gameState: GameState): PartialGameActionResult[Boolean] = {
-    players match {
-      case nextPlayer +: remainingPlayers =>
-        val triggeredAbilitiesForPlayer = gameState.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack.filter(_.triggeredAbility.ownerId == nextPlayer)
-        if (triggeredAbilitiesForPlayer.nonEmpty) {
-          putTriggeredAbilitiesOnStackForPlayer(nextPlayer, remainingPlayers, triggeredAbilitiesForPlayer)
-        } else {
-          putTriggeredAbilitiesOnStack(remainingPlayers)
-        }
-      case Nil =>
-        PartialGameActionResult.Value(true)
+  private def putTriggeredAbilitiesOnStackForPlayer(player: PlayerId): GameAction[Unit] = {
+    chooseTriggeredAbility(player) flatMap {
+      case Some(triggeredAbility) =>
+        PutTriggeredAbilityOnStack(triggeredAbility).andThen(putTriggeredAbilitiesOnStackForPlayer(player))
+      case None =>
+        ()
     }
   }
 
-  private def putTriggeredAbilitiesOnStackForPlayer(
-    player: PlayerId,
-    remainingPlayers: Seq[PlayerId],
-    triggeredAbilitiesForPlayer: Seq[PendingTriggeredAbility])(
-    implicit gameState: GameState
-  ): PartialGameActionResult[Boolean] = {
-    if (triggeredAbilitiesForPlayer.length > 1) {
-      PartialGameActionResult.ChildWithCallback(
-        TriggeredAbilityChoice(player, triggeredAbilitiesForPlayer),
-        handleTriggeredAbilityChoice(player, remainingPlayers, triggeredAbilitiesForPlayer))
-    } else if (triggeredAbilitiesForPlayer.length == 1) {
-      handleTriggeredAbilityChoice(player, remainingPlayers, triggeredAbilitiesForPlayer)(triggeredAbilitiesForPlayer.head, gameState)
+  private def chooseTriggeredAbility(player: PlayerId): GameAction[Option[PendingTriggeredAbility]] = {
+    GetTriggeredAbilitiesForPlayer(player).flatMap(chooseTriggeredAbility(player, _))
+  }
+
+  private def chooseTriggeredAbility(player: PlayerId, triggeredAbilities: Seq[PendingTriggeredAbility]): GameAction[Option[PendingTriggeredAbility]] = {
+    if (triggeredAbilities.length > 1) {
+      TriggeredAbilityChoice(player, triggeredAbilities).map(Some(_))
+    } else if (triggeredAbilities.length == 1) {
+      Some(triggeredAbilities.head)
     } else {
-      putTriggeredAbilitiesOnStack(remainingPlayers)
+      None
     }
   }
 
-  private def handleTriggeredAbilityChoice(
-    player: PlayerId,
-    remainingPlayers: Seq[PlayerId],
-    triggeredAbilitiesForPlayer: Seq[PendingTriggeredAbility])(
-    chosenAbility: PendingTriggeredAbility,
-    gameState: GameState
-  ): PartialGameActionResult[Boolean] = {
-    PartialGameActionResult.ChildWithCallback(
-      PutTriggeredAbilityOnStack(chosenAbility),
-      (_: Any, gameState) => putTriggeredAbilitiesOnStackForPlayer(player, remainingPlayers, triggeredAbilitiesForPlayer.filter(_ != chosenAbility))(gameState))
+}
+
+case class GetTriggeredAbilitiesForPlayer(player: PlayerId) extends DelegatingGameAction[Seq[PendingTriggeredAbility]] {
+  override def delegate(implicit gameState: GameState): GameAction[Seq[PendingTriggeredAbility]] = {
+    gameState.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack.filter(_.triggeredAbility.ownerId == player)
   }
 }
 
@@ -65,20 +55,16 @@ case class TriggeredAbilityChoice(playerToAct: PlayerId, abilities: Seq[PendingT
   }
 }
 
-case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends ExecutableGameAction[Any] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Any] = {
-    PartialGameActionResult.ChildWithCallback(
-      WrappedOldUpdates(CreateTriggeredAbilityOnStack(pendingTriggeredAbility)),
-      steps)
-  }
-
-  private def steps(any: Any, gameState: GameState): PartialGameActionResult[Any] = {
-    // TODO: Should be result of MoveObjectEvent
-    val stackObjectId = gameState.gameObjectState.stack.last.objectId
-    PartialGameActionResult.children(
-      ChooseModes(stackObjectId),
-      ChooseTargets(stackObjectId),
-      FinishTriggering(stackObjectId))
+case class PutTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility) extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
+    for {
+      _ <- CreateTriggeredAbilityOnStack(pendingTriggeredAbility)
+      // TODO: CreateTriggeredAbilityOnStack should return ID
+      stackObjectId <- GetMostRecentStackObjectId
+      _ <- ChooseModes(stackObjectId)
+      _ <- ChooseTargets(stackObjectId)
+      _ <- FinishTriggering(stackObjectId)
+    } yield ()
   }
 }
 

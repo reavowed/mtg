@@ -1,36 +1,27 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg._
+import mtg.actions.TapObjectAction
 import mtg.core.types.Type
 import mtg.core.{ObjectId, PlayerId}
-import mtg.actions.TapObjectAction
 import mtg.game.state._
 import mtg.game.state.history.HistoryEvent.ResolvedAction
 import mtg.game.state.history.LogEvent
 import mtg.game.turns.TurnPhase
 import mtg.utils.ParsingUtils
 
-object DeclareAttackers extends ExecutableGameAction[Unit] {
-  override def execute()(implicit gameState: GameState): PartialGameActionResult[Unit] = {
+object DeclareAttackers extends DelegatingGameAction[Unit] {
+  override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val possibleAttackers = getPossibleAttackers(gameState)
     if (possibleAttackers.nonEmpty) {
-      PartialGameActionResult.ChildWithCallback(
-        DeclareAttackersChoice(
-          gameState.activePlayer,
-          getDefendingPlayer(gameState),
-          possibleAttackers),
-        handleAttackers)
-    } else ()
-  }
-
-  private def handleAttackers(declaredAttackers: DeclaredAttackers, gameState: GameState): PartialGameActionResult[Unit] = {
-    PartialGameActionResult.childrenThenValue(
-      Seq(
-        WrappedOldUpdates(declaredAttackers.attackDeclarations.map(_.attacker).map(TapAttacker): _*),
-        LogEvent.DeclareAttackers(
+      for {
+        declaredAttackers <- DeclareAttackersChoice(gameState.activePlayer, getDefendingPlayer(gameState), possibleAttackers)
+        _ <- declaredAttackers.attackDeclarations.map(_.attacker).map(TapAttacker).traverse
+        _ <- LogEvent.DeclareAttackers(
           declaredAttackers.player,
-          declaredAttackers.attackDeclarations.map(_.attacker).map(CurrentCharacteristics.getName(_, gameState)))),
-      ())(gameState)
+          declaredAttackers.attackDeclarations.map(_.attacker).map(CurrentCharacteristics.getName(_, gameState)))
+      } yield ()
+    } else ()
   }
 
   private def wasContinuouslyControlled(objectId: ObjectId, gameState: GameState): Boolean = {
