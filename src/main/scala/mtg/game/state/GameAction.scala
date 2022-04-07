@@ -47,12 +47,11 @@ case class PartiallyExecutedActionWithFlatMap[T, S](rootAction: DelegatingGameAc
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
-sealed trait GameObjectAction[T] extends GameAction[T] {
-  def getLogEvent(gameState: GameState): Option[LogEvent] = None
-}
+sealed trait GameObjectAction[T] extends GameAction[T]
 trait DirectGameObjectAction extends GameObjectAction[Unit] {
   def execute(implicit gameState: GameState): GameObjectState
   def canBeReverted: Boolean
+  def getLogEvent(gameState: GameState): Option[LogEvent] = None
 
   protected implicit def gameObjectStateFromOption(gameObjectStateOption: Option[GameObjectState])(implicit gameState: GameState): GameObjectState = {
     gameObjectStateOption.getOrElse(gameState.gameObjectState)
@@ -63,6 +62,12 @@ trait DelegatingGameObjectAction extends GameObjectAction[Unit] {
   protected implicit def seqFromSingle(action: GameObjectAction[_]): Seq[GameObjectAction[_]] = Seq(action)
 }
 case class GameResultAction(gameResult: GameResult) extends GameObjectAction[Nothing]
+
+case class PartiallyExecutedGameObjectAction(
+    gameObjectAction: DelegatingGameObjectAction,
+    remainingChildActions: Seq[GameObjectAction[_]],
+    initialGameState: GameState)
+  extends GameObjectAction[Unit]
 
 
 object GameAction {
