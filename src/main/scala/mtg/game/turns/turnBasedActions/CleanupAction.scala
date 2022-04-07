@@ -6,7 +6,7 @@ import mtg.game.state._
 object CleanupAction extends DelegatingGameAction[Unit] {
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     // TODO: These two actions should be simultaneous
-    WrappedOldUpdates(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd)
+    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd).traverse
   }
 }
 

@@ -5,7 +5,6 @@ import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
 import mtg.game.priority.PriorityChoice
-import mtg.game.state
 
 import scala.annotation.tailrec
 
@@ -112,8 +111,6 @@ object GameActionExecutor {
       executeChildAction(rootAction, childAction, callback)
     case gameObjectAction: GameObjectAction =>
       Some((ProcessedGameActionResult.Value(().asInstanceOf[T]), executeGameObjectAction(gameObjectAction, gameState)))
-    case WrappedOldUpdates(updates@_*) =>
-      Some((ProcessedGameActionResult.Value(().asInstanceOf[T]), executeGameObjectActions(updates, gameState)))
     case LogEventAction(logEvent) =>
       Some((ProcessedGameActionResult.Value(()).asInstanceOf[ProcessedGameActionResult[T]], gameState.recordLogEvent(logEvent)))
   }

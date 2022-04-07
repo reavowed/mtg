@@ -20,7 +20,7 @@ object CombatDamageAction extends DelegatingGameAction[Unit] {
           blocker <- DeclareBlockers.getBlockers(gameState)
           attacker <- DeclareBlockers.getAttackerForBlocker(blocker, gameState).toSeq
         } yield damage.DealCombatDamageAction(blocker, attacker, CurrentCharacteristics.getPower(blocker, gameState))
-        _ <- WrappedOldUpdates(attackerDamageEvents ++ blockerDamageEvents: _*)
+        _ <- (attackerDamageEvents ++ blockerDamageEvents).traverse
       } yield ()
     else
       ()

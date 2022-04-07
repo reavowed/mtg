@@ -22,8 +22,6 @@ case class GameState(
   def allCurrentActions: Seq[GameAction[_]] = {
     def helper(current: GameAction[_], actions: Seq[GameAction[_]]): Seq[GameAction[_]] = {
       current match {
-        case WrappedOldUpdates(nextUpdates@_*) =>
-          actions ++ nextUpdates.headOption.toSeq
         case PartiallyExecutedActionWithDelegate(rootAction, childAction) =>
           helper(childAction, actions :+ rootAction)
         case PartiallyExecutedActionWithFlatMap(rootAction, childAction, f) =>

@@ -1,14 +1,14 @@
 package mtg.game.turns
 
 import mtg.game.priority.PrioritySequenceAction
-import mtg.game.state.{GameAction, WrappedOldUpdates}
+import mtg.game.state.GameAction
 import mtg.game.turns.turnBasedActions._
 import mtg.utils.CaseObjectWithName
 
 sealed abstract class TurnStep(val actions: Seq[GameAction[Any]]) extends CaseObjectWithName
 
 object TurnStep {
-  case object UntapStep extends TurnStep(Seq(WrappedOldUpdates(UntapForTurn)))
+  case object UntapStep extends TurnStep(Seq(UntapForTurn))
   case object UpkeepStep extends TurnStep(Seq(PrioritySequenceAction))
   case object DrawStep extends TurnStep(Seq(DrawForTurn, PrioritySequenceAction))
 

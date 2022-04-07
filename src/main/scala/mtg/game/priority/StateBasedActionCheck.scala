@@ -1,6 +1,6 @@
 package mtg.game.priority
 
-import mtg.game.state.{DelegatingGameAction, GameAction, GameState, WrappedOldUpdates}
+import mtg.game.state.{DelegatingGameAction, GameAction, GameState}
 import mtg.sbas.LethalDamageStateBasedAction
 
 object StateBasedActionCheck extends DelegatingGameAction[Boolean] {
@@ -10,8 +10,7 @@ object StateBasedActionCheck extends DelegatingGameAction[Boolean] {
     val actions = allStateBasedActions.flatMap(_.getApplicableEvents(gameState))
     if (actions.nonEmpty) {
       // TODO: Ensure actions executed simultaneously
-      WrappedOldUpdates(actions: _*)
-        .map(_ => true)
+      actions.traverse.andThen(true)
     } else {
       false
     }

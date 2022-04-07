@@ -68,8 +68,6 @@ trait DelegatingGameObjectAction extends GameObjectAction {
   protected implicit def seqFromSingle(action: GameObjectAction): Seq[GameObjectAction] = Seq(action)
 }
 
-case class WrappedOldUpdates(gameObjectActions: GameObjectAction*) extends GameAction[Unit]
-
 object GameAction {
   implicit class SeqExtensions[T](seq: Seq[GameAction[T]]) {
     def traverse: GameAction[Seq[T]] = seq match {

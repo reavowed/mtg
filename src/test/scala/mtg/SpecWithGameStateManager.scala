@@ -52,10 +52,6 @@ abstract class SpecWithGameStateManager
     createGameStateManager(gameObjectState, ExecuteTurn(Turn(1, playerOne)))
   }
 
-  def runAction(action: GameObjectAction, gameObjectState: GameObjectState): GameState = {
-    runAction(WrappedOldUpdates(action), gameObjectState)
-  }
-
   def runAction(action: GameAction[Any], gameObjectState: GameObjectState): GameState = {
     val initialGameState = createGameState(gameObjectState, action)
     GameActionExecutor.executeAllActions(initialGameState)(Stops.all(players))

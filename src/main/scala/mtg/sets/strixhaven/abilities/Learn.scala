@@ -1,11 +1,11 @@
 package mtg.sets.strixhaven.abilities
 
-import mtg.actions.{DiscardCardAction, DrawCardAction, RevealAction}
 import mtg.actions.moveZone.MoveToHandAction
+import mtg.actions.{DiscardCardAction, DrawCardAction, RevealAction}
 import mtg.core.types.SpellType.Lesson
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.state.{CurrentCharacteristics, GameState, WrappedOldUpdates}
+import mtg.game.state.{CurrentCharacteristics, GameState}
 import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
 
 /**
@@ -32,10 +32,10 @@ case class LearnChoice(playerChoosing: PlayerId, possibleLessons: Seq[ObjectId])
     implicit gameState: GameState
   ): Option[InstructionResult] = {
     def getLesson(lessonId: ObjectId): InstructionResult = {
-      (WrappedOldUpdates(RevealAction(resolutionContext.controllingPlayer, lessonId), MoveToHandAction(lessonId)), resolutionContext)
+      (Seq(RevealAction(resolutionContext.controllingPlayer, lessonId), MoveToHandAction(lessonId)).traverse, resolutionContext)
     }
     def loot(cardId: ObjectId): InstructionResult = {
-      (WrappedOldUpdates(DiscardCardAction(playerChoosing, cardId), DrawCardAction(playerChoosing)), resolutionContext)
+      (Seq(DiscardCardAction(playerChoosing, cardId), DrawCardAction(playerChoosing)).traverse, resolutionContext)
     }
     possibleLessons.find(_.toString == serializedDecision).map(getLesson) orElse
       gameState.gameObjectState.hands(playerChoosing).map(_.objectId).find(_.toString == serializedDecision).map(loot) orElse
