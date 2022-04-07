@@ -52,10 +52,10 @@ case class PartiallyExecutedActionWithValue[T, S](rootAction: GameAction[T], val
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
-sealed trait GameObjectAction extends GameAction[Unit] {
+sealed trait GameObjectAction[T] extends GameAction[T] {
   def getLogEvent(gameState: GameState): Option[LogEvent] = None
 }
-trait DirectGameObjectAction extends GameObjectAction {
+trait DirectGameObjectAction extends GameObjectAction[Unit] {
   def execute(implicit gameState: GameState): GameObjectState
   def canBeReverted: Boolean
 
@@ -63,10 +63,12 @@ trait DirectGameObjectAction extends GameObjectAction {
     gameObjectStateOption.getOrElse(gameState.gameObjectState)
   }
 }
-trait DelegatingGameObjectAction extends GameObjectAction {
-  def delegate(implicit gameState: GameState): Seq[GameObjectAction]
-  protected implicit def seqFromSingle(action: GameObjectAction): Seq[GameObjectAction] = Seq(action)
+trait DelegatingGameObjectAction extends GameObjectAction[Unit] {
+  def delegate(implicit gameState: GameState): Seq[GameObjectAction[_]]
+  protected implicit def seqFromSingle(action: GameObjectAction[_]): Seq[GameObjectAction[_]] = Seq(action)
 }
+case class GameResultAction(gameResult: GameResult) extends GameObjectAction[Nothing]
+
 
 object GameAction {
   implicit class SeqExtensions[T](seq: Seq[GameAction[T]]) {

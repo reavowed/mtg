@@ -5,7 +5,7 @@ import mtg.core.PlayerId
 import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
 case class ShuffleHandIntoLibraryAction(player: PlayerId) extends DelegatingGameObjectAction {
-  override def delegate(implicit gameState: GameState): Seq[GameObjectAction] = {
+  override def delegate(implicit gameState: GameState): Seq[GameObjectAction[_]] = {
     gameState.gameObjectState.hands(player).map(obj => MoveToLibraryAction(obj.objectId)) :+ ShuffleLibraryAction(player)
   }
 }

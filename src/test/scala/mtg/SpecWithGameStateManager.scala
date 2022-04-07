@@ -1,6 +1,5 @@
 package mtg
 
-import mtg.actions.GameResultAction
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state._
 import mtg.game.state.history.GameHistory

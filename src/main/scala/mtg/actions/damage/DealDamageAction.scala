@@ -8,11 +8,11 @@ import mtg.game.state.{CurrentCharacteristics, DelegatingGameObjectAction, GameO
 import scala.collection.mutable.ListBuffer
 
 case class DealDamageAction(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends DelegatingGameObjectAction {
-  override def delegate(implicit gameState: GameState): Seq[GameObjectAction] = {
+  override def delegate(implicit gameState: GameState): Seq[GameObjectAction[_]] = {
     recipient match {
       case objectId: ObjectId =>
         val types = CurrentCharacteristics.getCharacteristics(objectId, gameState).types
-        val results = ListBuffer[GameObjectAction]()
+        val results = ListBuffer[GameObjectAction[_]]()
         if (types.contains(Type.Creature)) {
           results.addOne(MarkDamageAction(source, objectId, amount))
         }

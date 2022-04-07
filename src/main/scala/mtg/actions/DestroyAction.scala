@@ -5,7 +5,7 @@ import mtg.core.ObjectId
 import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
 case class DestroyAction(objectId: ObjectId) extends DelegatingGameObjectAction {
-  override def delegate(implicit gameState: GameState): Seq[GameObjectAction] = {
+  override def delegate(implicit gameState: GameState): Seq[GameObjectAction[_]] = {
     MoveToGraveyardAction(objectId)
   }
 }

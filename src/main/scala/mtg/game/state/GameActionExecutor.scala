@@ -109,8 +109,8 @@ object GameActionExecutor {
       Some(executeCallback(rootAction, value, callback))
     case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
       executeChildAction(rootAction, childAction, callback)
-    case gameObjectAction: GameObjectAction =>
-      Some((ProcessedGameActionResult.Value(().asInstanceOf[T]), executeGameObjectAction(gameObjectAction, gameState)))
+    case gameObjectAction: GameObjectAction[T] =>
+      Some(executeGameObjectAction(gameObjectAction, gameState))
     case LogEventAction(logEvent) =>
       Some((ProcessedGameActionResult.Value(()).asInstanceOf[ProcessedGameActionResult[T]], gameState.recordLogEvent(logEvent)))
   }
@@ -320,22 +320,22 @@ object GameActionExecutor {
     }
   }
 
-  def executeGameObjectAction(action: GameObjectAction, initialGameState: GameState): GameState = {
-    executeGameObjectActions(Seq(action), initialGameState)
+  def executeGameObjectAction[T](action: GameObjectAction[T], initialGameState: GameState): (ProcessedGameActionResult[T], GameState) = {
+    executeGameObjectActions(Seq(action), initialGameState).mapLeft(_.asInstanceOf[ProcessedGameActionResult[T]])
   }
 
   @tailrec
-  def executeGameObjectActions(actions: Seq[GameObjectAction], initialGameState: GameState): GameState = {
+  def executeGameObjectActions(actions: Seq[GameObjectAction[_]], initialGameState: GameState): (ProcessedGameActionResult[Unit], GameState) = {
     actions match {
       case action +: nextActions =>
         val preventResult = initialGameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
           .findOption(_.checkAction(action, initialGameState).asOptionalInstanceOf[Prevent])
         preventResult match {
           case Some(Prevent(logEvent)) =>
-            initialGameState.recordLogEvent(logEvent)
+            (ProcessedGameActionResult.Value(()), initialGameState.recordLogEvent(logEvent))
           case None =>
             action match {
-              case action: DirectGameObjectAction => {
+              case action: DirectGameObjectAction =>
                 val gameObjectStateAfterAction = action.execute(initialGameState)
                 val gameStateAfterAction = initialGameState.updateGameObjectState(gameObjectStateAfterAction)
                 val triggeredAbilities = getTriggeringAbilities(action, gameStateAfterAction)
@@ -348,14 +348,14 @@ object GameActionExecutor {
                   .updateGameObjectState(finalGameObjectState)
                   .recordLogEvent(action.getLogEvent(initialGameState))
                 executeGameObjectActions(nextActions, newGameState)
-              }
-              case action: DelegatingGameObjectAction => {
+              case action: DelegatingGameObjectAction =>
                 executeGameObjectActions(action.delegate(initialGameState) ++ nextActions, initialGameState)
-              }
+              case GameResultAction(gameResult) =>
+                (ProcessedGameActionResult.GameOver(gameResult), initialGameState)
             }
         }
       case Nil =>
-        initialGameState
+        (ProcessedGameActionResult.Value(()), initialGameState)
     }
   }
 
@@ -365,7 +365,7 @@ object GameActionExecutor {
       .toSeq
   }
 
-  private def getEndedEffects(action: GameObjectAction, gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
+  private def getEndedEffects(action: GameObjectAction[_], gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
     gameStateAfterAction.gameObjectState.floatingActiveContinuousEffects.filter(effect => {
       def matchesCondition = effect.matchesEndCondition(action, gameStateAfterAction)
       def objectIsGone = effect.effect.asOptionalInstanceOf[CharacteristicOrControlChangingContinuousEffect]
