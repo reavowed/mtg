@@ -22,6 +22,7 @@ object Verb {
   case object Control extends RegularCaseObject
   case object Deal extends RegularCaseObject
   case object Draw extends RegularCaseObject
+  case object Enter extends RegularCaseObject
   case object Gain extends RegularCaseObject
   case object Get extends RegularCaseObject
   case object Put extends RegularCaseObject

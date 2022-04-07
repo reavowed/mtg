@@ -292,7 +292,7 @@ object GameActionExecutor {
   }
 
   private def recordExecutedEvent[T](action: GameAction[T], result: T, initialGameState: GameState, finalGameState: GameState): (GameActionResult[T], GameState) = {
-      val event = HistoryEvent.ResolvedAction(action, (), initialGameState)
+      val event = HistoryEvent.ResolvedAction(action, result, initialGameState)
       val triggeredAbilities = getTriggeringAbilities(event, finalGameState)
       val endedEffects = getEndedEffects(event, finalGameState)
       val finalGameObjectState = finalGameState.gameObjectState

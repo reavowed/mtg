@@ -1,23 +1,22 @@
 package mtg.instructions
 
-import mtg.core.PlayerId
 import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
+import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
-import mtg.game.state.{GameAction, GameState}
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 
-trait IntransitiveEventMatchingVerb extends Verb {
-  def matchesEvent(eventToMatch: HistoryEvent.ResolvedAction[_], gameState: GameState, effectContext: EffectContext, playerPhrase: IndefiniteNounPhrase[PlayerId]): Boolean
+trait IntransitiveEventMatchingVerb[SubjectType] extends Verb {
+  def matchesEvent(eventToMatch: HistoryEvent.ResolvedAction[_], gameState: GameState, effectContext: EffectContext, subjectPhrase: IndefiniteNounPhrase[SubjectType]): Boolean
 }
 
 object IntransitiveEventMatchingVerb {
-  case class WithSubject(playerPhrase: IndefiniteNounPhrase[PlayerId], verb: IntransitiveEventMatchingVerb) extends Condition {
+  case class WithSubject[SubjectType](subjectPhrase: IndefiniteNounPhrase[SubjectType], verb: IntransitiveEventMatchingVerb[SubjectType]) extends Condition {
     override def matchesEvent(eventToMatch: HistoryEvent.ResolvedAction[_], gameState: GameState, effectContext: EffectContext): Boolean = {
-      verb.matchesEvent(eventToMatch, gameState, effectContext, playerPhrase)
+      verb.matchesEvent(eventToMatch, gameState, effectContext, subjectPhrase)
     }
     override def getText(cardName: String): String = {
-      playerPhrase.getText(cardName) + " " + verb.inflect(VerbInflection.Present(playerPhrase.person, playerPhrase.number), cardName)
+      subjectPhrase.getText(cardName) + " " + verb.inflect(VerbInflection.Present(subjectPhrase.person, subjectPhrase.number), cardName)
     }
   }
 }

@@ -11,7 +11,7 @@ trait TriggerWord extends CaseObjectWithName {
   def apply(condition: Condition): TriggerCondition = {
     TriggerCondition(this, condition)
   }
-  def apply(playerPhrase: IndefiniteNounPhrase[PlayerId], verb: IntransitiveEventMatchingVerb): TriggerCondition = {
+  def apply[SubjectType](playerPhrase: IndefiniteNounPhrase[SubjectType], verb: IntransitiveEventMatchingVerb[SubjectType]): TriggerCondition = {
     apply(IntransitiveEventMatchingVerb.WithSubject(playerPhrase, verb))
   }
   def apply(playerPhrase: IndefiniteNounPhrase[PlayerId], verb: TransitiveEventMatchingVerb, objectPhrase: IndefiniteNounPhrase[ObjectId]): TriggerCondition = {
