@@ -5,6 +5,7 @@ import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
 import mtg.game.priority.PriorityChoice
+import mtg.game.state.history.HistoryEvent
 
 import scala.annotation.tailrec
 
@@ -103,15 +104,18 @@ object GameActionExecutor {
       case Some(Prevent(logEvent)) =>
         (GameActionResult.Value(().asInstanceOf[T]), gameState.recordLogEvent(logEvent))
       case None =>
-        unwrapAndRecord(action, action.delegate)
+        unwrapAndRecord(action, action.delegate, gameState)
     }
   }
 
-  private def unwrapAndRecord[T](action: DelegatingGameAction[T], childAction: GameAction[T])(implicit gameState: GameState): (GameActionResult[T], GameState) = {
+  private def unwrapAndRecord[T](action: DelegatingGameAction[T], childAction: GameAction[T], initialGameState: GameState)(implicit gameState: GameState): (GameActionResult[T], GameState) = {
     val actionResult = unwrapDelegateAction(action, childAction)
     val newGameState = actionResult match {
       case GameActionResult.Value(v) =>
-        gameState.recordAction(action, v).updateGameObjectState(_.addWaitingTriggeredAbilities(getTriggeringAbilities(action, gameState)))
+        val event = HistoryEvent.ResolvedAction(action, v, initialGameState)
+        gameState
+          .recordAction(event)
+          .updateGameObjectState(_.addWaitingTriggeredAbilities(getTriggeringAbilities(event, gameState)))
       case _ =>
         gameState
     }
@@ -169,15 +173,15 @@ object GameActionExecutor {
     childAction: GameAction[S],
     actionExecutor: (GameAction[S], GameState) => Option[(GameActionResult[S], GameState)],
     resultTransformer: GameActionResult[S] => GameActionResult[T])(
-    implicit gameState: GameState
+    implicit initialGameState: GameState
   ): Option[(GameActionResult[T], GameState)] = {
-    actionExecutor(childAction, gameState)
+    actionExecutor(childAction, initialGameState)
       .map(_.mapLeft(resultTransformer))
       .map {
         case (GameActionResult.Value(value), gameState: GameState) =>
-          unwrapAndRecord(rootAction, ConstantAction(value))(gameState)
+          unwrapAndRecord(rootAction, ConstantAction(value), initialGameState)(gameState)
         case (GameActionResult.Action(childAction), gameState: GameState) =>
-          unwrapAndRecord(rootAction, childAction)(gameState)
+          unwrapAndRecord(rootAction, childAction, initialGameState)(gameState)
         case (result, gameState) =>
           (result, gameState)
       }
@@ -252,13 +256,14 @@ object GameActionExecutor {
               case action: DirectGameObjectAction =>
                 val gameObjectStateAfterAction = action.execute(initialGameState)
                 val gameStateAfterAction = initialGameState.updateGameObjectState(gameObjectStateAfterAction)
-                val triggeredAbilities = getTriggeringAbilities(action, gameStateAfterAction)
-                val endedEffects = getEndedEffects(action, gameStateAfterAction)
+                val event = HistoryEvent.ResolvedAction(action, (), initialGameState)
+                val triggeredAbilities = getTriggeringAbilities(event, gameStateAfterAction)
+                val endedEffects = getEndedEffects(event, gameStateAfterAction)
                 val finalGameObjectState = gameObjectStateAfterAction
                   .addWaitingTriggeredAbilities(triggeredAbilities)
                   .updateEffects(_.diff(endedEffects))
                 val newGameState = initialGameState
-                  .recordAction(action, ())
+                  .recordAction(event)
                   .updateGameObjectState(finalGameObjectState)
                   .recordLogEvent(action.getLogEvent(initialGameState))
                 executeGameObjectActions(nextActions, newGameState)
@@ -273,15 +278,15 @@ object GameActionExecutor {
     }
   }
 
-  private def getTriggeringAbilities(action: GameAction[_], gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
+  private def getTriggeringAbilities(event: HistoryEvent.ResolvedAction[_], gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
     gameStateAfterAction.gameObjectState.activeTriggeredAbilities
-      .filter(_.conditionMatchesEvent(action, gameStateAfterAction))
+      .filter(_.conditionMatchesEvent(event, gameStateAfterAction))
       .toSeq
   }
 
-  private def getEndedEffects(action: GameObjectAction[_], gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
+  private def getEndedEffects(event: HistoryEvent.ResolvedAction[_], gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {
     gameStateAfterAction.gameObjectState.floatingActiveContinuousEffects.filter(effect => {
-      def matchesCondition = effect.matchesEndCondition(action, gameStateAfterAction)
+      def matchesCondition = effect.matchesEndCondition(event, gameStateAfterAction)
       def objectIsGone = effect.effect.asOptionalInstanceOf[CharacteristicOrControlChangingContinuousEffect]
         .exists(e => !gameStateAfterAction.gameObjectState.allObjects.exists(_.objectId == e.affectedObject))
       matchesCondition || objectIsGone

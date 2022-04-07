@@ -6,7 +6,7 @@ import mtg.game.state._
 object CleanupAction extends DelegatingGameAction[Unit] {
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     // TODO: These two actions should be simultaneous
-    Seq(DamageWearsOffEvent, UntilEndOfTurnEffectsEnd).traverse
+    Seq(DamageWearsOffEvent, EndOfTurnEffectsEnd).traverse
   }
 }
 
@@ -19,7 +19,7 @@ object DamageWearsOffEvent extends DirectGameObjectAction {
   override def canBeReverted: Boolean = true
 }
 
-object UntilEndOfTurnEffectsEnd extends DirectGameObjectAction {
+object EndOfTurnEffectsEnd extends DirectGameObjectAction {
   override def execute(implicit gameState: GameState): GameObjectState = None
   override def canBeReverted: Boolean = true
 }
