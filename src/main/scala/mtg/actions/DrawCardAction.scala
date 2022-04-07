@@ -1,18 +1,12 @@
 package mtg.actions
 
-import mtg.core.PlayerId
 import mtg.actions.moveZone.MoveToHandAction
-import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
+import mtg.core.PlayerId
+import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
-case class DrawCardAction(player: PlayerId) extends GameObjectAction {
-  def execute(gameState: GameState): GameActionResult = {
+case class DrawCardAction(player: PlayerId) extends DelegatingGameObjectAction {
+  override def delegate(implicit gameState: GameState): Seq[GameObjectAction] = {
     val library = gameState.gameObjectState.libraries(player)
-    library.dropWhile(!_.isCard).headOption match {
-      case Some(topCard) =>
-        MoveToHandAction(topCard.objectId)
-      case None =>
-        ()
-    }
+    library.dropWhile(!_.isCard).headOption.toSeq.map(c => MoveToHandAction(c.objectId))
   }
-  override def canBeReverted: Boolean = false
 }

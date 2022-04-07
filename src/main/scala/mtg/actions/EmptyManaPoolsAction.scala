@@ -1,9 +1,10 @@
 package mtg.actions
 
-import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
+import mtg.game.objects.GameObjectState
+import mtg.game.state.{DirectGameObjectAction, GameState}
 
-object EmptyManaPoolsAction extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = {
+object EmptyManaPoolsAction extends DirectGameObjectAction {
+  override def execute(implicit gameState: GameState): GameObjectState = {
     gameState.playersInApnapOrder.foldLeft(gameState.gameObjectState) { (gameObjectState, player) =>
       gameObjectState.updateManaPool(player, _ => Nil)
     }

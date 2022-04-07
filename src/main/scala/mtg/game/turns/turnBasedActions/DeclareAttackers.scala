@@ -89,9 +89,8 @@ case class DeclareAttackersChoice(playerToAct: PlayerId, defendingPlayer: Player
   }
 }
 
-case class TapAttacker(attacker: ObjectId) extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = {
+case class TapAttacker(attacker: ObjectId) extends DelegatingGameObjectAction {
+  override def delegate(implicit gameState: GameState): Seq[GameObjectAction] = {
     TapObjectAction(attacker)
   }
-  override def canBeReverted: Boolean = true
 }

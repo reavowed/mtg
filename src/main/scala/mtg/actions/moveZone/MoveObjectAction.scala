@@ -2,14 +2,14 @@ package mtg.actions.moveZone
 
 import mtg.core.ObjectId
 import mtg.game.objects.{GameObject, GameObjectState}
-import mtg.game.state.{GameActionResult, GameState, GameObjectAction, ObjectWithState}
+import mtg.game.state.{DirectGameObjectAction, GameState, ObjectWithState}
 
-abstract class MoveObjectAction[TGameObject <: GameObject] extends GameObjectAction {
+abstract class MoveObjectAction[TGameObject <: GameObject] extends DirectGameObjectAction {
   def objectId: ObjectId
   def createNewObject(existingObjectWithState: ObjectWithState, newObjectId: ObjectId): TGameObject
   def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => TGameObject): GameObjectState
 
-  def execute(gameState: GameState): GameActionResult = {
+  override def execute(implicit gameState: GameState): GameObjectState = {
     gameState.gameObjectState.derivedState.allObjectStates.get(objectId).map(existingObjectWithState => {
       addGameObjectToState(
         existingObjectWithState,

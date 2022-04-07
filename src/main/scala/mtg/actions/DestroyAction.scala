@@ -1,12 +1,11 @@
 package mtg.actions
 
-import mtg.core.ObjectId
 import mtg.actions.moveZone.MoveToGraveyardAction
-import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
+import mtg.core.ObjectId
+import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
-case class DestroyAction(objectId: ObjectId) extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = {
+case class DestroyAction(objectId: ObjectId) extends DelegatingGameObjectAction {
+  override def delegate(implicit gameState: GameState): Seq[GameObjectAction] = {
     MoveToGraveyardAction(objectId)
   }
-  override def canBeReverted: Boolean = true
 }

@@ -1,11 +1,11 @@
 package mtg.actions
 
 import mtg.core.{ObjectId, PlayerId}
-import mtg.game.objects.{CopyOfSpell, StackObject}
-import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
+import mtg.game.objects.{CopyOfSpell, GameObjectState, StackObject}
+import mtg.game.state.{DirectGameObjectAction, GameState}
 
-case class CopySpellAction(playerId: PlayerId, spellId: ObjectId) extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = {
+case class CopySpellAction(playerId: PlayerId, spellId: ObjectId) extends DirectGameObjectAction {
+  override def execute(implicit gameState: GameState): GameObjectState = {
     for {
       spell <- gameState.gameObjectState.stack.find(_.objectId == spellId)
     } yield {

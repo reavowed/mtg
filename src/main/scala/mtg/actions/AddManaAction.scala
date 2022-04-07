@@ -1,12 +1,12 @@
 package mtg.actions
 
-import mtg.core.{ManaType, PlayerId}
 import mtg.core.symbols.ManaSymbol
-import mtg.game.objects.ManaObject
-import mtg.game.state.{GameActionResult, GameState, GameObjectAction}
+import mtg.core.{ManaType, PlayerId}
+import mtg.game.objects.GameObjectState
+import mtg.game.state.{DirectGameObjectAction, GameState}
 
-case class AddManaAction(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = {
+case class AddManaAction(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends DirectGameObjectAction {
+  override def execute(implicit gameState: GameState): GameObjectState = {
     manaSymbols.flatMap(getManaTypes).foldLeft(gameState.gameObjectState)(_.addMana(player, _))
   }
   override def canBeReverted: Boolean = true

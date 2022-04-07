@@ -1,5 +1,6 @@
 package mtg.game.turns.turnBasedActions
 
+import mtg.game.objects.GameObjectState
 import mtg.game.state._
 
 object CleanupAction extends DelegatingGameAction[Unit] {
@@ -9,8 +10,8 @@ object CleanupAction extends DelegatingGameAction[Unit] {
   }
 }
 
-object DamageWearsOffEvent extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = {
+object DamageWearsOffEvent extends DirectGameObjectAction {
+  override def execute(implicit gameState: GameState): GameObjectState = {
     gameState.gameObjectState.battlefield.foldLeft(gameState.gameObjectState) { (state, obj) =>
       state.updatePermanentObject(obj.objectId, _.updateMarkedDamage(_ => 0))
     }
@@ -18,7 +19,7 @@ object DamageWearsOffEvent extends GameObjectAction {
   override def canBeReverted: Boolean = true
 }
 
-object UntilEndOfTurnEffectsEnd extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = ()
+object UntilEndOfTurnEffectsEnd extends DirectGameObjectAction {
+  override def execute(implicit gameState: GameState): GameObjectState = None
   override def canBeReverted: Boolean = true
 }

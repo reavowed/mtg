@@ -111,9 +111,9 @@ object GameActionExecutor {
     case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
       executeChildAction(rootAction, childAction, callback)
     case gameObjectAction: GameObjectAction =>
-      Some(executeOldActions(Seq(gameObjectAction), gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
+      Some((ProcessedGameActionResult.Value(().asInstanceOf[T]), executeGameObjectAction(gameObjectAction, gameState)))
     case WrappedOldUpdates(updates@_*) =>
-      Some(executeOldActions(updates, gameState).asInstanceOf[(ProcessedGameActionResult[T], GameState)])
+      Some((ProcessedGameActionResult.Value(().asInstanceOf[T]), executeGameObjectActions(updates, gameState)))
     case LogEventAction(logEvent) =>
       Some((ProcessedGameActionResult.Value(()).asInstanceOf[ProcessedGameActionResult[T]], gameState.recordLogEvent(logEvent)))
   }
@@ -323,43 +323,42 @@ object GameActionExecutor {
     }
   }
 
-  def executeOldActions(oldActions: Seq[GameObjectAction], gameState: GameState): (ProcessedGameActionResult[Unit], GameState) = {
-    oldActions match {
-      case head +: tail =>
-        val (newGameState, newUpdates) = execute(head, gameState)
-        (ProcessedGameActionResult.Action(WrappedOldUpdates(newUpdates ++ tail: _*)), newGameState)
-      case Nil =>
-        (ProcessedGameActionResult.Value(()), gameState)
-    }
+  def executeGameObjectAction(action: GameObjectAction, initialGameState: GameState): GameState = {
+    executeGameObjectActions(Seq(action), initialGameState)
   }
 
-  def execute(action: GameObjectAction, initialGameState: GameState): (GameState, Seq[GameObjectAction]) = {
-    val preventResult = initialGameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
-      .findOption(_.checkAction(action, initialGameState).asOptionalInstanceOf[Prevent])
-
-    preventResult match {
-      case Some(Prevent(logEvent)) =>
-        (logEvent.map(initialGameState.recordLogEvent).getOrElse(initialGameState), Nil)
-      case None =>
-        val actionResult = action.execute(initialGameState)
-        val gameObjectStateAfterAction = actionResult.asOptionalInstanceOf[GameActionResult.NewGameObjectState].map(_.gameObjectState).getOrElse(initialGameState.gameObjectState)
-        val gameStateAfterAction = initialGameState.updateGameObjectState(gameObjectStateAfterAction)
-        val triggeredAbilities = getTriggeringAbilities(action, gameStateAfterAction)
-        val endedEffects = getEndedEffects(action, gameStateAfterAction)
-
-        val finalGameObjectState = if (actionResult.isInstanceOf[GameActionResult.NewGameObjectState] || triggeredAbilities.nonEmpty || endedEffects.nonEmpty) {
-          gameObjectStateAfterAction
-            .addWaitingTriggeredAbilities(triggeredAbilities)
-            .updateEffects(_.diff(endedEffects))
-        } else {
-          initialGameState.gameObjectState
+  @tailrec
+  def executeGameObjectActions(actions: Seq[GameObjectAction], initialGameState: GameState): GameState = {
+    actions match {
+      case action +: nextActions =>
+        val preventResult = initialGameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
+          .findOption(_.checkAction(action, initialGameState).asOptionalInstanceOf[Prevent])
+        preventResult match {
+          case Some(Prevent(logEvent)) =>
+            initialGameState.recordLogEvent(logEvent)
+          case None =>
+            action match {
+              case action: DirectGameObjectAction => {
+                val gameObjectStateAfterAction = action.execute(initialGameState)
+                val gameStateAfterAction = initialGameState.updateGameObjectState(gameObjectStateAfterAction)
+                val triggeredAbilities = getTriggeringAbilities(action, gameStateAfterAction)
+                val endedEffects = getEndedEffects(action, gameStateAfterAction)
+                val finalGameObjectState = gameObjectStateAfterAction
+                  .addWaitingTriggeredAbilities(triggeredAbilities)
+                  .updateEffects(_.diff(endedEffects))
+                val newGameState = initialGameState
+                  .recordAction(action, ())
+                  .updateGameObjectState(finalGameObjectState)
+                  .recordLogEvent(action.getLogEvent(initialGameState))
+                executeGameObjectActions(nextActions, newGameState)
+              }
+              case action: DelegatingGameObjectAction => {
+                executeGameObjectActions(action.delegate(initialGameState) ++ nextActions, initialGameState)
+              }
+            }
         }
-
-        val newGameState = initialGameState
-          .recordAction(action, ())
-          .updateGameObjectState(finalGameObjectState)
-          .recordLogEvent(action.getLogEvent(initialGameState))
-        (newGameState, actionResult.asOptionalInstanceOf[GameActionResult.MoreActions].map(_.nextActions).getOrElse(Nil))
+      case Nil =>
+        initialGameState
     }
   }
 

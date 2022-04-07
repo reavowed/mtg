@@ -1,7 +1,8 @@
 package mtg.game.turns.turnBasedActions
 
-import mtg.actions.damage.DealDamageAction
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.actions.damage
+import mtg.actions.damage.DealCombatDamageAction
+import mtg.core.{ObjectId, PlayerId}
 import mtg.game.state._
 import mtg.utils.ParsingUtils
 
@@ -12,20 +13,20 @@ object CombatDamageAction extends DelegatingGameAction[Unit] {
     val attackers = DeclareAttackers.getAttackers(gameState)
     if (attackers.nonEmpty)
       for {
-        attackerDamageEvents <- attackers.foldLeft[GameAction[Seq[DealCombatDamageEvent]]](Nil) { case (eventsAction, attacker) =>
+        attackerDamageEvents <- attackers.foldLeft[GameAction[Seq[DealCombatDamageAction]]](Nil) { case (eventsAction, attacker) =>
           eventsAction.flatMap(assignAttackerCombatDamage(attacker, _))
         }
         blockerDamageEvents = for {
           blocker <- DeclareBlockers.getBlockers(gameState)
           attacker <- DeclareBlockers.getAttackerForBlocker(blocker, gameState).toSeq
-        } yield DealCombatDamageEvent(blocker, attacker, CurrentCharacteristics.getPower(blocker, gameState))
+        } yield damage.DealCombatDamageAction(blocker, attacker, CurrentCharacteristics.getPower(blocker, gameState))
         _ <- WrappedOldUpdates(attackerDamageEvents ++ blockerDamageEvents: _*)
       } yield ()
     else
       ()
   }
 
-  private def assignAttackerCombatDamage(attacker: ObjectId, damageEventsSoFar: Seq[DealCombatDamageEvent])(implicit gameState: GameState): GameAction[Seq[DealCombatDamageEvent]] = {
+  private def assignAttackerCombatDamage(attacker: ObjectId, damageEventsSoFar: Seq[DealCombatDamageAction])(implicit gameState: GameState): GameAction[Seq[DealCombatDamageAction]] = {
     val power = CurrentCharacteristics.getPower(attacker, gameState)
     DeclareBlockers.getOrderingOfBlockersForAttacker(attacker, gameState) match {
       case Some(blockers) =>
@@ -33,9 +34,9 @@ object CombatDamageAction extends DelegatingGameAction[Unit] {
           case Nil =>
             Nil
           case Seq(blocker) =>
-            Seq(DealCombatDamageEvent(attacker, blocker, power))
+            Seq(damage.DealCombatDamageAction(attacker, blocker, power))
           case blocker +: _ if requiredDamageForLethal(blocker, damageEventsSoFar) >= power =>
-            Seq(DealCombatDamageEvent(attacker, blocker, power))
+            Seq(damage.DealCombatDamageAction(attacker, blocker, power))
           case blockers =>
             AssignCombatDamageChoice(
               gameState.activePlayer,
@@ -44,13 +45,13 @@ object CombatDamageAction extends DelegatingGameAction[Unit] {
               CurrentCharacteristics.getPower(attacker, gameState))
         }
       case None =>
-        Seq(DealCombatDamageEvent(attacker, DeclareAttackers.getAttackedPlayer(attacker, gameState), power))
+        Seq(damage.DealCombatDamageAction(attacker, DeclareAttackers.getAttackedPlayer(attacker, gameState), power))
     }
   }
 
   private def requiredDamageForLethal(
     blocker: ObjectId,
-    damageEvents: Seq[DealCombatDamageEvent])(
+    damageEvents: Seq[DealCombatDamageAction])(
     implicit gameState: GameState
   ): Int = {
     val blockerToughness = CurrentCharacteristics.getToughness(blocker, gameState)
@@ -65,13 +66,13 @@ case class AssignCombatDamageChoice(
     attacker: ObjectId,
     blockers: Seq[(ObjectId, Int)],
     damageToAssign: Int)
-  extends Choice[Seq[DealCombatDamageEvent]]
+  extends Choice[Seq[DealCombatDamageAction]]
 {
   object DamageAmount {
     def unapply(text: String): Option[Int] = text.toIntOption
   }
 
-  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[Seq[DealCombatDamageEvent]] = {
+  override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[Seq[DealCombatDamageAction]] = {
     @tailrec
     def matchBlockers(remainingIdsAndDamageAmounts: Seq[String], unmatchedBlockers: Seq[(ObjectId, Int)], assignedBlockerDamage: Map[ObjectId, Int], remainingDamage: Int): Option[Map[ObjectId, Int]] = {
       unmatchedBlockers match {
@@ -96,14 +97,7 @@ case class AssignCombatDamageChoice(
     val idsAndDamageAmounts = ParsingUtils.splitStringBySpaces(serializedDecision)
     for {
       damageAssignment <- matchBlockers(idsAndDamageAmounts, blockers, Map.empty, damageToAssign)
-      assignedDamageEvents = damageAssignment.map { case (blocker, amount) => DealCombatDamageEvent(attacker, blocker, amount)}.toSeq
+      assignedDamageEvents = damageAssignment.map { case (blocker, amount) => damage.DealCombatDamageAction(attacker, blocker, amount)}.toSeq
     } yield assignedDamageEvents
   }
-}
-
-case class DealCombatDamageEvent(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends GameObjectAction {
-  override def execute(gameState: GameState): GameActionResult = {
-    Seq(DealDamageAction(source, recipient, amount))
-  }
-  override def canBeReverted: Boolean = true
 }

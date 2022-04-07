@@ -2,6 +2,7 @@ package mtg.game.state
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
+import mtg.game.objects.GameObjectState
 import mtg.game.state.history.LogEvent
 
 sealed trait GameAction[+T] {
@@ -51,10 +52,20 @@ case class PartiallyExecutedActionWithValue[T, S](rootAction: GameAction[T], val
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
-trait GameObjectAction extends GameAction[Unit] {
-  def execute(gameState: GameState): GameActionResult
-  def canBeReverted: Boolean
+sealed trait GameObjectAction extends GameAction[Unit] {
   def getLogEvent(gameState: GameState): Option[LogEvent] = None
+}
+trait DirectGameObjectAction extends GameObjectAction {
+  def execute(implicit gameState: GameState): GameObjectState
+  def canBeReverted: Boolean
+
+  protected implicit def gameObjectStateFromOption(gameObjectStateOption: Option[GameObjectState])(implicit gameState: GameState): GameObjectState = {
+    gameObjectStateOption.getOrElse(gameState.gameObjectState)
+  }
+}
+trait DelegatingGameObjectAction extends GameObjectAction {
+  def delegate(implicit gameState: GameState): Seq[GameObjectAction]
+  protected implicit def seqFromSingle(action: GameObjectAction): Seq[GameObjectAction] = Seq(action)
 }
 
 case class WrappedOldUpdates(gameObjectActions: GameObjectAction*) extends GameAction[Unit]
