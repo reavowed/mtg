@@ -15,9 +15,6 @@ sealed trait GameAction[+T] {
   def andThen[S](nextAction: GameAction[S]): GameAction[S] = flatMap(_ => nextAction)
 }
 
-trait ExecutableGameAction[+T] extends GameAction[T] {
-  def execute()(implicit gameState: GameState): PartialGameActionResult[T]
-}
 trait DelegatingGameAction[+T] extends GameAction[T] {
   def delegate(implicit gameState: GameState): GameAction[T]
 }
@@ -47,8 +44,6 @@ object Choice {
 }
 case class PartiallyExecutedActionWithDelegate[T](rootAction: DelegatingGameAction[T], childAction: GameAction[T]) extends GameAction[T]
 case class PartiallyExecutedActionWithFlatMap[T, S](rootAction: DelegatingGameAction[T], childAction: GameAction[S], f: S => GameAction[T]) extends GameAction[T]
-case class PartiallyExecutedActionWithChild[T, S](rootAction: GameAction[T], childAction: GameAction[S], callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
-case class PartiallyExecutedActionWithValue[T, S](rootAction: GameAction[T], value: S, callback: (S, GameState) => PartialGameActionResult[T]) extends GameAction[T]
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 

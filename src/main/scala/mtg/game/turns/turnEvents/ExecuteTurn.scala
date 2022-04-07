@@ -1,7 +1,7 @@
 package mtg.game.turns.turnEvents
 
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameAction, GameState, PartialGameActionResult, RootGameAction}
+import mtg.game.state.{GameAction, GameState, RootGameAction}
 import mtg.game.turns.{Turn, TurnPhase}
 
 case class ExecuteTurn(turn: Turn) extends RootGameAction {

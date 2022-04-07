@@ -28,8 +28,6 @@ object GameActionExecutor {
     action match {
       case directChoice: Choice[T] if directChoice.playerToAct == actingPlayer =>
         directChoice.handleDecision(serializedDecision).map(d => (ProcessedGameActionResult.Value(d), gameState.recordChoice(directChoice, d)))
-      case PartiallyExecutedActionWithChild(rootAction, child, callback) =>
-        handleDecisionForChild(rootAction, child, callback, serializedDecision, actingPlayer)
       case PartiallyExecutedActionWithDelegate(rootAction, child) =>
         handleDecisionForDelegate(rootAction, child, serializedDecision, actingPlayer)
       case PartiallyExecutedActionWithFlatMap(rootAction, child, f) =>
@@ -60,17 +58,6 @@ object GameActionExecutor {
     handleDelegatingActionWithFlatMap[T, S](rootAction, childAction, f, handleDecisionForAction(_, serializedDecision, actingPlayer)(_))
   }
 
-  private def handleDecisionForChild[T, S](
-    rootAction: GameAction[T],
-    childAction: GameAction[S],
-    callback: (S, GameState) => PartialGameActionResult[T],
-    serializedDecision: String,
-    actingPlayer: PlayerId)(
-    implicit gameState: GameState
-  ): Option[(ProcessedGameActionResult[T], GameState)] = {
-    runChildAction[T, S](rootAction, childAction, callback, handleDecisionForAction[S](_, serializedDecision, actingPlayer)(_))
-  }
-
   private def runAction(gameState: GameState, f: (GameAction[RootGameAction], GameState) => Option[(ProcessedGameActionResult[RootGameAction], GameState)]): Option[GameState] = {
     for {
       action <- gameState.currentAction
@@ -97,36 +84,16 @@ object GameActionExecutor {
       handleDecisionForAction(priorityChoice, "Pass", priorityChoice.playerToAct)
     case _: Choice[T] =>
       None
-    case action: ExecutableGameAction[T] =>
-      Some(executeExecutableAction(action))
     case action: DelegatingGameAction[T] =>
       Some(executeDelegatingAction(action))
     case PartiallyExecutedActionWithDelegate(rootAction, childAction) =>
       executeDelegateWithChild(rootAction, childAction)
     case PartiallyExecutedActionWithFlatMap(rootAction, childAction, f) =>
       executeDelegateWithFlatMap(rootAction, childAction, f)
-    case PartiallyExecutedActionWithValue(rootAction, value, callback) =>
-      Some(executeCallback(rootAction, value, callback))
-    case PartiallyExecutedActionWithChild(rootAction, childAction, callback) =>
-      executeChildAction(rootAction, childAction, callback)
     case gameObjectAction: GameObjectAction[T] =>
       Some(executeGameObjectAction(gameObjectAction, gameState))
     case LogEventAction(logEvent) =>
       Some((ProcessedGameActionResult.Value(()).asInstanceOf[ProcessedGameActionResult[T]], gameState.recordLogEvent(logEvent)))
-  }
-
-  private def executeExecutableAction[T](action: ExecutableGameAction[T])(implicit gameState: GameState):  (ProcessedGameActionResult[T], GameState) = {
-    val preventResult = gameState.gameObjectState.activeContinuousEffects.ofType[PreventionEffect]
-      .findOption(_.checkAction(action, gameState).asOptionalInstanceOf[Prevent])
-    preventResult match {
-      case Some(Prevent(logEvent)) =>
-        (ProcessedGameActionResult.Value(().asInstanceOf[T]), gameState.recordLogEvent(logEvent))
-      case None =>
-        handleActionResult(action, action.execute()).mapRight { finalGameState =>
-          val triggeredAbilities = getTriggeringAbilities(action, finalGameState)
-          finalGameState.updateGameObjectState(_.addWaitingTriggeredAbilities(triggeredAbilities))
-        }
-    }
   }
 
   private def executeDelegatingAction[T](action: DelegatingGameAction[T])(implicit gameState: GameState): (ProcessedGameActionResult[T], GameState) = {
@@ -254,44 +221,6 @@ object GameActionExecutor {
     }
   }
 
-
-
-  private def executeCallback[T, S](
-    rootAction: GameAction[T],
-    childValue: S,
-    callback: (S, GameState) => PartialGameActionResult[T])(
-    implicit gameState: GameState
-  ): (ProcessedGameActionResult[T], GameState) = {
-    handleActionResult(rootAction, callback(childValue, gameState))
-  }
-
-  private def executeChildAction[T, S](
-    rootAction: GameAction[T],
-    childAction: GameAction[S],
-    callback: (S, GameState) => PartialGameActionResult[T])(
-    implicit gameState: GameState,
-    stops: Stops
-  ): Option[(ProcessedGameActionResult[T], GameState)] = {
-    runChildAction[T, S](rootAction, childAction, callback, executeAction[S](_)(_, stops))
-  }
-
-  private def runChildAction[T, S](
-    rootAction: GameAction[T],
-    childAction: GameAction[S],
-    callback: (S, GameState) => PartialGameActionResult[T],
-    f: (GameAction[S], GameState) => Option[(ProcessedGameActionResult[S], GameState)])(
-    implicit gameState: GameState
-  ): Option[(ProcessedGameActionResult[T], GameState)] = {
-    f(childAction, gameState) map {
-      case (ProcessedGameActionResult.Value(value), newGameState) =>
-        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithValue(rootAction, value, callback)), newGameState)
-      case (ProcessedGameActionResult.Action(action), newGameState) =>
-        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithChild(rootAction, action, callback)), newGameState)
-      case (result: ProcessedGameActionResult.Interrupted, newGameState) =>
-        (result, newGameState)
-    }
-  }
-
   private def updateGameState(gameState: GameState, newGameActionResult: ProcessedGameActionResult[RootGameAction]): GameState = {
     newGameActionResult match {
         case ProcessedGameActionResult.Value(nextAction) =>
@@ -302,21 +231,6 @@ object GameActionExecutor {
           gameStateToReturnTo
         case ProcessedGameActionResult.GameOver(result) =>
           gameState.copy(currentAction = None, result = Some(result))
-    }
-  }
-
-  def handleActionResult[T](rootAction: GameAction[T], currentResult: PartialGameActionResult[T])(implicit gameState: GameState): (ProcessedGameActionResult[T], GameState) = {
-    currentResult match {
-      case PartialGameActionResult.Value(value) =>
-        (ProcessedGameActionResult.Value(value), gameState)
-      case PartialGameActionResult.Delegated(action) =>
-        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithChild(rootAction, action, (t: T, _) => t)), gameState)
-      case PartialGameActionResult.ChildWithCallback(child, callback) =>
-        (ProcessedGameActionResult.Action(PartiallyExecutedActionWithChild(rootAction, child, callback)), gameState)
-      case PartialGameActionResult.Backup(gameStateToBackupTo) =>
-        (ProcessedGameActionResult.Backup(gameStateToBackupTo), gameStateToBackupTo)
-      case PartialGameActionResult.GameOver(result) =>
-        (ProcessedGameActionResult.GameOver(result), gameState)
     }
   }
 

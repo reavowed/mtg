@@ -26,10 +26,6 @@ case class GameState(
           helper(childAction, actions :+ rootAction)
         case PartiallyExecutedActionWithFlatMap(rootAction, childAction, f) =>
           helper(childAction, actions :+ rootAction)
-        case PartiallyExecutedActionWithChild(rootAction, childAction, _) =>
-          helper(childAction, actions :+ rootAction)
-        case PartiallyExecutedActionWithValue(rootAction, _, _) =>
-          actions :+ rootAction
         case _ =>
           actions :+ current
       }
