@@ -10,8 +10,8 @@ object CleanupAction extends DelegatingGameAction[Unit] {
   }
 }
 
-object DamageWearsOffEvent extends DirectGameObjectAction {
-  override def execute(implicit gameState: GameState): GameObjectState = {
+object DamageWearsOffEvent extends DirectGameObjectAction[Unit] {
+  override def execute(implicit gameState: GameState): DirectGameObjectAction.Result[Unit] = {
     gameState.gameObjectState.battlefield.foldLeft(gameState.gameObjectState) { (state, obj) =>
       state.updatePermanentObject(obj.objectId, _.updateMarkedDamage(_ => 0))
     }
@@ -19,7 +19,7 @@ object DamageWearsOffEvent extends DirectGameObjectAction {
   override def canBeReverted: Boolean = true
 }
 
-object EndOfTurnEffectsEnd extends DirectGameObjectAction {
-  override def execute(implicit gameState: GameState): GameObjectState = None
+object EndOfTurnEffectsEnd extends DirectGameObjectAction[Unit] {
+  override def execute(implicit gameState: GameState): DirectGameObjectAction.Result[Unit] = ()
   override def canBeReverted: Boolean = true
 }

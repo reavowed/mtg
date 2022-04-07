@@ -7,8 +7,8 @@ import mtg.game.state.{DirectGameObjectAction, GameState}
 
 import scala.util.Random
 
-case class ShuffleLibraryAction(player: PlayerId) extends DirectGameObjectAction {
-  override def execute(implicit gameState: GameState): GameObjectState = {
+case class ShuffleLibraryAction(player: PlayerId) extends DirectGameObjectAction[Unit] {
+  override def execute(implicit gameState: GameState): DirectGameObjectAction.Result[Unit] = {
     val library = Zone.Library(player)
     val shuffledLibraryContents = Random.shuffle(gameState.gameObjectState.libraries(player))
     shuffledLibraryContents.foldLeft(

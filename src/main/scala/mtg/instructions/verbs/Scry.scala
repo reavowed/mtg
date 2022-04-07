@@ -49,11 +49,12 @@ case class ScryChoice(
 }
 
 case class ScryAction(
-  player: PlayerId,
-  cardsOnTop: Seq[ObjectId],
-  cardsOnBottom: Seq[ObjectId]
-) extends DirectGameObjectAction {
-  override def execute(implicit gameState: GameState): GameObjectState = {
+    player: PlayerId,
+    cardsOnTop: Seq[ObjectId],
+    cardsOnBottom: Seq[ObjectId])
+  extends DirectGameObjectAction[Unit]
+{
+  override def execute(implicit gameState: GameState): DirectGameObjectAction.Result[Unit] = {
     // TODO: Should create new game objects to hide card identities (if scrying more than one)
     gameState.gameObjectState.updateZone(Zone.Library(player), library => {
       val onTop = cardsOnTop.map(id => library.find(_.objectId == id).get)

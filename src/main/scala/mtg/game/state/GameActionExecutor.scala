@@ -230,7 +230,7 @@ object GameActionExecutor {
 
   def executeGameObjectAction[T](action: GameObjectAction[T])(implicit currentGameState: GameState): (GameActionResult[T], GameState) = {
     (action match {
-      case action: DirectGameObjectAction =>
+      case action: DirectGameObjectAction[_] =>
         executeDirectGameObjectAction(action)
       case action: DelegatingGameObjectAction =>
         executeDelegatingGameObjectAction(action)
@@ -241,12 +241,16 @@ object GameActionExecutor {
     }).asInstanceOf[(GameActionResult[T], GameState)]
   }
 
-  def executeDirectGameObjectAction[T](action: DirectGameObjectAction)(implicit currentGameState: GameState): (GameActionResult[Unit], GameState) = {
+  def executeDirectGameObjectAction[T](action: DirectGameObjectAction[T])(implicit currentGameState: GameState): (GameActionResult[Option[T]], GameState) = {
     preventActionOrExecute(action) {
-      val gameObjectStateAfterAction = action.execute(currentGameState)
-      val gameStateAfterAction = currentGameState.updateGameObjectState(gameObjectStateAfterAction)
-      val gameStateWithLogEvent = gameStateAfterAction.recordLogEvent(action.getLogEvent(gameStateAfterAction))
-      recordExecutedEvent(action, (), currentGameState, gameStateWithLogEvent)
+      action.execute(currentGameState) match {
+        case DirectGameObjectAction.Happened(value, gameObjectStateAfterAction) =>
+          val gameStateAfterAction = currentGameState.updateGameObjectState(gameObjectStateAfterAction)
+          val gameStateWithLogEvent = gameStateAfterAction.recordLogEvent(action.getLogEvent(gameStateAfterAction))
+          recordExecutedEvent(action, Some(value), currentGameState, gameStateWithLogEvent)
+        case DirectGameObjectAction.DidntHappen =>
+          (GameActionResult.Value(None), currentGameState)
+      }
     }
   }
 

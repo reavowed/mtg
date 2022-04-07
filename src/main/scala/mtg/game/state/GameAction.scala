@@ -48,13 +48,24 @@ case class PartiallyExecutedActionWithFlatMap[T, S](rootAction: DelegatingGameAc
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
 sealed trait GameObjectAction[T] extends GameAction[T]
-trait DirectGameObjectAction extends GameObjectAction[Unit] {
-  def execute(implicit gameState: GameState): GameObjectState
+trait DirectGameObjectAction[T] extends GameObjectAction[Option[T]] {
+  def execute(implicit gameState: GameState): DirectGameObjectAction.Result[T]
   def canBeReverted: Boolean
   def getLogEvent(gameState: GameState): Option[LogEvent] = None
-
-  protected implicit def gameObjectStateFromOption(gameObjectStateOption: Option[GameObjectState])(implicit gameState: GameState): GameObjectState = {
-    gameObjectStateOption.getOrElse(gameState.gameObjectState)
+}
+object DirectGameObjectAction {
+  sealed trait Result[+T]
+  case class Happened[T](value: T, gameObjectState: GameObjectState) extends Result[T]
+  object DidntHappen extends Result[Nothing]
+  object Result {
+    implicit def resultFromNothing(none: None.type): Result[Nothing] = DidntHappen
+    implicit def resultFromValue[T](value: T)(implicit gameState: GameState): Result[T] = Happened(value, gameState.gameObjectState)
+    implicit def resultFromTuple[T](tuple: (T, GameObjectState)): Result[T] = (Happened.apply[T] _).tupled(tuple)
+    implicit def resultFromTupleOption[T](tupleOption: Option[(T, GameObjectState)]): Result[T] = tupleOption.map(resultFromTuple).getOrElse(DidntHappen)
+    implicit def unitResultFromGameObjectState(gameObjectState: GameObjectState): Result[Unit] = Happened((), gameObjectState)
+    implicit def unitResultFromOptionalGameObjectState(gameObjectStateOption: Option[GameObjectState])(implicit gameState: GameState): Result[Unit] = {
+      gameObjectStateOption.map(unitResultFromGameObjectState).getOrElse(DidntHappen)
+    }
   }
 }
 trait DelegatingGameObjectAction extends GameObjectAction[Unit] {
