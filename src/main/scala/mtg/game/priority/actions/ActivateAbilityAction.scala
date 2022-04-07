@@ -3,7 +3,6 @@ package mtg.game.priority.actions
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.actions.stack.CreateActivatedAbilityOnStack
 import mtg.core.{ObjectId, PlayerId}
-import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state._
 import mtg.stack.adding._
 import mtg.stack.resolving.ResolveManaAbility
@@ -21,9 +20,7 @@ case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWith
       } yield ()
     } else {
       for {
-        _ <- CreateActivatedAbilityOnStack(ability, objectId, player)
-        // TODO: CreateTriggeredAbilityOnStack should return ID
-        stackObjectId <- GetMostRecentStackObjectId
+        stackObjectId <- CreateActivatedAbilityOnStack(ability, objectId, player).map(_.get)
         _ <- ChooseModes(stackObjectId)
         _ <- ChooseTargets(stackObjectId)
         _ <- PayCosts(stackObjectId)

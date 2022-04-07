@@ -3,9 +3,8 @@ package mtg.game.priority
 import mtg.abilities.PendingTriggeredAbility
 import mtg.actions.stack.CreateTriggeredAbilityOnStack
 import mtg.core.PlayerId
-import mtg.game.objects.StackObject
 import mtg.game.state._
-import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishTriggering, GetMostRecentStackObjectId}
+import mtg.stack.adding.{ChooseModes, ChooseTargets, FinishTriggering}
 
 object TriggeredAbilityCheck extends DelegatingGameAction[Boolean] {
   override def delegate(implicit gameState: GameState): GameAction[Boolean] = {
@@ -30,9 +29,7 @@ object TriggeredAbilityCheck extends DelegatingGameAction[Boolean] {
 
   def putTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTriggeredAbility): GameAction[Unit] = {
     for {
-      _ <- CreateTriggeredAbilityOnStack(pendingTriggeredAbility)
-      // TODO: CreateTriggeredAbilityOnStack should return ID
-      stackObjectId <- GetMostRecentStackObjectId
+      stackObjectId <- CreateTriggeredAbilityOnStack(pendingTriggeredAbility).map(_.get)
       _ <- ChooseModes(stackObjectId)
       _ <- ChooseTargets(stackObjectId)
       _ <- FinishTriggering(stackObjectId)

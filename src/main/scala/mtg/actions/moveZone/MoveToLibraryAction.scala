@@ -10,7 +10,7 @@ import mtg.game.state.ObjectWithState
 case class MoveToLibraryAction(objectId: ObjectId) extends MoveObjectToBasicZoneAction {
   def getZone(existingObjectWithState: ObjectWithState): BasicZone = Zone.Library(existingObjectWithState.gameObject.owner)
 
-  override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => BasicGameObject): GameObjectState = {
+  override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => BasicGameObject): (ObjectId, GameObjectState) = {
     gameObjectState.addObjectToLibrary(existingObjectWithState.gameObject.owner, objectConstructor, _.length)
   }
 }

@@ -10,7 +10,7 @@ case class MoveToStackAction(objectId: ObjectId, player: PlayerId) extends MoveO
     newObjectId,
     player)
 
-  override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => StackObject): GameObjectState = {
+  override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => StackObject): (ObjectId, GameObjectState) = {
     gameObjectState.addObjectToStack(objectConstructor)
   }
 }

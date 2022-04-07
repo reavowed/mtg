@@ -14,9 +14,7 @@ case class CastSpellAction(playerId: PlayerId, objectToCast: ObjectWithState) ex
 
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
       for {
-        _ <- MoveToStackAction(objectId, playerId)
-        // TODO: CreateTriggeredAbilityOnStack should return ID
-        spellId <- GetMostRecentStackObjectId
+        spellId <- MoveToStackAction(objectId, playerId).map(_.get)
         _ <- ChooseModes(spellId)
         _ <- ChooseTargets(spellId)
         _ <- PayManaCosts.ForSpell(spellId)

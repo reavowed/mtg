@@ -10,7 +10,7 @@ case class MoveToBattlefieldAction(objectId: ObjectId, initialController: Player
     newObjectId,
     initialController)
 
-  override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => PermanentObject): GameObjectState = {
+  override def addGameObjectToState(existingObjectWithState: ObjectWithState, gameObjectState: GameObjectState, objectConstructor: ObjectId => PermanentObject): (ObjectId, GameObjectState) = {
     gameObjectState.addObjectToBattlefield(objectConstructor)
   }
 }
