@@ -26,6 +26,7 @@ object Verb {
   case object Gain extends RegularCaseObject
   case object Get extends RegularCaseObject
   case object Put extends RegularCaseObject
+  case object Return extends RegularCaseObject
   case object Search extends RegularCaseObject
 
   abstract class WithSuffix(verb: Verb, suffix: String) extends Verb {
