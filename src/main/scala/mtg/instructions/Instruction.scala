@@ -1,5 +1,6 @@
 package mtg.instructions
 
+import mtg.core.zones.ZoneType
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.nounPhrases.Target
@@ -38,4 +39,5 @@ trait Instruction extends TextComponent {
   }
 
   def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
+  def functionalZones: Option[Set[ZoneType]] = None
 }

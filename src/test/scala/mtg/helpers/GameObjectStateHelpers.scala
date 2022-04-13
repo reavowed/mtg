@@ -55,6 +55,8 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
           gameObjectState.addObjectToHand(player, BasicGameObject(card, _, Zone.Hand(player)))._2
         case Zone.Library(player) =>
           gameObjectState.addObjectToLibrary(player, BasicGameObject(card, _, Zone.Library(player)), _.length)._2
+        case Zone.Graveyard(player) =>
+          gameObjectState.addObjectToGraveyard(player, BasicGameObject(card, _, Zone.Graveyard(player)))._2
         case Zone.Sideboard(player) =>
           gameObjectState.addObjectToSideboard(player, BasicGameObject(card, _, Zone.Sideboard(player)))._2
       }
@@ -75,6 +77,7 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
       }
     }
     def setHand: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Hand(playerIdentifier), playerIdentifier, cardDefinitions))
+    def setGraveyard: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Graveyard(playerIdentifier), playerIdentifier, cardDefinitions))
     def setLibrary: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Library(playerIdentifier), playerIdentifier, cardDefinitions))
     def setBattlefield: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) =>
       Focus[GameObjectState](_.battlefield).modify(_.filter(_.defaultController != playerIdentifier))(gameObjectState)

@@ -1,12 +1,14 @@
 package mtg.instructions
 
 import mtg.core.PlayerId
+import mtg.core.zones.ZoneType
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
+import mtg.instructions.nounPhrases.{SingleIdentifyingNounPhrase, You}
 
 trait IntransitiveInstructionVerb[-SubjectType] extends Verb {
   def resolve(subject: SubjectType, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
+  def getFunctionalZones(subjectPhrase: SingleIdentifyingNounPhrase[SubjectType]): Option[Set[ZoneType]] = None
 }
 
 object IntransitiveInstructionVerb {
@@ -19,14 +21,20 @@ object IntransitiveInstructionVerb {
     override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
       instructionVerb.resolve(resolutionContext.controllingPlayer, gameState, resolutionContext)
     }
+    override def functionalZones: Option[Set[ZoneType]] = {
+      instructionVerb.getFunctionalZones(You)
+    }
   }
-  case class WithSubject[SubjectType](subjectNoun: SingleIdentifyingNounPhrase[SubjectType], instructionVerb: IntransitiveInstructionVerb[SubjectType]) extends Instruction {
+  case class WithSubject[SubjectType](subjectPhrase: SingleIdentifyingNounPhrase[SubjectType], instructionVerb: IntransitiveInstructionVerb[SubjectType]) extends Instruction {
     override def getText(cardName: String): String = {
-      subjectNoun.getText(cardName) + " " + instructionVerb.inflect(VerbInflection.Present(subjectNoun.person, subjectNoun.number), cardName)
+      subjectPhrase.getText(cardName) + " " + instructionVerb.inflect(VerbInflection.Present(subjectPhrase.person, subjectPhrase.number), cardName)
     }
     override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-      val (playerId, contextAfterPlayer) = subjectNoun.identifySingle(gameState, resolutionContext)
+      val (playerId, contextAfterPlayer) = subjectPhrase.identifySingle(gameState, resolutionContext)
       instructionVerb.resolve(playerId, gameState, contextAfterPlayer)
+    }
+    override def functionalZones: Option[Set[ZoneType]] = {
+      instructionVerb.getFunctionalZones(subjectPhrase)
     }
   }
 }

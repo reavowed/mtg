@@ -1,11 +1,24 @@
 package mtg.cards.text
 
 import mtg.core.PlayerId
+import mtg.core.zones.ZoneType
 import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
 
 sealed trait InstructionParagraph extends TextComponent {
   override def getText(cardName: String): String = getUncapitalizedText(cardName).capitalize
   def getUncapitalizedText(cardName: String): String
+  def instructions: Seq[Instruction]
+  def functionalZones: Option[Set[ZoneType]] = instructions.foldLeft[Option[Set[ZoneType]]](None) {
+    case (None, i) =>
+      i.functionalZones
+    case (Some(zones), i) =>
+      i.functionalZones match {
+        case Some(moreZones) =>
+          Some(zones ++ moreZones)
+        case None =>
+          Some(zones)
+      }
+  }
 }
 object InstructionParagraph {
   implicit def fromSingleVerb(intransitiveVerbInstruction: IntransitiveInstructionVerb[PlayerId]): SimpleInstructionParagraph = fromSingleInstruction(IntransitiveInstructionVerb.Imperative(intransitiveVerbInstruction))
@@ -22,6 +35,7 @@ case class SimpleInstructionParagraph(sentences: InstructionSentence*) extends I
 }
 case class ModalInstructionParagraph(modes: SimpleInstructionParagraph*) extends InstructionParagraph {
   override def getUncapitalizedText(cardName: String): String = ("choose one —" +: modes.map(_.getText(cardName)).map("• " + _)).mkString("\n")
+  def instructions: Seq[Instruction] = modes.flatMap(_.instructions)
 }
 
 trait InstructionSentence extends TextComponent {

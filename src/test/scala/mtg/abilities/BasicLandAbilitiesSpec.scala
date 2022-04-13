@@ -1,6 +1,7 @@
 package mtg.abilities
 
 import mtg.SpecWithGameStateManager
+import mtg.cards.CardDefinition
 import mtg.core.ManaType
 import mtg.core.symbols.ManaSymbol
 import mtg.core.zones.Zone
@@ -14,9 +15,6 @@ import mtg.sets.alpha.cards.Plains
 import org.specs2.matcher.Matcher
 
 class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
-  def beActivatableAbilityAction(gameObject: GameObject, abilityDefinition: ActivatedAbilityDefinition): Matcher[ActivateAbilityAction] = { (action: ActivateAbilityAction) =>
-    (action.objectWithAbility.gameObject == gameObject && action.ability == abilityDefinition, "", "")
-  }
 
   def isObjectWithAbility(gameObject: GameObject, abilityDefinition: AbilityDefinition): Matcher[ObjectWithState] = { (objectWithState : ObjectWithState) =>
     (objectWithState.gameObject == gameObject && objectWithState.characteristics.abilities.contains(abilityDefinition), "", "")
@@ -39,10 +37,7 @@ class BasicLandAbilitiesSpec extends SpecWithGameStateManager {
       val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
       manager.passUntilPhase(PrecombatMainPhase)
 
-      val plainsObject = manager.getCard(Zone.Battlefield, Plains)
-      val plainsState = manager.getState(plainsObject)
-      manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerOne)
-        .withAvailableAbility(beActivatableAbilityAction(plainsObject, plainsState.characteristics.abilities.head.asInstanceOf[ActivatedAbilityDefinition])))
+      manager.currentChoice should beSome(bePriorityChoice.forPlayer(playerOne).withAvailableAbility(beActivatableAbilityActionForCard(Plains)))
     }
 
     "not be tappable for mana by a player who doesn't control them" in {

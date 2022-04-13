@@ -10,7 +10,6 @@ import mtg.parts.costs.Cost
 import mtg.utils.CaseObjectWithName
 
 sealed trait AbilityDefinition extends TextComponent {
-  def functionalZones: Set[ZoneType] = Set(ZoneType.Battlefield)
   def isFunctional(objectWithAbility: ObjectWithState): Boolean = {
     getFunctionalZones(objectWithAbility).contains(objectWithAbility.gameObject.zone.zoneType)
   }
@@ -41,6 +40,10 @@ case class ActivatedAbilityDefinition(
   extends ActivatedOrTriggeredAbilityDefinition
 {
   override def getText(cardName: String): String = costs.map(_.text).mkString(", ") + ": " + instructions.getText(cardName)
+
+  override def getFunctionalZones(objectWithAbility: ObjectWithState): Set[ZoneType] = {
+    instructions.functionalZones getOrElse super.getFunctionalZones(objectWithAbility)
+  }
 
   def isManaAbility: Boolean = {
     instructions.asOptionalInstanceOf[SimpleInstructionParagraph]
