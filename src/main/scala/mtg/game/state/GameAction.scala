@@ -42,8 +42,29 @@ object Choice {
     override def handleDecision(serializedDecision: String)(implicit gameState: GameState): Option[T] = getParser().lift(serializedDecision)
   }
 }
-case class PartiallyExecutedActionWithDelegate[T](rootAction: DelegatingGameAction[T], childAction: GameAction[T]) extends GameAction[T]
-case class PartiallyExecutedActionWithFlatMap[T, S](rootAction: DelegatingGameAction[T], childAction: GameAction[S], f: S => GameAction[T]) extends GameAction[T]
+
+case class PartiallyExecutedActionWithResult[T](
+    rootAction: DelegatingGameAction[T],
+    result: T,
+    initialGameState: GameState)
+  extends GameAction[T]
+case class PartiallyExecutedActionWithFlatMappedResult[S, T](
+    rootAction: DelegatingGameAction[T],
+    result: S,
+    f: S => GameAction[T],
+    initialGameState: GameState)
+  extends GameAction[T]
+case class PartiallyExecutedActionWithChild[T](
+    rootAction: DelegatingGameAction[T],
+    childAction: GameAction[T],
+    initialGameState: GameState)
+  extends GameAction[T]
+case class PartiallyExecutedActionWithFlatMappedChild[T, S](
+    rootAction: DelegatingGameAction[T],
+    childAction: GameAction[S],
+    f: S => GameAction[T],
+    initialGameState: GameState)
+  extends GameAction[T]
 
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 

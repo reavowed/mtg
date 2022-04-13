@@ -8,8 +8,8 @@ import mtg.stack.resolving.ResolveStackObject
 case object PrioritySequenceAction extends DelegatingGameAction[Unit] {
   override def delegate(implicit gameState: GameState): GameAction[Unit] = fromActivePlayer
 
-  private def fromActivePlayer(implicit gameState: GameState): GameAction[Unit] = fromPlayer(gameState.activePlayer)
-  private def fromPlayer(player: PlayerId)(implicit gameState: GameState): GameAction[Unit] = forPlayers(gameState.gameData.getPlayersInApNapOrder(player))
+  private def fromActivePlayer: GameAction[Unit] = (gameState: GameState) => fromPlayer(gameState.activePlayer)
+  private def fromPlayer(player: PlayerId): GameAction[Unit] = (gameState: GameState) => forPlayers(gameState.gameData.getPlayersInApNapOrder(player))
 
   private def forPlayers(playersToAct: Seq[PlayerId]): GameAction[Unit] = { (gameState: GameState) =>
     implicit def gs = gameState
@@ -43,7 +43,7 @@ case object PrioritySequenceAction extends DelegatingGameAction[Unit] {
   private def resolveTopStackObject: GameAction[Unit] = CalculatedGameAction { (gameState: GameState) =>
     gameState.gameObjectState.stack match {
       case _ :+ topObject =>
-        ResolveStackObject(topObject).andThen(fromActivePlayer(gameState))
+        ResolveStackObject(topObject).andThen(fromActivePlayer)
       case Nil =>
         ()
     }

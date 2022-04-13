@@ -5,7 +5,6 @@ import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
 import mtg.core.PlayerId
 import mtg.game.priority.PriorityChoice
-import mtg.game.state.GameActionExecutor.preventActionOrExecute
 import mtg.game.state.history.HistoryEvent
 
 import scala.annotation.tailrec
@@ -30,10 +29,10 @@ object GameActionExecutor {
     action match {
       case directChoice: Choice[T] if directChoice.playerToAct == actingPlayer =>
         directChoice.handleDecision(serializedDecision).map(d => (GameActionResult.Value(d), gameState.recordChoice(directChoice, d)))
-      case PartiallyExecutedActionWithDelegate(rootAction, child) =>
-        handleDecisionForDelegate(rootAction, child, serializedDecision, actingPlayer)
-      case PartiallyExecutedActionWithFlatMap(rootAction, child, f) =>
-        handleDecisionForDelegateWithFlatMap(rootAction, child, f, serializedDecision, actingPlayer)
+      case PartiallyExecutedActionWithChild(rootAction, child, initialGameState) =>
+        handleDecisionForDelegate(rootAction, child, initialGameState, serializedDecision, actingPlayer)
+      case PartiallyExecutedActionWithFlatMappedChild(rootAction, child, f, initialGameState) =>
+        handleDecisionForDelegateWithFlatMap(rootAction, child, f, initialGameState, serializedDecision, actingPlayer)
       case _ =>
         None
     }
@@ -42,22 +41,24 @@ object GameActionExecutor {
   def handleDecisionForDelegate[T](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[T],
+    initialGameState: GameState,
     serializedDecision: String,
     actingPlayer: PlayerId)(
     implicit gameState: GameState
   ): Option[(GameActionResult[T], GameState)] = {
-    handleDelegatingActionWithChild[T](rootAction, childAction, handleDecisionForAction(_, serializedDecision, actingPlayer)(_))
+    handleDelegatingActionWithChild[T](rootAction, childAction, initialGameState, handleDecisionForAction(_, serializedDecision, actingPlayer)(_))
   }
 
   def handleDecisionForDelegateWithFlatMap[T, S](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[S],
     f: S => GameAction[T],
+    initialGameState: GameState,
     serializedDecision: String,
     actingPlayer: PlayerId)(
     implicit gameState: GameState
   ): Option[(GameActionResult[T], GameState)] = {
-    handleDelegatingActionWithFlatMap[T, S](rootAction, childAction, f, handleDecisionForAction(_, serializedDecision, actingPlayer)(_))
+    handleDelegatingActionWithFlatMap[T, S](rootAction, childAction, f, initialGameState, handleDecisionForAction(_, serializedDecision, actingPlayer)(_))
   }
 
   private def runAction(gameState: GameState, f: (GameAction[RootGameAction], GameState) => Option[(GameActionResult[RootGameAction], GameState)]): Option[GameState] = {
@@ -88,10 +89,14 @@ object GameActionExecutor {
       None
     case action: DelegatingGameAction[T] =>
       Some(executeDelegatingAction(action))
-    case PartiallyExecutedActionWithDelegate(rootAction, childAction) =>
-      executeDelegateWithChild(rootAction, childAction)
-    case PartiallyExecutedActionWithFlatMap(rootAction, childAction, f) =>
-      executeDelegateWithFlatMap(rootAction, childAction, f)
+    case PartiallyExecutedActionWithResult(rootAction, result, initialGameState) =>
+      Some(recordExecutedEvent(rootAction, result, initialGameState, gameState))
+    case PartiallyExecutedActionWithFlatMappedResult(rootAction, result, f: (Any => GameAction[T]), initialGameState) =>
+      Some((unwrapChildAction(rootAction, f(result), initialGameState), gameState))
+    case PartiallyExecutedActionWithChild(rootAction, childAction, initialGameState) =>
+      executeDelegateWithChild(rootAction, childAction, initialGameState)
+    case PartiallyExecutedActionWithFlatMappedChild(rootAction, childAction, f, initialGameState) =>
+      executeDelegateWithFlatMap(rootAction, childAction, f, initialGameState)
     case gameObjectAction: GameObjectAction[T] =>
       Some(executeGameObjectAction(gameObjectAction))
     case LogEventAction(logEvent) =>
@@ -99,120 +104,123 @@ object GameActionExecutor {
   }
 
   private def executeDelegatingAction[T](action: DelegatingGameAction[T])(implicit gameState: GameState): (GameActionResult[T], GameState) = {
-    preventActionOrExecute(action)(unwrapAndRecord(action, action.delegate, gameState))
-  }
-
-  private def unwrapAndRecord[T](action: DelegatingGameAction[T], childAction: GameAction[T], initialGameState: GameState)(implicit gameState: GameState): (GameActionResult[T], GameState) = {
-    val actionResult = unwrapDelegateAction(action, childAction)
-    actionResult match {
-      case GameActionResult.Value(v) =>
-        recordExecutedEvent(action, v, initialGameState, gameState)
-      case _ =>
-        (actionResult, gameState)
-    }
+    preventActionOrExecute(action)((unwrapChildAction(action, action.delegate, gameState), gameState))
   }
 
   private def executeDelegateWithChild[T](
     rootAction: DelegatingGameAction[T],
-    childAction: GameAction[T])(
+    childAction: GameAction[T],
+    initialGameState: GameState)(
     implicit gameState: GameState,
     stops: Stops
   ): Option[(GameActionResult[T], GameState)] = {
-    handleDelegatingActionWithChild[T](rootAction, childAction, executeAction(_)(_, stops))
+    handleDelegatingActionWithChild[T](rootAction, childAction, initialGameState, executeAction(_)(_, stops))
   }
 
   private def executeDelegateWithFlatMap[T, S](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[S],
-    flatMapFunction: S => GameAction[T])(
+    flatMapFunction: S => GameAction[T],
+    initialGameState: GameState)(
     implicit gameState: GameState,
     stops: Stops
   ): Option[(GameActionResult[T], GameState)] = {
-    handleDelegatingActionWithFlatMap[T, S](rootAction, childAction, flatMapFunction, executeAction(_)(_, stops))
+    handleDelegatingActionWithFlatMap[T, S](rootAction, childAction, flatMapFunction, initialGameState, executeAction(_)(_, stops))
   }
 
   private def handleDelegatingActionWithChild[T](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[T],
+    initialGameState: GameState,
     actionExecutor: (GameAction[T], GameState) => Option[(GameActionResult[T], GameState)])(
     implicit gameState: GameState
   ): Option[(GameActionResult[T], GameState)] = {
-    handleDelegatingAction(rootAction, childAction, actionExecutor, identity[GameActionResult[T]])
+    def transformResult(result: GameActionResult[T]): GameActionResult[T] = result match {
+      case GameActionResult.Value(value) =>
+        GameActionResult.Action(PartiallyExecutedActionWithResult(rootAction, value, initialGameState))
+      case GameActionResult.Action(childAction) =>
+        unwrapChildAction(rootAction, childAction, initialGameState)
+      case interrupt: GameActionResult.Interrupted =>
+        interrupt
+    }
+    handleChildAction(rootAction, childAction, initialGameState, actionExecutor, transformResult)
   }
 
   private def handleDelegatingActionWithFlatMap[T, S](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[S],
     flatMapFunction: S => GameAction[T],
+    initialGameState: GameState,
     actionExecutor: (GameAction[S], GameState) => Option[(GameActionResult[S], GameState)])(
     implicit gameState: GameState
   ): Option[(GameActionResult[T], GameState)] = {
     def transformResult(result: GameActionResult[S]): GameActionResult[T] = result match {
-      case GameActionResult.Action(childAction) =>
-        GameActionResult.Action(PartiallyExecutedActionWithFlatMap(rootAction, childAction, flatMapFunction))
       case GameActionResult.Value(value) =>
-        GameActionResult.Action(flatMapFunction(value))
+        GameActionResult.Action(PartiallyExecutedActionWithFlatMappedResult(rootAction, value, flatMapFunction, initialGameState))
+      case GameActionResult.Action(childAction) =>
+        unwrapFlatMappedChildAction(rootAction, childAction, flatMapFunction, initialGameState)
       case interrupt: GameActionResult.Interrupted =>
         interrupt
     }
-    handleDelegatingAction(rootAction, childAction, actionExecutor, transformResult)
+    handleChildAction(rootAction, childAction, initialGameState, actionExecutor, transformResult)
   }
 
-  private def handleDelegatingAction[T, S](
+  private def handleChildAction[T, S](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[S],
+    initialGameState: GameState,
     actionExecutor: (GameAction[S], GameState) => Option[(GameActionResult[S], GameState)],
     resultTransformer: GameActionResult[S] => GameActionResult[T])(
-    implicit initialGameState: GameState
+    implicit currentGameState: GameState
   ): Option[(GameActionResult[T], GameState)] = {
-    actionExecutor(childAction, initialGameState)
+    actionExecutor(childAction, currentGameState)
       .map(_.mapLeft(resultTransformer))
-      .map {
-        case (GameActionResult.Value(value), gameState: GameState) =>
-          unwrapAndRecord(rootAction, ConstantAction(value), initialGameState)(gameState)
-        case (GameActionResult.Action(childAction), gameState: GameState) =>
-          unwrapAndRecord(rootAction, childAction, initialGameState)(gameState)
-        case (result, gameState) =>
-          (result, gameState)
-      }
   }
 
-
   @tailrec
-  private def unwrapDelegateAction[T](
+  private def unwrapChildAction[T](
     rootAction: DelegatingGameAction[T],
-    childAction: GameAction[T])(
-    implicit gameState: GameState
+    childAction: GameAction[T],
+    initialGameState: GameState)(
+    implicit currentGameState: GameState
   ): GameActionResult[T] = {
     childAction match {
       case ConstantAction(value) =>
-        GameActionResult.Value(value)
+        GameActionResult.Action(PartiallyExecutedActionWithResult(rootAction, value, initialGameState))
       case CalculatedGameAction(f: (GameState => GameAction[T])) =>
-        unwrapDelegateAction(rootAction, f(gameState))
+        unwrapChildAction(rootAction, f(currentGameState), initialGameState)
       case FlatMappedGameAction(childAction, f) =>
-        unwrapFlatMappedDelegateAction(rootAction, childAction, f)
+        unwrapFlatMappedChildAction(rootAction, childAction, f, initialGameState)
       case _ =>
-        GameActionResult.Action(PartiallyExecutedActionWithDelegate(rootAction, childAction))
+        GameActionResult.Action(PartiallyExecutedActionWithChild(rootAction, childAction, initialGameState))
     }
   }
 
   @tailrec
-  private def unwrapFlatMappedDelegateAction[T, S](
+  private def unwrapFlatMappedChildAction[T, S](
     rootAction: DelegatingGameAction[T],
     childAction: GameAction[S],
-    f: S => GameAction[T])(
-    implicit gameState: GameState
+    f: S => GameAction[T],
+    initialGameState: GameState)(
+    implicit currentGameState: GameState
   ): GameActionResult[T] = {
     childAction match {
       case ConstantAction(value) =>
-        unwrapDelegateAction(rootAction, f(value))
+        unwrapChildAction(rootAction, f(value), initialGameState)
       case CalculatedGameAction(g: (GameState => GameAction[S])) =>
-        unwrapFlatMappedDelegateAction(rootAction, g(gameState), f)
+        unwrapFlatMappedChildAction(rootAction, g(currentGameState), f, initialGameState)
       case FlatMappedGameAction(childAction, g: (Any => GameAction[S])) =>
-         unwrapFlatMappedDelegateAction(rootAction, childAction, (x: Any) => for { s <- g(x); t <- f(s) } yield t)
+         unwrapFlatMappedChildAction(rootAction, childAction, chainFlatMap(g, f), initialGameState)
       case _ =>
-        GameActionResult.Action(PartiallyExecutedActionWithFlatMap(rootAction, childAction, f))
+        GameActionResult.Action(PartiallyExecutedActionWithFlatMappedChild(rootAction, childAction, f, initialGameState))
     }
+  }
+
+  private def chainFlatMap[S, T, U](f: S => GameAction[T], g: T => GameAction[U]): S => GameAction[U] = { s =>
+    for {
+      t <- f(s)
+      u <- g(t)
+    } yield u
   }
 
   private def updateGameState(gameState: GameState, newGameActionResult: GameActionResult[RootGameAction]): GameState = {
