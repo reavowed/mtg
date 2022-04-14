@@ -2,15 +2,15 @@ package mtg.stack.resolving
 
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state._
-import mtg.instructions.{Instruction, InstructionResult}
+import mtg.instructions.{Instruction, InstructionResult, ResolvableInstructionPart}
 
-case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolutionContext: StackObjectResolutionContext) extends DelegatingGameAction[Unit] {
+case class ResolveInstructions(allInstructions: Seq[ResolvableInstructionPart], initialResolutionContext: StackObjectResolutionContext) extends DelegatingGameAction[Unit] {
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     executeInstructions(allInstructions, initialResolutionContext)
   }
 
   private def executeInstructions(
-    instructions: Seq[Instruction],
+    instructions: Seq[ResolvableInstructionPart],
     resolutionContext: StackObjectResolutionContext
   ): GameAction[StackObjectResolutionContext] = {
     instructions match {
@@ -21,7 +21,7 @@ case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolut
     }
   }
 
-  private def resolveInstruction(instruction: Instruction, resolutionContext: StackObjectResolutionContext): GameAction[StackObjectResolutionContext] = { (gameState: GameState) =>
+  private def resolveInstruction(instruction: ResolvableInstructionPart, resolutionContext: StackObjectResolutionContext): GameAction[StackObjectResolutionContext] = { (gameState: GameState) =>
     handleResult(instruction.resolve(gameState, resolutionContext), resolutionContext)
   }
 

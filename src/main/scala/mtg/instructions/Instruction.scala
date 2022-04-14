@@ -6,7 +6,11 @@ import mtg.game.state.GameState
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Add
 
-trait Instruction extends TextComponent {
+trait ResolvableInstructionPart {
+  def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
+}
+
+trait Instruction extends ResolvableInstructionPart with TextComponent {
   def targetIdentifiers: Seq[Target[_]] = {
     def helper(refs: Seq[Any], targets: Seq[Target[_]]): Seq[Target[_]] = {
       refs match {
@@ -37,7 +41,5 @@ trait Instruction extends TextComponent {
     }
     helper(Seq(this))
   }
-
-  def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
   def functionalZones: Option[Set[ZoneType]] = None
 }

@@ -37,4 +37,9 @@ object IntransitiveInstructionVerb {
       instructionVerb.getFunctionalZones(subjectPhrase)
     }
   }
+  case class WithKnownSubject[SubjectType](subject: SubjectType, instructionVerb: IntransitiveInstructionVerb[SubjectType]) extends ResolvableInstructionPart {
+    override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+      instructionVerb.resolve(subject, gameState, resolutionContext)
+    }
+  }
 }

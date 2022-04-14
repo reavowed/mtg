@@ -2,10 +2,10 @@ package mtg.utils
 
 object TextUtils {
   implicit class StringSeqExtensions(seq: Seq[String]) {
-    def toCommaList(joiner: String) = seq.length match {
+    def toCommaList(joiner: String, oxfordComma: Boolean = false) = seq.length match {
       case 0 => ""
       case 1 => seq.head
-      case _ => seq.init.mkString(", ") + " " + joiner + " " + seq.last
+      case _ => seq.init.mkString(", ") + (if (oxfordComma) ", " else " ") + joiner + " " + seq.last
     }
   }
   implicit class StringExtensions(str: String) {
