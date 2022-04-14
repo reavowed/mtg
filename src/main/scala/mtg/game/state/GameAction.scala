@@ -112,7 +112,7 @@ object GameAction {
       } yield t +: results
     }
   }
-  implicit def valueAsAction[T](value: T): GameAction[T] = ConstantAction(value)
+  implicit def constant[T](value: T): GameAction[T] = ConstantAction(value)
   implicit def getterAsAction[T](constructor: GameState => T): GameAction[T] = CalculatedGameAction(constructor.andThen(ConstantAction(_)))
   implicit def constructorAsAction[T](constructor: GameState => GameAction[T]): GameAction[T] = CalculatedGameAction(constructor)
   implicit def anyActionToUnitAction(action: GameAction[_]): GameAction[Unit] = action.map(_ => ())
