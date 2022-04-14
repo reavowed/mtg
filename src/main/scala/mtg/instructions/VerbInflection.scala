@@ -15,5 +15,6 @@ object VerbNumber {
 sealed trait VerbInflection
 object VerbInflection {
   case object Imperative extends VerbInflection
+  case object Infinitive extends VerbInflection
   case class Present(person: VerbPerson, number: VerbNumber) extends VerbInflection
 }

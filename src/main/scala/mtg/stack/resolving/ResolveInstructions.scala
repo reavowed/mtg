@@ -11,31 +11,30 @@ case class ResolveInstructions(allInstructions: Seq[Instruction], initialResolut
 
   private def executeInstructions(
     instructions: Seq[Instruction],
-    resolutionContext: StackObjectResolutionContext)(
-    implicit gameState: GameState
-  ): GameAction[Unit] = {
+    resolutionContext: StackObjectResolutionContext
+  ): GameAction[StackObjectResolutionContext] = {
     instructions match {
       case instruction +: remainingInstructions =>
-        ResolveNextInstruction(instruction, resolutionContext).flatMap(executeInstructions(remainingInstructions, _))
+        resolveInstruction(instruction, resolutionContext).flatMap(executeInstructions(remainingInstructions, _))
       case Nil =>
-        ()
+        resolutionContext
     }
   }
-}
 
-case class ResolveNextInstruction(instruction: Instruction, resolutionContext: StackObjectResolutionContext) extends DelegatingGameAction[StackObjectResolutionContext] {
-  override def delegate(implicit gameState: GameState): GameAction[StackObjectResolutionContext] = {
-    handleResult(instruction.resolve(gameState, resolutionContext))
+  private def resolveInstruction(instruction: Instruction, resolutionContext: StackObjectResolutionContext): GameAction[StackObjectResolutionContext] = { (gameState: GameState) =>
+    handleResult(instruction.resolve(gameState, resolutionContext), resolutionContext)
   }
 
-  private def handleResult(instructionResult: InstructionResult)(implicit gameState: GameState): GameAction[StackObjectResolutionContext] = {
+  private def handleResult(instructionResult: InstructionResult, resolutionContext: StackObjectResolutionContext): GameAction[StackObjectResolutionContext] = { (gameState: GameState) =>
     instructionResult match {
+      case InstructionResult.NewInstructions(instructions, newResolutionContext) =>
+        executeInstructions(instructions, newResolutionContext)
       case InstructionResult.Action(action, newResolutionContext) =>
         action.map(_ => newResolutionContext)
       case InstructionResult.Choice(choice) =>
-        ResolveInstructionChoice(choice, resolutionContext).flatMap(handleResult)
+        ResolveInstructionChoice(choice, resolutionContext).flatMap(handleResult(_, resolutionContext))
       case InstructionResult.UpdatedContext(newResolutionContext) =>
-        newResolutionContext
+        GameAction.constant(newResolutionContext)
     }
   }
 }

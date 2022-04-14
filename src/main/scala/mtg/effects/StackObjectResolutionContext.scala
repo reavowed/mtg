@@ -3,7 +3,7 @@ package mtg.effects
 import mtg.abilities.ManaAbility
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.objects.{AbilityOnTheStack, Card, CopyOfSpell}
-import mtg.game.state.{GameState, StackObjectWithState}
+import mtg.game.state.{CurrentCharacteristics, GameState, StackObjectWithState}
 
 case class StackObjectResolutionContext(
     override val cardNameObjectId: ObjectId,
@@ -16,6 +16,9 @@ case class StackObjectResolutionContext(
   def popTarget: (ObjectOrPlayerId, StackObjectResolutionContext) = {
     val target = targets.head
     (target, addIdentifiedObject(target).copy(targets = targets.tail))
+  }
+  def cardName(implicit gameState: GameState): String = {
+    CurrentCharacteristics.getName(gameState.gameObjectState.getCurrentOrLastKnownState(cardNameObjectId))
   }
 }
 object StackObjectResolutionContext {
