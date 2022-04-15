@@ -10,7 +10,7 @@ import mtg.stack.resolving.ResolveManaAbility
 case class ActivateAbilityAction(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition, abilityIndex: Int) extends PriorityAction {
   override def objectId: ObjectId = objectWithAbility.gameObject.objectId
   override def displayText: String = ability.getText(objectWithAbility.characteristics.name.getOrElse("this object"))
-  override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + objectWithAbility.characteristics.abilities.indexOf(ability)
+  override def optionText: String = "Activate " + objectWithAbility.gameObject.objectId + " " + abilityIndex
 
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     if (ability.isManaAbility) {

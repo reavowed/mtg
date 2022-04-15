@@ -12,7 +12,7 @@ package object mtg {
   }
   implicit class IterableExtensionMethods[A, CC[_]](seq: IterableOps[A, CC, CC[A]]) {
     def ofType[B : ClassTag]: CC[B] = seq.collect {
-      case b: B => b
+      case b: B if classTag[B].runtimeClass.isInstance(b) => b
     }
     def findOption[B](f: A => Option[B]): Option[B] = seq.iterator.map(f).collectFirst {
       case Some(b) => b

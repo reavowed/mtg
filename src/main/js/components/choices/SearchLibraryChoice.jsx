@@ -13,28 +13,28 @@ export default function SearchLibraryChoice() {
     const options = gameState.currentChoice.details.possibleChoices;
 
     return <PopupChoice text="Choose a Card">
-                <div style={{overflowX: "scroll"}}>
-                    <HorizontalCenter>
-                        {_.map(gameState.libraries[gameState.player], (card, index) => {
-                            const canChoose = _.includes(options, card.objectId);
-                            const isChosen = card.objectId === chosenOption;
-                            const style = {
-                                marginLeft: index > 0 && "-75px",
-                            };
-                            const onClick = () => {
-                                if (isChosen) {
-                                    setChosenOption(null);
-                                } else if (canChoose) {
-                                    setChosenOption(card.objectId);
-                                }
-                            }
-                            const className = isChosen ? "selected" : canChoose ? "selectable" : "non-selectable";
-                            return <CardWithText card={card} style={style} onClick={onClick} className={addClass(className, "my-2")}/>
-                        })}
-                    </HorizontalCenter>
-                </div>
-                <HorizontalCenter>
-                    <DecisionButton optionToChoose={chosenOption && chosenOption.toString()} disabled={!chosenOption}>Submit</DecisionButton>
-                </HorizontalCenter>
+        <div style={{overflowX: "scroll"}}>
+            <HorizontalCenter>
+                {_.map(gameState.libraries[gameState.player], (card, index) => {
+                    const canChoose = _.includes(options, card.objectId);
+                    const isChosen = card.objectId === chosenOption;
+                    const style = {
+                        marginLeft: index > 0 && "-75px",
+                    };
+                    const onClick = () => {
+                        if (isChosen) {
+                            setChosenOption(null);
+                        } else if (canChoose) {
+                            setChosenOption(card.objectId);
+                        }
+                    }
+                    const className = isChosen ? "selected" : canChoose ? "selectable" : "non-selectable";
+                    return <CardWithText card={card} style={style} onClick={onClick} className={addClass(className, "my-2")}/>
+                })}
+            </HorizontalCenter>
+        </div>
+        <HorizontalCenter>
+            <DecisionButton optionToChoose={chosenOption && chosenOption.toString()} disabled={!chosenOption}>Submit</DecisionButton>
+        </HorizontalCenter>
     </PopupChoice>;
 }

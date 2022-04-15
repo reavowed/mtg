@@ -56,3 +56,7 @@
 .exileOutline {
   @include zoneOutline('../img/exile.png')
 }
+
+.actionMenu {
+    z-index: 1100;
+}
