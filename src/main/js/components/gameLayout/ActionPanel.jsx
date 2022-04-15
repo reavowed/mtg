@@ -14,6 +14,7 @@ import TargetChoice from "../choices/TargetChoice";
 import TriggeredAbilityChoice from "../choices/TriggeredAbilityChoice";
 import BannerText from "../layoutUtils/BannerText";
 import ManaPool from "./ManaPool";
+import MayChoice from "../choices/MayChoice";
 
 function getChoiceDisplay(choiceType) {
     switch (choiceType) {
@@ -41,6 +42,8 @@ function getChoiceDisplay(choiceType) {
             return <PayManaChoice />
         case "LearnChoice":
             return <LearnChoice />
+        case "MayChoice":
+            return <MayChoice />
     }
 }
 
