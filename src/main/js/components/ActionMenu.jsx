@@ -8,7 +8,7 @@ import {FormattedText} from "./FormattedText";
 export function ActionMenu({actions, event}) {
     const decisionMaker = useContext(DecisionMaker);
     return <div class="dropdown-menu dropdown-menu-sm" id="context-menu"
-                style={{display: "block", position: "fixed", top: event.pageY, left: event.pageX}}>
+                style={{display: "block", position: "absolute", top: event.pageY, left: event.pageX}}>
         {actions.map(action => <a class="dropdown-item" href="#" key={action.optionText}
                                   onclick={() => decisionMaker.makeDecision(action.optionText)}>
             <FormattedText text={action.displayText}/>
