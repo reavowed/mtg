@@ -9,10 +9,10 @@ export function ActionMenu({actions, event}) {
     const decisionMaker = useContext(DecisionMaker);
     return <div class="dropdown-menu dropdown-menu-sm actionMenu" id="context-menu"
                 style={{display: "block", position: "absolute", top: event.pageY, left: event.pageX}}>
-        {actions.map(action => <a class="dropdown-item" href="#" key={action.optionText}
+        {actions.map(action => <span class="dropdown-item" key={action.optionText}
                                   onclick={() => decisionMaker.makeDecision(action.optionText)}>
             <FormattedText text={action.displayText}/>
-        </a>)}
+        </span>)}
     </div>
 }
 
