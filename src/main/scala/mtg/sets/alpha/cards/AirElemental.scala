@@ -7,7 +7,7 @@ import mtg.core.types.CreatureType.Elemental
 import mtg.parts.costs.ManaCost
 
 object AirElemental extends CreatureCard(
-  "Concordia Pegasus",
+  "Air Elemental",
   ManaCost(3, Blue, Blue),
   Seq(Elemental),
   Flying,
