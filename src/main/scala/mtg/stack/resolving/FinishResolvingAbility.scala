@@ -11,7 +11,7 @@ case class FinishResolvingAbility(ability: StackObjectWithState) extends Delegat
     val underlyingAbilityObject = ability.gameObject.underlyingObject.asInstanceOf[AbilityOnTheStack]
     val abilityDefinition = underlyingAbilityObject.abilityDefinition
     val description = if (underlyingAbilityObject.abilityDefinition.isInstanceOf[TriggeredAbilityDefinition]) "triggered" else "activated"
-    val sourceWithState = gameState.gameObjectState.derivedState.allObjectStates(underlyingAbilityObject.source)
+    val sourceWithState = gameState.gameObjectState.getCurrentOrLastKnownState(underlyingAbilityObject.source)
     val sourceName = CurrentCharacteristics.getName(sourceWithState)
     RemoveObjectFromExistenceAction(ability.gameObject.objectId)
       .andThen(LogEvent.ResolveAbility(ability.controller, description, sourceName, abilityDefinition.instructions.getText(sourceName)))

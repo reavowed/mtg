@@ -3,6 +3,7 @@ package mtg.instructions.verbs
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.core.types.Type.Creature
+import mtg.core.zones.Zone
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.{CardName, Target}
 import mtg.instructions.nouns.Card
@@ -16,6 +17,7 @@ class ReturnFromYourGraveyardToYourHandSpec extends SpecWithGameStateManager wit
   val CreatureWithTargetedReturnAbility = zeroManaCreature(
     activatedAbility(ManaCost(0))(ReturnFromYourGraveyardToYourHand(Target(Creature(Card)))),
     (1, 1))
+  val VanillaCreature = vanillaCreature(1, 1)
 
   "an ability that returns the card it is on from your graveyard to your hand" should {
     "have the correct oracle text" in {
@@ -36,6 +38,17 @@ class ReturnFromYourGraveyardToYourHandSpec extends SpecWithGameStateManager wit
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
 
       manager.currentChoice must beSome(bePriorityChoice.withNoAvailableAbilities)
+    }
+
+    "return the card it is on from your graveyard to your hand" in {
+      val initialState = emptyGameObjectState.setGraveyard(playerOne, CreatureWithSelfReturnAbility)
+
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.activateAbility(playerOne, CreatureWithSelfReturnAbility)
+      manager.resolveNext()
+
+      playerOne.hand(manager.gameState) must contain(beCardObject(CreatureWithSelfReturnAbility))
     }
   }
 
@@ -58,6 +71,20 @@ class ReturnFromYourGraveyardToYourHandSpec extends SpecWithGameStateManager wit
       manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
 
       manager.currentChoice must beSome(bePriorityChoice.withAvailableAbility(beActivatableAbilityActionForCard(CreatureWithTargetedReturnAbility)))
+    }
+
+    "return the chosen card from your graveyard to your hand" in {
+      val initialState = emptyGameObjectState
+        .setBattlefield(playerOne, CreatureWithTargetedReturnAbility)
+        .setGraveyard(playerOne, VanillaCreature)
+
+      implicit val manager = createGameStateManagerAtStartOfFirstTurn(initialState)
+      manager.passUntilPhase(TurnPhase.PrecombatMainPhase)
+      manager.activateAbility(playerOne, CreatureWithTargetedReturnAbility)
+      manager.chooseCard(playerOne, VanillaCreature)
+      manager.resolveNext()
+
+      playerOne.hand(manager.gameState) must contain(beCardObject(VanillaCreature))
     }
   }
 }
