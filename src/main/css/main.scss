@@ -8,11 +8,15 @@
   margin: 0 0.25rem;
 }
 
+@mixin highlight($colour) {
+  box-shadow: 0 0 3px 3px $colour;
+}
+
 .cardContainer.attacking .cardOuterBorder{
-  box-shadow: 0 0 10px 5px orange;
+  @include highlight(orange)
 }
 .cardContainer.blocking .cardOuterBorder{
-  box-shadow: 0 0 10px 5px dodgerblue;
+  @include highlight(dodgerblue)
 }
 
 .cardContainer .damage {
@@ -47,9 +51,9 @@ canvas.overlay {
 
 .cardContainer.selectable .cardOuterBorder, .player.selectable {
   cursor: pointer;
-  box-shadow: 0 0 10px 5px #247bc2;
+  @include highlight(#247bc2)
 }
 .cardContainer.selected .cardOuterBorder, .player.selected {
   cursor: pointer;
-  box-shadow: 0 0 10px 5px lawngreen;
+  @include highlight(lawngreen)
 }

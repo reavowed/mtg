@@ -19,17 +19,31 @@ export function ActionMenu({actions, event}) {
 export function useActionMenu(allActions) {
     const actionManager = useContext(ActionManager);
     const [actionDetails, setActionDetails] = useState(null);
+    const getActions = useCallback((objectId) => {
+        return _.filter(allActions, action => action.objectId === objectId);
+    }, [allActions]);
     const onObjectClick = useCallback((objectId, event) => {
         event.originalEvent.fromHandler = this;
-        const actions = _.filter(allActions, action => action.objectId === objectId);
+        const actions = getActions(objectId);
         setActionDetails({actions, event});
     }, [allActions]);
     const onDocumentClick = useCallback((event) => {
         if (actionDetails && event.originalEvent.fromHandler !== this) setActionDetails(null);
     }, [actionDetails]);
+    const getClasses = useCallback((objectId) => {
+        if (getActions(objectId).length) {
+            return ["selectable"];
+        } else {
+            return [];
+        }
+    }, [getActions]);
     useEffect(() => {
         actionManager.setActionHandler(() => onObjectClick);
-        return () => actionManager.setActionHandler(null);
+        actionManager.setClassGetter(() => getClasses);
+        return () => {
+            actionManager.setActionHandler(null);
+            actionManager.setClassGetter(null);
+        }
     }, [onObjectClick]);
     useEffect(() => {
         $(document).on("click", onDocumentClick);
