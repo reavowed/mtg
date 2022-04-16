@@ -2,12 +2,14 @@ package mtg.data
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
+import mtg.cards.CardDefinition
 import mtg.sets.alpha.cards._
 import org.specs2.mutable.Specification
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 
 import java.io.FileInputStream
 import scala.annotation.tailrec
+import scala.collection.mutable.ListBuffer
 import scala.jdk.CollectionConverters._
 
 class DataValidationSpec extends Specification {
@@ -22,6 +24,17 @@ class DataValidationSpec extends Specification {
     }
   }
 
+  def constructTypeLine(cardDefinition: CardDefinition): String = {
+    val components = ListBuffer[String]()
+    components.addAll(cardDefinition.supertypes.map(_.name))
+    components.addAll(cardDefinition.types.map(_.name))
+    if (cardDefinition.subtypes.nonEmpty) {
+      components.addOne("—")
+      components.addAll(cardDefinition.subtypes.map(_.name))
+    }
+    components.mkString(" ")
+  }
+
   "card data" should {
     "match oracle data" in {
       val objectMapper = new ObjectMapper()
@@ -29,11 +42,13 @@ class DataValidationSpec extends Specification {
       val oracleData = objectMapper.readTree(oracleDataFile).asInstanceOf[ArrayNode]
       val cardPrintings = mtg.cards.Set.All.flatMap(_.cardPrintings).filter(p => !Seq(Plains, Island, Swamp, Mountain, Forest).contains(p.cardDefinition))
       foreach(cardPrintings)(cardPrinting => {
-        val data = oracleData.iterator().asScala.find(element =>
+        val dataOption = oracleData.iterator().asScala.find(element =>
           element.get("name").textValue() == cardPrinting.cardDefinition.name
         )
-        data must beSome
-        (stripReminderText(data.get.get("oracle_text").textValue()) aka cardPrinting.cardDefinition.name) mustEqual cardPrinting.cardDefinition.text
+        dataOption must beSome
+        val data = dataOption.get
+        (cardPrinting.cardDefinition.text aka s"${cardPrinting.cardDefinition.name} oracle text") mustEqual stripReminderText(data.get("oracle_text").textValue())
+        (constructTypeLine(cardPrinting.cardDefinition) aka s"${cardPrinting.cardDefinition.name} type line") mustEqual data.get("type_line").textValue()
       })
     }
   }
