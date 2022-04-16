@@ -5,6 +5,7 @@ import mtg.core.colors.Color
 
 sealed abstract class ManaSymbol(textInside: String) extends Symbol(textInside) {
   def colors: Set[Color]
+  def manaValue: Int
 }
 
 object ManaSymbol {
@@ -13,6 +14,7 @@ object ManaSymbol {
       case ManaType.Colored(color) => Set(color)
       case ManaType.Colorless => Set.empty
     }
+    override def manaValue: Int = 1
   }
   object ForType {
     def unapply(symbol: ManaSymbol.ForType): Some[ManaType] = Some(symbol.manaType)
@@ -27,6 +29,7 @@ object ManaSymbol {
 
   case class Generic(amount: Int) extends ManaSymbol(amount.toString) {
     override def colors: Set[Color] = Set.empty
+    override def manaValue: Int = amount
   }
 
   implicit def intToManaSymbol(amount: Int): ManaSymbol = ManaSymbol.Generic(amount)

@@ -12,6 +12,7 @@ case class ManaCost(symbols: ManaSymbol*) extends Cost {
   override def text: String = symbols.map(_.text).mkString
   override def isUnpayable(objectWithAbility: ObjectWithState): Boolean = false
   override def payForAbility(objectWithAbility: ObjectWithState): GameAction[Any] = PayManaCosts(this, objectWithAbility.controllerOrOwner) // TODO: Controller of ability should pay
+  def manaValue: Int = symbols.map(_.manaValue).sum
 }
 
 object ManaCost {

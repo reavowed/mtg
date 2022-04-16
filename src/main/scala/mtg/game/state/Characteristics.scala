@@ -23,6 +23,8 @@ case class Characteristics(
   toughness: Option[Int],
   loyalty: Option[Int])
 {
+  // TODO: Fully implement mana value calculation as per 202.3
+  def manaValue: Int = manaCost.map(_.manaValue).getOrElse(0)
   def abilitiesWithOrigins: Seq[AbilityWithOrigin] = derivedTextWithOrigins.flatMap(_.abilitiesWithOrigins)
   def abilities: Seq[AbilityDefinition] = abilitiesWithOrigins.map(_.abilityDefinition)
   def instructionParagraphs: Seq[InstructionParagraph] = abilities.ofType[SpellAbility].map(_.instructions)
