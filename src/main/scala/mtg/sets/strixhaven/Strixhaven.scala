@@ -23,6 +23,7 @@ object Strixhaven extends Set(
     CardInSetData(Expel, 18),
     CardInSetData(GuidingVoice, 19),
     CardInSetData(PilgrimOfTheAges, 22),
+    CardInSetData(PillardropRescuer, 23),
     CardInSetData(SpinedKarok, 143),
     CardInSetData(Plains, 366),
     CardInSetData(Plains, 367),
