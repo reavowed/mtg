@@ -5,16 +5,20 @@ import _ from "lodash";
 import CardImage from "../card/CardImage";
 import {Modal} from "react-bootstrap";
 import CardRow from "../card/CardRow";
+import ActionManager from "../../contexts/ActionManager";
 
 export default function Graveyard({player, className, ...props}) {
     const gameState = useContext(GameState);
+    const actionManager = useContext(ActionManager);
     const graveyard = gameState.graveyards[player]
     const graveyardSize = _.isNumber(graveyard) ? graveyard : graveyard.length;
     const topCard = graveyardSize > 0 && graveyard[graveyardSize - 1];
     const [showModal, setShowModal] = useState(false);
 
+    const classes = _.uniq(graveyard.map(card => actionManager.getClasses(card.objectId)));
+
     const zoneElement =  graveyardSize > 0 ?
-        <div onClick={() => setShowModal(true)} className={addClass(className, "zoneWithCount graveyard")} {...props}>
+        <div onClick={() => setShowModal(true)} className={addClass(className, classes.join(" ") + " zoneWithCount graveyard")} {...props}>
             <CardImage card={topCard} key={topCard.objectId} />
             <span className="zoneCount">{graveyardSize}</span>
         </div> :

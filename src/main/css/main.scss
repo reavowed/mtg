@@ -49,7 +49,7 @@ canvas.overlay {
   justify-content: safe center !important;
 }
 
-.cardContainer.selectable .cardOuterBorder, .player.selectable {
+.cardContainer.selectable .cardOuterBorder, .player.selectable, .zoneWithCount.selectable .cardOuterBorder {
   cursor: pointer;
   @include highlight(#247bc2)
 }
