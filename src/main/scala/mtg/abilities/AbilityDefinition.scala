@@ -4,6 +4,7 @@ import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, SingleA
 import mtg.continuousEffects.ContinuousEffect
 import mtg.core.types.Type
 import mtg.core.zones.ZoneType
+import mtg.effects.EffectContext
 import mtg.game.state.ObjectWithState
 import mtg.instructions.TextComponent
 import mtg.parts.costs.Cost
@@ -23,7 +24,7 @@ sealed trait AbilityDefinition extends TextComponent {
 }
 
 sealed trait StaticAbility extends AbilityDefinition {
-  def getEffects(objectWithAbility: ObjectWithState): Seq[ContinuousEffect]
+  def getEffects(effectContext: EffectContext): Seq[ContinuousEffect]
 }
 
 sealed trait AbilityParagraph extends AbilityDefinition with SingleAbilityTextParagraph {

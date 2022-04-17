@@ -8,10 +8,10 @@ import mtg.game.state.{CurrentCharacteristics, GameState, StackObjectWithState}
 case class StackObjectResolutionContext(
     override val cardNameObjectId: ObjectId,
     override val thisObjectId: ObjectId,
-    override val controllingPlayer: PlayerId,
+    override val youPlayerId: PlayerId,
     identifiedObjects: Seq[ObjectOrPlayerId],
     targets: Seq[ObjectOrPlayerId])
-  extends EffectContext(cardNameObjectId, thisObjectId, controllingPlayer)
+  extends EffectContext(cardNameObjectId, thisObjectId, youPlayerId)
 {
   def addIdentifiedObject(objectId: ObjectOrPlayerId): StackObjectResolutionContext = copy(identifiedObjects = identifiedObjects :+ objectId)
   def popTarget: (ObjectOrPlayerId, StackObjectResolutionContext) = {

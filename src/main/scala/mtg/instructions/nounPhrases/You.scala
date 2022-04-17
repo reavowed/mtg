@@ -13,10 +13,10 @@ object You extends IndefiniteNounPhrase[PlayerId] with StaticSingleIdentifyingNo
   override def person: VerbPerson = VerbPerson.Second
 
   override def describes(playerId: PlayerId, gameState: GameState, effectContext: EffectContext): Boolean = {
-    playerId == effectContext.controllingPlayer
+    playerId == effectContext.youPlayerId
   }
 
   override def identify(gameState: GameState, effectContext: EffectContext): PlayerId = {
-    effectContext.controllingPlayer
+    effectContext.youPlayerId
   }
 }

@@ -19,7 +19,7 @@ object IntransitiveInstructionVerb {
   case class Imperative(instructionVerb: IntransitiveInstructionVerb[PlayerId]) extends Instruction {
     override def getText(cardName: String): String = instructionVerb.inflect(VerbInflection.Imperative, cardName)
     override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-      instructionVerb.resolve(resolutionContext.controllingPlayer, gameState, resolutionContext)
+      instructionVerb.resolve(resolutionContext.youPlayerId, gameState, resolutionContext)
     }
     override def functionalZones: Option[Set[ZoneType]] = {
       instructionVerb.getFunctionalZones(You)

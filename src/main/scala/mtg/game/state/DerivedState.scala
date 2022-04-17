@@ -5,6 +5,7 @@ import mtg.continuousEffects.{AddAbilityEffect, ContinuousEffect, ModifyPowerTou
 import mtg.core.ObjectId
 import mtg.core.symbols.ManaSymbol
 import mtg.core.types.{BasicLandType, Type}
+import mtg.effects.EffectContext
 import mtg.game.objects.GameObjectState
 import mtg.parts.costs.TapSymbol
 import mtg.parts.counters.PowerToughnessModifyingCounter
@@ -31,7 +32,7 @@ object DerivedState {
   }
   def getActiveContinuousEffectsFromStaticAbilities(objectsWithState: View[ObjectWithState]): View[ContinuousEffect] = {
     getActiveAbilitiesOfType[StaticAbility](objectsWithState)
-      .flatMap { case (ability, objectWithState) => ability.getEffects(objectWithState) }
+      .flatMap { case (ability, objectWithState) => ability.getEffects(EffectContext(objectWithState)) }
   }
   def getActiveContinuousEffects(
     gameObjectState: GameObjectState,

@@ -16,7 +16,7 @@ import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
 object Learn extends Instruction {
   override def getText(cardName: String): String = "learn"
   override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
-    val player = resolutionContext.controllingPlayer
+    val player = resolutionContext.youPlayerId
     LearnChoice(
       player,
       gameState.gameObjectState.sideboards(player)
@@ -32,7 +32,7 @@ case class LearnChoice(playerChoosing: PlayerId, possibleLessons: Seq[ObjectId])
     implicit gameState: GameState
   ): Option[InstructionResult] = {
     def getLesson(lessonId: ObjectId): InstructionResult = {
-      (Seq(RevealAction(resolutionContext.controllingPlayer, lessonId), MoveToHandAction(lessonId)).traverse, resolutionContext)
+      (Seq(RevealAction(resolutionContext.youPlayerId, lessonId), MoveToHandAction(lessonId)).traverse, resolutionContext)
     }
     def loot(cardId: ObjectId): InstructionResult = {
       (Seq(DiscardCardAction(playerChoosing, cardId), DrawCardAction(playerChoosing)).traverse, resolutionContext)
