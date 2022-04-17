@@ -42,13 +42,13 @@ case class ResolveStackObject(stackObject: StackObject) extends DelegatingGameAc
   }
 
   private def resolveInstantOrSorcerySpell(spell: StackObjectWithState)(implicit gameState: GameState): GameAction[Unit] = {
-    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell, gameState)
+    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell)
     ResolveInstructions(spell.applicableInstructionParagraphs.flatMap(_.instructions), resolutionContext)
       .andThen(FinishResolvingInstantOrSorcerySpell(spell))
   }
 
   private def resolveAbility(ability: StackObjectWithState)(implicit gameState: GameState): GameAction[Unit] = {
-    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability, gameState)
+    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability)
     ResolveInstructions(ability.applicableInstructionParagraphs.flatMap(_.instructions), resolutionContext)
       .andThen(FinishResolvingAbility(ability))
   }

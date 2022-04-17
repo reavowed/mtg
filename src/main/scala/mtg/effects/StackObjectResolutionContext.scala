@@ -7,10 +7,11 @@ import mtg.game.state.{CurrentCharacteristics, GameState, StackObjectWithState}
 
 case class StackObjectResolutionContext(
     override val cardNameObjectId: ObjectId,
+    override val thisObjectId: ObjectId,
     override val controllingPlayer: PlayerId,
     identifiedObjects: Seq[ObjectOrPlayerId],
     targets: Seq[ObjectOrPlayerId])
-  extends EffectContext(cardNameObjectId, controllingPlayer)
+  extends EffectContext(cardNameObjectId, thisObjectId, controllingPlayer)
 {
   def addIdentifiedObject(objectId: ObjectOrPlayerId): StackObjectResolutionContext = copy(identifiedObjects = identifiedObjects :+ objectId)
   def popTarget: (ObjectOrPlayerId, StackObjectResolutionContext) = {
@@ -22,15 +23,17 @@ case class StackObjectResolutionContext(
   }
 }
 object StackObjectResolutionContext {
-  def forSpellOrAbility(spellWithState: StackObjectWithState, gameState: GameState): StackObjectResolutionContext = {
+  def forSpellOrAbility(spellWithState: StackObjectWithState): StackObjectResolutionContext = {
     StackObjectResolutionContext(
       spellWithState.cardNameObjectId,
+      spellWithState.thisObjectId,
       spellWithState.controller,
       Nil,
       spellWithState.gameObject.targets)
   }
-  def forManaAbility(manaAbility: ManaAbility, gameState: GameState): StackObjectResolutionContext = {
+  def forManaAbility(manaAbility: ManaAbility): StackObjectResolutionContext = {
     StackObjectResolutionContext(
+      manaAbility.sourceId,
       manaAbility.sourceId,
       manaAbility.controllingPlayer,
       Nil,

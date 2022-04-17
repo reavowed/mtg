@@ -14,7 +14,8 @@ sealed abstract class ObjectWithState {
   def updateCharacteristics(f: Characteristics => Characteristics): ObjectWithState
   def addAbility(abilityDefinition: AbilityDefinition): ObjectWithState
 
-  def cardNameObjectId: ObjectId = gameObject.underlyingObject match {
+  def cardNameObjectId: ObjectId = thisObjectId // TODO: Handle things like Ninja's Kunai
+  def thisObjectId: ObjectId = gameObject.underlyingObject match {
     case _: Card | _: CopyOfSpell =>
       gameObject.objectId
     case AbilityOnTheStack(_, sourceId, _) =>

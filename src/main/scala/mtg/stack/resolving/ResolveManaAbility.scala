@@ -8,7 +8,7 @@ import mtg.game.state.{DelegatingGameAction, GameAction, GameState, ObjectWithSt
 
 case class ResolveManaAbility(player: PlayerId, objectWithAbility: ObjectWithState, ability: ActivatedAbilityDefinition) extends DelegatingGameAction[Unit] {
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
-    val resolutionContext = StackObjectResolutionContext.forManaAbility(ManaAbility(objectWithAbility.gameObject.objectId, player), gameState)
+    val resolutionContext = StackObjectResolutionContext.forManaAbility(ManaAbility(objectWithAbility.gameObject.objectId, player))
     ResolveInstructions(ability.instructions.asInstanceOf[SimpleInstructionParagraph].instructions, resolutionContext)
   }
 }
