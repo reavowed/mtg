@@ -11,7 +11,7 @@ import mtg.sets.alpha.cards.{LightningBolt, Plains}
 import mtg.sets.coreSet2021.cards.ConcordiaPegasus
 import mtg.sets.kaldheim.cards.GrizzledOutrider
 import mtg.sets.strixhaven.Strixhaven
-import mtg.sets.strixhaven.cards.{EnvironmentalSciences, GuidingVoice, IntroductionToProphecy}
+import mtg.sets.strixhaven.cards.{EnvironmentalSciences, GuidingVoice, IntroductionToProphecy, PilgrimOfTheAges, PillardropRescuer}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -33,6 +33,9 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     def addCardToSideboard(player: PlayerId, cardDefinition: CardDefinition): GameState = {
       gameState.updateGameObjectState(_.addObjectToSideboard(player, BasicGameObject(Card(player, findCardPrinting(cardDefinition)), _, Zone.Sideboard(player)))._2)
     }
+    def addCardToGraveyard(player: PlayerId, cardDefinition: CardDefinition): GameState = {
+      gameState.updateGameObjectState(_.addObjectToGraveyard(player, BasicGameObject(Card(player, findCardPrinting(cardDefinition)), _, Zone.Graveyard(player)))._2)
+    }
   }
 
   val playerOne = PlayerId("P1")
@@ -47,7 +50,9 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.gameState
     val updatedGameState = initialGameState
-      .addCardToHand(playerOne, GuidingVoice)
+      .addCardToGraveyard(playerOne, PilgrimOfTheAges)
+      .addCardToGraveyard(playerOne, EnvironmentalSciences)
+      .addCardToGraveyard(playerOne, PillardropRescuer)
       .addCardToSideboard(playerOne, EnvironmentalSciences)
       .addCardToSideboard(playerOne, IntroductionToProphecy)
       .addCardToSideboard(playerOne, LightningBolt)
@@ -56,11 +61,11 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
-      .addCardToBattlefield(playerOne, ConcordiaPegasus)
+      .addCardToBattlefield(playerOne, Plains)
+      .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerTwo, Plains)
       .addCardToBattlefield(playerTwo, Plains)
-      .addCardToBattlefield(playerTwo, ConcordiaPegasus)
-      .addCardToBattlefield(playerTwo, GrizzledOutrider)
+      .addCardToHand(playerOne, PillardropRescuer)
       .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
 
     new GameStateManager(updatedGameState, onStateUpdate, initialManager.stops)
