@@ -16,7 +16,7 @@ object You extends IndefiniteNounPhrase[PlayerId] with StaticSingleIdentifyingNo
     playerId == effectContext.youPlayerId
   }
 
-  override def identify(gameState: GameState, effectContext: EffectContext): PlayerId = {
+  override def identify(effectContext: EffectContext): PlayerId = {
     effectContext.youPlayerId
   }
 }

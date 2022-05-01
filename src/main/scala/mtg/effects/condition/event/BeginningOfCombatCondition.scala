@@ -16,6 +16,6 @@ case class BeginningOfCombatCondition(playerPhrase: StaticSingleIdentifyingNounP
       " turn"
   }
   override def matchesEvent(eventToMatch: HistoryEvent.ResolvedAction[_], gameState: GameState, effectContext: EffectContext): Boolean = {
-    eventToMatch.action == BeginStep(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == playerPhrase.identify(gameState, effectContext)
+    eventToMatch.action == BeginStep(TurnStep.BeginningOfCombatStep) && gameState.activePlayer == playerPhrase.identify(effectContext)
   }
 }
