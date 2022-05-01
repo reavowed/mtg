@@ -23,13 +23,15 @@ sealed trait AbilityDefinition extends TextComponent {
   def getQuotedDescription(cardName: String): String = "\"" + getText(cardName) + "\""
 }
 
-sealed trait StaticAbility extends AbilityDefinition {
+trait StaticAbility extends AbilityDefinition {
   def getEffects(effectContext: EffectContext): Seq[ContinuousEffect]
 }
 
 sealed trait AbilityParagraph extends AbilityDefinition with SingleAbilityTextParagraph {
   override def abilityDefinition: AbilityParagraph = this
 }
+
+trait StaticAbilityParagraph extends StaticAbility with AbilityParagraph
 
 sealed trait ActivatedOrTriggeredAbilityDefinition extends AbilityParagraph {
   def instructions: InstructionParagraph

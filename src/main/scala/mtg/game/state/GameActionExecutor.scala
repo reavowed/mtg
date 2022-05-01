@@ -1,11 +1,15 @@
 package mtg.game.state
 
-import mtg.abilities.TriggeredAbility
+import mtg.abilities.{StaticAbility, TriggeredAbility}
+import mtg.actions.moveZone.MoveToBattlefieldAction
 import mtg.continuousEffects.PreventionEffect.Result.Prevent
-import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect}
-import mtg.core.PlayerId
+import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect, ReplacementEffect}
+import mtg.core.{ObjectId, PlayerId}
+import mtg.effects.EffectContext
 import mtg.game.priority.PriorityChoice
 import mtg.game.state.history.HistoryEvent
+import mtg.instructions.nounPhrases.CardName
+import mtg.instructions.verbs.EntersTheBattlefieldReplacementEffect
 
 import scala.annotation.tailrec
 
@@ -239,7 +243,7 @@ object GameActionExecutor {
   def executeGameObjectAction[T](action: GameObjectAction[T])(implicit currentGameState: GameState): (GameActionResult[T], GameState) = {
     (action match {
       case action: DirectGameObjectAction[_] =>
-        executeDirectGameObjectAction(action)
+        executeDirectGameObjectAction(action, Nil)
       case action: DelegatingGameObjectAction =>
         executeDelegatingGameObjectAction(action)
       case GameResultAction(gameResult) =>
@@ -249,17 +253,46 @@ object GameActionExecutor {
     }).asInstanceOf[(GameActionResult[T], GameState)]
   }
 
-  def executeDirectGameObjectAction[T](action: DirectGameObjectAction[T])(implicit currentGameState: GameState): (GameActionResult[Option[T]], GameState) = {
+  def executeDirectGameObjectAction[T](
+    action: DirectGameObjectAction[T],
+    appliedReplacementEffects: Seq[ReplacementEffect])(
+    implicit currentGameState: GameState
+  ): (GameActionResult[Option[T]], GameState) = {
     preventActionOrExecute(action) {
-      action.execute(currentGameState) match {
-        case DirectGameObjectAction.Happened(value, gameObjectStateAfterAction) =>
-          val gameStateAfterAction = currentGameState.updateGameObjectState(gameObjectStateAfterAction)
-          val gameStateWithLogEvent = gameStateAfterAction.recordLogEvent(action.getLogEvent(gameStateAfterAction))
-          recordExecutedEvent(action, Some(value), currentGameState, gameStateWithLogEvent)
-        case DirectGameObjectAction.DidntHappen =>
-          (GameActionResult.Value(None), currentGameState)
+      getApplicableReplacementEffects(action).diff(appliedReplacementEffects).view
+        .mapCollect(e => e.replaceAction(action).map(e -> _))
+        .headOption match
+      {
+        case Some((effect, result)) =>
+          executeDirectGameObjectAction(result.asInstanceOf[DirectGameObjectAction[T]], appliedReplacementEffects :+ effect)
+        case None =>
+          action.execute(currentGameState) match {
+            case DirectGameObjectAction.Happened(value, gameObjectStateAfterAction) =>
+              val gameStateAfterAction = currentGameState.updateGameObjectState(gameObjectStateAfterAction)
+              val gameStateWithLogEvent = gameStateAfterAction.recordLogEvent(action.getLogEvent(gameStateAfterAction))
+              recordExecutedEvent(action, Some(value), currentGameState, gameStateWithLogEvent)
+            case DirectGameObjectAction.DidntHappen =>
+              (GameActionResult.Value(None), currentGameState)
+          }
       }
     }
+  }
+
+  def getApplicableReplacementEffects[T](
+    action: DirectGameObjectAction[T])(
+    implicit currentGameState: GameState
+  ): Seq[ReplacementEffect] = {
+    val currentReplacementEffects = currentGameState.gameObjectState.activeContinuousEffects.ofType[ReplacementEffect].toSeq
+    val etbReplacementEffects = for {
+      action <- action.asOptionalInstanceOf[MoveToBattlefieldAction].toSeq
+      DirectGameObjectAction.Happened(newObjectId, expectedGameObjectState) <- action.execute.asOptionalInstanceOf[DirectGameObjectAction.Happened[ObjectId]].toSeq
+      expectedObjectState = expectedGameObjectState.derivedState.allObjectStates(newObjectId)
+      expectedAbilities = expectedObjectState.characteristics.abilities.ofType[StaticAbility]
+      currentObjectState = currentGameState.gameObjectState.derivedState.allObjectStates(action.objectId)
+      replacementEffect <- expectedAbilities.flatMap(_.getEffects(EffectContext(currentObjectState))).ofType[EntersTheBattlefieldReplacementEffect]
+      if replacementEffect.subjectPhrase == CardName
+    } yield replacementEffect
+    currentReplacementEffects ++ etbReplacementEffects
   }
 
   def executeDelegatingGameObjectAction(action: DelegatingGameObjectAction)(implicit currentGameState: GameState): (GameActionResult[Unit], GameState) = {

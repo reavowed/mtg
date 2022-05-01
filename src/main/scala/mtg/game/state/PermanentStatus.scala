@@ -9,3 +9,7 @@ case class PermanentStatus(
   def tap(): PermanentStatus = copy(isTapped = true)
   def untap(): PermanentStatus = copy(isTapped = false)
 }
+
+object PermanentStatus {
+  val Default: PermanentStatus = PermanentStatus(isTapped = false, isFlipped = false, isFaceDown = false, isPhasedOut = false)
+}

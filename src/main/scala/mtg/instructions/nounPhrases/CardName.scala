@@ -5,10 +5,14 @@ import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.GameState
 import mtg.instructions.VerbPerson
 
-object CardName extends IndefiniteNounPhrase[ObjectId] with SingleIdentifyingNounPhrase[ObjectId] {
+object CardName extends IndefiniteNounPhrase[ObjectId] with StaticSingleIdentifyingNounPhrase[ObjectId] {
   override def getText(cardName: String): String = cardName
 
   override def person: VerbPerson = VerbPerson.Third
+
+  override def identify(effectContext: EffectContext): ObjectId = {
+    effectContext.cardNameObjectId
+  }
 
   override def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (ObjectId, StackObjectResolutionContext) = {
     (resolutionContext.cardNameObjectId, resolutionContext.addIdentifiedObject(resolutionContext.cardNameObjectId))

@@ -1,8 +1,9 @@
 package mtg.instructions.nounPhrases
 
+import mtg.abilities.StaticAbilityParagraph
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.GameState
-import mtg.instructions.{StateDescriptionVerb, SuffixDescriptor}
+import mtg.instructions.{IntransitiveStaticAbilityVerb, StateDescriptionVerb, SuffixDescriptor}
 
 trait StaticSingleIdentifyingNounPhrase[+T] extends SingleIdentifyingNounPhrase[T] {
   def identify(effectContext: EffectContext): T
@@ -11,4 +12,7 @@ trait StaticSingleIdentifyingNounPhrase[+T] extends SingleIdentifyingNounPhrase[
   }
 
   def apply(verb: StateDescriptionVerb[T]): SuffixDescriptor = StateDescriptionVerb.WithSubject(this, verb)
+  def apply(verb: IntransitiveStaticAbilityVerb[T]): StaticAbilityParagraph = {
+    IntransitiveStaticAbilityVerb.WithSubject(this, verb)
+  }
 }

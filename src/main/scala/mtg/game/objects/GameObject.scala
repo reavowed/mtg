@@ -45,7 +45,12 @@ case class PermanentObject(underlyingObject: UnderlyingObject, objectId: ObjectI
   override def baseState: PermanentObjectWithState = PermanentObjectWithState(this, baseCharacteristics, defaultController)
 }
 object PermanentObject {
-  def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): PermanentObject = PermanentObject(underlyingObject, objectId, defaultController, Map.empty, PermanentStatus(false, false, false, false), 0)
+  def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId): PermanentObject = {
+    apply(underlyingObject, objectId, defaultController, Map.empty)
+  }
+  def apply(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, counters: Map[CounterType, Int]): PermanentObject = {
+    PermanentObject(underlyingObject, objectId, defaultController, counters, PermanentStatus.Default, 0)
+  }
 }
 
 case class StackObject(underlyingObject: UnderlyingObject, objectId: ObjectId, defaultController: PlayerId, chosenModes: Seq[Int], targets: Seq[ObjectOrPlayerId], counters: Map[CounterType, Int]) extends GameObject {
