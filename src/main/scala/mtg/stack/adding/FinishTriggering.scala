@@ -9,8 +9,7 @@ case class FinishTriggering(abilityId: ObjectId) extends DelegatingGameAction[Un
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     val abilityWithState = gameState.gameObjectState.derivedState.stackObjectStates(abilityId)
     val underlyingAbilityObject = abilityWithState.gameObject.underlyingObject.asInstanceOf[AbilityOnTheStack]
-    val sourceWithState = gameState.gameObjectState.derivedState.allObjectStates(underlyingAbilityObject.source)
-    val sourceName = CurrentCharacteristics.getName(sourceWithState)
+    val sourceName = CurrentCharacteristics.getName(underlyingAbilityObject.source, gameState)
     LogEvent.PutTriggeredAbilityOnStack(
       abilityWithState.controller,
       sourceName,

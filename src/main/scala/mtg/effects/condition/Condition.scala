@@ -6,5 +6,6 @@ import mtg.game.state.{GameAction, GameState}
 import mtg.instructions.TextComponent
 
 trait Condition extends TextComponent {
+  def looksBackInTime: Boolean = false
   def matchesEvent(eventToMatch: HistoryEvent.ResolvedAction[_], gameState: GameState, effectContext: EffectContext): Boolean
 }

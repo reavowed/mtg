@@ -334,7 +334,7 @@ object GameActionExecutor {
 
   private def recordExecutedEvent[T](action: GameAction[T], result: T, initialGameState: GameState, finalGameState: GameState): (GameActionResult[T], GameState) = {
       val event = HistoryEvent.ResolvedAction(action, result, initialGameState)
-      val triggeredAbilities = getTriggeringAbilities(event, finalGameState)
+      val triggeredAbilities = getTriggeringAbilities(event, initialGameState, finalGameState)
       val endedEffects = getEndedEffects(event, finalGameState)
       val finalGameObjectState = finalGameState.gameObjectState
         .addWaitingTriggeredAbilities(triggeredAbilities)
@@ -345,10 +345,14 @@ object GameActionExecutor {
       (GameActionResult.Value(result), newGameState)
   }
 
-  private def getTriggeringAbilities(event: HistoryEvent.ResolvedAction[_], gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
-    gameStateAfterAction.gameObjectState.activeTriggeredAbilities
+  private def getTriggeringAbilities(event: HistoryEvent.ResolvedAction[_], gameStateBeforeAction: GameState, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
+    val abilitiesLookingBack = gameStateBeforeAction.gameObjectState.activeTriggeredAbilities
+      .filter(_.looksBackInTime)
+      .filter(_.conditionMatchesEvent(event, gameStateBeforeAction))
+    val abilitiesLookingForward = gameStateAfterAction.gameObjectState.activeTriggeredAbilities
+      .filter(!_.looksBackInTime)
       .filter(_.conditionMatchesEvent(event, gameStateAfterAction))
-      .toSeq
+    (abilitiesLookingBack ++ abilitiesLookingForward).toSeq
   }
 
   private def getEndedEffects(event: HistoryEvent.ResolvedAction[_], gameStateAfterAction: GameState): Seq[FloatingActiveContinuousEffect] = {

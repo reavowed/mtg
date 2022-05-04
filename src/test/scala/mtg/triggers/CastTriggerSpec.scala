@@ -8,7 +8,6 @@ import mtg.instructions.conditions.Whenever
 import mtg.instructions.nounPhrases.You
 import mtg.instructions.nouns.Spell
 import mtg.instructions.verbs.{Cast, DrawACard, GainLife}
-import mtg.parts.costs.ManaCost
 
 class CastTriggerSpec extends SpecWithGameStateManager with TestCardCreation {
   val TestGainOneLifeCard = simpleInstantSpell(You(GainLife(1)))

@@ -10,12 +10,18 @@ object CurrentCharacteristics {
   def getCharacteristics(objectId: ObjectId, gameState: GameState): Characteristics = {
     getState(objectId, gameState).characteristics
   }
+  def getLastKnownState(objectId: ObjectId, gameState: GameState): ObjectWithState = {
+    gameState.gameObjectState.getCurrentOrLastKnownState(objectId)
+  }
+  def getLastKnownCharacteristics(objectId: ObjectId, gameState: GameState): Characteristics = {
+    getLastKnownState(objectId, gameState).characteristics
+  }
   def getPermanentObject(objectId: ObjectId, gameState: GameState): Option[PermanentObject] = gameState.gameObjectState.battlefield.find(_.objectId == objectId)
   def getStackObject(objectId: ObjectId, gameState: GameState): Option[StackObject] = gameState.gameObjectState.stack.find(_.objectId == objectId)
 
   def getName(objectOrPlayer: ObjectOrPlayerId, gameState: GameState): String = objectOrPlayer match {
         case objectId: ObjectId =>
-          getName(getCharacteristics(objectId, gameState))
+          getName(getLastKnownCharacteristics(objectId, gameState))
         case playerId: PlayerId =>
           playerId.toString
   }

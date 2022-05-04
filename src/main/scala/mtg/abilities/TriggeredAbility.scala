@@ -7,6 +7,7 @@ import mtg.game.state.history.HistoryEvent
 import mtg.game.state.{CurrentCharacteristics, GameAction, GameState}
 
 case class TriggeredAbility(definition: TriggeredAbilityDefinition, sourceId: ObjectId, ownerId: PlayerId) {
+  def looksBackInTime: Boolean = definition.triggerCondition.condition.looksBackInTime
   def conditionMatchesEvent(event: HistoryEvent.ResolvedAction[_], gameState: GameState): Boolean = {
     definition.triggerCondition.condition.matchesEvent(event, gameState, EffectContext(this))
   }
