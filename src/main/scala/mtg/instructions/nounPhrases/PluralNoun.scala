@@ -3,12 +3,12 @@ package mtg.instructions.nounPhrases
 import mtg.core.ObjectOrPlayerId
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.nouns.Noun
+import mtg.instructions.nouns.ClassNoun
 import mtg.instructions.{VerbNumber, VerbPerson}
 
 import scala.reflect.ClassTag
 
-case class PluralNoun[T : ClassTag](noun: Noun[T]) extends SetIdentifyingNounPhrase[T] {
+case class PluralNoun[T : ClassTag](noun: ClassNoun[T]) extends SetIdentifyingNounPhrase[T] {
   override def getText(cardName: String): String = noun.getPlural(cardName)
   override def person: VerbPerson = VerbPerson.Third
   override def number: VerbNumber = VerbNumber.Plural

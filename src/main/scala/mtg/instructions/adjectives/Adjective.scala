@@ -5,10 +5,10 @@ import mtg.core.types.Type
 import mtg.effects.EffectContext
 import mtg.game.state.{Characteristics, GameState}
 import mtg.instructions.Descriptor
-import mtg.instructions.nouns.Noun
+import mtg.instructions.nouns.ClassNoun
 
 trait Adjective extends Descriptor[ObjectId] {
-  def apply(noun: Noun[ObjectId]): Noun[ObjectId] = Noun.WithAdjective(this, noun)
+  def apply(noun: ClassNoun[ObjectId]): ClassNoun[ObjectId] = ClassNoun.WithAdjective(this, noun)
 }
 
 object Adjective {

@@ -7,7 +7,7 @@ import mtg.game.state.history.HistoryEvent
 import mtg.game.state.{GameAction, GameState}
 import mtg.instructions.adjectives.Adjective
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
-import mtg.instructions.nouns.Noun
+import mtg.instructions.nouns.ClassNoun
 import mtg.instructions.{TransitiveEventMatchingVerb, TypePhrase, VerbInflection}
 import mtg.utils.TextUtils._
 
@@ -31,7 +31,7 @@ case object Or {
       adjectives.exists(_.describes(objectId, gameState, effectContext))
     }
   }
-  def apply[T](nouns: Noun[T]*): Noun[T] = new Noun[T] {
+  def apply[T](nouns: ClassNoun[T]*): ClassNoun[T] = new ClassNoun[T] {
     override def getSingular(cardName: String): String = nouns.map(_.getSingular(cardName)).toCommaList("or")
     override def getPlural(cardName: String): String = nouns.map(_.getPlural(cardName)).toCommaList("or")
     override def getAll(gameState: GameState, effectContext: EffectContext): Seq[T] = {

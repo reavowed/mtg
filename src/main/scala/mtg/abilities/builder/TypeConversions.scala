@@ -6,7 +6,7 @@ import mtg.effects.condition.Condition
 import mtg.instructions.adjectives.{Adjective, SubtypeAdjective, SupertypeAdjective}
 import mtg.instructions.{CharacteristicChangingVerb, Instruction, SuffixDescriptor, TypePhrase}
 import mtg.instructions.nounPhrases.{PluralNoun, SetIdentifyingNounPhrase}
-import mtg.instructions.nouns.Noun
+import mtg.instructions.nouns.ClassNoun
 
 object TypeConversions {
   implicit def typeToPhrase(t: Type): TypePhrase = TypePhrase(t)
@@ -17,10 +17,10 @@ object TypeConversions {
       CharacteristicChangingVerb.WithSubjectAndCondition(phrase, verb, endCondition)
     }
   }
-  implicit class ObjectNounExtensions(noun: Noun[ObjectId]) {
+  implicit class ObjectNounExtensions(noun: ClassNoun[ObjectId]) {
     def apply(verb: CharacteristicChangingVerb, endCondition: Condition): Instruction = {
       CharacteristicChangingVerb.WithSubjectAndCondition(PluralNoun(noun), verb, endCondition)
     }
-    def apply(suffixDescriptor: SuffixDescriptor): Noun[ObjectId] = Noun.WithSuffix(noun, suffixDescriptor)
+    def apply(suffixDescriptor: SuffixDescriptor): ClassNoun[ObjectId] = ClassNoun.WithSuffix(noun, suffixDescriptor)
   }
 }

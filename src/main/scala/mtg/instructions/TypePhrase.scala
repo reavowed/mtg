@@ -7,10 +7,10 @@ import mtg.effects.condition.Condition
 import mtg.game.state.{Characteristics, GameState}
 import mtg.instructions.adjectives.Adjective
 import mtg.instructions.nounPhrases.PluralNoun
-import mtg.instructions.nouns.{Noun, Permanent}
+import mtg.instructions.nouns.{ClassNoun, Permanent}
 import mtg.utils.TextUtils._
 
-case class TypePhrase(types: Type*) extends Noun[ObjectId] with Adjective with Descriptor.CharacteristicDescriptor {
+case class TypePhrase(types: Type*) extends ClassNoun[ObjectId] with Adjective with Descriptor.CharacteristicDescriptor {
   override def getText(cardName: String): String = types.map(_.name.toLowerCase).toCommaList("or")
   override def getSingular(cardName: String): String = getText(cardName)
   override def getAll(gameState: GameState, effectContext: EffectContext): Seq[ObjectId] = {
@@ -23,5 +23,5 @@ case class TypePhrase(types: Type*) extends Noun[ObjectId] with Adjective with D
   def apply(verb: CharacteristicChangingVerb, endCondition: Condition): Instruction = {
     CharacteristicChangingVerb.WithSubjectAndCondition(PluralNoun(this), verb, endCondition)
   }
-  def apply(suffixDescriptor: SuffixDescriptor): Noun[ObjectId] = Noun.WithSuffix(this, suffixDescriptor)
+  def apply(suffixDescriptor: SuffixDescriptor): ClassNoun[ObjectId] = ClassNoun.WithSuffix(this, suffixDescriptor)
 }

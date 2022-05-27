@@ -5,11 +5,11 @@ import mtg.core.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
 import mtg.instructions.VerbPerson
-import mtg.instructions.nouns.Noun
+import mtg.instructions.nouns.ClassNoun
 
 import scala.reflect.ClassTag
 
-class Target[T <: ObjectOrPlayerId : ClassTag](noun: Noun[T]) extends SingleIdentifyingNounPhrase[T] {
+class Target[T <: ObjectOrPlayerId : ClassTag](noun: ClassNoun[T]) extends SingleIdentifyingNounPhrase[T] {
   override def getText(cardName: String): String = {
     "target " + noun.getSingular(cardName)
   }
@@ -30,7 +30,7 @@ class Target[T <: ObjectOrPlayerId : ClassTag](noun: Noun[T]) extends SingleIden
 }
 
 object Target {
-  def apply(filter: Noun[ObjectId]): Target[ObjectId] = new Target(filter)
+  def apply(filter: ClassNoun[ObjectId]): Target[ObjectId] = new Target(filter)
   def getAll(stackObjectWithState: StackObjectWithState): Seq[Target[_]] = {
     stackObjectWithState.applicableInstructionParagraphs.flatMap(_.instructions).flatMap(_.targetIdentifiers)
   }
