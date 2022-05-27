@@ -8,14 +8,14 @@ import mtg.instructions.SuffixDescriptor
 import mtg.instructions.adjectives.Adjective
 import mtg.utils.CaseObjectWithName
 
-trait Noun[+T <: ObjectOrPlayerId] {
+trait Noun[+T] {
   def getSingular(cardName: String): String
   def getPlural(cardName: String): String = getSingular(cardName) + "s"
   def getAll(gameState: GameState, effectContext: EffectContext): Seq[T]
 }
 
 object Noun {
-  trait RegularCaseObject[+T <: ObjectOrPlayerId] extends Noun[T] with CaseObjectWithName {
+  trait RegularCaseObject[+T] extends Noun[T] with CaseObjectWithName {
     override def getSingular(cardName: String): String = name.toLowerCase
   }
   case class TypeNoun(t: Type) extends Noun[ObjectId] {

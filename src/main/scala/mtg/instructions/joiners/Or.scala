@@ -25,13 +25,13 @@ case object Or {
       verbs.exists(_.matchesEvent(eventToMatch, gameState, effectContext, playerPhrase, objectPhrase))
     }
   }
-  def apply[T](adjectives: Adjective*): Adjective = new Adjective {
+  def apply(adjectives: Adjective*): Adjective = new Adjective {
     override def getText(cardName: String): String = adjectives.map(_.getText(cardName)).toCommaList("or")
     override def describes(objectId: ObjectId, gameState: GameState, effectContext: EffectContext): Boolean = {
       adjectives.exists(_.describes(objectId, gameState, effectContext))
     }
   }
-  def apply[T <: ObjectOrPlayerId](nouns: Noun[T]*): Noun[T] = new Noun[T] {
+  def apply[T](nouns: Noun[T]*): Noun[T] = new Noun[T] {
     override def getSingular(cardName: String): String = nouns.map(_.getSingular(cardName)).toCommaList("or")
     override def getPlural(cardName: String): String = nouns.map(_.getPlural(cardName)).toCommaList("or")
     override def getAll(gameState: GameState, effectContext: EffectContext): Seq[T] = {
