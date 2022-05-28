@@ -7,8 +7,8 @@ import mtg.core.types.Type
 import mtg.core.types.Type.Creature
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Put
+import mtg.parts.Counter
 import mtg.parts.costs.ManaCost
-import mtg.parts.counters.PlusOnePlusOneCounter
 import mtg.sets.strixhaven.abilities.Learn
 
 object GuidingVoice extends SpellCard(
@@ -17,5 +17,5 @@ object GuidingVoice extends SpellCard(
   Type.Sorcery,
   Nil,
   Seq(
-    Put(1, PlusOnePlusOneCounter)(Target(Creature)),
+    Put(1, Counter.PlusOnePlusOne)(Target(Creature)),
     Learn))

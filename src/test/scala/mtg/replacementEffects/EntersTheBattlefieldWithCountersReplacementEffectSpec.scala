@@ -4,12 +4,12 @@ import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.CardName
 import mtg.instructions.suffixDescriptors.With
 import mtg.instructions.verbs.EntersTheBattlefield
-import mtg.parts.counters.PlusOnePlusOneCounter
+import mtg.parts.Counter
 import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class EntersTheBattlefieldWithCountersReplacementEffectSpec extends SpecWithGameStateManager with TestCardCreation {
   val TestCreature = zeroManaCreature(
-    Seq(CardName(EntersTheBattlefield(With(1, PlusOnePlusOneCounter)))),
+    Seq(CardName(EntersTheBattlefield(With(1, Counter.PlusOnePlusOne)))),
     (1, 1))
 
   "a creature that enters the battlefield with a +1/+1 counter" should {
@@ -21,7 +21,7 @@ class EntersTheBattlefieldWithCountersReplacementEffectSpec extends SpecWithGame
       manager.castSpell(playerOne, TestCreature)
       manager.resolveNext()
 
-      manager.getState(manager.getCard(TestCreature)).gameObject.counters(PlusOnePlusOneCounter) mustEqual 1
+      manager.getState(manager.getCard(TestCreature)).gameObject.counters(Counter.PlusOnePlusOne) mustEqual 1
     }
   }
 

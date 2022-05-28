@@ -7,9 +7,9 @@ import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{CountersLiteral, SingleIdentifyingNounPhrase}
 import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb}
-import mtg.parts.counters.CounterType
+import mtg.parts.Counter
 
-case class Put(countersPhrase: SingleIdentifyingNounPhrase[Map[CounterType, Int]])
+case class Put(countersPhrase: SingleIdentifyingNounPhrase[Map[Counter, Int]])
     extends TransitiveInstructionVerb[PlayerId, ObjectId]
 {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = Verb.Put.inflect(verbInflection, cardName) + " " + countersPhrase.getText(cardName) + " on"
@@ -20,7 +20,7 @@ case class Put(countersPhrase: SingleIdentifyingNounPhrase[Map[CounterType, Int]
 }
 
 object Put {
-  def apply(number: Int, kind: CounterType): Put = {
+  def apply(number: Int, kind: Counter): Put = {
     Put(CountersLiteral(number, kind))
   }
 }

@@ -1,5 +1,6 @@
 package mtg.game.state
 
+import mtg._
 import mtg.abilities._
 import mtg.continuousEffects.{AddAbilityEffect, ContinuousEffect, ModifyPowerToughnessEffect}
 import mtg.core.ObjectId
@@ -7,9 +8,8 @@ import mtg.core.symbols.ManaSymbol
 import mtg.core.types.{BasicLandType, Type}
 import mtg.effects.EffectContext
 import mtg.game.objects.GameObjectState
+import mtg.parts.Counter
 import mtg.parts.costs.TapSymbol
-import mtg.parts.counters.PowerToughnessModifyingCounter
-import mtg.{instructions, _}
 
 import scala.collection.View
 import scala.reflect.ClassTag
@@ -89,7 +89,7 @@ object DerivedState {
       .map { objectWithState => {
         val modifiers = effects.filter(_.affectedObject == objectWithState.gameObject.objectId).map(_.powerToughnessModifier) ++
           (if (objectWithState.characteristics.types.contains(Type.Creature))
-            objectWithState.gameObject.counters.view.ofLeftType[PowerToughnessModifyingCounter]
+            objectWithState.gameObject.counters.view.ofLeftType[Counter.PowerToughnessModifying]
               .map { case (counterType, number) => counterType.modifier * number}
           else Nil)
         modifiers.foldLeft(objectWithState)((o, m) => o.updateCharacteristics(m.applyToCharacteristics))

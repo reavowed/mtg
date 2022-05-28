@@ -4,7 +4,7 @@ import mtg.SpecWithGameStateManager
 import mtg.abilities.AbilityDefinition
 import mtg.abilities.keyword.Vigilance
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
-import mtg.parts.counters.PlusOnePlusOneCounter
+import mtg.parts.Counter
 import mtg.sets.alpha.cards.{Forest, Plains, SavannahLions}
 import mtg.sets.kaldheim.cards.GrizzledOutrider
 
@@ -49,7 +49,7 @@ class ExpandedAnatomySpec extends SpecWithGameStateManager {
       manager.chooseCard(playerOne, SavannahLions)
       manager.resolveNext()
 
-      manager.getState(manager.getCard(SavannahLions)).gameObject.counters(PlusOnePlusOneCounter) mustEqual 2
+      manager.getState(manager.getCard(SavannahLions)).gameObject.counters(Counter.PlusOnePlusOne) mustEqual 2
       manager.getState(manager.getCard(SavannahLions)).characteristics.power must beSome(4)
       manager.getState(manager.getCard(SavannahLions)).characteristics.toughness must beSome(3)
     }
