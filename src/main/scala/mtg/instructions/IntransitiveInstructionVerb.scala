@@ -4,6 +4,7 @@ import mtg.core.PlayerId
 import mtg.core.zones.ZoneType
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{SingleIdentifyingNounPhrase, You}
 
 trait IntransitiveInstructionVerb[-SubjectType] extends Verb {
@@ -27,7 +28,7 @@ object IntransitiveInstructionVerb {
   }
   case class WithSubject[SubjectType](subjectPhrase: SingleIdentifyingNounPhrase[SubjectType], instructionVerb: IntransitiveInstructionVerb[SubjectType]) extends Instruction {
     override def getText(cardName: String): String = {
-      subjectPhrase.getText(cardName) + " " + instructionVerb.inflect(VerbInflection.Present(subjectPhrase.person, subjectPhrase.number), cardName)
+      subjectPhrase.getText(cardName) + " " + instructionVerb.inflect(VerbInflection.Present(subjectPhrase), cardName)
     }
     override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
       val (playerId, contextAfterPlayer) = subjectPhrase.identifySingle(gameState, resolutionContext)

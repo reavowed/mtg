@@ -3,7 +3,8 @@ package mtg.instructions.joiners
 import mtg.core.PlayerId
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.{Instruction, InstructionChoice, InstructionResult, IntransitiveInstructionVerb, VerbInflection}
+import mtg.instructions.grammar.VerbInflection
+import mtg.instructions.{InstructionChoice, InstructionResult, IntransitiveInstructionVerb}
 
 case class May(verb: IntransitiveInstructionVerb[PlayerId]) extends IntransitiveInstructionVerb[PlayerId] {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = "may " + verb.inflect(VerbInflection.Infinitive, cardName)

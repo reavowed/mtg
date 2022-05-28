@@ -1,5 +1,6 @@
 package mtg.instructions
 
+import mtg.instructions.grammar.{GrammaticalNumber, GrammaticalPerson, VerbInflection}
 import mtg.utils.CaseObjectWithName
 
 trait Verb {
@@ -10,7 +11,7 @@ object Verb {
     def root: String
     def thirdPerson: String = root + "s"
     override def inflect(verbInflection: VerbInflection, cardName: String): String = verbInflection match {
-      case VerbInflection.Present(VerbPerson.Third, VerbNumber.Singular) => thirdPerson
+      case VerbInflection.Present(GrammaticalPerson.Third, GrammaticalNumber.Singular) => thirdPerson
       case _ => root
     }
   }

@@ -2,7 +2,8 @@ package mtg.instructions.joiners
 
 import mtg.continuousEffects.CharacteristicOrControlChangingContinuousEffect
 import mtg.core.ObjectId
-import mtg.instructions.{CharacteristicChangingVerb, VerbInflection}
+import mtg.instructions.CharacteristicChangingVerb
+import mtg.instructions.grammar.VerbInflection
 import mtg.utils.TextUtils._
 
 object And {

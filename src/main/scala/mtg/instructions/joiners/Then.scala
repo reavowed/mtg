@@ -3,7 +3,8 @@ package mtg.instructions.joiners
 import mtg.core.PlayerId
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.{Instruction, InstructionResult, IntransitiveInstructionVerb, VerbInflection}
+import mtg.instructions.grammar.VerbInflection
+import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb}
 import mtg.utils.TextUtils._
 
 object Then {

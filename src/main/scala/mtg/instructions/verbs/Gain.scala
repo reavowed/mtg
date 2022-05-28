@@ -3,7 +3,8 @@ package mtg.instructions.verbs
 import mtg.abilities.AbilityDefinition
 import mtg.continuousEffects.{AddAbilityEffect, CharacteristicOrControlChangingContinuousEffect}
 import mtg.core.ObjectId
-import mtg.instructions.{CharacteristicChangingVerb, Verb, VerbInflection}
+import mtg.instructions.grammar.VerbInflection
+import mtg.instructions.{CharacteristicChangingVerb, Verb}
 
 case class Gain(abilityDefinition: AbilityDefinition) extends CharacteristicChangingVerb {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {

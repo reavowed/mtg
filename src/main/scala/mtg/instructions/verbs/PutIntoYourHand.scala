@@ -4,7 +4,8 @@ import mtg.actions.moveZone.MoveToHandAction
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb, VerbInflection}
+import mtg.instructions.grammar.VerbInflection
+import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb}
 
 case object PutIntoYourHand extends TransitiveInstructionVerb[PlayerId, ObjectId] {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = Verb.Put.inflect(verbInflection, cardName)

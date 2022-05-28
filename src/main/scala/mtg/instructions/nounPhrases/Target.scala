@@ -4,7 +4,7 @@ import mtg.continuousEffects.TargetPreventionEffect
 import mtg.core.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.{EffectContext, StackObjectResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
-import mtg.instructions.VerbPerson
+import mtg.instructions.grammar.GrammaticalPerson
 import mtg.instructions.nouns.ClassNoun
 
 import scala.reflect.ClassTag
@@ -13,7 +13,7 @@ class Target[T <: ObjectOrPlayerId : ClassTag](noun: ClassNoun[T]) extends Singl
   override def getText(cardName: String): String = {
     "target " + noun.getSingular(cardName)
   }
-  override def person: VerbPerson = VerbPerson.Third
+  override def person: GrammaticalPerson = GrammaticalPerson.Third
 
   override def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
     resolutionContext.popTarget.mapLeft(_.asInstanceOf[T])

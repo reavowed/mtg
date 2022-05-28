@@ -2,8 +2,9 @@ package mtg.instructions
 
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
+import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
-import mtg.game.state.{GameAction, GameState}
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 
 trait TransitiveEventMatchingVerb extends Verb {

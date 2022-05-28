@@ -6,9 +6,10 @@ import mtg.core.ObjectId
 import mtg.effects.EffectContext
 import mtg.game.state.history.HistoryEvent
 import mtg.game.state.history.HistoryEvent.ResolvedAction
-import mtg.game.state.{DirectGameObjectAction, GameAction, GameState}
+import mtg.game.state.{DirectGameObjectAction, GameState}
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{IndefiniteNounPhrase, StaticSingleIdentifyingNounPhrase}
-import mtg.instructions.{EntersTheBattlefieldModifier, IntransitiveEventMatchingVerb, IntransitiveStaticAbilityVerb, Verb, VerbInflection}
+import mtg.instructions.{EntersTheBattlefieldModifier, IntransitiveEventMatchingVerb, IntransitiveStaticAbilityVerb, Verb}
 
 object EntersTheBattlefield extends Verb.WithSuffix(Verb.Enter, "the battlefield") with IntransitiveEventMatchingVerb[ObjectId] {
   override def matchesEvent(

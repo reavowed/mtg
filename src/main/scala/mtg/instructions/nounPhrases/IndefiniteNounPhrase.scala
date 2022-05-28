@@ -1,8 +1,5 @@
 package mtg.instructions.nounPhrases
 
-import mtg.instructions.{Descriptor, VerbNumber, VerbPerson}
+import mtg.instructions.Descriptor
 
-trait IndefiniteNounPhrase[T] extends Descriptor[T] {
-  def person: VerbPerson
-  def number: VerbNumber
-}
+trait IndefiniteNounPhrase[T] extends NounPhrase with Descriptor[T]

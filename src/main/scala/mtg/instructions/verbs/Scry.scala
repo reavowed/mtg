@@ -3,10 +3,10 @@ package mtg.instructions.verbs
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
-import mtg.game.objects.GameObjectState
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{DirectGameObjectAction, GameState}
 import mtg.instructions._
+import mtg.instructions.grammar.VerbInflection
 import mtg.utils.ParsingUtils
 
 case class Scry(number: Int) extends IntransitiveInstructionVerb[PlayerId] with Verb.RegularCaseObject {

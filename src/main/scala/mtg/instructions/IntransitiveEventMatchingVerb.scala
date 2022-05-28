@@ -4,6 +4,7 @@ import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 
 trait IntransitiveEventMatchingVerb[SubjectType] extends Verb {
@@ -18,7 +19,7 @@ object IntransitiveEventMatchingVerb {
       verb.matchesEvent(eventToMatch, gameState, effectContext, subjectPhrase)
     }
     override def getText(cardName: String): String = {
-      subjectPhrase.getText(cardName) + " " + verb.inflect(VerbInflection.Present(subjectPhrase.person, subjectPhrase.number), cardName)
+      subjectPhrase.getText(cardName) + " " + verb.inflect(VerbInflection.Present(subjectPhrase), cardName)
     }
   }
 }

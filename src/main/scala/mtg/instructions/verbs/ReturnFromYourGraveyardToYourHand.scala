@@ -5,8 +5,9 @@ import mtg.core.zones.ZoneType
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{CardName, SingleIdentifyingNounPhrase}
-import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb, VerbInflection}
+import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb}
 
 object ReturnFromYourGraveyardToYourHand extends TransitiveInstructionVerb[PlayerId, ObjectId] {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = Verb.Return.inflect(verbInflection, cardName)

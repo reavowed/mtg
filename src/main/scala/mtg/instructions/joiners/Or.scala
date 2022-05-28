@@ -1,14 +1,15 @@
 package mtg.instructions.joiners
 
 import mtg.core.types.Type
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
+import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
-import mtg.game.state.{GameAction, GameState}
 import mtg.instructions.adjectives.Adjective
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.instructions.nouns.ClassNoun
-import mtg.instructions.{TransitiveEventMatchingVerb, TypePhrase, VerbInflection}
+import mtg.instructions.{TransitiveEventMatchingVerb, TypePhrase}
 import mtg.utils.TextUtils._
 
 case object Or {

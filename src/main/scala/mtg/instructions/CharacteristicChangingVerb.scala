@@ -6,6 +6,7 @@ import mtg.core.ObjectId
 import mtg.effects.StackObjectResolutionContext
 import mtg.effects.condition.Condition
 import mtg.game.state.GameState
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.SetIdentifyingNounPhrase
 
 trait CharacteristicChangingVerb extends Verb {
@@ -17,7 +18,7 @@ object CharacteristicChangingVerb {
     override def getText(cardName: String): String = {
       Seq(
         subjectPhrase.getText(cardName),
-        verb.inflect(VerbInflection.Present(subjectPhrase.person, subjectPhrase.number), cardName),
+        verb.inflect(VerbInflection.Present(subjectPhrase), cardName),
         "until",
         endCondition.getText(cardName)
       ).mkString(" ")

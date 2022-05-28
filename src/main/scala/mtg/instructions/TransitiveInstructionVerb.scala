@@ -3,6 +3,7 @@ package mtg.instructions
 import mtg.core.zones.ZoneType
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
 
 trait TransitiveInstructionVerb[SubjectType, ObjectType] extends Verb {

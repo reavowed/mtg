@@ -3,6 +3,7 @@ package mtg.instructions
 import mtg.abilities.StaticAbilityParagraph
 import mtg.continuousEffects.ContinuousEffect
 import mtg.effects.EffectContext
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase
 
 trait IntransitiveStaticAbilityVerb[-SubjectType] extends Verb {
@@ -17,7 +18,7 @@ object IntransitiveStaticAbilityVerb {
     override def getText(cardName: String): String = {
       subjectPhrase.getText(cardName) +
         " " +
-        verb.inflect(VerbInflection.Present(subjectPhrase.person, subjectPhrase.number), cardName)
+        verb.inflect(VerbInflection.Present(subjectPhrase), cardName)
     }
 
     override def getEffects(effectContext: EffectContext): Seq[ContinuousEffect] = {

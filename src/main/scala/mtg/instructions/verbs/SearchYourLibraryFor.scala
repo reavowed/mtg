@@ -5,6 +5,7 @@ import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.StackObjectResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions._
+import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nouns.ClassNoun
 import mtg.utils.TextUtils._
 
