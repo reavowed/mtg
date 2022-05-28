@@ -12,5 +12,12 @@ case class CountersLiteral(numberOfCounters: Int, counterType: Counter) extends 
   }
   override def number: GrammaticalNumber = GrammaticalNumber(numberOfCounters)
   override def person: GrammaticalPerson = GrammaticalPerson.Third
-  override def getText(cardName: String): String = (counterType.description + " " + Noun.Counter.getText(cardName, number)).withNumberWord(numberOfCounters)
+  override def getText(cardName: String): String = {
+    val numberWord = numberOfCounters match {
+      case 1 => getArticle(counterType.description)
+      case 2 => "two"
+      case n => n.toString
+    }
+    Seq(numberWord, counterType.description, Noun.Counter.getText(cardName, number)).mkString(" ")
+  }
 }

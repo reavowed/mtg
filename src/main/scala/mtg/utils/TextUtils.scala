@@ -12,21 +12,11 @@ object TextUtils {
     def withArticle: String = {
       getArticle(str) + " " + str
     }
-
-    def withNumberWord(n: Int): String = {
-      getWord(n, str) + " " + str
-    }
     def uncapitalize: String = {
       s"${str.head.toLower}${str.tail}"
     }
   }
   def getArticle(word: String): String = {
       if ("aeiou".contains(word.head)) "an" else "a"
-  }
-
-  def getWord(number: Int, followingWord: String): String = number match {
-    case 1 => getArticle(followingWord)
-    case 2 => "two"
-    case n => n.toString
   }
 }
