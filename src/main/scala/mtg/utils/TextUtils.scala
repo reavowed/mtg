@@ -12,6 +12,10 @@ object TextUtils {
     def withArticle: String = {
       getArticle(str) + " " + str
     }
+
+    def withNumberWord(n: Int): String = {
+      getWord(n, str) + " " + str
+    }
     def uncapitalize: String = {
       s"${str.head.toLower}${str.tail}"
     }

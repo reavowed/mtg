@@ -23,7 +23,12 @@ trait GameObject {
   def isCard: Boolean = true
 
   def updateCounters(newCounters: Map[CounterType, Int]): GameObject
-  def updateCounters(f: Map[CounterType, Int] => Map[CounterType, Int]): GameObject = updateCounters(f(counters))
+  def addCounters(countersToAdd: Map[CounterType, Int]): GameObject = {
+    val currentCounters = counters
+    val counterTypes = (currentCounters.keys ++ countersToAdd.keys).toSet
+    val newCounters = counterTypes.map(counterType => counterType -> (currentCounters.getOrElse(counterType, 0) + countersToAdd.getOrElse(counterType, 0))).toMap
+    updateCounters(newCounters)
+  }
 
   override def toString: String = s"GameObject($underlyingObject, $objectId)"
 }
