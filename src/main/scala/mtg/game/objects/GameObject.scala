@@ -8,6 +8,7 @@ import mtg.core.zones.Zone.BasicZone
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.state._
 import mtg.parts.counters.CounterType
+import mtg.utils.MapUtils._
 
 trait GameObject {
   def underlyingObject: UnderlyingObject
@@ -24,10 +25,7 @@ trait GameObject {
 
   def updateCounters(newCounters: Map[CounterType, Int]): GameObject
   def addCounters(countersToAdd: Map[CounterType, Int]): GameObject = {
-    val currentCounters = counters
-    val counterTypes = (currentCounters.keys ++ countersToAdd.keys).toSet
-    val newCounters = counterTypes.map(counterType => counterType -> (currentCounters.getOrElse(counterType, 0) + countersToAdd.getOrElse(counterType, 0))).toMap
-    updateCounters(newCounters)
+    updateCounters(counters.add(countersToAdd))
   }
 
   override def toString: String = s"GameObject($underlyingObject, $objectId)"

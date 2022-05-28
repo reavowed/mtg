@@ -1,15 +1,14 @@
 package mtg.instructions.nounPhrases
 
-import mtg.effects.StackObjectResolutionContext
-import mtg.game.state.GameState
+import mtg.effects.EffectContext
 import mtg.instructions.grammar.{GrammaticalNumber, GrammaticalPerson}
 import mtg.instructions.nouns.Noun
 import mtg.parts.counters.CounterType
 import mtg.utils.TextUtils._
 
-case class CountersLiteral(numberOfCounters: Int, counterType: CounterType) extends SingleIdentifyingNounPhrase[Map[CounterType, Int]] {
-  override def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (Map[CounterType, Int], StackObjectResolutionContext) = {
-    (Map(counterType -> numberOfCounters), resolutionContext)
+case class CountersLiteral(numberOfCounters: Int, counterType: CounterType) extends StaticSingleIdentifyingNounPhrase[Map[CounterType, Int]] {
+  override def identify(effectContext: EffectContext): Map[CounterType, Int] = {
+    Map(counterType -> numberOfCounters)
   }
   override def number: GrammaticalNumber = GrammaticalNumber(numberOfCounters)
   override def person: GrammaticalPerson = GrammaticalPerson.Third

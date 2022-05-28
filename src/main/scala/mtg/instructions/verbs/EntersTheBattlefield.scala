@@ -48,7 +48,7 @@ case class EntersTheBattlefieldReplacementEffect(
   val expectedObjectId = subjectPhrase.identify(effectContext)
   override def replaceAction(action: DirectGameObjectAction[_]): Option[DirectGameObjectAction[_]] = action match {
     case action @ MoveToBattlefieldAction(`expectedObjectId`, _, _) =>
-      Some(modifier.modifyAction(action))
+      Some(modifier.modifyAction(action, effectContext))
     case _ =>
       None
   }
