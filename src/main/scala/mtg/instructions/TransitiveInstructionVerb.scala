@@ -1,7 +1,7 @@
 package mtg.instructions
 
 import mtg.core.zones.ZoneType
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
@@ -11,7 +11,7 @@ trait TransitiveInstructionVerb[SubjectType, ObjectType] extends Verb {
   def apply(objectPhrase: SingleIdentifyingNounPhrase[ObjectType]): IntransitiveInstructionVerb[SubjectType] = {
     TransitiveInstructionVerbWithObject(this, objectPhrase)
   }
-  def resolve(subject: SubjectType, obj: ObjectType, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult
+  def resolve(subject: SubjectType, obj: ObjectType, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult
   def getFunctionalZones(subjectPhrase: SingleIdentifyingNounPhrase[SubjectType], objectPhrase: SingleIdentifyingNounPhrase[ObjectType]): Option[Set[ZoneType]] = None
 }
 
@@ -29,7 +29,7 @@ case class TransitiveInstructionVerbWithObject[SubjectType, ObjectType](
         mainText
     }
   }
-  override def resolve(subject: SubjectType, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+  override def resolve(subject: SubjectType, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
     val (objectId, contextAfterObjects) = objectPhrase.identifySingle(gameState, resolutionContext)
     verb.resolve(subject, objectId, gameState, contextAfterObjects)
   }

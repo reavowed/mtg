@@ -3,7 +3,7 @@ package mtg.instructions.verbs
 import mtg.actions.moveZone.MoveToHandAction
 import mtg.core.zones.ZoneType
 import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{CardName, SingleIdentifyingNounPhrase}
@@ -16,7 +16,7 @@ object ReturnFromYourGraveyardToYourHand extends TransitiveInstructionVerb[Playe
     subject: PlayerId,
     obj: ObjectId,
     gameState: GameState,
-    resolutionContext: StackObjectResolutionContext
+    resolutionContext: InstructionResolutionContext
   ): InstructionResult = {
     (MoveToHandAction(obj), resolutionContext)
   }

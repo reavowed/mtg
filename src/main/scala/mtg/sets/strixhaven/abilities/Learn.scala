@@ -4,7 +4,7 @@ import mtg.actions.moveZone.MoveToHandAction
 import mtg.actions.{DiscardCardAction, DrawCardAction, RevealAction}
 import mtg.core.types.SpellType.Lesson
 import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.{CurrentCharacteristics, GameState}
 import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
 
@@ -15,7 +15,7 @@ import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}
  */
 object Learn extends Instruction {
   override def getText(cardName: String): String = "learn"
-  override def resolve(gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+  override def resolve(gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
     val player = resolutionContext.youPlayerId
     LearnChoice(
       player,
@@ -28,7 +28,7 @@ object Learn extends Instruction {
 case class LearnChoice(playerChoosing: PlayerId, possibleLessons: Seq[ObjectId]) extends InstructionChoice {
   override def parseDecision(
     serializedDecision: String,
-    resolutionContext: StackObjectResolutionContext)(
+    resolutionContext: InstructionResolutionContext)(
     implicit gameState: GameState
   ): Option[InstructionResult] = {
     def getLesson(lessonId: ObjectId): InstructionResult = {

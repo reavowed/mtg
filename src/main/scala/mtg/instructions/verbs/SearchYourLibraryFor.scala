@@ -2,7 +2,7 @@ package mtg.instructions.verbs
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions._
 import mtg.instructions.grammar.VerbInflection
@@ -13,7 +13,7 @@ case class SearchYourLibraryFor(noun: ClassNoun[ObjectId]) extends IntransitiveI
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
     Verb.Search.inflect(verbInflection, cardName) + " your library for " + noun.getSingular(cardName).withArticle
   }
-  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
     val possibleChoices = noun.getAll(gameState, resolutionContext).intersect(gameState.gameObjectState.libraries(playerId).map(_.objectId))
     SearchLibraryChoice(playerId, possibleChoices)
   }
@@ -27,7 +27,7 @@ case class SearchLibraryChoice(
 {
   override def parseDecision(
     serializedDecision: String,
-    resolutionContext: StackObjectResolutionContext)(
+    resolutionContext: InstructionResolutionContext)(
     implicit gameState: GameState
   ): Option[InstructionResult] = {
     for {

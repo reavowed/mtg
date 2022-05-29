@@ -2,7 +2,7 @@ package mtg.instructions.verbs
 
 import mtg.core.zones.Zone
 import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{DirectGameObjectAction, GameState}
 import mtg.instructions._
@@ -14,7 +14,7 @@ case class Scry(number: Int) extends IntransitiveInstructionVerb[PlayerId] with 
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
     super.inflect(verbInflection, cardName) + " " + number
   }
-  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
     val library = gameState.gameObjectState.libraries(playerId)
     val cardsBeingScryed = library.take(number).map(_.objectId)
     ScryChoice(playerId, cardsBeingScryed)
@@ -28,7 +28,7 @@ case class ScryChoice(
 {
   override def parseDecision(
     serializedDecision: String,
-    resolutionContext: StackObjectResolutionContext)(
+    resolutionContext: InstructionResolutionContext)(
     implicit gameState: GameState
   ): Option[InstructionResult] = {
     for {

@@ -2,7 +2,7 @@ package mtg.instructions.verbs
 
 import mtg.actions.PutCountersAction
 import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{CountersLiteral, SingleIdentifyingNounPhrase}
@@ -13,7 +13,7 @@ case class Put(countersPhrase: SingleIdentifyingNounPhrase[Map[Counter, Int]])
     extends TransitiveInstructionVerb[PlayerId, ObjectId]
 {
   override def inflect(verbInflection: VerbInflection, cardName: String): String = Verb.Put.inflect(verbInflection, cardName) + " " + countersPhrase.getText(cardName) + " on"
-  override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: StackObjectResolutionContext): InstructionResult = {
+  override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
     val (counters, resultingContext) = countersPhrase.identifySingle(gameState, resolutionContext)
     (PutCountersAction(counters, objectId), resultingContext)
   }

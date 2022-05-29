@@ -5,7 +5,7 @@ import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.objects.{AbilityOnTheStack, Card, CopyOfSpell}
 import mtg.game.state.{CurrentCharacteristics, GameState, StackObjectWithState}
 
-case class StackObjectResolutionContext(
+case class InstructionResolutionContext(
     override val cardNameObjectId: ObjectId,
     override val thisObjectId: ObjectId,
     override val youPlayerId: PlayerId,
@@ -13,8 +13,8 @@ case class StackObjectResolutionContext(
     targets: Seq[ObjectOrPlayerId])
   extends EffectContext(cardNameObjectId, thisObjectId, youPlayerId)
 {
-  def addIdentifiedObject(objectId: ObjectOrPlayerId): StackObjectResolutionContext = copy(identifiedObjects = identifiedObjects :+ objectId)
-  def popTarget: (ObjectOrPlayerId, StackObjectResolutionContext) = {
+  def addIdentifiedObject(objectId: ObjectOrPlayerId): InstructionResolutionContext = copy(identifiedObjects = identifiedObjects :+ objectId)
+  def popTarget: (ObjectOrPlayerId, InstructionResolutionContext) = {
     val target = targets.head
     (target, addIdentifiedObject(target).copy(targets = targets.tail))
   }
@@ -22,17 +22,17 @@ case class StackObjectResolutionContext(
     CurrentCharacteristics.getName(gameState.gameObjectState.getCurrentOrLastKnownState(cardNameObjectId))
   }
 }
-object StackObjectResolutionContext {
-  def forSpellOrAbility(spellWithState: StackObjectWithState): StackObjectResolutionContext = {
-    StackObjectResolutionContext(
+object InstructionResolutionContext {
+  def forSpellOrAbility(spellWithState: StackObjectWithState): InstructionResolutionContext = {
+    InstructionResolutionContext(
       spellWithState.cardNameObjectId,
       spellWithState.thisObjectId,
       spellWithState.controller,
       Nil,
       spellWithState.gameObject.targets)
   }
-  def forManaAbility(manaAbility: ManaAbility): StackObjectResolutionContext = {
-    StackObjectResolutionContext(
+  def forManaAbility(manaAbility: ManaAbility): InstructionResolutionContext = {
+    InstructionResolutionContext(
       manaAbility.sourceId,
       manaAbility.sourceId,
       manaAbility.controllingPlayer,

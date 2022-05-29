@@ -2,7 +2,7 @@ package mtg.instructions.nounPhrases
 
 import mtg.continuousEffects.TargetPreventionEffect
 import mtg.core.{ObjectId, ObjectOrPlayerId}
-import mtg.effects.{EffectContext, StackObjectResolutionContext}
+import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
 import mtg.instructions.grammar.GrammaticalPerson
 import mtg.instructions.nouns.ClassNoun
@@ -15,7 +15,7 @@ class Target[T <: ObjectOrPlayerId : ClassTag](noun: ClassNoun[T]) extends Singl
   }
   override def person: GrammaticalPerson = GrammaticalPerson.Third
 
-  override def identifySingle(gameState: GameState, resolutionContext: StackObjectResolutionContext): (T, StackObjectResolutionContext) = {
+  override def identifySingle(gameState: GameState, resolutionContext: InstructionResolutionContext): (T, InstructionResolutionContext) = {
     resolutionContext.popTarget.mapLeft(_.asInstanceOf[T])
   }
   def getValidChoices(source: StackObjectWithState, gameState: GameState, effectContext: EffectContext): Seq[ObjectOrPlayerId] = {

@@ -1,18 +1,18 @@
 package mtg.stack.resolving
 
-import mtg.effects.StackObjectResolutionContext
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state._
 import mtg.instructions.{Instruction, InstructionResult, ResolvableInstructionPart}
 
-case class ResolveInstructions(allInstructions: Seq[ResolvableInstructionPart], initialResolutionContext: StackObjectResolutionContext) extends DelegatingGameAction[Unit] {
+case class ResolveInstructions(allInstructions: Seq[ResolvableInstructionPart], initialResolutionContext: InstructionResolutionContext) extends DelegatingGameAction[Unit] {
   override def delegate(implicit gameState: GameState): GameAction[Unit] = {
     executeInstructions(allInstructions, initialResolutionContext)
   }
 
   private def executeInstructions(
     instructions: Seq[ResolvableInstructionPart],
-    resolutionContext: StackObjectResolutionContext
-  ): GameAction[StackObjectResolutionContext] = {
+    resolutionContext: InstructionResolutionContext
+  ): GameAction[InstructionResolutionContext] = {
     instructions match {
       case instruction +: remainingInstructions =>
         resolveInstruction(instruction, resolutionContext).flatMap(executeInstructions(remainingInstructions, _))
@@ -21,11 +21,11 @@ case class ResolveInstructions(allInstructions: Seq[ResolvableInstructionPart], 
     }
   }
 
-  private def resolveInstruction(instruction: ResolvableInstructionPart, resolutionContext: StackObjectResolutionContext): GameAction[StackObjectResolutionContext] = { (gameState: GameState) =>
+  private def resolveInstruction(instruction: ResolvableInstructionPart, resolutionContext: InstructionResolutionContext): GameAction[InstructionResolutionContext] = { (gameState: GameState) =>
     handleResult(instruction.resolve(gameState, resolutionContext), resolutionContext)
   }
 
-  private def handleResult(instructionResult: InstructionResult, resolutionContext: StackObjectResolutionContext): GameAction[StackObjectResolutionContext] = { (gameState: GameState) =>
+  private def handleResult(instructionResult: InstructionResult, resolutionContext: InstructionResolutionContext): GameAction[InstructionResolutionContext] = { (gameState: GameState) =>
     instructionResult match {
       case InstructionResult.NewInstructions(instructions, newResolutionContext) =>
         executeInstructions(instructions, newResolutionContext)

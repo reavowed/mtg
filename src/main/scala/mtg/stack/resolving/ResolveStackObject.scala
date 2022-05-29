@@ -1,7 +1,7 @@
 package mtg.stack.resolving
 
 import mtg.actions.moveZone.{MoveToBattlefieldAction, MoveToGraveyardAction}
-import mtg.effects.{EffectContext, StackObjectResolutionContext}
+import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state._
 import mtg.game.state.history.LogEvent
@@ -42,13 +42,13 @@ case class ResolveStackObject(stackObject: StackObject) extends DelegatingGameAc
   }
 
   private def resolveInstantOrSorcerySpell(spell: StackObjectWithState)(implicit gameState: GameState): GameAction[Unit] = {
-    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(spell)
+    val resolutionContext = InstructionResolutionContext.forSpellOrAbility(spell)
     ResolveInstructions(spell.applicableInstructionParagraphs.flatMap(_.instructions), resolutionContext)
       .andThen(FinishResolvingInstantOrSorcerySpell(spell))
   }
 
   private def resolveAbility(ability: StackObjectWithState)(implicit gameState: GameState): GameAction[Unit] = {
-    val resolutionContext = StackObjectResolutionContext.forSpellOrAbility(ability)
+    val resolutionContext = InstructionResolutionContext.forSpellOrAbility(ability)
     ResolveInstructions(ability.applicableInstructionParagraphs.flatMap(_.instructions), resolutionContext)
       .andThen(FinishResolvingAbility(ability))
   }
