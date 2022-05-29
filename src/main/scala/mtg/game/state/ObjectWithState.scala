@@ -18,8 +18,8 @@ sealed abstract class ObjectWithState {
   def thisObjectId: ObjectId = gameObject.underlyingObject match {
     case _: Card | _: CopyOfSpell =>
       gameObject.objectId
-    case AbilityOnTheStack(_, sourceId, _) =>
-      sourceId
+    case abilityOnTheStack: AbilityOnTheStack =>
+      abilityOnTheStack.source
   }
   def getText(gameState: GameState): String = {
     val cardName = CurrentCharacteristics.getName(gameState.gameObjectState.getCurrentOrLastKnownState(cardNameObjectId))

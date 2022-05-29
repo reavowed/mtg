@@ -2,7 +2,7 @@ package mtg.game.objects
 
 import mtg.abilities.{ActivatedOrTriggeredAbilityDefinition, SpellAbility}
 import mtg.cards.CardPrinting
-import mtg.core.{ObjectId, PlayerId}
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.core.symbols.ManaSymbol
 import mtg.game.state.{Characteristics, GameState}
 
@@ -37,7 +37,8 @@ case class CopyOfSpell(baseCharacteristics: Characteristics, owner: PlayerId) ex
 case class AbilityOnTheStack(
     abilityDefinition: ActivatedOrTriggeredAbilityDefinition,
     source: ObjectId,
-    owner: PlayerId)
+    owner: PlayerId,
+    identifiedObjects: Seq[ObjectOrPlayerId])
   extends UnderlyingObject
 {
   def baseCharacteristics: Characteristics = Characteristics(

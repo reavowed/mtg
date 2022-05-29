@@ -40,7 +40,7 @@ object TriggeredAbilityCheck extends DelegatingGameAction[Boolean] {
     getTriggeredAbilitiesForPlayer(player).flatMap(chooseTriggeredAbility(player, _))
   }
   def getTriggeredAbilitiesForPlayer(player: PlayerId): GameAction[Seq[PendingTriggeredAbility]] = {
-    CalculatedGameAction(_.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack.filter(_.triggeredAbility.ownerId == player))
+    CalculatedGameAction(_.gameObjectState.triggeredAbilitiesWaitingToBePutOnStack.filter(_.triggeredAbility.controllerId == player))
   }
 
   private def chooseTriggeredAbility(player: PlayerId, triggeredAbilities: Seq[PendingTriggeredAbility]): GameAction[Option[PendingTriggeredAbility]] = {

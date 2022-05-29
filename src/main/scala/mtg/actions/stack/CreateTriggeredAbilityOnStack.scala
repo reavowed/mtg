@@ -9,7 +9,7 @@ case class CreateTriggeredAbilityOnStack(pendingTriggeredAbility: PendingTrigger
   override def execute(implicit gameState: GameState): DirectGameObjectAction.Result[ObjectId] = {
     gameState.gameObjectState
       .removeTriggeredAbility(pendingTriggeredAbility)
-      .addObjectToStack(StackObject(pendingTriggeredAbility.triggeredAbility.toAbilityOnTheStack, _, pendingTriggeredAbility.triggeredAbility.ownerId))
+      .addObjectToStack(StackObject(pendingTriggeredAbility.toAbilityOnTheStack, _, pendingTriggeredAbility.triggeredAbility.controllerId))
   }
   override def canBeReverted: Boolean = true
 }

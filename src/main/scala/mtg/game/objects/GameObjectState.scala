@@ -7,7 +7,7 @@ import mtg.continuousEffects.{ContinuousEffect, FloatingActiveContinuousEffect}
 import mtg.core.zones.Zone
 import mtg.core.zones.Zone.BasicZone
 import mtg.core.{ManaType, ObjectId, PlayerId}
-import mtg.effects.EffectContext
+import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.effects.condition.Condition
 import mtg.game._
 import mtg.game.state.{DerivedState, ObjectWithState}
@@ -152,15 +152,15 @@ case class GameObjectState(
     Focus[GameObjectState](_.lifeTotals).at(player)(AtGuaranteed.apply).modify(f)(this)
   }
 
-  def addEffects(continuousEffects: Seq[ContinuousEffect], context: EffectContext, endCondition: Condition): GameObjectState = {
+  def addEffects(continuousEffects: Seq[ContinuousEffect], context: InstructionResolutionContext, endCondition: Condition): GameObjectState = {
     updateEffects(_ ++ continuousEffects.map(FloatingActiveContinuousEffect(_, context, endCondition)))
   }
   def updateEffects(f: Seq[FloatingActiveContinuousEffect] => Seq[FloatingActiveContinuousEffect]): GameObjectState = {
     copy(floatingActiveContinuousEffects = f(floatingActiveContinuousEffects))
   }
-  def addWaitingTriggeredAbilities(abilities: Seq[TriggeredAbility]): GameObjectState = {
+  def addWaitingTriggeredAbilities(abilities: Seq[Int => PendingTriggeredAbility]): GameObjectState = {
     copy(
-      triggeredAbilitiesWaitingToBePutOnStack = triggeredAbilitiesWaitingToBePutOnStack ++ abilities.mapWithIndex { case (ability, index) =>  PendingTriggeredAbility(nextId + index, ability) },
+      triggeredAbilitiesWaitingToBePutOnStack = triggeredAbilitiesWaitingToBePutOnStack ++ abilities.mapWithIndex { case (ability, index) =>  ability(nextId + index) },
       nextId = nextId + abilities.length)
   }
   def removeTriggeredAbility(ability: PendingTriggeredAbility): GameObjectState = {

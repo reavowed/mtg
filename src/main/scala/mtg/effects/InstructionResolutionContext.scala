@@ -1,6 +1,6 @@
 package mtg.effects
 
-import mtg.abilities.ManaAbility
+import mtg.abilities.{ManaAbility, TriggeredAbility}
 import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.objects.{AbilityOnTheStack, Card, CopyOfSpell}
 import mtg.game.state.{CurrentCharacteristics, GameState, StackObjectWithState}
@@ -28,7 +28,7 @@ object InstructionResolutionContext {
       spellWithState.cardNameObjectId,
       spellWithState.thisObjectId,
       spellWithState.controller,
-      Nil,
+      spellWithState.gameObject.underlyingObject.asOptionalInstanceOf[AbilityOnTheStack].map(_.identifiedObjects).getOrElse(Nil),
       spellWithState.gameObject.targets)
   }
   def forManaAbility(manaAbility: ManaAbility): InstructionResolutionContext = {
@@ -36,6 +36,14 @@ object InstructionResolutionContext {
       manaAbility.sourceId,
       manaAbility.sourceId,
       manaAbility.controllingPlayer,
+      Nil,
+      Nil)
+  }
+  def forTriggeredAbility(triggeredAbility: TriggeredAbility): InstructionResolutionContext = {
+    InstructionResolutionContext(
+      triggeredAbility.sourceId,
+      triggeredAbility.sourceId,
+      triggeredAbility.controllerId,
       Nil,
       Nil)
   }

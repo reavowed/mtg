@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.abilities.{StaticAbility, TriggeredAbility}
+import mtg.abilities.{PendingTriggeredAbility, StaticAbility, TriggeredAbility}
 import mtg.actions.moveZone.MoveToBattlefieldAction
 import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect, ReplacementEffect}
@@ -345,13 +345,13 @@ object GameActionExecutor {
       (GameActionResult.Value(result), newGameState)
   }
 
-  private def getTriggeringAbilities(event: HistoryEvent.ResolvedAction[_], gameStateBeforeAction: GameState, gameStateAfterAction: GameState): Seq[TriggeredAbility] = {
+  private def getTriggeringAbilities(event: HistoryEvent.ResolvedAction[_], gameStateBeforeAction: GameState, gameStateAfterAction: GameState): Seq[Int => PendingTriggeredAbility] = {
     val abilitiesLookingBack = gameStateBeforeAction.gameObjectState.activeTriggeredAbilities
       .filter(_.looksBackInTime)
-      .filter(_.conditionMatchesEvent(event, gameStateBeforeAction))
+      .mapCollect(_.matchEvent(event, gameStateBeforeAction))
     val abilitiesLookingForward = gameStateAfterAction.gameObjectState.activeTriggeredAbilities
       .filter(!_.looksBackInTime)
-      .filter(_.conditionMatchesEvent(event, gameStateAfterAction))
+      .mapCollect(_.matchEvent(event, gameStateAfterAction))
     (abilitiesLookingBack ++ abilitiesLookingForward).toSeq
   }
 

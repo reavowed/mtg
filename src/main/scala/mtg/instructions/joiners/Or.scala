@@ -1,8 +1,8 @@
 package mtg.instructions.joiners
 
 import mtg.core.types.Type
-import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.EffectContext
+import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
 import mtg.instructions.adjectives.Adjective
@@ -14,16 +14,18 @@ import mtg.utils.TextUtils._
 
 case object Or {
   def apply(types: Type*): TypePhrase = TypePhrase(types: _*)
-  def apply(verbs: TransitiveEventMatchingVerb*): TransitiveEventMatchingVerb = new TransitiveEventMatchingVerb {
+  def apply[SubjectType <: ObjectOrPlayerId, ObjectType <: ObjectOrPlayerId](
+    verbs: TransitiveEventMatchingVerb[SubjectType, ObjectType]*
+  ): TransitiveEventMatchingVerb[SubjectType, ObjectType] = new TransitiveEventMatchingVerb[SubjectType, ObjectType] {
     override def inflect(verbInflection: VerbInflection, cardName: String): String = verbs.map(_.inflect(verbInflection, cardName)).toCommaList("or")
-    override def matchesEvent(
+    override def matchEvent(
       eventToMatch: HistoryEvent.ResolvedAction[_],
       gameState: GameState,
-      effectContext: EffectContext,
-      playerPhrase: IndefiniteNounPhrase[PlayerId],
-      objectPhrase: IndefiniteNounPhrase[ObjectId]
-    ): Boolean = {
-      verbs.exists(_.matchesEvent(eventToMatch, gameState, effectContext, playerPhrase, objectPhrase))
+      effectContext: InstructionResolutionContext,
+      playerPhrase: IndefiniteNounPhrase[SubjectType],
+      objectPhrase: IndefiniteNounPhrase[ObjectType]
+    ): Option[InstructionResolutionContext] = {
+      verbs.foldLeft[Option[InstructionResolutionContext]](None)((verb, contextOption) => verb.orElse(contextOption.matchEvent(eventToMatch, gameState, effectContext, playerPhrase, objectPhrase)))
     }
   }
   def apply(adjectives: Adjective*): Adjective = new Adjective {
