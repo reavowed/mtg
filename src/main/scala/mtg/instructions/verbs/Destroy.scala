@@ -4,9 +4,9 @@ import mtg.actions.DestroyAction
 import mtg.core.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb}
+import mtg.instructions.{InstructionResult, MonotransitiveInstructionVerb, Verb}
 
-case object Destroy extends Verb.RegularCaseObject with TransitiveInstructionVerb[PlayerId, ObjectId] {
+case object Destroy extends Verb.RegularCaseObject with MonotransitiveInstructionVerb[PlayerId, ObjectId] {
   override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
     (DestroyAction(objectId), resolutionContext)
   }

@@ -6,21 +6,16 @@ import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{CountersLiteral, SingleIdentifyingNounPhrase}
-import mtg.instructions.{InstructionResult, TransitiveInstructionVerb, Verb}
+import mtg.instructions.{BitransitiveInstructionVerb, InstructionResult, IntransitiveInstructionVerb, Verb}
 import mtg.parts.Counter
 
-case class Put(countersPhrase: SingleIdentifyingNounPhrase[Map[Counter, Int]])
-    extends TransitiveInstructionVerb[PlayerId, ObjectId]
+case object Put extends BitransitiveInstructionVerb[PlayerId, Map[Counter, Int], ObjectId] with Verb.RegularCaseObject
 {
-  override def inflect(verbInflection: VerbInflection, cardName: String): String = Verb.Put.inflect(verbInflection, cardName) + " " + countersPhrase.getText(cardName) + " on"
-  override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-    val (counters, resultingContext) = countersPhrase.identifySingle(gameState, resolutionContext)
-    (PutCountersAction(counters, objectId), resultingContext)
+  override def objectJoiningText: String = "on"
+  override def resolve(playerId: PlayerId, counters: Map[Counter, Int], objectId: ObjectId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
+    (PutCountersAction(counters, objectId), resolutionContext)
   }
-}
-
-object Put {
-  def apply(number: Int, kind: Counter): Put = {
-    Put(CountersLiteral(number, kind))
+  def apply(number: Int, kind: Counter, objectPhrase: SingleIdentifyingNounPhrase[ObjectId]): IntransitiveInstructionVerb[PlayerId] = {
+    Put(CountersLiteral(number, kind), objectPhrase)
   }
 }

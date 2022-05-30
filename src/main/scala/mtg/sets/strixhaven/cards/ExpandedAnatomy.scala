@@ -19,5 +19,5 @@ object ExpandedAnatomy extends SpellCard(
   Type.Sorcery,
   Seq(Lesson),
   SimpleInstructionParagraph(
-    Put(2, Counter.PlusOnePlusOne)(Target(Creature)),
+    Put(2, Counter.PlusOnePlusOne, Target(Creature)),
     It(Gain(Vigilance), endOfTurn)))

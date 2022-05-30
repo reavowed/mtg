@@ -17,5 +17,5 @@ object GuidingVoice extends SpellCard(
   Type.Sorcery,
   Nil,
   Seq(
-    Put(1, Counter.PlusOnePlusOne)(Target(Creature)),
+    Put(1, Counter.PlusOnePlusOne, Target(Creature)),
     Learn))

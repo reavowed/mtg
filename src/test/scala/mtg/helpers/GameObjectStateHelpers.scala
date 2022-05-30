@@ -6,6 +6,7 @@ import mtg.core.PlayerId
 import mtg.core.zones.Zone
 import mtg.core.zones.Zone.BasicZone
 import mtg.game.objects._
+import mtg.parts.Counter
 
 trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
   implicit class GameObjectStateExtensions(gameObjectState: GameObjectState) {
@@ -83,6 +84,9 @@ trait GameObjectStateHelpers extends CardHelpers with GameObjectHelpers {
       Focus[GameObjectState](_.battlefield).modify(_.filter(_.defaultController != playerIdentifier))(gameObjectState)
         .addCardsToZone(Zone.Battlefield, playerIdentifier, cardDefinitions)
     )
+    def addPermanentObject(player: PlayerId, cardDefinition: CardDefinition, counters: Map[Counter, Int] = Map.empty): GameObjectState = {
+      gameObjectState.addObjectToBattlefield(PermanentObject(Card(player, getCardPrinting(cardDefinition)), _, player, counters))._2
+    }
     def setSideboard: ZoneSetter = new ZoneSetter((playerIdentifier, cardDefinitions) => clearZoneAndAddCards(Zone.Sideboard(playerIdentifier), playerIdentifier, cardDefinitions))
   }
 

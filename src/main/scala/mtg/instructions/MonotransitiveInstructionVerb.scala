@@ -6,17 +6,17 @@ import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
 
-trait TransitiveInstructionVerb[SubjectType, ObjectType] extends Verb {
+trait MonotransitiveInstructionVerb[SubjectType, ObjectType] extends Verb {
   def postObjectText: Option[String] = None
   def apply(objectPhrase: SingleIdentifyingNounPhrase[ObjectType]): IntransitiveInstructionVerb[SubjectType] = {
-    TransitiveInstructionVerbWithObject(this, objectPhrase)
+    MonotransitiveInstructionVerbWithObject(this, objectPhrase)
   }
   def resolve(subject: SubjectType, obj: ObjectType, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult
   def getFunctionalZones(subjectPhrase: SingleIdentifyingNounPhrase[SubjectType], objectPhrase: SingleIdentifyingNounPhrase[ObjectType]): Option[Set[ZoneType]] = None
 }
 
-case class TransitiveInstructionVerbWithObject[SubjectType, ObjectType](
-    verb: TransitiveInstructionVerb[SubjectType, ObjectType],
+case class MonotransitiveInstructionVerbWithObject[SubjectType, ObjectType](
+    verb: MonotransitiveInstructionVerb[SubjectType, ObjectType],
     objectPhrase: SingleIdentifyingNounPhrase[ObjectType])
   extends IntransitiveInstructionVerb[SubjectType]
 {
