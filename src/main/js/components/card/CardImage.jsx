@@ -4,6 +4,7 @@ import ScryfallService from "../../contexts/ScryfallService";
 import {addClass} from "../../utils/element-utils";
 import {FormattedText} from "../FormattedText";
 import ManaCost from "./ManaCost";
+import _ from "lodash";
 
 export default forwardRef(function CardImage({card, className, children, showManaCost, showText, ...props}, ref) {
     const scryfallService = useContext(ScryfallService);
@@ -23,7 +24,7 @@ export default forwardRef(function CardImage({card, className, children, showMan
                     </div>
                     <img className="cardImage" src={artUrl} />
                     {showText && <div className="cardText"><FormattedText text={card.text}/></div>}
-                    {(card.characteristics && (card.characteristics.power || card.characteristics.toughness)) &&
+                    {(card.characteristics && _.isNumber(card.characteristics.power) && _.isNumber(card.characteristics.toughness)) &&
                         <div className="powerToughnessLozenge">{card.characteristics.power}/{card.characteristics.toughness}</div>
                     }
                     {children}
