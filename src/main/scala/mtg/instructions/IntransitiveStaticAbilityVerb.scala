@@ -18,7 +18,8 @@ object IntransitiveStaticAbilityVerb {
     override def getText(cardName: String): String = {
       subjectPhrase.getText(cardName) +
         " " +
-        verb.inflect(VerbInflection.Present(subjectPhrase), cardName)
+        verb.inflect(VerbInflection.Present(subjectPhrase), cardName) +
+        "."
     }
 
     override def getEffects(effectContext: EffectContext): Seq[ContinuousEffect] = {

@@ -7,11 +7,11 @@ import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
 import mtg.game.state.{GameState, GameStateManager}
 import mtg.game.turns.turnEvents.ExecuteTurn
 import mtg.game.{GameStartingData, PlayerStartingData}
-import mtg.sets.alpha.cards.{LightningBolt, Plains}
+import mtg.sets.alpha.cards.{LightningBolt, Mountain, Plains}
 import mtg.sets.coreSet2021.cards.ConcordiaPegasus
 import mtg.sets.kaldheim.cards.GrizzledOutrider
 import mtg.sets.strixhaven.Strixhaven
-import mtg.sets.strixhaven.cards.{EnvironmentalSciences, GuidingVoice, IntroductionToProphecy, PilgrimOfTheAges, PillardropRescuer}
+import mtg.sets.strixhaven.cards.{EnvironmentalSciences, GuidingVoice, IntroductionToProphecy, PilgrimOfTheAges, PillardropRescuer, SpinedKarok, StarPupil}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -50,21 +50,14 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialManager = GameStateManager.initial(gameStartingData, _ => {})
     val initialGameState = initialManager.gameState
     val updatedGameState = initialGameState
-      .addCardToGraveyard(playerOne, PilgrimOfTheAges)
-      .addCardToGraveyard(playerOne, EnvironmentalSciences)
-      .addCardToGraveyard(playerOne, PillardropRescuer)
-      .addCardToSideboard(playerOne, EnvironmentalSciences)
-      .addCardToSideboard(playerOne, IntroductionToProphecy)
-      .addCardToSideboard(playerOne, LightningBolt)
-      .addCardToSideboard(playerOne, Plains)
+      .addCardToHand(playerOne, StarPupil)
+      .addCardToBattlefield(playerOne, SpinedKarok)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
-      .addCardToBattlefield(playerOne, Plains)
-      .addCardToBattlefield(playerOne, Plains)
-      .addCardToBattlefield(playerTwo, Plains)
-      .addCardToBattlefield(playerTwo, Plains)
+      .addCardToBattlefield(playerTwo, LightningBolt)
+      .addCardToBattlefield(playerTwo, Mountain)
       .addCardToHand(playerOne, PillardropRescuer)
       .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
 
