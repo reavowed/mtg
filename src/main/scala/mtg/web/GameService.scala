@@ -11,7 +11,7 @@ import mtg.sets.alpha.cards.{LightningBolt, Mountain, Plains}
 import mtg.sets.coreSet2021.cards.ConcordiaPegasus
 import mtg.sets.kaldheim.cards.GrizzledOutrider
 import mtg.sets.strixhaven.Strixhaven
-import mtg.sets.strixhaven.cards.{EnvironmentalSciences, GuidingVoice, IntroductionToProphecy, PilgrimOfTheAges, PillardropRescuer, SpinedKarok, StarPupil}
+import mtg.sets.strixhaven.cards.{EnvironmentalSciences, ExpandedAnatomy, GuidingVoice, IntroductionToProphecy, PilgrimOfTheAges, PillardropRescuer, SpinedKarok, StarPupil}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -51,14 +51,13 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
     val initialGameState = initialManager.gameState
     val updatedGameState = initialGameState
       .addCardToHand(playerOne, StarPupil)
+      .addCardToHand(playerOne, ExpandedAnatomy)
       .addCardToBattlefield(playerOne, SpinedKarok)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
       .addCardToBattlefield(playerOne, Plains)
-      .addCardToBattlefield(playerOne, Plains)
-      .addCardToBattlefield(playerTwo, LightningBolt)
+      .addCardToHand(playerTwo, LightningBolt)
       .addCardToBattlefield(playerTwo, Mountain)
-      .addCardToHand(playerOne, PillardropRescuer)
       .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
 
     new GameStateManager(updatedGameState, onStateUpdate, initialManager.stops)
