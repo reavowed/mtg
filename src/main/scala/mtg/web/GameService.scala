@@ -4,7 +4,7 @@ import mtg.cards.{CardDefinition, CardPrinting}
 import mtg.core.PlayerId
 import mtg.core.zones.Zone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
-import mtg.game.state.{GameState, GameStateManager}
+import mtg.game.state.{GameActionExecutionState, GameState, GameStateManager}
 import mtg.game.turns.turnEvents.ExecuteTurn
 import mtg.game.{GameStartingData, PlayerStartingData}
 import mtg.sets.alpha.cards.{LightningBolt, Mountain, Plains}
@@ -58,7 +58,7 @@ class GameService @Autowired() (simpMessagingTemplate: SimpMessagingTemplate) {
       .addCardToBattlefield(playerOne, Plains)
       .addCardToHand(playerTwo, LightningBolt)
       .addCardToBattlefield(playerTwo, Mountain)
-      .copy(currentAction = Some(ExecuteTurn.first(initialGameState)))
+      .copy(currentActionExecutionState = GameActionExecutionState.Action(ExecuteTurn.first(initialGameState)))
 
     new GameStateManager(updatedGameState, onStateUpdate, initialManager.stops)
   }

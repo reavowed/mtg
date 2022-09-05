@@ -3,34 +3,34 @@ package mtg.game.state
 import mtg.core.PlayerId
 import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
-import mtg.game.state.history.HistoryEvent.{ResolvedAction, ResolvedChoice}
+import mtg.game.state.history.HistoryEvent.ResolvedChoice
 import mtg.game.state.history._
 import mtg.game.turns.turnEvents.{ExecutePhase, ExecuteStep, ExecuteTurn}
 import mtg.game.turns.{Turn, TurnPhase, TurnStep}
 import mtg.game.{GameData, GameStartingData}
 
+import scala.annotation.tailrec
+
 case class GameState(
   gameData: GameData,
   gameObjectState: GameObjectState,
   gameHistory: GameHistory,
-  currentAction: Option[GameAction[RootGameAction]],
-  result: Option[GameResult])
+  currentActionExecutionState: GameActionExecutionState.Halting[RootGameAction])
 {
   def activePlayer: PlayerId = currentTurn.get.activePlayer
   def playersInApnapOrder: Seq[PlayerId] = gameData.getPlayersInApNapOrder(activePlayer)
 
   def allCurrentActions: Seq[GameAction[_]] = {
-    def helper(current: GameAction[_], actions: Seq[GameAction[_]]): Seq[GameAction[_]] = {
-      current match {
-        case PartiallyExecutedActionWithChild(rootAction, childAction, _) =>
-          helper(childAction, actions :+ rootAction)
-        case PartiallyExecutedActionWithFlatMappedChild(rootAction, childAction, _, _) =>
-          helper(childAction, actions :+ rootAction)
-        case _ =>
-          actions :+ current
+    @tailrec
+    def helper(currentState: GameActionExecutionState.Halting[_], actions: Seq[GameAction[_]]): Seq[GameAction[_]] = {
+      currentState match {
+        case GameActionExecutionState.Action(gameAction) => actions :+ gameAction
+        case GameActionExecutionState.DelegatingAction(gameAction, innerExecutionState, _) => helper(innerExecutionState, actions :+ gameAction)
+        case GameActionExecutionState.FlatMapped(innerExecutionState, _) => helper(innerExecutionState, actions)
+        case GameActionExecutionState.Result(_) => actions
       }
     }
-    currentAction.toSeq.flatMap(helper(_, Nil))
+    helper(currentActionExecutionState, Nil)
   }
 
   def currentTurn: Option[Turn] = allCurrentActions.headOption.flatMap(_.asOptionalInstanceOf[ExecuteTurn]).map(_.turn)
@@ -48,13 +48,15 @@ case class GameState(
   def recordLogEvent(event: LogEvent): GameState = copy(gameHistory = gameHistory.addLogEvent(event))
   def recordLogEvent(event: Option[LogEvent]): GameState = event.map(recordLogEvent).getOrElse(this)
 
-  def updateAction(action: GameAction[RootGameAction]): GameState = copy(currentAction = Some(action))
+  def updateActionExecutionState(newActionExecutionState: GameActionExecutionState.Halting[RootGameAction]): GameState = {
+    copy(currentActionExecutionState = newActionExecutionState)
+  }
 
   override def toString: String = "GameState"
 }
 
 object GameState {
-  def initial(gameStartingData: GameStartingData) = {
+  def initial(gameStartingData: GameStartingData): GameState = {
     val startingPlayer = gameStartingData.players.head
     val playersInTurnOrder = GameData.getPlayersInApNapOrder(startingPlayer, gameStartingData.players)
     val gameData = GameData.initial(playersInTurnOrder)
@@ -62,7 +64,6 @@ object GameState {
       gameData,
       GameObjectState.initial(gameStartingData, gameData),
       GameHistory.empty,
-      Some(StartGameAction),
-      None)
+      GameActionExecutionState.Action(StartGameAction))
   }
 }

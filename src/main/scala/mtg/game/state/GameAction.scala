@@ -43,29 +43,6 @@ object Choice {
   }
 }
 
-case class PartiallyExecutedActionWithResult[T](
-    rootAction: DelegatingGameAction[T],
-    result: T,
-    initialGameState: GameState)
-  extends GameAction[T]
-case class PartiallyExecutedActionWithFlatMappedResult[S, T](
-    rootAction: DelegatingGameAction[T],
-    result: S,
-    f: S => GameAction[T],
-    initialGameState: GameState)
-  extends GameAction[T]
-case class PartiallyExecutedActionWithChild[T](
-    rootAction: DelegatingGameAction[T],
-    childAction: GameAction[T],
-    initialGameState: GameState)
-  extends GameAction[T]
-case class PartiallyExecutedActionWithFlatMappedChild[T, S](
-    rootAction: DelegatingGameAction[T],
-    childAction: GameAction[S],
-    f: S => GameAction[T],
-    initialGameState: GameState)
-  extends GameAction[T]
-
 case class LogEventAction(logEvent: LogEvent) extends GameAction[Unit]
 
 sealed trait GameObjectAction[T] extends GameAction[T]

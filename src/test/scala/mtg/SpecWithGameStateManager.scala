@@ -28,7 +28,7 @@ abstract class SpecWithGameStateManager
   }
 
   def createGameState(gameObjectState: GameObjectState, action: RootGameAction): GameState = {
-    GameState(gameData, gameObjectState, GameHistory.empty, Some(action), None)
+    GameState(gameData, gameObjectState, GameHistory.empty, GameActionExecutionState.Action(action))
   }
 
   def createGameState(gameObjectState: GameObjectState, action: GameAction[Any]): GameState = {
@@ -53,11 +53,11 @@ abstract class SpecWithGameStateManager
 
   def runAction(action: GameAction[Any], gameObjectState: GameObjectState): GameState = {
     val initialGameState = createGameState(gameObjectState, action)
-    GameActionExecutor.executeAllActions(initialGameState)(Stops.all(players))
+    GameActionExecutor.executeAll(initialGameState)(Stops.all(players))
   }
 
   def runAction(action: RootGameAction, gameObjectState: GameObjectState): GameState = {
     val initialGameState = createGameState(gameObjectState, action)
-    GameActionExecutor.executeAllActions(initialGameState)(Stops.all(players))
+    GameActionExecutor.executeAll(initialGameState)(Stops.all(players))
   }
 }

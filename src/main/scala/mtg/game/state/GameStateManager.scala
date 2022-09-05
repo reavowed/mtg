@@ -14,7 +14,7 @@ class GameStateManager(private var _currentGameState: GameState, val onStateUpda
   executeAutomaticActionsAndUpdate()
 
   private def executeAutomaticActionsAndUpdate(): Unit = {
-    updateState(GameActionExecutor.executeAllActions(gameState)(stops))
+    updateState(GameActionExecutor.executeAll(gameState)(stops))
   }
 
   def handleDecision(serializedDecision: String, actingPlayer: PlayerId): Unit = this.synchronized {
