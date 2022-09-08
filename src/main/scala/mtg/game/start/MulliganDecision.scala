@@ -1,6 +1,6 @@
 package mtg.game.start
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 
 sealed trait MulliganDecision {
   def player: PlayerId

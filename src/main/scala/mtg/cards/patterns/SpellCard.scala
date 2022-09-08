@@ -1,8 +1,8 @@
 package mtg.cards.patterns
 
 import mtg.cards.CardDefinition
-import mtg.cards.text.{InstructionParagraph, TextParagraph}
-import mtg.core.types.{SpellType, Type}
+import mtg.cards.text.TextParagraph
+import mtg.definitions.types.{SpellType, Type}
 import mtg.parts.costs.ManaCost
 
 class SpellCard(

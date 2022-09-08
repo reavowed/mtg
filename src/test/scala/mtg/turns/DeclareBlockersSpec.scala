@@ -2,9 +2,8 @@ package mtg.turns
 
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
-import mtg.core.types.Type
-import mtg.core.types.Type.Creature
-import mtg.core.zones.Zone
+import mtg.definitions.types.Type
+import mtg.definitions.types.Type.Creature
 import mtg.game.turns.TurnStep
 import mtg.game.turns.turnBasedActions.{DeclareBlockersChoice, OrderBlockersChoice}
 import mtg.instructions.nounPhrases.Target

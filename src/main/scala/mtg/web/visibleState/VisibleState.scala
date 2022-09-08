@@ -1,7 +1,7 @@
 package mtg.web.visibleState
 
-import mtg.core.PlayerId
-import mtg.core.zones.Zone
+import mtg.definitions.PlayerId
+import mtg.definitions.zones.Zone
 import mtg.game.GameData
 import mtg.game.objects.{GameObject, ManaObject}
 import mtg.game.state.{Choice, GameState, UndoHelper}

@@ -1,8 +1,8 @@
 package mtg.sets.kaldheim.cards
 
 import mtg.cards.patterns.VanillaCreatureCard
-import mtg.core.symbols.ManaSymbol.Green
-import mtg.core.types.CreatureType.{Elf, Warrior}
+import mtg.definitions.symbols.ManaSymbol.Green
+import mtg.definitions.types.CreatureType.{Elf, Warrior}
 import mtg.parts.costs.ManaCost
 
 object GrizzledOutrider extends VanillaCreatureCard(

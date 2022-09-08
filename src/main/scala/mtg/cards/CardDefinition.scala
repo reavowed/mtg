@@ -1,8 +1,8 @@
 package mtg.cards
 
 import mtg.cards.text.TextParagraph
-import mtg.core.colors.ColorIndicator
-import mtg.core.types.{Subtype, Supertype, Type}
+import mtg.definitions.colors.ColorIndicator
+import mtg.definitions.types.{Subtype, Supertype, Type}
 import mtg.parts.costs.ManaCost
 
 class CardDefinition(

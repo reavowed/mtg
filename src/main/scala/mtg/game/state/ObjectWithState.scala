@@ -2,8 +2,8 @@ package mtg.game.state
 
 import mtg.abilities.AbilityDefinition
 import mtg.cards.text.{InstructionParagraph, ModalInstructionParagraph, SimpleInstructionParagraph}
-import mtg.core.{ObjectId, PlayerId}
-import mtg.game.objects.{AbilityOnTheStack, BasicGameObject, Card, CopyOfSpell, GameObject, PermanentObject, StackObject}
+import mtg.definitions.{ObjectId, PlayerId}
+import mtg.game.objects._
 
 import scala.annotation.tailrec
 

@@ -1,7 +1,7 @@
 package mtg.actions.stack
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.objects.{AbilityOnTheStack, StackObject}
 import mtg.game.state.{DirectGameObjectAction, GameState}
 

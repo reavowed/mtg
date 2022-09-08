@@ -2,8 +2,8 @@ package mtg.sets.strixhaven.abilities
 
 import mtg.actions.moveZone.MoveToHandAction
 import mtg.actions.{DiscardCardAction, DrawCardAction, RevealAction}
-import mtg.core.types.SpellType.Lesson
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.types.SpellType.Lesson
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.{CurrentCharacteristics, GameState}
 import mtg.instructions.{Instruction, InstructionChoice, InstructionResult}

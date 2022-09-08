@@ -4,8 +4,8 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.abilities.keyword.Hexproof
 import mtg.cards.patterns.SpellCard
-import mtg.core.symbols.ManaSymbol.White
-import mtg.core.types.Type.{Creature, Instant}
+import mtg.definitions.symbols.ManaSymbol.White
+import mtg.definitions.types.Type.{Creature, Instant}
 import mtg.instructions.joiners.And
 import mtg.instructions.nounPhrases.{Target, You}
 import mtg.instructions.verbs.{Control, Gain, Get}

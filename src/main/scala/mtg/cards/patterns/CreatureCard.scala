@@ -2,7 +2,7 @@ package mtg.cards.patterns
 
 import mtg.cards.text.TextParagraph
 import mtg.cards.{CardDefinition, PowerAndToughness}
-import mtg.core.types.{CreatureType, Type}
+import mtg.definitions.types.{CreatureType, Type}
 import mtg.parts.costs.ManaCost
 
 class CreatureCard(

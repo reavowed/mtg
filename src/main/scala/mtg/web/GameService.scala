@@ -1,17 +1,15 @@
 package mtg.web
 
 import mtg.cards.{CardDefinition, CardPrinting}
-import mtg.core.PlayerId
-import mtg.core.zones.Zone
+import mtg.definitions.PlayerId
+import mtg.definitions.zones.Zone
 import mtg.game.objects.{BasicGameObject, Card, PermanentObject}
 import mtg.game.state.{GameActionExecutionState, GameState, GameStateManager}
 import mtg.game.turns.turnEvents.ExecuteTurn
 import mtg.game.{GameStartingData, PlayerStartingData}
 import mtg.sets.alpha.cards.{LightningBolt, Mountain, Plains}
-import mtg.sets.coreSet2021.cards.ConcordiaPegasus
-import mtg.sets.kaldheim.cards.GrizzledOutrider
 import mtg.sets.strixhaven.Strixhaven
-import mtg.sets.strixhaven.cards.{EnvironmentalSciences, ExpandedAnatomy, GuidingVoice, IntroductionToProphecy, PilgrimOfTheAges, PillardropRescuer, SpinedKarok, StarPupil}
+import mtg.sets.strixhaven.cards.{ExpandedAnatomy, SpinedKarok, StarPupil}
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.simp.SimpMessagingTemplate

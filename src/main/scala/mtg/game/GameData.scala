@@ -1,6 +1,6 @@
 package mtg.game
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 
 case class GameData(playersInTurnOrder: Seq[PlayerId], startingHandSize: Int, startingLifeTotal: Int) {
   def getPlayersInApNapOrder(activePlayer: PlayerId): Seq[PlayerId] = {

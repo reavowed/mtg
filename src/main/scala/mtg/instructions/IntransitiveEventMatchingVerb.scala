@@ -1,6 +1,6 @@
 package mtg.instructions
 
-import mtg.core.ObjectOrPlayerId
+import mtg.definitions.ObjectOrPlayerId
 import mtg.effects.InstructionResolutionContext
 import mtg.effects.condition.Condition
 import mtg.game.state.GameState

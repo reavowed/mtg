@@ -1,7 +1,7 @@
 package mtg.instructions
 
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
-import mtg.effects.{EffectContext, InstructionResolutionContext}
+import mtg.definitions.ObjectOrPlayerId
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
 import mtg.instructions.grammar.VerbInflection

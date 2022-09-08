@@ -1,6 +1,6 @@
 package mtg.instructions.nouns
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
 

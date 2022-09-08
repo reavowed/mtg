@@ -1,6 +1,6 @@
 package mtg.actions.damage
 
-import mtg.core.{ObjectId, ObjectOrPlayerId}
+import mtg.definitions.{ObjectId, ObjectOrPlayerId}
 import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
 case class DealCombatDamageAction(source: ObjectId, recipient: ObjectOrPlayerId, amount: Int) extends DelegatingGameObjectAction {

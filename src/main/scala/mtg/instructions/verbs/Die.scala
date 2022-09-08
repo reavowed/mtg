@@ -1,7 +1,7 @@
 package mtg.instructions.verbs
 
 import mtg.actions.moveZone.MoveToGraveyardAction
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent.ResolvedAction

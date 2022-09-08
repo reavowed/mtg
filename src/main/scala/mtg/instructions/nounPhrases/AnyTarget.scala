@@ -1,6 +1,6 @@
 package mtg.instructions.nounPhrases
 
-import mtg.core.types.Type
+import mtg.definitions.types.Type
 import mtg.instructions.TypePhrase
 import mtg.instructions.joiners.Or
 import mtg.instructions.nouns.Player

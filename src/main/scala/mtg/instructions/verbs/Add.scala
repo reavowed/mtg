@@ -1,8 +1,8 @@
 package mtg.instructions.verbs
 
 import mtg.actions.AddManaAction
-import mtg.core.PlayerId
-import mtg.core.symbols.ManaSymbol
+import mtg.definitions.PlayerId
+import mtg.definitions.symbols.ManaSymbol
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb, Verb}

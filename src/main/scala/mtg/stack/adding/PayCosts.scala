@@ -1,7 +1,7 @@
 package mtg.stack.adding
 
 import mtg.abilities.ActivatedAbilityDefinition
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.{DelegatingGameAction, GameAction, GameState}
 

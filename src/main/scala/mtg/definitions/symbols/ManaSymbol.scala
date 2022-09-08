@@ -1,7 +1,7 @@
-package mtg.core.symbols
+package mtg.definitions.symbols
 
-import mtg.core.ManaType
-import mtg.core.colors.Color
+import mtg.definitions.ManaType
+import mtg.definitions.colors.Color
 
 sealed abstract class ManaSymbol(textInside: String) extends Symbol(textInside) {
   def colors: Set[Color]

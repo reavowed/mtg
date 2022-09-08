@@ -1,7 +1,7 @@
 package mtg.triggers
 
 import mtg.abilities.builder.TypeConversions._
-import mtg.core.types.Type.Creature
+import mtg.definitions.types.Type.Creature
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
 import mtg.instructions.articles.A

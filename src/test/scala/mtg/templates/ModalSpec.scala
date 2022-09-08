@@ -3,7 +3,7 @@ package mtg.templates
 import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.SpellCard
-import mtg.core.types.Type
+import mtg.definitions.types.Type
 import mtg.instructions.nounPhrases
 import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.{DealDamage, GainLife}

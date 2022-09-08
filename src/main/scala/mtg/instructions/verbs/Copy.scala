@@ -1,11 +1,11 @@
 package mtg.instructions.verbs
 
 import mtg.actions.CopySpellAction
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
-import mtg.instructions.{InstructionResult, TransitiveEventMatchingVerb, MonotransitiveInstructionVerb, Verb}
+import mtg.instructions.{InstructionResult, MonotransitiveInstructionVerb, TransitiveEventMatchingVerb, Verb}
 
 case object Copy extends Verb.RegularCaseObject with MonotransitiveInstructionVerb[PlayerId, ObjectId] with TransitiveEventMatchingVerb.Simple[PlayerId, ObjectId] {
   override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {

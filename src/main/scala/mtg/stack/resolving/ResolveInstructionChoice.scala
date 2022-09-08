@@ -1,7 +1,7 @@
 package mtg.stack.resolving
 
-import mtg.core.zones.Zone
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.zones.Zone
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.{Choice, GameState}
 import mtg.instructions.{InstructionChoice, InstructionResult}

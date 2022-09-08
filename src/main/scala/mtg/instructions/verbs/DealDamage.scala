@@ -1,7 +1,7 @@
 package mtg.instructions.verbs
 
 import mtg.actions.damage.DealDamageAction
-import mtg.core.{ObjectId, ObjectOrPlayerId}
+import mtg.definitions.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, MonotransitiveInstructionVerb, Verb}

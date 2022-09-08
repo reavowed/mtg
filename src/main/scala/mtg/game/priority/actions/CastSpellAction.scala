@@ -1,9 +1,9 @@
 package mtg.game.priority.actions
 
 import mtg.actions.moveZone.MoveToStackAction
-import mtg.core.types.Type
-import mtg.core.zones.ZoneType
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.types.Type
+import mtg.definitions.zones.ZoneType
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.state.{GameAction, GameState, ObjectWithState}
 import mtg.stack.adding._
 

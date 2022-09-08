@@ -1,6 +1,6 @@
 package mtg.stack.adding
 
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{CurrentCharacteristics, DelegatingGameAction, GameAction, GameState}
 

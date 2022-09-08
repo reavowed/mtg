@@ -1,7 +1,7 @@
 package mtg.instructions.verbs
 
 import mtg.actions.moveZone.MoveToHandAction
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection

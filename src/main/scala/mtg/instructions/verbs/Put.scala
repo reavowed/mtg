@@ -1,10 +1,9 @@
 package mtg.instructions.verbs
 
 import mtg.actions.PutCountersAction
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
-import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.{CountersLiteral, SingleIdentifyingNounPhrase}
 import mtg.instructions.{BitransitiveInstructionVerb, InstructionResult, IntransitiveInstructionVerb, Verb}
 import mtg.parts.Counter

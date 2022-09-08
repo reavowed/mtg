@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.objects.GameObjectState
 import mtg.game.start.StartGameAction
 import mtg.game.state.history.HistoryEvent.ResolvedChoice

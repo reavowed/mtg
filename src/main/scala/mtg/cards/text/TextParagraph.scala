@@ -1,7 +1,7 @@
 package mtg.cards.text
 
 import mtg.abilities.{AbilityDefinition, AbilityParagraph, KeywordAbility, SpellAbility}
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
 
 trait TextParagraph extends TextComponent {

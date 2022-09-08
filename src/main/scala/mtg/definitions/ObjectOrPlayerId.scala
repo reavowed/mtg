@@ -1,4 +1,4 @@
-package mtg.core
+package mtg.definitions
 
 import mtg.utils.ValueWrapper
 

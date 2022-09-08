@@ -1,12 +1,10 @@
 package mtg.abilities
 
 import mtg.SpecWithGameStateManager
-import mtg.cards.CardDefinition
-import mtg.core.ManaType
-import mtg.core.symbols.ManaSymbol
-import mtg.core.zones.Zone
+import mtg.definitions.ManaType
+import mtg.definitions.symbols.ManaSymbol
+import mtg.definitions.zones.Zone
 import mtg.game.objects.GameObject
-import mtg.game.priority.actions.ActivateAbilityAction
 import mtg.game.state.ObjectWithState
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.instructions.verbs.Add

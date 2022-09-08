@@ -1,8 +1,8 @@
 package mtg.actions.damage
 
 import mtg.actions.LoseLifeAction
-import mtg.core.types.Type
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.definitions.types.Type
+import mtg.definitions.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.state.{CurrentCharacteristics, DelegatingGameObjectAction, GameObjectAction, GameState}
 
 import scala.collection.mutable.ListBuffer

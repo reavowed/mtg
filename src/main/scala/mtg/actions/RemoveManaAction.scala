@@ -1,7 +1,7 @@
 package mtg.actions
 
-import mtg.core.PlayerId
-import mtg.game.objects.{GameObjectState, ManaObject}
+import mtg.definitions.PlayerId
+import mtg.game.objects.ManaObject
 import mtg.game.state.{DirectGameObjectAction, GameState}
 
 case class RemoveManaAction(player: PlayerId, manaToRemove: Seq[ManaObject]) extends DirectGameObjectAction[Unit] {

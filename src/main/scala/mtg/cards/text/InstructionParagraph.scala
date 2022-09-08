@@ -1,7 +1,7 @@
 package mtg.cards.text
 
-import mtg.core.PlayerId
-import mtg.core.zones.ZoneType
+import mtg.definitions.PlayerId
+import mtg.definitions.zones.ZoneType
 import mtg.instructions.{Instruction, IntransitiveInstructionVerb, TextComponent}
 
 sealed trait InstructionParagraph extends TextComponent {

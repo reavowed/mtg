@@ -2,8 +2,8 @@ package mtg.sets.alpha.cards
 
 import mtg.abilities.keyword.Flying
 import mtg.cards.patterns.CreatureCard
-import mtg.core.symbols.ManaSymbol.Blue
-import mtg.core.types.CreatureType.Elemental
+import mtg.definitions.symbols.ManaSymbol.Blue
+import mtg.definitions.types.CreatureType.Elemental
 import mtg.parts.costs.ManaCost
 
 object AirElemental extends CreatureCard(

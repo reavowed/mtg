@@ -3,7 +3,7 @@ package mtg.parts.costs
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.{JsonSerializer, SerializerProvider}
-import mtg.core.symbols.ManaSymbol
+import mtg.definitions.symbols.ManaSymbol
 import mtg.game.state.{GameAction, ObjectWithState}
 import mtg.stack.adding.PayManaCosts
 

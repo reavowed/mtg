@@ -4,9 +4,9 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.abilities.keyword.{Flying, Vigilance}
 import mtg.cards.patterns.CreatureCard
-import mtg.core.symbols.ManaSymbol.White
-import mtg.core.types.CreatureType.{Bird, Cleric}
-import mtg.core.types.Type.Creature
+import mtg.definitions.symbols.ManaSymbol.White
+import mtg.definitions.types.CreatureType.{Bird, Cleric}
+import mtg.definitions.types.Type.Creature
 import mtg.instructions.conditions.At
 import mtg.instructions.joiners.And
 import mtg.instructions.nounPhrases.{Target, You}

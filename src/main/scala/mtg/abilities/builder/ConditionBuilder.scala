@@ -1,6 +1,6 @@
 package mtg.abilities.builder
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.effects.condition.Condition
 import mtg.effects.condition.event.{BeginningOfCombatCondition, EndOfTurnCondition}
 import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase

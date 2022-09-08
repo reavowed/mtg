@@ -2,7 +2,7 @@ package mtg.game.priority.actions
 
 import mtg.abilities.ActivatedAbilityDefinition
 import mtg.actions.stack.CreateActivatedAbilityOnStack
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.state._
 import mtg.stack.adding._
 import mtg.stack.resolving.ResolveManaAbility

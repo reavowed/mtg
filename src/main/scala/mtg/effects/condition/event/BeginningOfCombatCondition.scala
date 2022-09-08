@@ -1,6 +1,6 @@
 package mtg.effects.condition.event
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.effects.EffectContext
 import mtg.effects.condition.Condition
 import mtg.game.state.GameState

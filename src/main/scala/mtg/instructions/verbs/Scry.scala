@@ -1,7 +1,7 @@
 package mtg.instructions.verbs
 
-import mtg.core.zones.Zone
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.zones.Zone
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{DirectGameObjectAction, GameState}

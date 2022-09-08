@@ -1,10 +1,10 @@
 package mtg.abilities.keyword
 
-import mtg.abilities.{KeywordAbility, StaticAbility}
+import mtg.abilities.KeywordAbility
 import mtg.continuousEffects.{ContinuousEffect, TargetPreventionEffect}
-import mtg.core.{ObjectId, ObjectOrPlayerId}
+import mtg.definitions.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.EffectContext
-import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
+import mtg.game.state.{GameState, StackObjectWithState}
 
 case object Hexproof extends KeywordAbility {
   override def getEffects(effectContext: EffectContext): Seq[ContinuousEffect] = {

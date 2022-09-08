@@ -4,7 +4,7 @@ import mtg.abilities.{PendingTriggeredAbility, StaticAbility}
 import mtg.actions.moveZone.MoveToBattlefieldAction
 import mtg.continuousEffects.PreventionEffect.Result.Prevent
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, FloatingActiveContinuousEffect, PreventionEffect, ReplacementEffect}
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.priority.PriorityChoice
 import mtg.game.state.history.HistoryEvent

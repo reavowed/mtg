@@ -1,6 +1,6 @@
 package mtg.misc
 
-import mtg.core.symbols.ManaSymbol.{Blue, Red, White}
+import mtg.definitions.symbols.ManaSymbol.{Blue, Red, White}
 import mtg.game.objects.Card
 import mtg.parts.costs.ManaCost
 import mtg.{SpecWithGameStateManager, TestCardCreation}

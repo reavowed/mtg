@@ -1,4 +1,4 @@
-package mtg.core.colors
+package mtg.definitions.colors
 
 sealed class Color(val letter: String)
 

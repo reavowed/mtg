@@ -1,7 +1,7 @@
 package mtg.game.turns.turnBasedActions
 
 import mtg.actions.UntapObjectAction
-import mtg.core.zones.Zone
+import mtg.definitions.zones.Zone
 import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
 case object UntapForTurn extends DelegatingGameObjectAction {

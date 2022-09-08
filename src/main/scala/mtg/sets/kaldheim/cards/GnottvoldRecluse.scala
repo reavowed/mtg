@@ -2,8 +2,8 @@ package mtg.sets.kaldheim.cards
 
 import mtg.abilities.keyword.Reach
 import mtg.cards.patterns.CreatureCard
-import mtg.core.symbols.ManaSymbol.Green
-import mtg.core.types.CreatureType.Spider
+import mtg.definitions.symbols.ManaSymbol.Green
+import mtg.definitions.types.CreatureType.Spider
 import mtg.parts.costs.ManaCost
 
 object GnottvoldRecluse extends CreatureCard(

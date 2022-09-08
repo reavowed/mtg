@@ -1,6 +1,6 @@
 package mtg.instructions
 
-import mtg.core.zones.ZoneType
+import mtg.definitions.zones.ZoneType
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection

@@ -1,6 +1,6 @@
 package mtg.actions
 
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.game.state.{DirectGameObjectAction, GameState}
 import mtg.parts.Counter
 

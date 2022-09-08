@@ -2,7 +2,7 @@ package mtg.instructions.filters
 
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
-import mtg.core.types.Type.Creature
+import mtg.definitions.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.suffixDescriptors.WithPower

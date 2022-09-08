@@ -1,7 +1,7 @@
 package mtg.actions
 
-import mtg.core.symbols.ManaSymbol
-import mtg.core.{ManaType, PlayerId}
+import mtg.definitions.symbols.ManaSymbol
+import mtg.definitions.{ManaType, PlayerId}
 import mtg.game.state.{DirectGameObjectAction, GameState}
 
 case class AddManaAction(player: PlayerId, manaSymbols: Seq[ManaSymbol]) extends DirectGameObjectAction[Unit] {

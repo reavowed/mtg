@@ -1,7 +1,7 @@
 package mtg.sbas
 
 import mtg.actions.DestroyAction
-import mtg.core.types.Type
+import mtg.definitions.types.Type
 import mtg.game.state.{GameObjectAction, GameState}
 
 object LethalDamageStateBasedAction {

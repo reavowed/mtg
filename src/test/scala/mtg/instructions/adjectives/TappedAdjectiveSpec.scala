@@ -1,14 +1,10 @@
 package mtg.instructions.adjectives
 
 import mtg.abilities.builder.TypeConversions._
-import mtg.cards.patterns.SpellCard
-import mtg.core.types.Type
-import mtg.core.types.Type.Creature
+import mtg.definitions.types.Type.Creature
 import mtg.game.turns.TurnStep
-import mtg.instructions.adjectives.Tapped
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Destroy
-import mtg.parts.costs.ManaCost
 import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class TappedAdjectiveSpec extends SpecWithGameStateManager with TestCardCreation {

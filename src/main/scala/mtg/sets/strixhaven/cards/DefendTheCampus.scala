@@ -3,8 +3,8 @@ package mtg.sets.strixhaven.cards
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
-import mtg.core.symbols.ManaSymbol.White
-import mtg.core.types.Type.{Creature, Instant}
+import mtg.definitions.symbols.ManaSymbol.White
+import mtg.definitions.types.Type.{Creature, Instant}
 import mtg.instructions.nounPhrases.{Target, You}
 import mtg.instructions.suffixDescriptors.WithPower
 import mtg.instructions.verbs.{Control, Destroy, Get}

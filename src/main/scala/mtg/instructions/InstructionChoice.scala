@@ -1,9 +1,9 @@
 package mtg.instructions
 
-import mtg.core.zones.Zone
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.zones.Zone
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
-import mtg.game.state.{GameState, GameObjectAction}
+import mtg.game.state.GameState
 
 abstract class InstructionChoice {
   def playerChoosing: PlayerId

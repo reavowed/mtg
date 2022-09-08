@@ -1,11 +1,11 @@
 package mtg.game.start
 
 import mtg._
-import mtg.core.PlayerId
-import mtg.core.zones.Zone
+import mtg.definitions.PlayerId
+import mtg.definitions.zones.Zone
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{GameState, Choice}
+import mtg.game.state.{Choice, GameState}
 import mtg.game.turns.{TurnPhase, TurnStep}
 import org.specs2.matcher.MatchResult
 

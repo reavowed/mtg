@@ -2,7 +2,7 @@ package mtg.instructions.verbs
 
 import mtg.abilities.AbilityDefinition
 import mtg.continuousEffects.{AddAbilityEffect, CharacteristicOrControlChangingContinuousEffect}
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.{CharacteristicChangingVerb, Verb}
 

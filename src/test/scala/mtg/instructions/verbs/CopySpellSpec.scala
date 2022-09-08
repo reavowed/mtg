@@ -1,13 +1,10 @@
 package mtg.instructions.verbs
 
-import mtg.{SpecWithGameStateManager, TestCardCreation}
-import mtg.cards.patterns.SpellCard
-import mtg.core.types.Type
 import mtg.game.objects.CopyOfSpell
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.{Target, You}
 import mtg.instructions.nouns.Spell
-import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class CopySpellSpec extends SpecWithGameStateManager with TestCardCreation {
   val TestCopyCard = simpleInstantSpell(Copy(Target(Spell)))

@@ -1,7 +1,7 @@
 package mtg.helpers
 
 import mtg.cards.CardDefinition
-import mtg.core.{ObjectOrPlayerId, PlayerId}
+import mtg.definitions.{ObjectOrPlayerId, PlayerId}
 import mtg.game.objects.{Card, GameObject, GameObjectState}
 import mtg.game.priority.PriorityChoice
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}

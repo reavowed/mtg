@@ -1,6 +1,6 @@
 package mtg.continuousEffects
 
-import mtg.core.ObjectOrPlayerId
+import mtg.definitions.ObjectOrPlayerId
 import mtg.game.state.{GameState, StackObjectWithState}
 
 trait TargetPreventionEffect extends ContinuousEffect {

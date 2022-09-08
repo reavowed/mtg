@@ -1,10 +1,7 @@
 package mtg.instructions.adjectives
 
-import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.abilities.builder.TypeConversions._
-import mtg.cards.patterns.{ArtifactCard, CreatureCard, SpellCard}
-import mtg.core.types.Type
-import mtg.core.types.Type.{Instant, Sorcery}
+import mtg.definitions.types.Type.{Instant, Sorcery}
 import mtg.game.objects.AbilityOnTheStack
 import mtg.game.turns.TurnPhase
 import mtg.instructions.articles.A
@@ -13,7 +10,7 @@ import mtg.instructions.joiners.Or
 import mtg.instructions.nounPhrases.You
 import mtg.instructions.nouns.Spell
 import mtg.instructions.verbs.{Cast, DrawACard}
-import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class TypeAdjectiveSpec extends SpecWithGameStateManager with TestCardCreation {
   val TestInstantCard = simpleInstantSpell(Nil)

@@ -1,6 +1,6 @@
 package mtg.instructions.nounPhrases
 
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.game.state.GameState
 import mtg.instructions.grammar.GrammaticalPerson

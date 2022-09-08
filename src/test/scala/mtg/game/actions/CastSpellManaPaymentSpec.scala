@@ -1,8 +1,8 @@
 package mtg.game.actions
 
-import mtg.core.ManaType
-import mtg.core.symbols.ManaSymbol
-import mtg.core.symbols.ManaSymbol.White
+import mtg.definitions.ManaType
+import mtg.definitions.symbols.ManaSymbol
+import mtg.definitions.symbols.ManaSymbol.White
 import mtg.game.state.Choice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.parts.costs.ManaCost

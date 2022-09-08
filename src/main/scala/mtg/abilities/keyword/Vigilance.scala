@@ -2,9 +2,9 @@ package mtg.abilities.keyword
 
 import mtg.abilities.KeywordAbility
 import mtg.continuousEffects.{ContinuousEffect, PreventionEffect}
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.EffectContext
-import mtg.game.state.{GameAction, GameState, ObjectWithState}
+import mtg.game.state.{GameAction, GameState}
 import mtg.game.turns.turnBasedActions.TapAttacker
 
 case object Vigilance extends KeywordAbility {

@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import mtg.abilities.AbilityWithOrigin.KeywordAbilityWithOrigin
 import mtg.abilities._
 import mtg.cards.text.{InstructionParagraph, KeywordAbilityParagraph, SingleAbilityTextParagraph, TextParagraph}
-import mtg.core.ObjectId
-import mtg.core.colors.{Color, ColorIndicator}
-import mtg.core.types.{Subtype, Supertype, Type}
+import mtg.definitions.colors.{Color, ColorIndicator}
+import mtg.definitions.types.{Subtype, Supertype, Type}
 import mtg.parts.costs.ManaCost
 
 case class Characteristics(

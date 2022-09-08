@@ -1,7 +1,7 @@
 package mtg.game
 
 import mtg.SpecWithGameStateManager
-import mtg.core.zones.Zone
+import mtg.definitions.zones.Zone
 import mtg.game.state.{GameStateManager, Stops}
 import mtg.game.turns.TurnPhase.{CombatPhase, PostcombatMainPhase, PrecombatMainPhase}
 import mtg.game.turns.TurnStep.BeginningOfCombatStep

@@ -1,10 +1,9 @@
 package mtg.abilities
 
-import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.{EffectContext, InstructionResolutionContext}
-import mtg.game.objects.AbilityOnTheStack
+import mtg.definitions.{ObjectId, PlayerId}
+import mtg.effects.InstructionResolutionContext
 import mtg.game.state.history.HistoryEvent
-import mtg.game.state.{CurrentCharacteristics, GameAction, GameState}
+import mtg.game.state.{CurrentCharacteristics, GameState}
 
 case class TriggeredAbility(definition: TriggeredAbilityDefinition, sourceId: ObjectId, controllerId: PlayerId) {
   def looksBackInTime: Boolean = definition.triggerCondition.condition.looksBackInTime

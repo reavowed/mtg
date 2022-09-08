@@ -1,7 +1,7 @@
 package mtg.instructions
 
 import mtg.abilities.TriggerCondition
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.definitions.ObjectOrPlayerId
 import mtg.effects.condition.Condition
 import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.utils.CaseObjectWithName

@@ -1,6 +1,6 @@
 package mtg.actions.moveZone
 
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.game.objects.{GameObject, GameObjectState}
 import mtg.game.state.{DirectGameObjectAction, GameState, ObjectWithState}
 

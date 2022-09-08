@@ -3,10 +3,10 @@ package mtg.sets.strixhaven.cards
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
 import mtg.cards.text.{InstructionSentence, SimpleInstructionParagraph}
-import mtg.core.types.SpellType.Lesson
-import mtg.core.types.Supertype.Basic
-import mtg.core.types.Type
-import mtg.core.types.Type.Land
+import mtg.definitions.types.SpellType.Lesson
+import mtg.definitions.types.Supertype.Basic
+import mtg.definitions.types.Type
+import mtg.definitions.types.Type.Land
 import mtg.instructions.nounPhrases
 import mtg.instructions.nounPhrases.It
 import mtg.instructions.nouns.Card

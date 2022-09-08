@@ -1,8 +1,8 @@
 package mtg.stack.adding
 
 import mtg.actions.RemoveManaAction
-import mtg.core.symbols.ManaSymbol
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.symbols.ManaSymbol
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.objects.ManaObject
 import mtg.game.priority.actions.ActivateAbilityAction
 import mtg.game.state._

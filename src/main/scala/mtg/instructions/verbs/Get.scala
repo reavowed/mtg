@@ -1,7 +1,7 @@
 package mtg.instructions.verbs
 
 import mtg.continuousEffects.{CharacteristicOrControlChangingContinuousEffect, ModifyPowerToughnessEffect}
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.PowerToughnessModifier
 import mtg.instructions.{CharacteristicChangingVerb, Verb}
 

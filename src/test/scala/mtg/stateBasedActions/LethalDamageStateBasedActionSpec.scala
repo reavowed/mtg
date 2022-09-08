@@ -1,8 +1,8 @@
 package mtg.stateBasedActions
 
-import mtg.{SpecWithGameStateManager, TestCardCreation}
-import mtg.core.zones.Zone
+import mtg.definitions.zones.Zone
 import mtg.game.turns.TurnStep
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class LethalDamageStateBasedActionSpec extends SpecWithGameStateManager with TestCardCreation {
   val VanillaOneOne = vanillaCreature(1, 1)

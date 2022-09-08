@@ -2,8 +2,8 @@ package mtg.sets.warOfTheSpark.cards
 
 import mtg.abilities.keyword.Hexproof
 import mtg.cards.patterns.CreatureCard
-import mtg.core.symbols.ManaSymbol.Green
-import mtg.core.types.CreatureType.Crocodile
+import mtg.definitions.symbols.ManaSymbol.Green
+import mtg.definitions.types.CreatureType.Crocodile
 import mtg.parts.costs.ManaCost
 
 object WardscaleCrocodile extends CreatureCard(

@@ -4,13 +4,7 @@ import mtg.abilities.TriggeredAbilityDefinition
 import mtg.cards.CardDefinition
 import mtg.cards.patterns.{ArtifactCard, CreatureCard, SpellCard}
 import mtg.cards.text.TextParagraph
-import mtg.core.types.Type.Instant
-import mtg.core.types.{CreatureType, SpellType, Type}
-import mtg.instructions.articles.A
-import mtg.instructions.conditions.Whenever
-import mtg.instructions.nounPhrases.You
-import mtg.instructions.nouns.Spell
-import mtg.instructions.verbs.{Cast, DrawACard}
+import mtg.definitions.types.{CreatureType, SpellType, Type}
 import mtg.parts.costs.ManaCost
 
 import java.util.concurrent.atomic.AtomicInteger

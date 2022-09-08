@@ -1,7 +1,7 @@
 package mtg.actions.moveZone
 
-import mtg.core.ObjectId
-import mtg.core.zones.Zone.BasicZone
+import mtg.definitions.ObjectId
+import mtg.definitions.zones.Zone.BasicZone
 import mtg.game.objects.BasicGameObject
 import mtg.game.state.ObjectWithState
 

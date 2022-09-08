@@ -2,9 +2,9 @@ package mtg.sets.strixhaven.cards
 
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.SpellCard
-import mtg.core.symbols.ManaSymbol.White
-import mtg.core.types.Type
-import mtg.core.types.Type.Creature
+import mtg.definitions.symbols.ManaSymbol.White
+import mtg.definitions.types.Type
+import mtg.definitions.types.Type.Creature
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Put
 import mtg.parts.Counter

@@ -1,6 +1,6 @@
 package mtg.instructions.verbs
 
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state.GameState
 import mtg.instructions.{StateDescriptionVerb, Verb}

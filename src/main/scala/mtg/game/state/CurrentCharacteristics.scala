@@ -1,6 +1,6 @@
 package mtg.game.state
 
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.definitions.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.game.objects.{PermanentObject, StackObject}
 
 object CurrentCharacteristics {

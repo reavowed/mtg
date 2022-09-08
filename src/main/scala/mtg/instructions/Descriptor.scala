@@ -1,6 +1,6 @@
 package mtg.instructions
 
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.EffectContext
 import mtg.game.state.{Characteristics, GameState}
 

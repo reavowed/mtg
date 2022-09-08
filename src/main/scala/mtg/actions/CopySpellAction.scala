@@ -1,6 +1,6 @@
 package mtg.actions
 
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.objects.{CopyOfSpell, StackObject}
 import mtg.game.state.{DirectGameObjectAction, GameState}
 

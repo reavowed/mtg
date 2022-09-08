@@ -1,8 +1,7 @@
 package mtg.instructions.nouns
 
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.EffectContext
-import mtg.game.objects.{Card, CopyOfSpell, StackObject}
 import mtg.game.state.GameState
 
 case object Permanent extends ClassNoun[ObjectId] with Noun.RegularCaseObject {

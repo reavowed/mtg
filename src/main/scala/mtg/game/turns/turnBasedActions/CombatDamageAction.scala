@@ -2,7 +2,7 @@ package mtg.game.turns.turnBasedActions
 
 import mtg.actions.damage
 import mtg.actions.damage.DealCombatDamageAction
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.state._
 import mtg.utils.ParsingUtils
 

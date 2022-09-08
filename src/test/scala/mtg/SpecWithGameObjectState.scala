@@ -1,7 +1,7 @@
 package mtg
 
-import mtg.core.PlayerId
-import mtg.core.zones.Zone
+import mtg.definitions.PlayerId
+import mtg.definitions.zones.Zone
 import mtg.game._
 import mtg.game.objects._
 import mtg.game.state.GameState

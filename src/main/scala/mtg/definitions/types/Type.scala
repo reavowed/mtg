@@ -1,4 +1,4 @@
-package mtg.core.types
+package mtg.definitions.types
 
 import mtg.utils.CaseObjectWithName
 

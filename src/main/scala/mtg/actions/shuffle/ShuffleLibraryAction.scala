@@ -1,7 +1,7 @@
 package mtg.actions.shuffle
 
-import mtg.core.PlayerId
-import mtg.core.zones.Zone
+import mtg.definitions.PlayerId
+import mtg.definitions.zones.Zone
 import mtg.game.objects.BasicGameObject
 import mtg.game.state.{DirectGameObjectAction, GameState}
 

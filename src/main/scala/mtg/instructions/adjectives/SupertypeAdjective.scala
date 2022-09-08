@@ -1,6 +1,6 @@
 package mtg.instructions.adjectives
 
-import mtg.core.types.Supertype
+import mtg.definitions.types.Supertype
 import mtg.effects.EffectContext
 import mtg.game.state.{Characteristics, GameState}
 import mtg.instructions.Descriptor

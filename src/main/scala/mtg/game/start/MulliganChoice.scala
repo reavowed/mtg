@@ -1,6 +1,6 @@
 package mtg.game.start
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{Choice, DelegatingGameAction, GameAction, GameState}
 

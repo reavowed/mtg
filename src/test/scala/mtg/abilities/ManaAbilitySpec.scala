@@ -4,8 +4,8 @@ import mtg.SpecWithGameStateManager
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.cards.patterns.CreatureCard
 import mtg.cards.text.SimpleInstructionParagraph
-import mtg.core.ManaType
-import mtg.core.symbols.ManaSymbol.{Green, Red}
+import mtg.definitions.ManaType
+import mtg.definitions.symbols.ManaSymbol.{Green, Red}
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.{AnyTarget, CardName}
 import mtg.instructions.verbs.{Add, DealDamage, DrawACard}

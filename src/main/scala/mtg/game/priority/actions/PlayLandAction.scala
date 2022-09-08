@@ -1,9 +1,9 @@
 package mtg.game.priority.actions
 
 import mtg.actions.moveZone.MoveToBattlefieldAction
-import mtg.core.types.Type
-import mtg.core.zones.Zone
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.types.Type
+import mtg.definitions.zones.Zone
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{GameAction, GameState, ObjectWithState}
 import mtg.stack.adding.TimingChecks

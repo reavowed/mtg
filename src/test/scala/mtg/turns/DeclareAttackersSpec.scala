@@ -1,7 +1,7 @@
 package mtg.turns
 
 import mtg.abilities.keyword.Vigilance
-import mtg.core.zones.Zone
+import mtg.definitions.zones.Zone
 import mtg.game.priority.PriorityChoice
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.game.turns.TurnStep

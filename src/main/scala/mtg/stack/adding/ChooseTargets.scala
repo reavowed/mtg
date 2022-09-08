@@ -1,7 +1,7 @@
 package mtg.stack.adding
 
 import mtg.actions.stack.AddTarget
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.definitions.{ObjectId, ObjectOrPlayerId, PlayerId}
 import mtg.effects.EffectContext
 import mtg.game.state._
 import mtg.instructions.nounPhrases.Target

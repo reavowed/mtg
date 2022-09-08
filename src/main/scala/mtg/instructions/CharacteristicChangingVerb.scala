@@ -2,7 +2,7 @@ package mtg.instructions
 
 import mtg.actions.CreateContinousEffectsAction
 import mtg.continuousEffects.CharacteristicOrControlChangingContinuousEffect
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.InstructionResolutionContext
 import mtg.effects.condition.Condition
 import mtg.game.state.GameState

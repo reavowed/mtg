@@ -4,14 +4,11 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.abilities.keyword.Flying
 import mtg.cards.patterns.CreatureCard
-import mtg.core.symbols.ManaSymbol.White
-import mtg.core.types.BasicLandType.Plains
-import mtg.core.types.CreatureType.{Cleric, Spirit}
-import mtg.core.types.Supertype.Basic
-import mtg.core.types.Type.Creature
+import mtg.definitions.symbols.ManaSymbol.White
+import mtg.definitions.types.CreatureType.{Cleric, Spirit}
+import mtg.definitions.types.Type.Creature
 import mtg.instructions.conditions.When
-import mtg.instructions.joiners.{May, Then}
-import mtg.instructions.nounPhrases.{CardName, It, Target, You}
+import mtg.instructions.nounPhrases.{CardName, Target}
 import mtg.instructions.nouns.Card
 import mtg.instructions.suffixDescriptors.WithManaValue
 import mtg.instructions.verbs._

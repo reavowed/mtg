@@ -1,7 +1,7 @@
 package mtg.instructions.nounPhrases
 
 import mtg.continuousEffects.TargetPreventionEffect
-import mtg.core.{ObjectId, ObjectOrPlayerId}
+import mtg.definitions.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.game.state.{GameState, StackObjectWithState}
 import mtg.instructions.grammar.GrammaticalPerson

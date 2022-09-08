@@ -1,6 +1,6 @@
 package mtg.actions
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
 case class DrawCardsAction(playerIdentifier: PlayerId, numberOfCards: Int) extends DelegatingGameObjectAction {

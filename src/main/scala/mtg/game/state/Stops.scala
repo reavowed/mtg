@@ -1,10 +1,10 @@
 package mtg.game.state
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
+import mtg.game.GameStartingData
 import mtg.game.priority.PriorityChoice
 import mtg.game.turns.TurnPhase
 import mtg.game.turns.TurnPhase.{PostcombatMainPhase, PrecombatMainPhase}
-import mtg.game.GameStartingData
 
 case class Stops(stepOrPhaseByActivePlayerByPlayerWithStop: Map[PlayerId, Map[PlayerId, Seq[AnyRef]]]) {
   def shouldAutoPass(priorityChoice: PriorityChoice, gameState: GameState): Boolean = {

@@ -1,6 +1,6 @@
 package mtg.game.priority
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.priority.actions.PriorityAction
 import mtg.game.state._
 import mtg.stack.resolving.ResolveStackObject

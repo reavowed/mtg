@@ -2,7 +2,7 @@ package mtg.stack.adding
 
 import mtg.actions.stack.SetMode
 import mtg.cards.text.{ModalInstructionParagraph, SimpleInstructionParagraph}
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.state._
 
 case class ChooseModes(stackObjectId: ObjectId) extends DelegatingGameAction[Unit] {

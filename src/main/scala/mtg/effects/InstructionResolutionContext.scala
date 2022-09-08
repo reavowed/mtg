@@ -1,8 +1,8 @@
 package mtg.effects
 
 import mtg.abilities.{ManaAbility, TriggeredAbility}
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
-import mtg.game.objects.{AbilityOnTheStack, Card, CopyOfSpell}
+import mtg.definitions.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.game.objects.AbilityOnTheStack
 import mtg.game.state.{CurrentCharacteristics, GameState, StackObjectWithState}
 
 case class InstructionResolutionContext(

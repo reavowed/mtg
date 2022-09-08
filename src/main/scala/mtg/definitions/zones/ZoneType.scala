@@ -1,4 +1,4 @@
-package mtg.core.zones
+package mtg.definitions.zones
 
 sealed abstract class ZoneType
 

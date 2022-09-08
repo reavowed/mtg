@@ -1,7 +1,7 @@
 package mtg.game.state
 
-import mtg.core.zones.Zone
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.zones.Zone
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.objects.GameObjectState
 import mtg.game.state.history.LogEvent
 

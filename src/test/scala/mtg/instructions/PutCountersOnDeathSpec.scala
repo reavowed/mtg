@@ -1,7 +1,7 @@
 package mtg.instructions
 
 import mtg.abilities.builder.TypeConversions._
-import mtg.core.types.Type.Creature
+import mtg.definitions.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.instructions.conditions.When
 import mtg.instructions.nounPhrases.{CardName, Counters, It, Target}

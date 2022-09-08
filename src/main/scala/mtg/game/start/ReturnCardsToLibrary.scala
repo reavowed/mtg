@@ -2,7 +2,7 @@ package mtg.game.start
 
 import mtg._
 import mtg.actions.moveZone.MoveToLibraryAction
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.objects.GameObject
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{Choice, DelegatingGameAction, GameAction, GameState}

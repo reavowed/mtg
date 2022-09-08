@@ -1,6 +1,6 @@
 package mtg.web
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.turns.TurnPhase
 import mtg.web.visibleState.VisibleState
 import org.springframework.beans.factory.annotation.Autowired

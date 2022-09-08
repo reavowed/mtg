@@ -2,7 +2,7 @@ package mtg.stack.resolving
 
 import mtg.abilities.{ActivatedAbilityDefinition, ManaAbility}
 import mtg.cards.text.SimpleInstructionParagraph
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.{DelegatingGameAction, GameAction, GameState, ObjectWithState}
 

@@ -1,14 +1,11 @@
 package mtg.instructions.verbs
 
-import mtg.{SpecWithGameStateManager, TestCardCreation}
 import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
-import mtg.cards.patterns.SpellCard
-import mtg.core.types.Type
-import mtg.core.types.Type.Creature
+import mtg.definitions.types.Type.Creature
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.You
-import mtg.parts.costs.ManaCost
+import mtg.{SpecWithGameStateManager, TestCardCreation}
 
 class MassGetSpec extends SpecWithGameStateManager with TestCardCreation {
   val BuffSpell = simpleInstantSpell(Creature(You(Control))(Get(1, 1), endOfTurn))

@@ -2,13 +2,12 @@ package mtg.instructions.verbs
 
 import mtg.actions.moveZone.MoveToBattlefieldAction
 import mtg.continuousEffects.{ContinuousEffect, ReplacementEffect}
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.effects.{EffectContext, InstructionResolutionContext}
-import mtg.game.state.history.HistoryEvent
 import mtg.game.state.history.HistoryEvent.ResolvedAction
 import mtg.game.state.{DirectGameObjectAction, GameState}
 import mtg.instructions.grammar.VerbInflection
-import mtg.instructions.nounPhrases.{IndefiniteNounPhrase, StaticSingleIdentifyingNounPhrase}
+import mtg.instructions.nounPhrases.StaticSingleIdentifyingNounPhrase
 import mtg.instructions.{EntersTheBattlefieldModifier, IntransitiveEventMatchingVerb, IntransitiveStaticAbilityVerb, Verb}
 
 object EntersTheBattlefield extends Verb.WithSuffix(Verb.Enter, "the battlefield") with IntransitiveEventMatchingVerb.Simple[ObjectId] {

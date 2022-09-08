@@ -1,10 +1,9 @@
 package mtg.instructions.verbs
 
-import mtg.core.{ObjectId, PlayerId}
-import mtg.effects.{EffectContext, InstructionResolutionContext}
+import mtg.definitions.{ObjectId, PlayerId}
+import mtg.effects.InstructionResolutionContext
+import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
-import mtg.game.state.{GameAction, GameState}
-import mtg.instructions.nounPhrases.IndefiniteNounPhrase
 import mtg.instructions.{TransitiveEventMatchingVerb, Verb}
 import mtg.stack.adding.FinishCasting
 

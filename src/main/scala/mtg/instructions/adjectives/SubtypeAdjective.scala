@@ -1,6 +1,6 @@
 package mtg.instructions.adjectives
 
-import mtg.core.types.Subtype
+import mtg.definitions.types.Subtype
 import mtg.effects.EffectContext
 import mtg.game.state.{Characteristics, GameState}
 import mtg.instructions.Descriptor

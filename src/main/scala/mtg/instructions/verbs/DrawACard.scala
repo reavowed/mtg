@@ -1,7 +1,7 @@
 package mtg.instructions.verbs
 
 import mtg.actions.DrawCardAction
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb, Verb}

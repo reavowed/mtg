@@ -4,9 +4,9 @@ import mtg.abilities.builder.InstructionBuilder._
 import mtg.abilities.builder.TypeConversions._
 import mtg.cards.patterns.CreatureCard
 import mtg.cards.text.AbilityWordParagraph
-import mtg.core.symbols.ManaSymbol.White
-import mtg.core.types.CreatureType.{Human, Wizard}
-import mtg.core.types.Type.{Instant, Sorcery}
+import mtg.definitions.symbols.ManaSymbol.White
+import mtg.definitions.types.CreatureType.{Human, Wizard}
+import mtg.definitions.types.Type.{Instant, Sorcery}
 import mtg.instructions.articles.A
 import mtg.instructions.conditions.Whenever
 import mtg.instructions.joiners.Or

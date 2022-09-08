@@ -1,5 +1,5 @@
 package mtg.abilities
 
-import mtg.core.{ObjectId, PlayerId}
+import mtg.definitions.{ObjectId, PlayerId}
 
 case class ManaAbility(sourceId: ObjectId, controllingPlayer: PlayerId)

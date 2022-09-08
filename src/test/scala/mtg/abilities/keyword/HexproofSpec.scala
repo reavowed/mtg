@@ -2,8 +2,8 @@ package mtg.abilities.keyword
 
 import mtg.abilities.builder.InstructionBuilder.endOfTurn
 import mtg.abilities.builder.TypeConversions._
-import mtg.core.types.Type.Creature
-import mtg.core.zones.Zone
+import mtg.definitions.types.Type.Creature
+import mtg.definitions.zones.Zone
 import mtg.game.turns.TurnPhase
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.{Destroy, Gain}

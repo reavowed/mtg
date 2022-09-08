@@ -1,9 +1,9 @@
 package mtg.abilities
 
-import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, SingleAbilityTextParagraph, TextParagraph}
+import mtg.cards.text.{InstructionParagraph, SimpleInstructionParagraph, SingleAbilityTextParagraph}
 import mtg.continuousEffects.ContinuousEffect
-import mtg.core.types.Type
-import mtg.core.zones.ZoneType
+import mtg.definitions.types.Type
+import mtg.definitions.zones.ZoneType
 import mtg.effects.EffectContext
 import mtg.game.state.ObjectWithState
 import mtg.instructions.TextComponent

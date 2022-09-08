@@ -2,9 +2,9 @@ package mtg.helpers
 
 import monocle.Focus
 import mtg.cards.CardDefinition
-import mtg.core.PlayerId
-import mtg.core.zones.Zone
-import mtg.core.zones.Zone.BasicZone
+import mtg.definitions.PlayerId
+import mtg.definitions.zones.Zone
+import mtg.definitions.zones.Zone.BasicZone
 import mtg.game.objects._
 import mtg.parts.Counter
 

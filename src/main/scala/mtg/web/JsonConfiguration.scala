@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.{JsonSerializer, ObjectMapper, SerializerProvider}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import mtg.core.ManaType
-import mtg.core.colors.Color
+import mtg.definitions.ManaType
+import mtg.definitions.colors.Color
 import org.springframework.context.annotation.{Bean, Configuration, Primary}
 
 @Configuration

@@ -1,6 +1,6 @@
 package mtg.game.state.history
 
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.state.{GameAction, LogEventAction}
 import mtg.game.turns.Turn
 

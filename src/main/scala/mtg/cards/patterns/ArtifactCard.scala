@@ -2,7 +2,7 @@ package mtg.cards.patterns
 
 import mtg.cards.CardDefinition
 import mtg.cards.text.TextParagraph
-import mtg.core.types.Type
+import mtg.definitions.types.Type
 import mtg.parts.costs.ManaCost
 
 class ArtifactCard(

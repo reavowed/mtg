@@ -1,6 +1,6 @@
 package mtg.stack.adding
 
-import mtg.core.symbols.ManaSymbol
+import mtg.definitions.symbols.ManaSymbol
 import mtg.game.objects.ManaObject
 
 import scala.annotation.tailrec

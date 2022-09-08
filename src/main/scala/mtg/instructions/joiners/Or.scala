@@ -1,7 +1,7 @@
 package mtg.instructions.joiners
 
-import mtg.core.types.Type
-import mtg.core.{ObjectId, ObjectOrPlayerId, PlayerId}
+import mtg.definitions.types.Type
+import mtg.definitions.{ObjectId, ObjectOrPlayerId}
 import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent

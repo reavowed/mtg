@@ -1,7 +1,7 @@
 package mtg.actions
 
 import mtg.actions.moveZone.MoveToHandAction
-import mtg.core.PlayerId
+import mtg.definitions.PlayerId
 import mtg.game.state.{DelegatingGameObjectAction, GameObjectAction, GameState}
 
 case class DrawCardAction(player: PlayerId) extends DelegatingGameObjectAction {

@@ -1,7 +1,6 @@
 package mtg.actions
 
-import mtg.core.{ObjectId, PlayerId}
-import mtg.game.objects.GameObjectState
+import mtg.definitions.{ObjectId, PlayerId}
 import mtg.game.state.history.LogEvent
 import mtg.game.state.{CurrentCharacteristics, DirectGameObjectAction, GameState}
 

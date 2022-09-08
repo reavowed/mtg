@@ -1,7 +1,6 @@
 package mtg.sets.strixhaven.abilities
 
-import mtg.core.types.SpellType.Lesson
-import mtg.core.zones.Zone
+import mtg.definitions.types.SpellType.Lesson
 import mtg.game.state.history.LogEvent.RevealCard
 import mtg.game.turns.TurnPhase
 import mtg.instructions.verbs.DrawACard

@@ -1,7 +1,6 @@
 package mtg.actions
 
-import mtg.core.PlayerId
-import mtg.game.objects.GameObjectState
+import mtg.definitions.PlayerId
 import mtg.game.state.{DirectGameObjectAction, GameState}
 
 case class LoseLifeAction(player: PlayerId, amount: Int) extends DirectGameObjectAction[Unit] {

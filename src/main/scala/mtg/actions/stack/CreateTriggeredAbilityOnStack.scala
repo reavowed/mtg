@@ -1,7 +1,7 @@
 package mtg.actions.stack
 
 import mtg.abilities.PendingTriggeredAbility
-import mtg.core.ObjectId
+import mtg.definitions.ObjectId
 import mtg.game.objects.StackObject
 import mtg.game.state.{DirectGameObjectAction, GameState}
 

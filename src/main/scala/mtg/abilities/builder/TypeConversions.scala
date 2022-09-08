@@ -1,12 +1,12 @@
 package mtg.abilities.builder
 
-import mtg.core.ObjectId
-import mtg.core.types.{Subtype, Supertype, Type}
+import mtg.definitions.ObjectId
+import mtg.definitions.types.{Subtype, Supertype, Type}
 import mtg.effects.condition.Condition
 import mtg.instructions.adjectives.{Adjective, SubtypeAdjective, SupertypeAdjective}
-import mtg.instructions.{CharacteristicChangingVerb, Instruction, SuffixDescriptor, TypePhrase}
 import mtg.instructions.nounPhrases.{PluralNoun, SetIdentifyingNounPhrase}
 import mtg.instructions.nouns.ClassNoun
+import mtg.instructions.{CharacteristicChangingVerb, Instruction, SuffixDescriptor, TypePhrase}
 
 object TypeConversions {
   implicit def typeToPhrase(t: Type): TypePhrase = TypePhrase(t)

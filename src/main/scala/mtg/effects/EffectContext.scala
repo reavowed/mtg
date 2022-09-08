@@ -1,8 +1,8 @@
 package mtg.effects
 
 import mtg.abilities.TriggeredAbility
-import mtg.core.{ObjectId, PlayerId}
-import mtg.game.state.{GameState, ObjectWithState, StackObjectWithState}
+import mtg.definitions.{ObjectId, PlayerId}
+import mtg.game.state.ObjectWithState
 
 class EffectContext(val cardNameObjectId: ObjectId, val thisObjectId: ObjectId, val youPlayerId: PlayerId)
 

@@ -5,9 +5,9 @@ import mtg.abilities.builder.TypeConversions._
 import mtg.abilities.keyword.Vigilance
 import mtg.cards.patterns.SpellCard
 import mtg.cards.text.SimpleInstructionParagraph
-import mtg.core.types.SpellType.Lesson
-import mtg.core.types.Type
-import mtg.core.types.Type.Creature
+import mtg.definitions.types.SpellType.Lesson
+import mtg.definitions.types.Type
+import mtg.definitions.types.Type.Creature
 import mtg.instructions.nounPhrases.{It, Target}
 import mtg.instructions.verbs.{Gain, Put}
 import mtg.parts.Counter
