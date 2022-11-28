@@ -21,4 +21,4 @@ object PillardropRescuer extends CreatureCard(
   Seq(
     Flying,
     When(CardName, EntersTheBattlefield)(ReturnFromYourGraveyardToYourHand(Target(Creature(Card(WithManaValue(3.orLess))))))),
-  (2, 1))
+  (2, 2))
