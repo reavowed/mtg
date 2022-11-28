@@ -47,8 +47,11 @@ class DataValidationSpec extends Specification {
         )
         dataOption must beSome
         val data = dataOption.get
-        (cardPrinting.cardDefinition.text aka s"${cardPrinting.cardDefinition.name} oracle text") mustEqual stripReminderText(data.get("oracle_text").textValue())
+        (cardPrinting.cardDefinition.manaCost.map(_.text).getOrElse("") aka s"${cardPrinting.cardDefinition.name} mana cost") mustEqual data.get("mana_cost").textValue()
         (constructTypeLine(cardPrinting.cardDefinition) aka s"${cardPrinting.cardDefinition.name} type line") mustEqual data.get("type_line").textValue()
+        (cardPrinting.cardDefinition.text aka s"${cardPrinting.cardDefinition.name} oracle text") mustEqual stripReminderText(data.get("oracle_text").textValue())
+        (cardPrinting.cardDefinition.powerAndToughness.map(_.basePower.toString) aka s"${cardPrinting.cardDefinition.name} power") mustEqual Option(data.get("power")).map(_.textValue())
+        (cardPrinting.cardDefinition.powerAndToughness.map(_.baseToughness.toString) aka s"${cardPrinting.cardDefinition.name} toughness") mustEqual Option(data.get("toughness")).map(_.textValue())
       })
     }
   }
