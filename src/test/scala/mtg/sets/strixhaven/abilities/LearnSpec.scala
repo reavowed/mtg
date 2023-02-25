@@ -22,8 +22,7 @@ class LearnSpec extends SpecWithGameStateManager with TestCardCreation {
       manager.castSpell(playerOne, LearnCard)
       manager.resolveNext()
 
-      manager.gameState.currentChoice must beSome(beInstructionChoice[LearnChoice]((_: LearnChoice).possibleLessons must
-        contain(exactly(manager.getCard(LessonCard).objectId))))
+      manager.gameState.currentChoice must beChoice[LearnChoice](((_: LearnChoice).possibleLessons) ^^ contain(exactly(manager.getCard(LessonCard).objectId)))
     }
 
     "reveal chosen lesson" in {

@@ -2,12 +2,10 @@ package mtg.instructions.verbs
 
 import mtg.actions.DrawCardAction
 import mtg.definitions.PlayerId
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
-import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb, Verb}
+import mtg.instructions.{InstructionAction, IntransitiveInstructionVerb, Verb}
 
 case object DrawACard extends Verb.WithSuffix(Verb.Draw, "a card") with IntransitiveInstructionVerb[PlayerId] {
-  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-    (DrawCardAction(playerId), resolutionContext)
+  override def resolve(playerId: PlayerId): InstructionAction = {
+    DrawCardAction(playerId)
   }
 }

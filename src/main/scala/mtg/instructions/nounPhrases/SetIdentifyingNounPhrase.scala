@@ -1,11 +1,8 @@
 package mtg.instructions.nounPhrases
 
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
-import mtg.instructions.TextComponent
-import mtg.instructions.grammar.{GrammaticalNumber, GrammaticalPerson}
+import mtg.instructions.InstructionAction
 
 trait SetIdentifyingNounPhrase[+T] extends NounPhrase {
-  def identifyAll(gameState: GameState, resolutionContext: InstructionResolutionContext): (Seq[T], InstructionResolutionContext)
+  def identifyAll: InstructionAction.WithResult[Seq[T]]
   def getPossessiveText(cardName: String): String = getText(cardName) + "'s"
 }

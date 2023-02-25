@@ -2,12 +2,10 @@ package mtg.instructions.verbs
 
 import mtg.actions.shuffle.ShuffleLibraryAction
 import mtg.definitions.PlayerId
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
-import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb, Verb}
+import mtg.instructions.{InstructionAction, IntransitiveInstructionVerb, Verb}
 
 case object Shuffle extends IntransitiveInstructionVerb[PlayerId] with Verb.RegularCaseObject {
-  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-    (ShuffleLibraryAction(playerId), resolutionContext)
+  override def resolve(playerId: PlayerId): InstructionAction = {
+    ShuffleLibraryAction(playerId)
   }
 }

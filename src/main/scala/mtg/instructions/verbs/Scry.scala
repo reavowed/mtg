@@ -4,7 +4,7 @@ import mtg.definitions.zones.Zone
 import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.history.LogEvent
-import mtg.game.state.{DirectGameObjectAction, GameState}
+import mtg.game.state.{Choice, DirectGameObjectAction, GameState}
 import mtg.instructions._
 import mtg.instructions.grammar.VerbInflection
 import mtg.utils.ParsingUtils
@@ -14,23 +14,27 @@ case class Scry(number: Int) extends IntransitiveInstructionVerb[PlayerId] with 
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
     super.inflect(verbInflection, cardName) + " " + number
   }
-  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
+  override def resolve(playerId: PlayerId): InstructionAction = InstructionAction.withoutContextUpdate { gameState =>
     val library = gameState.gameObjectState.libraries(playerId)
     val cardsBeingScryed = library.take(number).map(_.objectId)
-    ScryChoice(playerId, cardsBeingScryed)
+    ScryChoice(playerId, cardsBeingScryed).flatMap {
+      case ScryDecision(cardsOnTop, cardsOnBottom) =>
+        ScryAction(playerId, cardsOnTop, cardsOnBottom)
+    }
   }
 }
 
+case class ScryDecision(cardsOnTop: Seq[ObjectId], cardsOnBottom: Seq[ObjectId])
+
 case class ScryChoice(
-    playerChoosing: PlayerId,
-    cardsBeingScryed: Seq[ObjectId])
-  extends InstructionChoice
+    playerToAct: PlayerId,
+    cardsBeingScried: Seq[ObjectId])
+  extends Choice[ScryDecision]
 {
-  override def parseDecision(
-    serializedDecision: String,
-    resolutionContext: InstructionResolutionContext)(
+  override def handleDecision(
+    serializedDecision: String)(
     implicit gameState: GameState
-  ): Option[InstructionResult] = {
+  ): Option[ScryDecision] = {
     for {
       (serializedCardsOnTop, serializedCardsOnBottom) <- serializedDecision.split("\\|", -1).toSeq match {
         case Seq(a, b) => Some(a, b)
@@ -38,14 +42,11 @@ case class ScryChoice(
       }
       cardsOnTop <- ParsingUtils.splitStringAsIds(serializedCardsOnTop)
       cardsOnBottom <- ParsingUtils.splitStringAsIds(serializedCardsOnBottom)
-      if (cardsOnTop ++ cardsOnBottom).toSet == cardsBeingScryed.toSet
-    } yield (
-      ScryAction(playerChoosing, cardsOnTop, cardsOnBottom),
-      resolutionContext
-    )
+      if (cardsOnTop ++ cardsOnBottom).toSet == cardsBeingScried.toSet
+    } yield ScryDecision(cardsOnTop, cardsOnBottom)
   }
 
-  override def temporarilyVisibleObjects: Seq[ObjectId] = cardsBeingScryed
+  override def temporarilyVisibleObjects: Seq[ObjectId] = cardsBeingScried
 }
 
 case class ScryAction(

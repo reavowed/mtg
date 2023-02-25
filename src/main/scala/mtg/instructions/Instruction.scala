@@ -1,13 +1,11 @@
 package mtg.instructions
 
 import mtg.definitions.zones.ZoneType
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
 import mtg.instructions.nounPhrases.Target
 import mtg.instructions.verbs.Add
 
 trait ResolvableInstructionPart {
-  def resolve(gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult
+  def resolve: InstructionAction
 }
 
 trait Instruction extends ResolvableInstructionPart with TextComponent {

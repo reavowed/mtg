@@ -4,7 +4,6 @@ import mtg.definitions.ObjectId
 import mtg.game.priority.TriggeredAbilityChoice
 import mtg.game.state.{Choice, GameState, StackObjectWithState}
 import mtg.stack.adding.ModeChoice
-import mtg.stack.resolving.ResolveInstructionChoice
 
 case class PendingTriggeredAbilityDetails(id: Int, text: String, artDetails: ArtDetails)
 case class TriggeredAbilityChoiceDetails(abilities: Seq[PendingTriggeredAbilityDetails])
@@ -14,11 +13,6 @@ case class CurrentChoice(`type`: String, playerToAct: String, details: Any)
 object CurrentChoice {
   def apply(choice: Choice[_], gameState: GameState): CurrentChoice = {
     choice match {
-      case resolveInstructionChoice: ResolveInstructionChoice =>
-        CurrentChoice(
-          resolveInstructionChoice.instructionChoice.getClass.getSimpleName,
-          resolveInstructionChoice.instructionChoice.playerChoosing.toString,
-          resolveInstructionChoice.instructionChoice)
       case triggeredAbilityChoice: TriggeredAbilityChoice =>
         CurrentChoice(
           triggeredAbilityChoice.getClass.getSimpleName,

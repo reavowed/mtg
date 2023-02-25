@@ -3,7 +3,7 @@ package mtg.instructions.verbs
 import mtg.definitions.zones.Zone
 import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
+import mtg.game.state.{Choice, GameState}
 import mtg.instructions._
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nouns.ClassNoun
@@ -13,26 +13,23 @@ case class SearchYourLibraryFor(noun: ClassNoun[ObjectId]) extends IntransitiveI
   override def inflect(verbInflection: VerbInflection, cardName: String): String = {
     Verb.Search.inflect(verbInflection, cardName) + " your library for " + noun.getSingular(cardName).withArticle
   }
-  override def resolve(playerId: PlayerId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
+  override def resolve(playerId: PlayerId): InstructionAction = InstructionAction { (resolutionContext, gameState) =>
     val possibleChoices = noun.getAll(gameState, resolutionContext).intersect(gameState.gameObjectState.libraries(playerId).map(_.objectId))
-    SearchLibraryChoice(playerId, possibleChoices)
+    SearchLibraryChoice(playerId, possibleChoices).map(resolutionContext.addIdentifiedObject)
   }
 }
 
 // TODO: Handle a player searching another player's library
 case class SearchLibraryChoice(
-    playerChoosing: PlayerId,
+    playerToAct: PlayerId,
     possibleChoices: Seq[ObjectId])
-  extends InstructionChoice
+  extends Choice[ObjectId]
 {
-  override def parseDecision(
-    serializedDecision: String,
-    resolutionContext: InstructionResolutionContext)(
+  override def handleDecision(
+    serializedDecision: String)(
     implicit gameState: GameState
-  ): Option[InstructionResult] = {
-    for {
-      chosenObjectId <- possibleChoices.find(_.toString == serializedDecision)
-    } yield resolutionContext.addIdentifiedObject(chosenObjectId)
+  ): Option[ObjectId] = {
+    possibleChoices.find(_.toString == serializedDecision)
   }
-  override def temporarilyVisibleZones: Seq[Zone] = Seq(Zone.Library(playerChoosing))
+  override def temporarilyVisibleZones: Seq[Zone] = Seq(Zone.Library(playerToAct))
 }

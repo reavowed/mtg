@@ -1,10 +1,9 @@
 package mtg.instructions.joiners
 
 import mtg.definitions.PlayerId
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
-import mtg.instructions.{InstructionResult, IntransitiveInstructionVerb}
+import mtg.instructions.{InstructionAction, IntransitiveInstructionVerb}
+import mtg.stack.resolving.ResolveInstructions
 import mtg.utils.TextUtils._
 
 object Then {
@@ -12,8 +11,8 @@ object Then {
     override def inflect(verbInflection: VerbInflection, cardName: String): String = {
       verbs.map(_.inflect(verbInflection, cardName)).toCommaList("then", true)
     }
-    override def resolve(subject: PlayerId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-      (verbs.map(IntransitiveInstructionVerb.WithKnownSubject(subject, _)), resolutionContext)
+    override def resolve(subject: PlayerId): InstructionAction = { resolutionContext =>
+      ResolveInstructions.executeInstructions(verbs.map(IntransitiveInstructionVerb.WithKnownSubject(subject, _)), resolutionContext)
     }
   }
 }

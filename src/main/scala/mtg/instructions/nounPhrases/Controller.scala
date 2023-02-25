@@ -1,8 +1,7 @@
 package mtg.instructions.nounPhrases
 
 import mtg.definitions.{ObjectId, PlayerId}
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
+import mtg.instructions.InstructionAction
 import mtg.instructions.grammar.GrammaticalPerson
 
 case class Controller(objectNoun: SingleIdentifyingNounPhrase[ObjectId]) extends SingleIdentifyingNounPhrase[PlayerId] {
@@ -10,9 +9,11 @@ case class Controller(objectNoun: SingleIdentifyingNounPhrase[ObjectId]) extends
 
   override def person: GrammaticalPerson = GrammaticalPerson.Third
 
-  override def identifySingle(gameState: GameState, resolutionContext: InstructionResolutionContext): (PlayerId, InstructionResolutionContext) = {
-    val (objectId, resolutionContextAfterObject) = objectNoun.identifySingle(gameState, resolutionContext)
-    val controller = gameState.gameObjectState.getCurrentOrLastKnownState(objectId).controllerOrOwner
-    (controller, resolutionContextAfterObject)
+  override def identifySingle: InstructionAction.WithResult[PlayerId] = {
+    objectNoun.identifySingle.flatMap(getController)
+  }
+
+  private def getController(objectId: ObjectId): InstructionAction.WithResult[PlayerId] = InstructionAction.WithResult.withoutContextUpdate { gameState =>
+    gameState.gameObjectState.getCurrentOrLastKnownState(objectId).controllerOrOwner
   }
 }

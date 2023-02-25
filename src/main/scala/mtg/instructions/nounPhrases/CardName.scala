@@ -3,6 +3,7 @@ package mtg.instructions.nounPhrases
 import mtg.definitions.ObjectId
 import mtg.effects.{EffectContext, InstructionResolutionContext}
 import mtg.game.state.GameState
+import mtg.instructions.InstructionAction
 import mtg.instructions.grammar.GrammaticalPerson
 
 object CardName extends IndefiniteNounPhrase[ObjectId] with StaticSingleIdentifyingNounPhrase[ObjectId] {
@@ -14,7 +15,7 @@ object CardName extends IndefiniteNounPhrase[ObjectId] with StaticSingleIdentify
     effectContext.cardNameObjectId
   }
 
-  override def identifySingle(gameState: GameState, resolutionContext: InstructionResolutionContext): (ObjectId, InstructionResolutionContext) = {
+  override def identifySingle: InstructionAction.WithResult[ObjectId] = { (resolutionContext: InstructionResolutionContext) =>
     (resolutionContext.cardNameObjectId, resolutionContext.addIdentifiedObject(resolutionContext.cardNameObjectId))
   }
 

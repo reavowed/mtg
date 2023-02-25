@@ -1,8 +1,6 @@
 package mtg.instructions
 
 import mtg.definitions.zones.ZoneType
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
 
@@ -11,7 +9,7 @@ trait MonotransitiveInstructionVerb[SubjectType, ObjectType] extends Verb {
   def apply(objectPhrase: SingleIdentifyingNounPhrase[ObjectType]): IntransitiveInstructionVerb[SubjectType] = {
     MonotransitiveInstructionVerbWithObject(this, objectPhrase)
   }
-  def resolve(subject: SubjectType, obj: ObjectType, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult
+  def resolve(subject: SubjectType, obj: ObjectType): InstructionAction
   def getFunctionalZones(subjectPhrase: SingleIdentifyingNounPhrase[SubjectType], objectPhrase: SingleIdentifyingNounPhrase[ObjectType]): Option[Set[ZoneType]] = None
 }
 
@@ -29,9 +27,8 @@ case class MonotransitiveInstructionVerbWithObject[SubjectType, ObjectType](
         mainText
     }
   }
-  override def resolve(subject: SubjectType, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-    val (objectId, contextAfterObjects) = objectPhrase.identifySingle(gameState, resolutionContext)
-    verb.resolve(subject, objectId, gameState, contextAfterObjects)
+  override def resolve(subject: SubjectType): InstructionAction = {
+    objectPhrase.identifySingle.flatMap(verb.resolve(subject, _))
   }
 
   override def getFunctionalZones(subjectPhrase: SingleIdentifyingNounPhrase[SubjectType]): Option[Set[ZoneType]] = {

@@ -1,14 +1,13 @@
 package mtg.instructions.nounPhrases
 
 import mtg.abilities.StaticAbilityParagraph
-import mtg.effects.{EffectContext, InstructionResolutionContext}
-import mtg.game.state.GameState
-import mtg.instructions.{IntransitiveStaticAbilityVerb, StateDescriptionVerb, SuffixDescriptor}
+import mtg.effects.EffectContext
+import mtg.instructions.{InstructionAction, IntransitiveStaticAbilityVerb, StateDescriptionVerb, SuffixDescriptor}
 
 trait StaticSingleIdentifyingNounPhrase[+T] extends SingleIdentifyingNounPhrase[T] {
   def identify(effectContext: EffectContext): T
-  override def identifySingle(gameState: GameState, resolutionContext: InstructionResolutionContext): (T, InstructionResolutionContext) = {
-    (identify(resolutionContext), resolutionContext)
+  override def identifySingle: InstructionAction.WithResult[T] = InstructionAction.WithResult.withoutContextUpdate { (resolutionContext, _) =>
+    identify(resolutionContext)
   }
 
   def apply(verb: StateDescriptionVerb[T]): SuffixDescriptor = StateDescriptionVerb.WithSubject(this, verb)

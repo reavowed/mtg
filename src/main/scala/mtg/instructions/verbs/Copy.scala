@@ -5,11 +5,11 @@ import mtg.definitions.{ObjectId, PlayerId}
 import mtg.effects.InstructionResolutionContext
 import mtg.game.state.GameState
 import mtg.game.state.history.HistoryEvent
-import mtg.instructions.{InstructionResult, MonotransitiveInstructionVerb, TransitiveEventMatchingVerb, Verb}
+import mtg.instructions.{InstructionAction, MonotransitiveInstructionVerb, TransitiveEventMatchingVerb, Verb}
 
 case object Copy extends Verb.RegularCaseObject with MonotransitiveInstructionVerb[PlayerId, ObjectId] with TransitiveEventMatchingVerb.Simple[PlayerId, ObjectId] {
-  override def resolve(playerId: PlayerId, objectId: ObjectId, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-    (CopySpellAction(playerId, objectId), resolutionContext)
+  override def resolve(playerId: PlayerId, objectId: ObjectId): InstructionAction = {
+    CopySpellAction(playerId, objectId)
   }
   def matchSubjectAndObject(
     eventToMatch: HistoryEvent.ResolvedAction[_],

@@ -5,7 +5,6 @@ import mtg.definitions.zones.Zone
 import mtg.game.turns.TurnPhase.PrecombatMainPhase
 import mtg.instructions.verbs.SearchLibraryChoice
 import mtg.sets.alpha.cards.{Forest, Island, Plains}
-import mtg.stack.resolving.ResolveInstructionChoice
 
 class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
   "Environmental Sciences" should {
@@ -33,10 +32,9 @@ class EnvironmentalSciencesSpec extends SpecWithGameStateManager {
       manager.castSpell(playerOne, EnvironmentalSciences)
       manager.resolveNext()
 
-      manager.currentChoice must beSome(beAnInstanceOf[ResolveInstructionChoice])
-      manager.currentChoice.get.asInstanceOf[ResolveInstructionChoice].instructionChoice.playerChoosing mustEqual playerOne
-      manager.currentChoice.get.asInstanceOf[ResolveInstructionChoice].instructionChoice must beAnInstanceOf[SearchLibraryChoice]
-      manager.currentChoice.get.asInstanceOf[ResolveInstructionChoice].instructionChoice.asInstanceOf[SearchLibraryChoice].possibleChoices mustEqual manager.getCards(Island, Plains).map(_.objectId)
+      manager.currentChoice must beSome(beAnInstanceOf[SearchLibraryChoice])
+      manager.currentChoice.get.asInstanceOf[SearchLibraryChoice].playerToAct mustEqual playerOne
+      manager.currentChoice.get.asInstanceOf[SearchLibraryChoice].possibleChoices mustEqual manager.getCards(Island, Plains).map(_.objectId)
     }
 
     "put the chosen land into its controller's hand" in {

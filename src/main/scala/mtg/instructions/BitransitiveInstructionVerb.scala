@@ -1,8 +1,6 @@
 package mtg.instructions
 
 import mtg.definitions.zones.ZoneType
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.SingleIdentifyingNounPhrase
 
@@ -14,13 +12,7 @@ trait BitransitiveInstructionVerb[SubjectType, DirectObjectType, IndirectObjectT
   ): IntransitiveInstructionVerb[SubjectType] = {
     BitransitiveInstructionVerbWithObjects(this, directObjectPhrase, indirectObjectPhrase)
   }
-  def resolve(
-    subject: SubjectType,
-    directObject: DirectObjectType,
-    indirectObject: IndirectObjectType,
-    gameState: GameState,
-    resolutionContext: InstructionResolutionContext
-  ): InstructionResult
+  def resolve(subject: SubjectType, directObject: DirectObjectType, indirectObject: IndirectObjectType): InstructionAction
   def getFunctionalZones(
     subjectPhrase: SingleIdentifyingNounPhrase[SubjectType],
     directObjectPhrase: SingleIdentifyingNounPhrase[DirectObjectType],
@@ -42,10 +34,12 @@ case class BitransitiveInstructionVerbWithObjects[SubjectType, DirectObjectType,
       indirectObjectPhrase.getText(cardName)
     ).mkString(" ")
   }
-  override def resolve(subject: SubjectType, gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-    val (directObject, contextAfterDirectObject) = directObjectPhrase.identifySingle(gameState, resolutionContext)
-    val (indirectObject, contextAfterIndirectObject) = indirectObjectPhrase.identifySingle(gameState, contextAfterDirectObject)
-    verb.resolve(subject, directObject, indirectObject, gameState, contextAfterIndirectObject)
+  override def resolve(subject: SubjectType): InstructionAction = {
+    directObjectPhrase.identifySingle.flatMap { directObject =>
+      indirectObjectPhrase.identifySingle.flatMap { indirectObject =>
+        verb.resolve(subject, directObject, indirectObject)
+      }
+    }
   }
 
   override def getFunctionalZones(subjectPhrase: SingleIdentifyingNounPhrase[SubjectType]): Option[Set[ZoneType]] = {

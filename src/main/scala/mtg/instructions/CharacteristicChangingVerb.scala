@@ -3,9 +3,7 @@ package mtg.instructions
 import mtg.actions.CreateContinousEffectsAction
 import mtg.continuousEffects.CharacteristicOrControlChangingContinuousEffect
 import mtg.definitions.ObjectId
-import mtg.effects.InstructionResolutionContext
 import mtg.effects.condition.Condition
-import mtg.game.state.GameState
 import mtg.instructions.grammar.VerbInflection
 import mtg.instructions.nounPhrases.SetIdentifyingNounPhrase
 
@@ -23,10 +21,13 @@ object CharacteristicChangingVerb {
         endCondition.getText(cardName)
       ).mkString(" ")
     }
-    override def resolve(gameState: GameState, resolutionContext: InstructionResolutionContext): InstructionResult = {
-      val (subjects, contextAfterSubject) = subjectPhrase.identifyAll(gameState, resolutionContext)
-      val effects = subjects.flatMap(verb.getEffects)
-      (CreateContinousEffectsAction(effects, contextAfterSubject, endCondition), contextAfterSubject)
+    override def resolve: InstructionAction = {
+      subjectPhrase.identifyAll.flatMap { subjects =>
+        val effects = subjects.flatMap(verb.getEffects)
+        InstructionAction.withoutContextUpdate { (resolutionContext, _) =>
+          CreateContinousEffectsAction(effects, resolutionContext, endCondition)
+        }
+      }
     }
   }
 }

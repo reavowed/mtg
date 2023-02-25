@@ -4,6 +4,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 }
 
+configurations {
+    scalaCompilerPlugin
+}
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -22,8 +26,15 @@ dependencies {
     implementation 'com.fasterxml.jackson.module:jackson-module-scala_2.13:2.13.0'
     implementation 'org.reflections:reflections:0.10.2'
     testImplementation 'org.specs2:specs2-core_2.13:4.12.12'
+
+    scalaCompilerPlugin "com.olegpy:better-monadic-for_2.13:0.3.1"
 }
 
 test {
     useJUnitPlatform()
+}
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters = [
+        "-Xplugin:" + configurations.scalaCompilerPlugin.asPath
+    ]
 }

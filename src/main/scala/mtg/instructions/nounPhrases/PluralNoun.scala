@@ -1,7 +1,6 @@
 package mtg.instructions.nounPhrases
 
-import mtg.effects.InstructionResolutionContext
-import mtg.game.state.GameState
+import mtg.instructions.InstructionAction
 import mtg.instructions.grammar.{GrammaticalNumber, GrammaticalPerson}
 import mtg.instructions.nouns.ClassNoun
 
@@ -11,7 +10,8 @@ case class PluralNoun[T : ClassTag](noun: ClassNoun[T]) extends SetIdentifyingNo
   override def getText(cardName: String): String = noun.getPlural(cardName)
   override def person: GrammaticalPerson = GrammaticalPerson.Third
   override def number: GrammaticalNumber = GrammaticalNumber.Plural
-  override def identifyAll(gameState: GameState, resolutionContext: InstructionResolutionContext): (Seq[T], InstructionResolutionContext) = {
-    (noun.getAll(gameState, resolutionContext), resolutionContext)
+
+  def identifyAll: InstructionAction.WithResult[Seq[T]] = InstructionAction.WithResult.withoutContextUpdate { (resolutionContext, gameState) =>
+    noun.getAll(gameState, resolutionContext)
   }
 }

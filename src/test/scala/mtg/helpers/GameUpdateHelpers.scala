@@ -5,10 +5,8 @@ import mtg.definitions.{ObjectOrPlayerId, PlayerId}
 import mtg.game.objects.{Card, GameObject, GameObjectState}
 import mtg.game.priority.PriorityChoice
 import mtg.game.priority.actions.{ActivateAbilityAction, CastSpellAction, PlayLandAction}
-import mtg.game.state.GameAction
-import mtg.instructions.InstructionChoice
+import mtg.game.state.{Choice, GameAction}
 import mtg.stack.adding.TargetChoice
-import mtg.stack.resolving.ResolveInstructionChoice
 import org.specs2.matcher.{Expectable, MatchResult, Matcher}
 import org.specs2.mutable.SpecificationLike
 
@@ -84,9 +82,7 @@ trait GameUpdateHelpers extends SpecificationLike with GameObjectStateHelpers {
 
   def bePriorityChoice: PriorityChoiceMatcher = new PriorityChoiceMatcher
   def beTargetChoice: TargetChoiceMatcher = new TargetChoiceMatcher
-  def beInstructionChoice[T <: InstructionChoice : ClassTag](m: Matcher[T]): Matcher[GameAction[_]] = beAnInstanceOf[ResolveInstructionChoice] and
-    ((_: GameAction[_]).asInstanceOf[ResolveInstructionChoice].instructionChoice) ^^ (beAnInstanceOf[T] and (((_: InstructionChoice).asInstanceOf[T]) ^^ m))
-
+  def beChoice[T <: Choice[_] : ClassTag](matcher: Matcher[T]): Matcher[Option[Choice[_]]] = beSome(beAnInstanceOf[T] and ((_: Choice[_]).asInstanceOf[T]) ^^ matcher)
 
   def beActivatableAbilityActionForCard(cardDefinition: CardDefinition): Matcher[ActivateAbilityAction] = {
     ((_: ActivateAbilityAction).objectWithAbility.gameObject.underlyingObject.asOptionalInstanceOf[Card].map(_.printing.cardDefinition)) ^^ beSome(cardDefinition)
